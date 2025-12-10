@@ -10,12 +10,14 @@ import { WebsiteTemplateBasic } from "@/components/website/WebsiteTemplateBasic"
 
 import { HeroSectionForm } from "./_components/HeroSectionForm";
 import { AboutSectionForm } from "./_components/AboutSectionForm";
-import { FeaturesSectionForm } from "./_components/FeaturSectionForm";
+import { FeaturesSectionForm } from "./_components/FeatureSectionForm";
+import { ProductsSectionForm } from "./_components/ProductsSectionForm";
 
 const builderSections = [
   { id: "hero", label: "Hero" },
   { id: "about", label: "About" },
   { id: "features", label: "Features" },
+  { id: "products", label: "Products" },
   { id: "contact", label: "Contact" },
 ] as const;
 
@@ -63,6 +65,9 @@ export default function WebsiteBuilderPage() {
 
           {section === "features" && (
             <FeaturesSectionForm data={data} setData={setData} />
+          )}
+          {section === "products" && (
+            <ProductsSectionForm data={data} setData={setData} />
           )}
 
           {/* Previous / Next */}
