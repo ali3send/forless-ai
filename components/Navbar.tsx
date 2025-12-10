@@ -38,6 +38,12 @@ export function Navbar() {
           <Link href="/" className="text-slate-300 hover:text-white">
             Home
           </Link>
+          <Link
+            href="/website-builder"
+            className="text-slate-300 hover:text-white"
+          >
+            Website-builder
+          </Link>
 
           {user && (
             <Link href="/dashboard" className="text-slate-300 hover:text-white">
