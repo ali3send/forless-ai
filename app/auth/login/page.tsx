@@ -37,7 +37,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl">
         {/* Header */}
         <div className="mb-5">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400 mb-2">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-hover mb-2">
             ForlessAI
           </p>
           <h1 className="text-2xl font-bold tracking-tight mb-1">
@@ -66,7 +66,7 @@ export default function LoginPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-50 placeholder-slate-500 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/70"
+              className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-50 placeholder-slate-500 outline-none focus:border-primary focus:ring-1 focus:ring-primary/70"
               placeholder="you@example.com"
             />
           </div>
@@ -79,7 +79,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => router.push("/reset-password")}
-                className="text-[11px] text-emerald-400 hover:text-emerald-300 underline underline-offset-2"
+                className="text-[11px] text-primary-hover hover:text-emerald-300 underline underline-offset-2"
               >
                 Forgot password?
               </button>
@@ -89,7 +89,7 @@ export default function LoginPage() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-50 placeholder-slate-500 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/70"
+              className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-50 placeholder-slate-500 outline-none focus:border-primary focus:ring-1 focus:ring-primary/70"
               placeholder="Your password"
             />
           </div>
@@ -97,7 +97,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="mt-1 w-full inline-flex items-center justify-center rounded-md bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-emerald-400 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="mt-1 w-full inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-primary-hover disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {loading ? "Logging in..." : "Log in"}
           </button>
@@ -109,7 +109,7 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={() => router.push("/signup")}
-            className="text-emerald-400 hover:text-emerald-300 underline underline-offset-2"
+            className="text-primary-hover hover:text-emerald-300 underline underline-offset-2"
           >
             Sign up
           </button>

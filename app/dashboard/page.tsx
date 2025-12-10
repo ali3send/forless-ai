@@ -29,15 +29,17 @@ export default function DashboardPage() {
         <h1 className="text-2xl font-bold mb-1">Dashboard</h1>
         <p className="text-sm text-slate-300">
           Welcome back,{" "}
-          <span className="font-semibold text-emerald-400">{user?.email}</span>.
-          This is your ForlessAI workspace where you’ll manage your AI-built
+          <span className="font-semibold text-primary-hover">
+            {user?.email}
+          </span>
+          . This is your ForlessAI workspace where you’ll manage your AI-built
           websites.
         </p>
       </div>
 
       {/* Simple stats / info strip */}
       <div className="grid gap-4 sm:grid-cols-3">
-        <div className="rounded-lg border border-slate-800 bg-slate-900/80 p-4">
+        <div className="rounded-lg border border-slate-800 bg-bg-card p-4">
           <p className="text-xs text-slate-400 mb-1">Websites</p>
           <p className="text-xl font-semibold">0</p>
           <p className="mt-1 text-[11px] text-slate-500">
@@ -45,7 +47,7 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        <div className="rounded-lg border border-slate-800 bg-slate-900/80 p-4">
+        <div className="rounded-lg border border-slate-800 bg-bg-card p-4">
           <p className="text-xs text-slate-400 mb-1">Last update</p>
           <p className="text-sm text-slate-200">Just now</p>
           <p className="mt-1 text-[11px] text-slate-500">
@@ -53,7 +55,7 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        <div className="rounded-lg border border-slate-800 bg-slate-900/80 p-4">
+        <div className="rounded-lg border border-slate-800 bg-bg-card p-4">
           <p className="text-xs text-slate-400 mb-1">Account</p>
           <p className="text-sm text-slate-200 truncate">{user?.email}</p>
           <p className="mt-1 text-[11px] text-slate-500">

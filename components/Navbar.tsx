@@ -16,7 +16,7 @@ export function Navbar() {
   };
 
   return (
-    <header className="border-b border-slate-800 bg-slate-900/80 backdrop-blur">
+    <header className="border-b border-slate-800 bg-bg-card backdrop-blur">
       <nav className="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
         <Link href="/" className="flex items-center gap-2">
           <div className="h-8 w-8  overflow-hidden">
@@ -68,7 +68,7 @@ export function Navbar() {
               </Link>
               <Link
                 href="/signup"
-                className="rounded-md bg-emerald-500 px-3 py-1 text-slate-950 font-semibold hover:bg-emerald-400 transition text-xs sm:text-sm"
+                className="rounded-md bg-primary px-3 py-1 text-slate-950 font-semibold hover:bg-primary-hover transition text-xs sm:text-sm"
               >
                 Sign up
               </Link>
