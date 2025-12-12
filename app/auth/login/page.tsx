@@ -120,3 +120,23 @@ export default function LoginPage() {
     </div>
   );
 }
+
+// create table profiles (
+//   id uuid primary key references auth.users (id) on delete cascade,
+//   full_name text,
+//   avatar_url text,
+//   role text default 'user',
+//   onboarded boolean default false,
+//   created_at timestamptz default now()
+// );
+
+// alter table profiles enable row level security;
+
+// create policy "profiles_select_own" on profiles
+//   for select using (auth.uid() = id);
+
+// create policy "profiles_insert_own" on profiles
+//   for insert with check (auth.uid() = id);
+
+// create policy "profiles_update_own" on profiles
+//   for update using (auth.uid() = id);

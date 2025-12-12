@@ -10,6 +10,7 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [fullName, setFullName] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -21,24 +22,43 @@ export default function SignupPage() {
     setSuccessMsg(null);
     setLoading(true);
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
-
-    setLoading(false);
-
-    if (error) {
-      setErrorMsg(error.message);
+    if (password !== confirmPassword) {
+      setLoading(false);
+      setErrorMsg("Passwords do not match");
       return;
     }
 
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp(
+      {
+        email,
+        password,
+      }
+    );
+
+    if (signUpError) {
+      setLoading(false);
+      setErrorMsg(signUpError.message);
+      return;
+    }
+
+    const user = signUpData.user;
+
+    if (user) {
+      const { error: profileError } = await supabase.from("profiles").insert({
+        id: user.id, // must match profiles.id PK
+        full_name: fullName, // if you add name field later
+        // role: "user",
+      });
+
+      if (profileError) {
+        console.error("Profile insert error:", profileError);
+      }
+    }
+
+    setLoading(false);
     setSuccessMsg(
       "Account created! Please check your email to verify your account"
     );
-
-    // Optional: auto-redirect after a short delay
-    // setTimeout(() => router.push("/login"), 1500);
   };
 
   return (
@@ -69,6 +89,19 @@ export default function SignupPage() {
         )}
 
         <form onSubmit={handleSignup} className="space-y-4">
+          <div>
+            <label className="block text-xs font-medium text-slate-200 mb-1.5">
+              Full Name
+            </label>
+            <input
+              type="text"
+              required
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-50 placeholder-slate-500 outline-none focus:border-primary focus:ring-1 focus:ring-primary/70"
+              placeholder="John Doe"
+            />
+          </div>
           <div>
             <label className="block text-xs font-medium text-slate-200 mb-1.5">
               Email
