@@ -54,9 +54,32 @@ export default function BrandGenerator({ projectId, projectName }: Props) {
     setLoading(false);
   }
 
-  function handleUse(option: BrandOption) {
-    // later: save this brand to DB before redirect
-    console.log("Chosen brand for project", projectId, option);
+  async function handleUse(option: BrandOption) {
+    const payload = {
+      name: option.name,
+      slogan: option.slogan,
+      palette: {
+        primary: option.primaryColor,
+        secondary: option.secondaryColor,
+      },
+      font: {
+        id: selectedFontId,
+        css: option.font,
+      },
+    };
+
+    const res = await fetch(`/api/projects/${projectId}/brand`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      alert(data.error || "Failed to save brand");
+      return;
+    }
+
     router.push(`/website-builder?projectId=${projectId}`);
   }
 

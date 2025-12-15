@@ -6,9 +6,19 @@ import { fetchUnsplashImage } from "@/lib/unsplash";
 import Image from "next/image";
 import Link from "next/link";
 
-type Props = { data: WebsiteData };
+type Theme = {
+  primary?: string;
+  primaryHover?: string;
+  secondary?: string;
+  fontFamily?: string;
+};
 
-export function WebsiteTemplateBasic({ data }: Props) {
+type Props = {
+  data: WebsiteData;
+  theme?: Theme;
+};
+
+export function WebsiteTemplateBasic({ data, theme }: Props) {
   const [heroImage, setHeroImage] = useState("");
   const [aboutImage, setAboutImage] = useState("");
 
@@ -17,8 +27,22 @@ export function WebsiteTemplateBasic({ data }: Props) {
     fetchUnsplashImage(data.about.imageQuery).then(setAboutImage);
   }, [data.hero.imageQuery, data.about.imageQuery]);
 
+  // ✅ Apply theme via CSS variables + font
+  const themeStyle = {
+    ...(theme?.primary
+      ? ({ ["--color-primary" as any]: theme.primary } as any)
+      : {}),
+    ...(theme?.primaryHover
+      ? ({ ["--color-primary-hover" as any]: theme.primaryHover } as any)
+      : {}),
+    ...(theme?.secondary
+      ? ({ ["--color-secondary" as any]: theme.secondary } as any)
+      : {}),
+    ...(theme?.fontFamily ? ({ fontFamily: theme.fontFamily } as any) : {}),
+  };
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-50">
+    <div className="min-h-screen bg-slate-950 text-slate-50" style={themeStyle}>
       {/* Navbar */}
       <header className="border-b border-slate-800">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
@@ -148,7 +172,7 @@ export function WebsiteTemplateBasic({ data }: Props) {
       {/* Contact + Final CTA */}
       <section
         id="contact"
-        className="border-t border-slate-800 bg-linear-to-b from-slate-900 to-slate-950"
+        className="border-t border-slate-800 bg-gradient-to-b from-slate-900 to-slate-950"
       >
         <div className="mx-auto max-w-5xl px-4 py-12">
           {/* Heading + intro */}

@@ -21,7 +21,6 @@ export type BrandFont = {
   label: string;
   css: string;
 };
-
 export const PALETTES: Palette[] = [
   {
     id: "emerald-slate",

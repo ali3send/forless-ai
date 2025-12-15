@@ -50,3 +50,28 @@ export async function PATCH(req: Request, context: RouteContext) {
 
   return NextResponse.json(data);
 }
+export async function GET(req: Request, context: RouteContext) {
+  const { projectId } = await context.params;
+
+  const supabase = await createServerSupabaseClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { data, error } = await supabase
+    .from("projects")
+    .select("id, brand_name, brand_slogan, brand_palette, brand_font")
+    .eq("id", projectId)
+    .eq("user_id", user.id)
+    .single();
+
+  if (error || !data) {
+    return NextResponse.json({ error: "Project not found" }, { status: 404 });
+  }
+
+  return NextResponse.json({ project: data });
+}

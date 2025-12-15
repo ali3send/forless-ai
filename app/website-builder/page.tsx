@@ -22,10 +22,18 @@ const builderSections = [
   { id: "products", label: "Products" },
   { id: "contact", label: "Contact" },
 ] as const;
+type ProjectBrand = {
+  brand_name: string | null;
+  brand_slogan: string | null;
+  brand_palette: { primary: string; secondary: string } | null;
+  brand_font: { id: string; css: string } | null;
+};
 
 type BuilderSection = (typeof builderSections)[number]["id"];
 
 export default function WebsiteBuilderPage() {
+  const [brand, setBrand] = useState<ProjectBrand | null>(null);
+
   const searchParams = useSearchParams();
   const projectId = searchParams.get("projectId");
 
@@ -51,21 +59,50 @@ export default function WebsiteBuilderPage() {
 
     const load = async () => {
       try {
-        const res = await fetch(`/api/website?projectId=${projectId}`);
-        const json = await res.json();
+        const [websiteRes, projectRes] = await Promise.all([
+          fetch(`/api/website?projectId=${projectId}`),
+          fetch(`/api/projects/${projectId}`),
+        ]);
 
-        if (res.ok && json.data) {
-          const existing = json.data as WebsiteData;
-          setData(existing);
-          setType(existing.type);
+        const websiteJson = await websiteRes.json().catch(() => ({}));
+        const projectJson = await projectRes.json().catch(() => ({}));
+
+        const project = projectRes.ok
+          ? (projectJson.project as ProjectBrand)
+          : null;
+        if (project) setBrand(project);
+
+        const applyBrand = (base: WebsiteData) => {
+          if (!project) return base;
+
+          const next = structuredClone(base);
+
+          // Map brand → website data fields you already use in template
+          if (project.brand_name) next.brandName = project.brand_name;
+          if (project.brand_slogan) next.tagline = project.brand_slogan;
+
+          if (project.brand_name) next.hero.headline = project.brand_name;
+          if (project.brand_slogan)
+            next.hero.subheadline = project.brand_slogan;
+
+          return next;
+        };
+
+        if (websiteRes.ok && websiteJson.data) {
+          const existing = websiteJson.data as WebsiteData;
+          const merged = applyBrand(existing);
+
+          setData(merged);
+          setType(merged.type);
         } else {
-          // no existing website -> keep default
-          console.log("No existing website found");
-          setData(getDefaultWebsiteData("product"));
+          const base = getDefaultWebsiteData("product");
+          const merged = applyBrand(base);
+
+          setData(merged);
           setType("product");
         }
       } catch (err) {
-        console.error("Failed to load website", err);
+        console.error("Failed to load website/project", err);
       } finally {
         setLoading(false);
       }
@@ -211,7 +248,14 @@ export default function WebsiteBuilderPage() {
         </aside>
 
         <main className="w-full overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60">
-          <WebsiteTemplateBasic data={data} />
+          <WebsiteTemplateBasic
+            data={data}
+            theme={{
+              primary: brand?.brand_palette?.primary ?? undefined,
+              secondary: brand?.brand_palette?.secondary ?? undefined,
+              fontFamily: brand?.brand_font?.css ?? undefined,
+            }}
+          />
         </main>
       </div>
     </div>
