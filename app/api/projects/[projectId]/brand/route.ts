@@ -44,10 +44,12 @@ export async function POST(req: Request, context: RouteContext) {
   const { error } = await supabase
     .from("projects")
     .update({
-      brand_name: name,
-      brand_slogan: slogan,
-      brand_palette: palette,
-      brand_font: font,
+      brand_data: {
+        name,
+        slogan,
+        palette,
+        font,
+      },
     })
     .eq("id", projectId)
     .eq("user_id", user.id);

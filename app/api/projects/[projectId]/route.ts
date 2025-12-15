@@ -62,9 +62,15 @@ export async function GET(req: Request, context: RouteContext) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  // const { data, error } = await supabase
+  //   .from("projects")
+  //   .select("id, brand_name, brand_slogan, brand_palette, brand_font")
+  //   .eq("id", projectId)
+  //   .eq("user_id", user.id)
+  //   .single();
   const { data, error } = await supabase
     .from("projects")
-    .select("id, brand_name, brand_slogan, brand_palette, brand_font")
+    .select("id, brand_data")
     .eq("id", projectId)
     .eq("user_id", user.id)
     .single();

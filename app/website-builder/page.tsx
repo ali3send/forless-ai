@@ -22,20 +22,26 @@ const builderSections = [
   { id: "products", label: "Products" },
   { id: "contact", label: "Contact" },
 ] as const;
-type ProjectBrand = {
-  brand_name: string | null;
-  brand_slogan: string | null;
-  brand_palette: { primary: string; secondary: string } | null;
-  brand_font: { id: string; css: string } | null;
-};
 
 type BuilderSection = (typeof builderSections)[number]["id"];
 
-export default function WebsiteBuilderPage() {
-  const [brand, setBrand] = useState<ProjectBrand | null>(null);
+type BrandData = {
+  name?: string;
+  slogan?: string;
+  palette?: { primary: string; secondary: string };
+  font?: { id: string; css: string };
+};
 
+type ProjectResponse = {
+  brand_data: BrandData | null;
+};
+
+export default function WebsiteBuilderPage() {
   const searchParams = useSearchParams();
   const projectId = searchParams.get("projectId");
+
+  // ✅ store ONLY the brand object
+  const [brand, setBrand] = useState<BrandData | null>(null);
 
   const [type, setType] = useState<WebsiteType>("product");
   const [data, setData] = useState<WebsiteData>(() =>
@@ -50,7 +56,6 @@ export default function WebsiteBuilderPage() {
   const isFirst = currentIndex === 0;
   const isLast = currentIndex === builderSections.length - 1;
 
-  // Load existing website from API
   useEffect(() => {
     if (!projectId) {
       setLoading(false);
@@ -68,22 +73,23 @@ export default function WebsiteBuilderPage() {
         const projectJson = await projectRes.json().catch(() => ({}));
 
         const project = projectRes.ok
-          ? (projectJson.project as ProjectBrand)
+          ? (projectJson.project as ProjectResponse)
           : null;
-        if (project) setBrand(project);
+
+        const brandData = project?.brand_data ?? null;
+        setBrand(brandData);
 
         const applyBrand = (base: WebsiteData) => {
-          if (!project) return base;
+          if (!brandData) return base;
 
           const next = structuredClone(base);
 
-          // Map brand → website data fields you already use in template
-          if (project.brand_name) next.brandName = project.brand_name;
-          if (project.brand_slogan) next.tagline = project.brand_slogan;
+          // ✅ map brand_data → WebsiteData fields used in template
+          if (brandData.name) next.brandName = brandData.name;
+          if (brandData.slogan) next.tagline = brandData.slogan;
 
-          if (project.brand_name) next.hero.headline = project.brand_name;
-          if (project.brand_slogan)
-            next.hero.subheadline = project.brand_slogan;
+          if (brandData.name) next.hero.headline = brandData.name;
+          if (brandData.slogan) next.hero.subheadline = brandData.slogan;
 
           return next;
         };
@@ -91,13 +97,11 @@ export default function WebsiteBuilderPage() {
         if (websiteRes.ok && websiteJson.data) {
           const existing = websiteJson.data as WebsiteData;
           const merged = applyBrand(existing);
-
           setData(merged);
           setType(merged.type);
         } else {
           const base = getDefaultWebsiteData("product");
           const merged = applyBrand(base);
-
           setData(merged);
           setType("product");
         }
@@ -121,20 +125,18 @@ export default function WebsiteBuilderPage() {
     setSaveMessage(null);
 
     try {
-      // console.log("Saving", data);
       const res = await fetch("/api/website", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           projectId,
-          data: { ...data, type }, // ensure type is in sync
+          data: { ...data, type },
         }),
       });
 
       const json = await res.json();
 
       if (!res.ok) {
-        console.log(json.error);
         setSaveMessage(json.error || "Failed to save");
       } else {
         setSaveMessage("Saved ✅");
@@ -176,20 +178,16 @@ export default function WebsiteBuilderPage() {
             Project ID: <span className="font-mono">{projectId}</span>
           </p>
 
-          {/* Step indicator */}
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs text-slate-400">
               Step {currentIndex + 1} of {builderSections.length}
             </span>
           </div>
 
-          {/* Section Forms */}
           {section === "hero" && (
             <HeroSectionForm
-              type={type}
               onTypeChange={(t) => {
                 setType(t);
-                // optional: reset whole website when type changes
                 setData(getDefaultWebsiteData(t));
               }}
               data={data}
@@ -213,7 +211,6 @@ export default function WebsiteBuilderPage() {
             <ContactSectionForm data={data} setData={setData} />
           )}
 
-          {/* Previous / Next */}
           <div className="mt-4 flex justify-between">
             <button
               disabled={isFirst}
@@ -232,7 +229,6 @@ export default function WebsiteBuilderPage() {
             </button>
           </div>
 
-          {/* Save button */}
           <div className="mt-4 flex flex-col gap-2">
             <button
               onClick={handleSave}
@@ -251,9 +247,9 @@ export default function WebsiteBuilderPage() {
           <WebsiteTemplateBasic
             data={data}
             theme={{
-              primary: brand?.brand_palette?.primary ?? undefined,
-              secondary: brand?.brand_palette?.secondary ?? undefined,
-              fontFamily: brand?.brand_font?.css ?? undefined,
+              primary: brand?.palette?.primary,
+              secondary: brand?.palette?.secondary,
+              fontFamily: brand?.font?.css,
             }}
           />
         </main>

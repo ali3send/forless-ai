@@ -3,22 +3,22 @@
 import { WebsiteData, WebsiteType } from "@/lib/websiteTypes";
 
 export type HeroSectionFormProps = {
-  type: WebsiteType;
+  // type: WebsiteType;
   onTypeChange: (t: WebsiteType) => void;
   data: WebsiteData;
   setData: React.Dispatch<React.SetStateAction<WebsiteData>>;
 };
 
 export function HeroSectionForm({
-  type,
-  onTypeChange,
+  // type,
+  // onTypeChange,
   data,
   setData,
 }: HeroSectionFormProps) {
   return (
     <div className="space-y-2">
       {/* Website type selector */}
-      <div>
+      {/* <div>
         <p className="mb-2 text-xs text-slate-400">Website type</p>
         <div className="flex gap-2">
           {(
@@ -38,7 +38,7 @@ export function HeroSectionForm({
             </button>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* Brand name */}
       <label className="block text-xs text-slate-400">
