@@ -30,7 +30,7 @@ export function HeroSection({
   primaryHover,
 }: Props) {
   const heroImage = useUnsplashImage(hero.imageQuery);
-  console.log("hero: ", hero);
+  // console.log("hero: ", hero);
 
   return (
     <section className="mx-auto grid max-w-5xl gap-8 px-4 py-12 md:grid-cols-2">

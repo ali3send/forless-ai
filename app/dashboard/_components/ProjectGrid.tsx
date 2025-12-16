@@ -61,15 +61,15 @@ function ProjectCard({ project }: { project: ProjectRow }) {
       href={`/dashboard/projects/${project.id}`}
       className="group flex flex-col rounded-lg border border-slate-800 bg-slate-900/60 p-3 text-xs transition hover:border-primary hover:bg-slate-900"
     >
-      <div className="h-24 overflow-hidden rounded-md border border-slate-800 bg-slate-900">
+      <div className="h-28 overflow-hidden rounded-md border border-slate-800 bg-slate-900">
         {project.thumbnail_url ? (
           <Image
             src={project.thumbnail_url}
             alt={name}
             className="h-full w-full object-cover"
             loading="lazy"
-            width={200}
-            height={200}
+            width={800}
+            height={500}
           />
         ) : (
           // <span>{project.thumbnail_url}</span>

@@ -3,13 +3,18 @@
 
 import { useEffect, useState } from "react";
 import { WebsiteData, getDefaultWebsiteData } from "@/lib/types/websiteTypes";
+import {
+  apiGetProjectWithBrand,
+  apiSaveProjectBrand,
+  apiPatchProjectBrand,
+} from "@/lib/api/project";
+
 import { builderSections, type BuilderSection } from "../builderSections";
 import {
   apiGetWebsite,
   apiSaveWebsite,
   apiGenerateWebsite,
 } from "@/lib/api/website";
-import { apiGetProjectWithBrand } from "@/lib/api/project";
 
 export type BrandData = {
   name: string;
@@ -97,7 +102,13 @@ export function useWebsiteBuilder(projectId: string | null) {
     setSaveMessage(null);
 
     try {
+      if (brand) {
+        await apiPatchProjectBrand(projectId, brand);
+      }
+
+      // 2) Save website content
       await apiSaveWebsite(projectId, data);
+
       setSaveMessage("Saved ✅");
     } catch (err) {
       console.error(err);
@@ -133,8 +144,9 @@ export function useWebsiteBuilder(projectId: string | null) {
   };
 
   return {
-    // data
+    // state
     brand,
+    setBrand,
     data,
     setData,
     section,

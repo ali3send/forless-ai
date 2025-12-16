@@ -12,6 +12,7 @@ export default function WebsiteBuilderPage() {
 
   const {
     brand,
+    setBrand,
     data,
     setData,
     section,
@@ -59,6 +60,8 @@ export default function WebsiteBuilderPage() {
           isLast={isLast}
           data={data}
           setData={setData}
+          brand={brand}
+          setBrand={setBrand}
           generating={generating}
           saving={saving}
           saveMessage={saveMessage}

@@ -1,15 +1,13 @@
 // app/website-builder/_components/BuilderSidebar.tsx
 "use client";
 
-import type { Dispatch, SetStateAction } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 import type { WebsiteData } from "@/lib/types/websiteTypes";
 import type { BuilderSection } from "../builderSections";
+import type { BrandData } from "../hooks/useWebsiteBuilder";
 
-import { HeroSectionForm } from "./HeroSectionForm";
-import { AboutSectionForm } from "./AboutSectionForm";
-import { FeaturesSectionForm } from "./FeatureSectionForm";
-import { ProductsSectionForm } from "./ProductsSectionForm";
-import { ContactSectionForm } from "./ContactSectionForm";
+import { BuilderContentPanel } from "./BuilderContentPanel";
+import { BuilderDesignPanel } from "./BuilderDesignPanel";
 
 type Props = {
   projectId: string;
@@ -23,6 +21,9 @@ type Props = {
   data: WebsiteData;
   setData: Dispatch<SetStateAction<WebsiteData>>;
 
+  brand: BrandData | null;
+  setBrand: Dispatch<SetStateAction<BrandData | null>>;
+
   generating: boolean;
   saving: boolean;
   saveMessage: string | null;
@@ -31,22 +32,13 @@ type Props = {
   onSave: () => void;
 };
 
-export function BuilderSidebar({
-  projectId,
-  section,
-  setSection,
-  builderSections,
-  currentIndex,
-  isFirst,
-  isLast,
-  data,
-  setData,
-  generating,
-  saving,
-  saveMessage,
-  onGenerate,
-  onSave,
-}: Props) {
+export function BuilderSidebar(props: Props) {
+  const { projectId, saving, saveMessage, onSave } = props;
+
+  const [activePanel, setActivePanel] = useState<"content" | "design">(
+    "content"
+  );
+
   return (
     <aside className="w-full space-y-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-4 lg:w-80 lg:min-w-80 lg:max-w-80">
       <h1 className="text-lg font-semibold mb-2">Website Builder</h1>
@@ -55,67 +47,39 @@ export function BuilderSidebar({
         Project ID: <span className="font-mono">{projectId}</span>
       </p>
 
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-xs text-slate-400">
-          Step {currentIndex + 1} of {builderSections.length}
-        </span>
-
+      {/* Panel toggle */}
+      <div className="flex gap-1 rounded-full border border-slate-700 bg-slate-900 p-1 text-[11px]">
         <button
           type="button"
-          className="rounded-full border border-slate-600 px-2 py-1 text-[10px]"
-          onClick={onGenerate}
-          disabled={generating}
+          onClick={() => setActivePanel("content")}
+          className={`flex-1 rounded-full px-2 py-1 ${
+            activePanel === "content"
+              ? "bg-primary text-slate-950 font-medium"
+              : "text-slate-300"
+          }`}
         >
-          {generating ? "Generating..." : "Re-Generate"}
+          Content
+        </button>
+        <button
+          type="button"
+          onClick={() => setActivePanel("design")}
+          className={`flex-1 rounded-full px-2 py-1 ${
+            activePanel === "design"
+              ? "bg-primary text-slate-950 font-medium"
+              : "text-slate-300"
+          }`}
+        >
+          Design
         </button>
       </div>
 
-      {section === "hero" && <HeroSectionForm data={data} setData={setData} />}
-
-      {section === "about" && (
-        <AboutSectionForm data={data} setData={setData} />
+      {activePanel === "content" ? (
+        <BuilderContentPanel {...props} />
+      ) : (
+        <BuilderDesignPanel brand={props.brand} setBrand={props.setBrand} />
       )}
 
-      {section === "features" && (
-        <FeaturesSectionForm data={data} setData={setData} />
-      )}
-
-      {section === "products" && (
-        <ProductsSectionForm data={data} setData={setData} />
-      )}
-
-      {section === "contact" && (
-        <ContactSectionForm data={data} setData={setData} />
-      )}
-
-      <div className="mt-4 flex justify-between">
-        <button
-          type="button"
-          disabled={isFirst}
-          onClick={() => {
-            if (!isFirst && currentIndex > 0) {
-              setSection(builderSections[currentIndex - 1].id);
-            }
-          }}
-          className="rounded-full border border-slate-600 px-3 py-1 text-xs disabled:opacity-40"
-        >
-          Previous
-        </button>
-
-        <button
-          type="button"
-          disabled={isLast}
-          onClick={() => {
-            if (!isLast && currentIndex >= 0) {
-              setSection(builderSections[currentIndex + 1].id);
-            }
-          }}
-          className="rounded-full bg-primary px-3 py-1 text-xs font-medium text-slate-950 disabled:opacity-40"
-        >
-          Next
-        </button>
-      </div>
-
+      {/* Save button (common to both panels) */}
       <div className="mt-4 flex flex-col gap-2">
         <button
           type="button"
