@@ -4,6 +4,8 @@ import Link from "next/link";
 import type { ProjectRow } from "../types";
 import Image from "next/image";
 import { Trash2 } from "lucide-react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function ProjectGrid({
   projects,
@@ -46,6 +48,8 @@ export default function ProjectGrid({
 }
 
 function ProjectCard({ project }: { project: ProjectRow }) {
+  const router = useRouter();
+
   const name = project.name || "Untitled project";
   const status = project.status || "active";
 
@@ -57,27 +61,38 @@ function ProjectCard({ project }: { project: ProjectRow }) {
       })
     : "—";
 
-  const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
 
-    const confirmed = confirm(
-      `Are you sure you want to delete "${name}"? This cannot be undone.`
-    );
+    toast.error(` Are you sure you want to delete "${name}"?`, {
+      // description: "This action cannot be undone.",
+      action: {
+        label: "Delete",
+        onClick: async () => {
+          const t = toast.loading("Deleting project...");
 
-    if (!confirmed) return;
+          try {
+            const res = await fetch(`/api/projects/${project.id}`, {
+              method: "DELETE",
+            });
 
-    const res = await fetch(`/api/projects/${project.id}`, {
-      method: "DELETE",
+            if (!res.ok) {
+              toast.error("Failed to delete project.");
+              return;
+            }
+
+            toast.success("Project deleted.");
+            router.refresh();
+          } catch {
+            toast.error("Something went wrong.");
+          } finally {
+            toast.dismiss(t);
+          }
+        },
+      },
+      cancel: { label: "Cancel" },
     });
-
-    if (!res.ok) {
-      alert("Failed to delete project");
-      return;
-    }
-
-    // optional: refresh list
-    window.location.reload();
   };
 
   return (
@@ -104,6 +119,7 @@ function ProjectCard({ project }: { project: ProjectRow }) {
           onClick={handleDelete}
           className="absolute right-2 top-2 hidden rounded-md bg-black/60 p-1.5 text-slate-300 hover:bg-red-600 hover:text-white group-hover:block"
           title="Delete project"
+          type="button"
         >
           <Trash2 size={14} />
         </button>

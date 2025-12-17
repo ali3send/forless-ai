@@ -15,6 +15,7 @@ import {
   apiSaveWebsite,
   apiGenerateWebsite,
 } from "@/lib/api/website";
+import { toast } from "sonner";
 
 export type BrandData = {
   name: string;
@@ -94,7 +95,7 @@ export function useWebsiteBuilder(projectId: string | null) {
 
   const handleSave = async () => {
     if (!projectId) {
-      setSaveMessage("No projectId provided in URL");
+      toast.error("Missing projectId, cannot save website");
       return;
     }
 
@@ -108,14 +109,11 @@ export function useWebsiteBuilder(projectId: string | null) {
 
       // 2) Save website content
       await apiSaveWebsite(projectId, data);
-
-      setSaveMessage("Saved ✅");
+      toast.success("Website saved successfully!");
     } catch (err) {
-      console.error(err);
-      setSaveMessage(err instanceof Error ? err.message : "Error while saving");
+      toast.error("Failed to save website. error: " + (err as Error).message);
     } finally {
       setSaving(false);
-      setTimeout(() => setSaveMessage(null), 3000);
     }
   };
 
@@ -136,7 +134,7 @@ export function useWebsiteBuilder(projectId: string | null) {
       setSection("hero");
     } catch (e) {
       console.error("Generate website failed", e);
-      alert(e instanceof Error ? e.message : "Failed to generate website");
+      toast.error("Failed to generate website. error: " + (e as Error).message);
     } finally {
       void handleSave(); // persist latest version
       setGenerating(false);

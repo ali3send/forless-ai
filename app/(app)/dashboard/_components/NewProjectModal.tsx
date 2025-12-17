@@ -7,6 +7,7 @@ import {
   apiCreateAndGenerateProject,
   apiCreateProject,
 } from "@/lib/api/project";
+import { toast } from "sonner";
 
 export default function NewProjectModal() {
   const router = useRouter();
@@ -20,7 +21,7 @@ export default function NewProjectModal() {
 
     const trimmedName = projectName.trim();
     if (!trimmedName) {
-      alert("Please enter a project name.");
+      toast.error("Please enter a project name.");
       return;
     }
 
@@ -40,8 +41,9 @@ export default function NewProjectModal() {
       // Prefer router.refresh() over window.location.reload()
       router.refresh();
     } catch (err) {
-      console.error(err);
-      alert(err instanceof Error ? err.message : "Failed to create project");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to create new project"
+      );
     } finally {
       setLoading(false);
     }
@@ -55,7 +57,7 @@ export default function NewProjectModal() {
     const trimmedIdea = projectIdea.trim();
 
     if (!trimmedName) {
-      alert("Please enter a project name.");
+      toast.error("Please enter a project name.");
       return;
     }
 
@@ -66,7 +68,7 @@ export default function NewProjectModal() {
         name: trimmedName,
         idea: trimmedIdea || trimmedName,
       });
-
+      toast.success("Project created and website generated!");
       // Close modal
       setModalOpen(false);
       setProjectIdea("");
@@ -76,10 +78,10 @@ export default function NewProjectModal() {
       router.push(`/website-builder?projectId=${result.project.id}`);
     } catch (err) {
       console.error(err);
-      alert(
+      toast.error(
         err instanceof Error
           ? err.message
-          : "Failed to create & generate website"
+          : "Failed to create and generate project"
       );
     } finally {
       setLoading(false);

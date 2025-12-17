@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 
 type Props = {
   projectId: string;
@@ -14,34 +15,48 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
   const [localSubdomainUrl, setLocalSubdomainUrl] = useState<string | null>(
     null
   );
-  const [error, setError] = useState<string | null>(null);
 
   async function publish() {
-    setError(null);
+    if (!projectId) return;
+
+    const cleanSlug = slug.trim().toLowerCase();
+    if (!cleanSlug) {
+      toast.error("Please enter a subdomain (slug).");
+      return;
+    }
+
     setLoading(true);
+    const t = toast.loading("Publishing...");
 
     try {
       const res = await fetch(`/api/projects/${projectId}/publish`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug }),
+        body: JSON.stringify({ slug: cleanSlug }),
       });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => ({} as any));
+
+      toast.dismiss(t);
 
       if (!res.ok) {
-        setError(data?.error || "Publish failed");
+        toast.error(data?.error || "Publish failed");
         return;
       }
 
       setPreviewUrl(data.previewUrl || null);
       setLocalSubdomainUrl(data.localSubdomainUrl || null);
+
+      toast.success("Published successfully!");
     } catch {
-      setError("Publish failed");
+      toast.dismiss(t);
+      toast.error("Publish failed");
     } finally {
       setLoading(false);
     }
   }
+
+  const hasLinks = !!previewUrl || !!localSubdomainUrl;
 
   return (
     <div className="flex flex-col gap-2 rounded-lg border border-slate-800 bg-slate-900/60 p-3">
@@ -56,14 +71,13 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
           onClick={publish}
           disabled={loading || !projectId}
           className="btn-fill"
+          type="button"
         >
           {loading ? "Publishing..." : "Publish"}
         </button>
       </div>
 
-      {error ? <div className="text-xs text-red-400">{error}</div> : null}
-
-      {(previewUrl || localSubdomainUrl) && (
+      {hasLinks && (
         <div className="text-xs text-slate-300 space-y-2">
           {previewUrl && (
             <div className="flex items-center justify-between gap-2">
@@ -82,7 +96,7 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
           {localSubdomainUrl && (
             <div className="flex items-center justify-between gap-2">
               <span className="truncate">
-                url:{" "}
+                URL:{" "}
                 <a
                   className="hover:underline"
                   href={localSubdomainUrl}
@@ -90,7 +104,7 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
                   rel="noreferrer"
                 >
                   {localSubdomainUrl}
-                </a>{" "}
+                </a>
               </span>
               <a
                 className="text-primary hover:underline"

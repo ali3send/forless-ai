@@ -5,6 +5,7 @@ import { useState } from "react";
 import Link from "next/link";
 import type { ProjectRow } from "@/app/(app)/dashboard/types"; // or "../_types"
 import { apiUpdateProject } from "@/lib/api/project";
+import { toast } from "sonner";
 
 export default function ProjectContent({ project }: { project: ProjectRow }) {
   const [name, setName] = useState(project.name ?? "");
@@ -17,10 +18,10 @@ export default function ProjectContent({ project }: { project: ProjectRow }) {
     setSaving(true);
     try {
       await apiUpdateProject(project.id, { name, status });
-      // you can optionally show a toast or small "Saved" state heres
+      toast.success("Project saved successfully.");
     } catch (err) {
       console.error(err);
-      alert(err instanceof Error ? err.message : "Failed to update project");
+      toast.error("Failed to save project. " + (err as Error).message);
     } finally {
       setSaving(false);
     }

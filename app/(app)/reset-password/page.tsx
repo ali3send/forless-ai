@@ -2,19 +2,19 @@
 
 import { FormEvent, useState } from "react";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
 
 export default function ResetPasswordRequestPage() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [supabase] = useState(() => createBrowserSupabaseClient());
 
   const handleResetRequest = async (e: FormEvent) => {
     e.preventDefault();
-    setErrorMsg(null);
-    setSuccessMsg(null);
+    if (loading) return;
+
     setLoading(true);
+    const t = toast.loading("Sending reset link...");
 
     try {
       const redirectTo =
@@ -26,20 +26,22 @@ export default function ResetPasswordRequestPage() {
         redirectTo,
       });
 
-      setLoading(false);
+      toast.dismiss(t);
 
       if (error) {
-        setErrorMsg(error.message);
+        toast.error(error.message || "Failed to send reset link.");
         return;
       }
 
-      setSuccessMsg(
-        "If an account exists with this email, a reset link has been sent. Please check your inbox."
-      );
+      toast.success("Reset link sent. Please check your email to continue.");
+
+      setEmail("");
     } catch (err) {
       console.error(err);
+      toast.dismiss(t);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
       setLoading(false);
-      setErrorMsg("Something went wrong. Please try again.");
     }
   };
 
@@ -58,18 +60,6 @@ export default function ResetPasswordRequestPage() {
             you a secure link to create a new password.
           </p>
         </div>
-
-        {errorMsg && (
-          <div className="mb-3 rounded-md border border-red-500/40 bg-red-950/40 px-3 py-2 text-xs text-red-200">
-            {errorMsg}
-          </div>
-        )}
-
-        {successMsg && (
-          <div className="mb-3 rounded-md border border-primary/40 bg-emerald-950/40 px-3 py-2 text-xs text-emerald-200">
-            {successMsg}
-          </div>
-        )}
 
         <form onSubmit={handleResetRequest} className="space-y-4">
           <div>

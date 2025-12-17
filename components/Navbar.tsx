@@ -6,6 +6,7 @@ import { useAuth } from "@/app/providers";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import Image from "next/image";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export function Navbar() {
   const router = useRouter();
@@ -13,9 +14,28 @@ export function Navbar() {
   const [supabase] = useState(() => createBrowserSupabaseClient());
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    // 👇 match your actual route structure
-    router.push("/auth/login");
+    toast.error("are you sure you want to logout?", {
+      action: {
+        label: "Logout",
+        onClick: async () => {
+          const t = toast.loading("Logging out...");
+          try {
+            await supabase.auth.signOut();
+            router.push("/auth/login");
+            toast.success("Logged out successfully!");
+          } catch (error) {
+            toast.error("Failed to log out.");
+          } finally {
+            toast.dismiss(t);
+          }
+        },
+      },
+      cancel: { label: "Cancel" },
+      classNames: {
+        actionButton: "bg-red-600 text-white hover:bg-red-700",
+        cancelButton: "bg-slate-700 text-slate-200 hover:bg-slate-600",
+      },
+    });
   };
 
   return (

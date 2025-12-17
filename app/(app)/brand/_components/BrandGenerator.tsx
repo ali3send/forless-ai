@@ -17,6 +17,7 @@ import {
   type BrandPayload,
 } from "@/lib/api/brand";
 import { apiGenerateWebsite, apiSaveWebsite } from "@/lib/api/website";
+import { toast } from "sonner";
 
 interface Props {
   projectId: string;
@@ -43,7 +44,7 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
 
   async function handleGenerate() {
     if (!idea.trim()) {
-      alert("Please describe your business idea first.");
+      toast.warning("Please enter a business idea to generate a brand.");
       return;
     }
 
@@ -63,7 +64,7 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
       setGenerated(options);
     } catch (err) {
       console.error(err);
-      alert(err instanceof Error ? err.message : "Failed to generate brand");
+      toast.error("Failed to generate brand. " + (err as Error).message);
     } finally {
       setLoading(false);
     }
@@ -100,8 +101,7 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
       // 4) Go to builder
       router.push(`/website-builder?projectId=${projectId}`);
     } catch (err) {
-      console.error(err);
-      alert(err instanceof Error ? err.message : "Something went wrong");
+      toast.error("Failed to use brand option. " + (err as Error).message);
     }
   }
 

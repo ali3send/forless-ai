@@ -16,7 +16,6 @@ export default function proxy(req: NextRequest) {
 
   const subdomain = parts[0].toLowerCase();
 
-  // reserved app subdomain (optional)
   if (subdomain === "app") return NextResponse.next();
 
   const url = req.nextUrl;
