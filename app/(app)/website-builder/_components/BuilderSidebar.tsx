@@ -8,6 +8,7 @@ import type { BrandData } from "../hooks/useWebsiteBuilder";
 
 import { BuilderContentPanel } from "./BuilderContentPanel";
 import { BuilderDesignPanel } from "./BuilderDesignPanel";
+import { PublishButton } from "./PublishButton";
 
 type Props = {
   projectId: string;
@@ -33,7 +34,7 @@ type Props = {
 };
 
 export function BuilderSidebar(props: Props) {
-  const { projectId, saving, saveMessage, onSave } = props;
+  const { projectId, saving, saveMessage, onSave, data } = props;
 
   const [activePanel, setActivePanel] = useState<"content" | "design">(
     "content"
@@ -41,11 +42,13 @@ export function BuilderSidebar(props: Props) {
 
   return (
     <aside className="w-full space-y-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-4 lg:w-80 lg:min-w-80 lg:max-w-80">
-      <h1 className="text-lg font-semibold mb-2">Website Builder</h1>
+      <h1 className="text-lg font-semibold">Website Builder</h1>
 
-      <p className="text-[10px] text-slate-400 mb-2">
-        Project ID: <span className="font-mono">{projectId}</span>
-      </p>
+      {/* 🔴 PUBLISH PANEL — TOP PRIORITY */}
+      <PublishButton
+        projectId={projectId}
+        defaultSlug={data?.brandName?.toLowerCase().replace(/\s+/g, "-")}
+      />
 
       {/* Panel toggle */}
       <div className="flex gap-1 rounded-full border border-slate-700 bg-slate-900 p-1 text-[11px]">
@@ -79,18 +82,19 @@ export function BuilderSidebar(props: Props) {
         <BuilderDesignPanel brand={props.brand} setBrand={props.setBrand} />
       )}
 
-      {/* Save button (common to both panels) */}
-      <div className="mt-4 flex flex-col gap-2">
+      {/* Save button — secondary */}
+      <div className="mt-2 flex flex-col gap-2">
         <button
           type="button"
           onClick={onSave}
           disabled={saving}
-          className="w-full rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-slate-950 disabled:opacity-60"
+          className="w-full rounded-full bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-100 disabled:opacity-60"
         >
-          {saving ? "Saving..." : "Save website"}
+          {saving ? "Saving..." : "Save changes"}
         </button>
+
         {saveMessage && (
-          <p className="text-[11px] text-slate-300">{saveMessage}</p>
+          <p className="text-[11px] text-slate-400">{saveMessage}</p>
         )}
       </div>
     </aside>

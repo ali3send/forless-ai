@@ -5,20 +5,18 @@ export const config = {
   matcher: ["/((?!_next|api|favicon.ico).*)"],
 };
 
-export function middleware(req: NextRequest) {
+export default function proxy(req: NextRequest) {
   const host = req.headers.get("host") || "";
-  const hostname = host.split(":")[0]; // remove port
-
-  // Local tests:
-  // mysite.lvh.me  -> ["mysite","lvh","me"]
-  // lvh.me         -> ["lvh","me"]
+  const hostname = host.split(":")[0];
   const parts = hostname.split(".");
-  const hasSubdomain = parts.length >= 3;
 
+  // mysite.lvh.me => ["mysite","lvh","me"]
+  const hasSubdomain = parts.length >= 3;
   if (!hasSubdomain) return NextResponse.next();
 
-  const subdomain = parts[0];
+  const subdomain = parts[0].toLowerCase();
 
+  // reserved app subdomain (optional)
   if (subdomain === "app") return NextResponse.next();
 
   const url = req.nextUrl;

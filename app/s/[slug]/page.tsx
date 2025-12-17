@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { createPublicSupabaseClient } from "@/lib/supabase/public";
 import { WebsiteTemplateBasic } from "@/components/websiteTemplates/Template1/WebsiteTemplateBasic";
 
 export default async function SitePage({
@@ -9,7 +9,7 @@ export default async function SitePage({
 }) {
   const { slug } = await params;
 
-  const supabase = await createServerSupabaseClient();
+  const supabase = await createPublicSupabaseClient();
 
   const { data: project, error: pErr } = await supabase
     .from("projects")
