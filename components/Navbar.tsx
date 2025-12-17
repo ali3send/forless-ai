@@ -7,6 +7,7 @@ import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import Image from "next/image";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useMe } from "@/components/hooks/useMe";
 
 export function Navbar() {
   const router = useRouter();
@@ -37,6 +38,7 @@ export function Navbar() {
       },
     });
   };
+  const { isAdmin } = useMe();
 
   return (
     <header className="border-b border-slate-800 bg-bg-card backdrop-blur">
@@ -61,19 +63,20 @@ export function Navbar() {
           <Link href="/" className="text-slate-300 hover:text-white">
             Home
           </Link>
-          <Link
-            href="/website-builder"
-            className="text-slate-300 hover:text-white"
-          >
-            Website-builder
-          </Link>
 
           {user && (
             <Link href="/dashboard" className="text-slate-300 hover:text-white">
               Dashboard
             </Link>
           )}
-
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className="text-sm text-white/80 hover:text-white"
+            >
+              Admin Panel
+            </Link>
+          )}
           <div className="h-4 w-px bg-slate-700 hidden sm:block" />
 
           {loading ? (
