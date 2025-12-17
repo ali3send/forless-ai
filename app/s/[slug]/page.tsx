@@ -39,10 +39,12 @@ export default async function SitePage({
 
   const theme =
     project.brand_data?.theme ??
-    (project.brand_data?.palette
+    (project.brand_data
       ? {
-          primary: project.brand_data.palette.primary,
-          secondary: project.brand_data.palette.secondary,
+          primary: project.brand_data.palette?.primary,
+          secondary: project.brand_data.palette?.secondary,
+
+          fontFamily: project.brand_data.font?.css,
         }
       : undefined);
 
