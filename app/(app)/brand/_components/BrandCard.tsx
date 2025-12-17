@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { BrandOption } from "@/app/brand/brandConfig";
+import type { BrandOption } from "@/app/(app)/brand/brandConfig";
 import LogoSvg from "./LogoSvg";
 
 interface BrandCardProps {

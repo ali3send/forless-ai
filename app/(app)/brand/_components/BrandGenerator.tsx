@@ -8,7 +8,7 @@ import {
   FONTS,
   generateBrandOptions,
   type BrandOption,
-} from "@/app/brand/brandConfig";
+} from "@/app/(app)/brand/brandConfig";
 import BrandControls from "./BrandControls";
 import BrandOptionsList from "./BrandOptionsList";
 import {

@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import type { ProjectRow } from "@/app/dashboard/types"; // or "../_types"
+import type { ProjectRow } from "@/app/(app)/dashboard/types"; // or "../_types"
 import { apiUpdateProject } from "@/lib/api/project";
 
 export default function ProjectContent({ project }: { project: ProjectRow }) {

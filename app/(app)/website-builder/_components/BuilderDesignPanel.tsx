@@ -3,7 +3,7 @@
 
 import type { Dispatch, SetStateAction } from "react";
 import type { BrandData } from "../hooks/useWebsiteBuilder";
-import { PALETTES, FONTS } from "@/app/brand/brandConfig";
+import { PALETTES, FONTS } from "@/app/(app)/brand/brandConfig";
 
 // normalize BrandData so we always have all fields
 function ensureBrand(prev: BrandData | null): BrandData {

@@ -1,5 +1,5 @@
 // lib/api/projects.ts
-import type { BrandData } from "@/app/website-builder/hooks/useWebsiteBuilder";
+import type { BrandData } from "@/app/(app)/website-builder/hooks/useWebsiteBuilder";
 
 export type CreateProjectPayload = {
   name: string;

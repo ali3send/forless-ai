@@ -2,7 +2,7 @@
 import { redirect, notFound } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-import type { ProjectRow } from "@/app/dashboard/types";
+import type { ProjectRow } from "@/app/(app)/dashboard/types";
 import ProjectContent from "../../_components/ProjectContent";
 
 interface PageProps {

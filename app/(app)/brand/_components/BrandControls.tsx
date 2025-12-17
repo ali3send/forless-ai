@@ -1,7 +1,7 @@
 // app/brand/_components/BrandControls.tsx
 "use client";
 
-import { PALETTES, FONTS } from "@/app/brand/brandConfig";
+import { PALETTES, FONTS } from "@/app/(app)/brand/brandConfig";
 
 interface BrandControlsProps {
   idea: string;

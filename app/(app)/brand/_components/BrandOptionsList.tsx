@@ -1,6 +1,6 @@
 "use client";
 
-import type { BrandOption } from "@/app/brand/brandConfig";
+import type { BrandOption } from "@/app/(app)/brand/brandConfig";
 import BrandCard from "./BrandCard";
 
 interface BrandOptionsListProps {
