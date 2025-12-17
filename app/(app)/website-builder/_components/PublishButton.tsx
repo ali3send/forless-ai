@@ -50,12 +50,12 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
           value={slug}
           onChange={(e) => setSlug(e.target.value)}
           placeholder="Subdomain (e.g. mysite)"
-          className="w-full rounded-md border border-slate-800 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+          className="input-base py-1.5 bg-gray-900"
         />
         <button
           onClick={publish}
           disabled={loading || !projectId}
-          className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-white disabled:opacity-60"
+          className="btn-fill"
         >
           {loading ? "Publishing..." : "Publish"}
         </button>
@@ -82,7 +82,15 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
           {localSubdomainUrl && (
             <div className="flex items-center justify-between gap-2">
               <span className="truncate">
-                Local subdomain: {localSubdomainUrl}
+                url:{" "}
+                <a
+                  className="hover:underline"
+                  href={localSubdomainUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {localSubdomainUrl}
+                </a>{" "}
               </span>
               <a
                 className="text-primary hover:underline"
