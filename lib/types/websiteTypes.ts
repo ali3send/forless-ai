@@ -2,7 +2,7 @@
 export type WebsiteType = "product" | "service" | "personal" | "business";
 
 export type WebsiteData = {
-  type: WebsiteType;
+  type: string;
   brandName: string;
   tagline: string;
 

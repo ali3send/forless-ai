@@ -124,7 +124,7 @@ export function useWebsiteBuilder(projectId: string | null) {
       setGenerating(true);
 
       const idea = data.brandName || "A modern business";
-
+      if (!brand) return;
       const generated = await apiGenerateWebsite({
         idea,
         brand,

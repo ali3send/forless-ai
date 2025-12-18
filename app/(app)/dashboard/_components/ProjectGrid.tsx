@@ -91,7 +91,7 @@ function ProjectCard({ project }: { project: ProjectRow }) {
           }
         },
       },
-      cancel: { label: "Cancel" },
+      cancel: "Cancel",
     });
   };
 

@@ -95,6 +95,7 @@ function toWebsiteData(ai: AiOut, websiteType: string): WebsiteData {
       subheadline: ai.website.finalCta.subheadline ?? "",
       buttonLabel: ai.website.finalCta.buttonLabel ?? "",
     },
+    tagline: ""
   };
 }
 export async function POST(req: Request) {
