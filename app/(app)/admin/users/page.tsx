@@ -10,14 +10,14 @@ export default async function AdminUsersPage() {
   // We fetch via API so it merges auth.users emails + profiles fields.
   // (You could also fetch server-side directly, but this keeps it consistent.)
   return (
-    <div className="mx-auto max-w-6xl px-6 py-8 text-text">
-      <div className="flex items-center justify-between gap-4">
-        <div>
+    <div className="mx-auto text-text">
+      <div className="hidden sm:flex items-center justify-between gap-4 ">
+        {/* <div>
           <h1 className="text-2xl font-semibold tracking-tight">Users</h1>
           <p className="mt-1 text-sm text-text-muted">
             View emails (auth.users), manage roles, and suspend accounts.
           </p>
-        </div>
+        </div> */}
 
         <a
           href="/admin"

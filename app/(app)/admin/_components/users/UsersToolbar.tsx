@@ -26,7 +26,7 @@ export function UsersToolbar(props: {
             value={props.q}
             onChange={(e) => props.setQ(e.target.value)}
             placeholder="Search by email, name, id…"
-            className="input-base w-full sm:w-80"
+            className="input-base w-full sm:w-80 py-2"
           />
 
           <select
