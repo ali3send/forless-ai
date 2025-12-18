@@ -9,15 +9,13 @@ const nextConfig: NextConfig = {
     ],
   },
 
-  experimental: {
-    allowedDevOrigins: [
-      "http://localhost:3000",
-      "http://lvh.me:3000",
+  allowedDevOrigins: [
+    "http://localhost:3000",
+    "http://lvh.me:3000",
 
-      // Try wildcard first (if your Next build supports it)
-      "http://*.lvh.me:3000",
-    ],
-  },
+    // Try wildcard first (if your Next build supports it)
+    "http://*.lvh.me:3000",
+  ],
 };
 
 export default nextConfig;

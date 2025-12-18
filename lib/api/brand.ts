@@ -1,6 +1,8 @@
 // lib/api/brand.ts
 // import type { WebsiteData } from "@/lib/websiteTypes";
 
+import { BrandData } from "../types/brandTypes";
+
 export type BrandPayload = {
   name: string;
   slogan: string;
@@ -37,7 +39,7 @@ export async function apiGenerateBrand(
 
 export async function apiSaveProjectBrand(
   projectId: string,
-  brand: BrandPayload | null
+  brand: BrandData | null
 ): Promise<void> {
   const res = await fetch(`/api/projects/${projectId}/brand`, {
     method: "POST",

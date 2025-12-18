@@ -124,7 +124,7 @@ export function UsersTable() {
             await performSuspend(userId, false, undefined, t);
           },
         },
-        cancel: { label: "Cancel" },
+        cancel: "Cancel",
       });
       return;
     }
@@ -173,7 +173,7 @@ export function UsersTable() {
           performSuspend(userId, true, reason, t);
         },
       },
-      cancel: { label: "Cancel" },
+      cancel: "Cancel",
       duration: Infinity,
     });
   }
@@ -244,9 +244,7 @@ export function UsersTable() {
           }
         },
       },
-      cancel: {
-        label: "Cancel",
-      },
+      cancel: "Cancel",
       classNames: {
         actionButton: "bg-red-600 text-white hover:bg-red-700",
         cancelButton: "bg-slate-700 text-slate-200 hover:bg-slate-600",
