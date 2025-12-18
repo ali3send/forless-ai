@@ -1,9 +1,13 @@
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
+import { toast } from "sonner";
 
 export default async function AdminPage() {
   const admin = await requireAdmin();
-  if (!admin.ok) redirect("/dashboard");
+  if (!admin.ok) {
+    toast.error("You are not authorized to access the admin dashboard.");
+    return redirect("/dashboard");
+  }
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-8 text-text">
@@ -23,10 +27,7 @@ export default async function AdminPage() {
           </p>
         </div>
 
-        <a
-          href="/dashboard"
-          className="rounded-md border border-slate-700 bg-bg-card px-3 py-1.5 text-sm text-text-muted hover:text-text transition"
-        >
+        <a href="/dashboard" className="btn-secondary">
           ← Back to Dashboard
         </a>
       </div>
@@ -63,7 +64,7 @@ export default async function AdminPage() {
               <a href="/admin/projects">View Projects</a>
             </button>
 
-            <button className="rounded-md border border-slate-700 bg-bg-card px-4 py-1.5 text-sm text-text-muted hover:text-text transition">
+            <button className="btn-secondary">
               <a href="/admin/projects?filter=recent">Recent</a>
             </button>
           </div>
@@ -81,7 +82,7 @@ export default async function AdminPage() {
               <a href="/admin/sites">Moderate Sites</a>
             </button>
 
-            <button className="rounded-md border border-slate-700 bg-bg-card px-4 py-1.5 text-sm text-text-muted hover:text-text transition">
+            <button className="btn-secondary">
               <a href="/admin/sites?filter=latest">Latest</a>
             </button>
           </div>
@@ -98,7 +99,7 @@ export default async function AdminPage() {
             <button className="btn-fill">
               <a href="/admin/users">Manage Users</a>
             </button>
-            <button className="rounded-md border border-slate-700 bg-bg-card px-4 py-1.5 text-sm text-text-muted hover:text-text transition">
+            <button className="btn-secondary">
               <a href="/admin/users?filter=suspended">Suspended</a>
             </button>
           </div>
