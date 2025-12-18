@@ -8,7 +8,6 @@ import { UsersToolbar } from "./users/UsersToolbar";
 import { UsersSkeleton } from "./users/UsersSkeleton";
 import { EmptyState } from "./users/EmptyState";
 import { UserCard } from "./users/UserCard";
-import { confirmToast } from "./users/ConfirmToast";
 
 export function UsersTable() {
   const [loading, setLoading] = useState(true);
@@ -102,89 +101,92 @@ export function UsersTable() {
     }
   }
 
-  function toggleSuspend(userId: string, suspend: boolean) {
+  function toggleSuspend(
+    userId: string,
+    suspend: boolean,
+    email?: string | null
+  ) {
     setMenuOpen(null);
 
-    const toastId = toast(
-      <div className="space-y-2">
-        <p className="font-medium">
-          {suspend ? "Suspend this user?" : "Unsuspend this user?"}
-        </p>
+    const title = suspend ? "Suspend this user?" : "Unsuspend this user?";
+    const confirmLabel = suspend ? "Suspend" : "Unsuspend";
 
-        {suspend ? (
-          <div className="space-y-1">
-            <p className="text-sm text-muted-foreground">
-              Optional: add a suspension reason
-            </p>
+    // Unsuspend: simple confirm like logout/delete
+    if (!suspend) {
+      toast.error(title, {
+        description: `${
+          email ?? userId
+        }\nThis will restore access immediately.`,
+        action: {
+          label: confirmLabel,
+          onClick: async () => {
+            const t = toast.loading("Unsuspending user...");
+            await performSuspend(userId, false, undefined, t);
+          },
+        },
+        cancel: { label: "Cancel" },
+      });
+      return;
+    }
 
-            <input
-              autoFocus
-              className="w-full rounded-md border px-3 py-2 text-sm outline-none"
-              placeholder="Reason (optional)"
-              data-suspend-reason
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  const reason = e.currentTarget.value.trim() || undefined;
-                  toast.dismiss(toastId);
-                  performSuspend(userId, true, reason);
-                }
-              }}
-            />
-          </div>
-        ) : (
+    // Suspend: same confirm style, but with reason input inside toast
+    const toastId = toast.error(title, {
+      description: (
+        <div className="space-y-2">
           <p className="text-sm text-muted-foreground">
-            This will restore access immediately.
+            Add a suspension reason below
           </p>
-        )}
 
-        <div className="flex justify-end gap-2 pt-2">
-          <button
-            className="px-3 py-1 text-sm rounded-md border"
-            onClick={() => toast.dismiss(toastId)}
-          >
-            Cancel
-          </button>
-
-          <button
-            className={`px-3 py-1 text-sm rounded-md text-white ${
-              suspend ? "bg-red-600" : "bg-emerald-600"
-            }`}
-            onClick={() => {
-              if (suspend) {
-                const root = document.querySelector(
-                  `[data-sonner-toast="${toastId}"]`
-                ) as HTMLElement | null;
-
-                const input = root?.querySelector(
-                  "input[data-suspend-reason]"
-                ) as HTMLInputElement | null;
-
-                const reason = input?.value?.trim() || undefined;
-
+          <input
+            autoFocus
+            className="w-full rounded-md border px-3 py-2 text-sm outline-none"
+            placeholder="Reason (optional)"
+            data-suspend-reason
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                const reason = e.currentTarget.value.trim() || undefined;
                 toast.dismiss(toastId);
-                performSuspend(userId, true, reason);
-              } else {
-                toast.dismiss(toastId);
-                performSuspend(userId, false, undefined);
+
+                const t = toast.loading("Suspending user...");
+                performSuspend(userId, true, reason, t);
               }
             }}
-          >
-            {suspend ? "Suspend" : "Unsuspend"}
-          </button>
+          />
         </div>
-      </div>,
-      { duration: Infinity }
-    );
+      ),
+      action: {
+        label: confirmLabel,
+        onClick: () => {
+          const root = document.querySelector(
+            `[data-sonner-toast="${toastId}"]`
+          ) as HTMLElement | null;
+
+          const input = root?.querySelector(
+            "input[data-suspend-reason]"
+          ) as HTMLInputElement | null;
+
+          const reason = input?.value?.trim() || undefined;
+
+          toast.dismiss(toastId);
+
+          const t = toast.loading("Suspending user...");
+          performSuspend(userId, true, reason, t);
+        },
+      },
+      cancel: { label: "Cancel" },
+      duration: Infinity,
+    });
   }
 
   async function performSuspend(
     userId: string,
     suspend: boolean,
-    reason?: string
+    reason?: string,
+    loadingToastId?: string | number
   ) {
-    const loadingId = toast.loading(
-      suspend ? "Suspending user…" : "Unsuspending user…"
-    );
+    const loadingId =
+      loadingToastId ??
+      toast.loading(suspend ? "Suspending user..." : "Unsuspending user...");
 
     const before = rows.find((r) => r.id === userId);
 
@@ -216,34 +218,38 @@ export function UsersTable() {
   async function deleteUser(userId: string, email?: string | null) {
     setMenuOpen(null);
 
-    confirmToast({
-      title: "Delete this user permanently?",
-      description: `${
-        email ?? userId
-      }\n\nThis removes the Auth account and profile.`,
-      confirmText: "Delete",
-      destructive: true,
-      onConfirm: async () => {
-        const t = toast.loading("Deleting user…");
+    toast.error("Are you sure you want to delete this user?", {
+      action: {
+        label: "Delete",
+        onClick: async () => {
+          const t = toast.loading("Deleting user...");
 
-        const snapshot = rows;
-        setRows((prev) => prev.filter((r) => r.id !== userId));
+          const snapshot = rows;
+          setRows((prev) => prev.filter((r) => r.id !== userId));
 
-        try {
-          const res = await fetch("/api/admin/users/delete", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId }),
-          });
+          try {
+            const res = await fetch("/api/admin/users/delete", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ userId }),
+            });
 
-          const json = await res.json().catch(() => ({}));
-          if (!res.ok) throw new Error(json?.error || "Failed");
+            const json = await res.json().catch(() => ({}));
+            if (!res.ok) throw new Error(json?.error || "Failed");
 
-          toast.success("User deleted", { id: t });
-        } catch (e: any) {
-          toast.error(e?.message || "Delete failed", { id: t });
-          setRows(snapshot);
-        }
+            toast.success("User deleted successfully", { id: t });
+          } catch (e: any) {
+            toast.error(e?.message || "Delete failed", { id: t });
+            setRows(snapshot);
+          }
+        },
+      },
+      cancel: {
+        label: "Cancel",
+      },
+      classNames: {
+        actionButton: "bg-red-600 text-white hover:bg-red-700",
+        cancelButton: "bg-slate-700 text-slate-200 hover:bg-slate-600",
       },
     });
   }
