@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -13,52 +14,38 @@ export default function SignupPage() {
   const [fullName, setFullName] = useState("");
 
   const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
   const handleSignup = async (e: FormEvent) => {
     e.preventDefault();
-    setErrorMsg(null);
-    setSuccessMsg(null);
-    setLoading(true);
+    if (loading) return;
 
     if (password !== confirmPassword) {
-      setLoading(false);
-      setErrorMsg("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
-    const { data: signUpData, error: signUpError } = await supabase.auth.signUp(
-      {
+    setLoading(true);
+    const t = toast.loading("Creating your account…");
+
+    try {
+      const { error } = await supabase.auth.signUp({
         email,
         password,
-      }
-    );
-
-    if (signUpError) {
-      setLoading(false);
-      setErrorMsg(signUpError.message);
-      return;
-    }
-
-    const user = signUpData.user;
-
-    if (user) {
-      const { error: profileError } = await supabase.from("profiles").insert({
-        id: user.id, // must match profiles.id PK
-        full_name: fullName, // if you add name field later
-        // role: "user",
+        options: {
+          data: { full_name: fullName },
+        },
       });
 
-      if (profileError) {
-        console.error("Profile insert error:", profileError);
-      }
-    }
+      if (error) throw error;
 
-    setLoading(false);
-    setSuccessMsg(
-      "Account created! Please check your email to verify your account"
-    );
+      toast.dismiss(t);
+      toast.success("Account created! Please check your email to verify.");
+    } catch (err: any) {
+      toast.dismiss(t);
+      toast.error(err?.message ?? "Signup failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -75,19 +62,6 @@ export default function SignupPage() {
             Sign up with email & password to access your ForlessAI dashboard.
           </p>
         </div>
-
-        {errorMsg && (
-          <div className="mb-3 rounded-md border border-red-500/40 bg-red-950/40 px-3 py-2 text-xs text-red-200">
-            {errorMsg}
-          </div>
-        )}
-
-        {successMsg && (
-          <div className="mb-3 rounded-md border border-primary/40 bg-emerald-950/40 px-3 py-2 text-xs text-emerald-200">
-            {successMsg}
-          </div>
-        )}
-
         <form onSubmit={handleSignup} className="space-y-4">
           <div>
             <label className="block text-xs font-medium text-slate-200 mb-1.5">
