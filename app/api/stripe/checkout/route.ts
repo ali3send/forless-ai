@@ -59,7 +59,7 @@ export async function POST(req: Request) {
         // session metadata (good for checkout.session.completed)
         metadata: { user_id: user.id, plan },
 
-        // MOST IMPORTANT: subscription metadata (good for sub.* webhooks)
+        // subscription metadata (good for sub.* webhooks)
         subscription_data: {
           metadata: { user_id: user.id, plan },
         },
@@ -67,7 +67,7 @@ export async function POST(req: Request) {
         allow_promotion_codes: true,
       },
       {
-        // If you don't send one, we still do a stable fallback.
+        // stable fallback key for retries
         idempotencyKey:
           idempotencyKey ?? `checkout:${user.id}:${plan}:${priceId}`,
       }

@@ -7,7 +7,6 @@ import { planFromPriceId } from "@/lib/stripe/price";
 
 export const runtime = "nodejs";
 
-// Raw body as bytes is safest for signature verification
 async function getRawBody(req: Request) {
   const ab = await req.arrayBuffer();
   return Buffer.from(ab);
@@ -17,7 +16,6 @@ function isActiveStatus(status: Stripe.Subscription.Status | null | undefined) {
   return status === "active" || status === "trialing";
 }
 
-// Prefer a recurring price (ignore one-time items if you ever add them)
 function getSubscriptionPriceId(sub: Stripe.Subscription): string | null {
   const items = sub.items?.data ?? [];
   const recurring = items.find((it) => it.price?.recurring);
@@ -25,6 +23,8 @@ function getSubscriptionPriceId(sub: Stripe.Subscription): string | null {
 }
 
 export async function POST(req: Request) {
+  console.log("🔥 HIT /api/stripe/webhook");
+
   const sig = req.headers.get("stripe-signature");
   if (!sig) {
     return NextResponse.json(
@@ -52,49 +52,93 @@ export async function POST(req: Request) {
     );
   }
 
-  // ✅ One admin client per request
+  console.log("✅ event", event.type);
+
   const supabase = createAdminSupabaseClient();
 
-  // Small helpers that reuse the same client
   async function updateByUserId(userId: string, patch: Record<string, any>) {
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("profiles")
       .update(patch)
-      .eq("id", userId);
+      .eq("id", userId)
+      .select(
+        "id, plan, stripe_customer_id, stripe_subscription_id, subscription_status, current_period_end, stripe_price_id, last_stripe_event_id"
+      )
+      .single();
+
     if (error) throw error;
+    console.log("[profiles updated]", data);
+    return data;
   }
 
   async function updateByCustomerId(
     customerId: string,
     patch: Record<string, any>
   ) {
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("profiles")
       .update(patch)
-      .eq("stripe_customer_id", customerId);
+      .eq("stripe_customer_id", customerId)
+      .select("id, plan, stripe_customer_id, stripe_subscription_id")
+      .maybeSingle();
+
     if (error) throw error;
+    console.log("[profiles updated by customer]", data);
+    return data;
   }
 
-  // ✅ Optional: basic dedupe by storing last processed event id
-  // If you want this, add a column:
-  //   alter table public.profiles add column last_stripe_event_id text null;
   async function skipIfAlreadyProcessed(userId: string | null) {
     if (!userId) return false;
+
+    // If the column doesn't exist or row missing, don't dedupe.
     const { data, error } = await supabase
       .from("profiles")
       .select("last_stripe_event_id")
       .eq("id", userId)
-      .single();
-    if (error) return false;
+      .maybeSingle();
 
-    if (data?.last_stripe_event_id && data.last_stripe_event_id === event.id) {
-      return true;
-    }
-    await supabase
+    if (error || !data) return false;
+
+    if (data.last_stripe_event_id === event.id) return true;
+
+    const { error: upErr } = await supabase
       .from("profiles")
       .update({ last_stripe_event_id: event.id })
       .eq("id", userId);
+
+    if (upErr) return false;
     return false;
+  }
+
+  // helper: resolve subscription id reliably
+  async function resolveSubscriptionId(args: {
+    session?: Stripe.Checkout.Session;
+    customerId?: string | null;
+  }) {
+    const { session, customerId } = args;
+
+    // 1) Prefer session subscription (best)
+    const sid =
+      typeof session?.subscription === "string"
+        ? session.subscription
+        : session?.subscription?.id ?? null;
+
+    if (sid) return sid;
+
+    // 2) Fallback: pick active/trialing subscription for that customer
+    if (!customerId) return null;
+
+    const subs = await stripe.subscriptions.list({
+      customer: customerId,
+      status: "all",
+      limit: 10,
+    });
+
+    const preferred =
+      subs.data.find((s) => s.status === "active" || s.status === "trialing") ??
+      subs.data[0];
+
+    return preferred?.id ?? null;
   }
 
   try {
@@ -110,11 +154,56 @@ export async function POST(req: Request) {
             ? session.customer
             : session.customer?.id ?? null;
 
-        if (userId && customerId) {
-          if (await skipIfAlreadyProcessed(userId)) break;
+        console.log("[checkout.session.completed]", {
+          userId,
+          customerId,
+          subscription: session.subscription,
+          mode: session.mode,
+        });
 
+        if (!userId) break;
+        if (await skipIfAlreadyProcessed(userId)) break;
+
+        // Always store customer id
+        if (customerId) {
           await updateByUserId(userId, { stripe_customer_id: customerId });
         }
+
+        // Resolve subscription id (session.subscription OR list fallback)
+        const subscriptionId = await resolveSubscriptionId({
+          session,
+          customerId,
+        });
+        console.log("[subscription resolved]", { subscriptionId });
+
+        if (!subscriptionId) break;
+
+        const subResp = await stripe.subscriptions.retrieve(subscriptionId);
+        const sub = subResp as any as Stripe.Subscription;
+
+        const priceId = getSubscriptionPriceId(sub);
+        const plan = planFromPriceId(priceId);
+
+        const status = sub.status ?? null;
+        const active = isActiveStatus(status);
+
+        const cpe =
+          typeof (sub as any).current_period_end === "number"
+            ? (sub as any).current_period_end
+            : null;
+
+        const currentPeriodEndIso = cpe
+          ? new Date(cpe * 1000).toISOString()
+          : null;
+
+        await updateByUserId(userId, {
+          plan: active ? plan : "free",
+          subscription_status: status,
+          stripe_subscription_id: sub.id,
+          stripe_price_id: priceId,
+          current_period_end: currentPeriodEndIso,
+        });
+
         break;
       }
 
@@ -132,15 +221,17 @@ export async function POST(req: Request) {
         const status = sub.status ?? null;
         const active = isActiveStatus(status);
 
-        const currentPeriodEnd = (sub as any).current_period_end ?? null;
-        const currentPeriodEndIso = currentPeriodEnd
-          ? new Date(currentPeriodEnd * 1000).toISOString()
+        const cpe =
+          typeof (sub as any).current_period_end === "number"
+            ? (sub as any).current_period_end
+            : null;
+
+        const currentPeriodEndIso = cpe
+          ? new Date(cpe * 1000).toISOString()
           : null;
 
-        // Best mapping: subscription metadata set during checkout
         const userId = sub.metadata?.user_id || null;
 
-        // Your “truth”: if not active => free
         const nextPlan =
           event.type === "customer.subscription.deleted"
             ? "free"
@@ -163,6 +254,8 @@ export async function POST(req: Request) {
               : currentPeriodEndIso,
         };
 
+        console.log("[subscription patch]", { userId, customerId, patch });
+
         if (userId) {
           if (await skipIfAlreadyProcessed(userId)) break;
           await updateByUserId(userId, patch);
@@ -173,16 +266,13 @@ export async function POST(req: Request) {
         break;
       }
 
-      // ✅ Optional but recommended: reflect payment failures
       case "invoice.payment_failed": {
         const invoice = event.data.object as Stripe.Invoice;
-
         const customerId =
           typeof invoice.customer === "string"
             ? invoice.customer
             : invoice.customer?.id ?? null;
 
-        // If payment fails, you can immediately gate paid features:
         if (customerId) {
           await updateByCustomerId(customerId, {
             subscription_status: "past_due",
@@ -191,10 +281,7 @@ export async function POST(req: Request) {
         }
         break;
       }
-
-      case "invoice.paid": {
-        // When invoice is paid, Stripe may already send subscription.updated,
-        // but this helps restore quickly if your UX depends on it.
+      case "invoice.payment_succeeded": {
         const invoice = event.data.object as Stripe.Invoice;
 
         const customerId =
@@ -202,9 +289,59 @@ export async function POST(req: Request) {
             ? invoice.customer
             : invoice.customer?.id ?? null;
 
-        // If you want to restore plan here, you'd need subscription id:
-        // const subId = typeof invoice.subscription === "string" ? invoice.subscription : null;
-        // Usually subscription.updated covers it, so we keep it minimal.
+        const rawSubscription = (invoice as any).subscription;
+        const subscriptionId =
+          typeof rawSubscription === "string"
+            ? rawSubscription
+            : rawSubscription?.id ?? null;
+
+        if (!customerId) break;
+
+        // Pick a subscription line that has a period (recurring)
+        const line =
+          invoice.lines?.data?.find((l: any) => l.price?.recurring) ??
+          invoice.lines?.data?.[0];
+
+        const priceId = (line as any)?.price?.id ?? null;
+
+        const periodEndUnix =
+          typeof (line as any)?.period?.end === "number"
+            ? (line as any).period.end
+            : null;
+
+        const currentPeriodEndIso = periodEndUnix
+          ? new Date(periodEndUnix * 1000).toISOString()
+          : null;
+
+        // Update plan from price id (same mapping you already use)
+        const plan = planFromPriceId(priceId);
+        const nextPlan = plan === "free" ? "free" : plan; // just defensive
+
+        await updateByCustomerId(customerId, {
+          plan: nextPlan,
+          subscription_status: "active",
+          stripe_subscription_id: subscriptionId ?? undefined,
+          stripe_price_id: priceId,
+          current_period_end: currentPeriodEndIso,
+        });
+
+        console.log("[invoice.payment_succeeded patch]", {
+          customerId,
+          subscriptionId,
+          priceId,
+          currentPeriodEndIso,
+        });
+
+        break;
+      }
+
+      case "invoice.paid": {
+        const invoice = event.data.object as Stripe.Invoice;
+        const customerId =
+          typeof invoice.customer === "string"
+            ? invoice.customer
+            : invoice.customer?.id ?? null;
+
         if (customerId) {
           await updateByCustomerId(customerId, {
             subscription_status: "active",
@@ -219,6 +356,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ received: true });
   } catch (err: any) {
+    console.error("❌ webhook error", err);
     return NextResponse.json(
       { error: err?.message ?? "Webhook handler failed" },
       { status: 500 }

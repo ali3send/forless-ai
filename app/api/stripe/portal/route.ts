@@ -7,7 +7,6 @@ import { getOrCreateCustomer } from "@/lib/billing/getOrCreateCustomer";
 export const runtime = "nodejs";
 
 function getBaseUrl(req: Request) {
-  // Prefer request origin (works great for preview URLs and localhost),
   // fallback to env for production.
   const origin = req.headers.get("origin");
   const env = process.env.NEXT_PUBLIC_APP_URL;
@@ -40,8 +39,8 @@ export async function POST(req: Request) {
     const portal = await stripe.billingPortal.sessions.create({
       customer: customerId,
       return_url: `${baseUrl}/dashboard`,
-      // optional: set locale automatically based on Stripe settings / browser
-      // locale: "auto",
+
+      locale: "auto",
     });
 
     return NextResponse.json(
