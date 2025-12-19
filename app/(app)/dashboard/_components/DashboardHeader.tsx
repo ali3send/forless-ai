@@ -1,5 +1,4 @@
 "use client";
-
 import NewProjectModal from "./NewProjectModal";
 
 interface DashboardHeaderProps {
@@ -19,7 +18,6 @@ export default function DashboardHeader({
           Describe once. Build brand, website, and marketing from one place.
         </p>
       </div>
-
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="hidden sm:block">
           <SearchInput value={search} onChange={onSearchChange} />

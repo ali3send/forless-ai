@@ -1,4 +1,6 @@
 import { Navbar } from "@/components/Navbar";
+import Link from "next/link";
+// import { Link } from "lucide-react";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -13,7 +15,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <div className="max-w-5xl mx-auto px-4 py-4 text-xs text-slate-500 flex justify-between items-center">
           <span>© {new Date().getFullYear()} ForlessAI</span>
           <span className="hidden sm:inline">
-            Built with Next.js & Supabase
+            <Link
+              href="/privacy"
+              className="text-slate-500 hover:text-slate-700"
+            >
+              Privacy Policy
+            </Link>
           </span>
         </div>
       </footer>
