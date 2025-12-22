@@ -14,6 +14,8 @@ type Profile = {
   current_period_end: string | null;
 };
 
+const PROFILE_CACHE_KEY = "billing_profile_cache_v1";
+
 function cx(...s: Array<string | false | undefined | null>) {
   return s.filter(Boolean).join(" ");
 }
@@ -58,24 +60,42 @@ const PLANS: Array<{
 export default function BillingPlansPage() {
   const router = useRouter();
   const [supabase] = useState(() => createBrowserSupabaseClient());
+
+  const [hydrated, setHydrated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<Profile | null>(null);
 
+  // Hydration-safe cache read (NO sessionStorage access during render)
+  useEffect(() => {
+    setHydrated(true);
+    try {
+      const raw = sessionStorage.getItem(PROFILE_CACHE_KEY);
+      if (raw) setProfile(JSON.parse(raw) as Profile);
+    } catch {}
+  }, []);
+
   const currentPlan: Plan = (profile?.plan ?? "free") as Plan;
-  const isPaid = currentPlan === "creator" || currentPlan === "pro";
+  const isPaidPlan = profile?.plan === "creator" || profile?.plan === "pro";
 
   useEffect(() => {
     let alive = true;
 
     async function load() {
-      setLoading(true);
+      // If we already have a cached profile, refresh quietly (avoid flicker)
+      if (!profile) setLoading(true);
+
       try {
         const {
           data: { user },
         } = await supabase.auth.getUser();
 
+        if (!alive) return;
+
         if (!user) {
           setProfile(null);
+          try {
+            sessionStorage.removeItem(PROFILE_CACHE_KEY);
+          } catch {}
           return;
         }
 
@@ -85,14 +105,23 @@ export default function BillingPlansPage() {
           .eq("id", user.id)
           .single();
 
-        if (error) throw error;
         if (!alive) return;
+        if (error) throw error;
 
-        setProfile({
+        const nextProfile: Profile = {
           plan: (data?.plan ?? "free") as Plan,
           subscription_status: data?.subscription_status ?? null,
           current_period_end: data?.current_period_end ?? null,
-        });
+        };
+
+        setProfile(nextProfile);
+
+        try {
+          sessionStorage.setItem(
+            PROFILE_CACHE_KEY,
+            JSON.stringify(nextProfile)
+          );
+        } catch {}
       } catch (e: any) {
         if (!alive) return;
         toast.error(e?.message ?? "Failed to load billing info");
@@ -101,10 +130,20 @@ export default function BillingPlansPage() {
       }
     }
 
-    load();
+    // initial + refresh
+    void load();
+
+    // re-load when auth changes (fixes "needs refresh after login")
+    const { data: sub } = supabase.auth.onAuthStateChange(() => {
+      void load();
+    });
+
     return () => {
       alive = false;
+      sub?.subscription?.unsubscribe();
     };
+    // NOTE: profile intentionally not in deps (we don't want to resubscribe)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [supabase]);
 
   const statusText = useMemo(() => {
@@ -190,7 +229,9 @@ export default function BillingPlansPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          {loading ? (
+          {!hydrated ? (
+            <span className="text-xs text-slate-400">Loading…</span>
+          ) : loading && !profile ? (
             <span className="text-xs text-slate-400">Loading…</span>
           ) : profile ? (
             <div className="rounded-lg border border-slate-800 bg-bg-card px-3 py-2">
@@ -211,7 +252,8 @@ export default function BillingPlansPage() {
             </div>
           )}
 
-          {isPaid && (
+          {/* Show manage ASAP if cached profile indicates paid (no refresh needed) */}
+          {hydrated && isPaidPlan && (
             <button onClick={openPortal} className="btn-secondary">
               Manage
             </button>
@@ -263,7 +305,21 @@ export default function BillingPlansPage() {
               </ul>
 
               <div className="mt-5 flex gap-2">
-                {profile ? (
+                {!hydrated ? (
+                  <button
+                    className={p.highlight ? "btn-fill" : "btn-secondary"}
+                    disabled
+                  >
+                    Loading…
+                  </button>
+                ) : loading && !profile ? (
+                  <button
+                    className={p.highlight ? "btn-fill" : "btn-secondary"}
+                    disabled
+                  >
+                    Loading…
+                  </button>
+                ) : profile ? (
                   isCurrent ? (
                     <>
                       <button onClick={openPortal} className="btn-secondary">
