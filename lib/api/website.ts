@@ -1,17 +1,18 @@
 // lib/api/website.ts
 import type { WebsiteData } from "@/lib/types/websiteTypes";
-// import { WebsiteData } from "../types/websiteTypes";
 import type { BrandPayload } from "./brand";
 
-type GenerateWebsitePayload = {
+type SectionKey = "hero" | "about" | "features" | "offers" | "contact";
+
+type GenerateSectionPayload = {
   idea: string;
   brand: BrandPayload;
-  websiteType?: string; // e.g. "product" | "service" if you need later
+  section: SectionKey;
 };
 
 export async function apiGenerateWebsite(
-  payload: GenerateWebsitePayload | null
-): Promise<WebsiteData> {
+  payload: GenerateSectionPayload
+): Promise<Pick<WebsiteData, SectionKey>> {
   const res = await fetch("/api/website/generate", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -19,12 +20,10 @@ export async function apiGenerateWebsite(
   });
 
   const json = await res.json().catch(() => ({} as any));
+  if (!res.ok || !json.data)
+    throw new Error(json.error || "Failed to generate section");
 
-  if (!res.ok || !json.data) {
-    throw new Error((json as any).error || "Failed to generate website");
-  }
-
-  return json.data as WebsiteData;
+  return json.data as Pick<WebsiteData, SectionKey>;
 }
 
 export async function apiSaveWebsite(

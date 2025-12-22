@@ -10,6 +10,8 @@ import {
 } from "@/lib/api/project";
 
 import { builderSections, type BuilderSection } from "../builderSections";
+import { SECTION_TO_DATA_KEY } from "../sectionMap";
+
 import {
   apiGetWebsite,
   apiSaveWebsite,
@@ -117,26 +119,37 @@ export function useWebsiteBuilder(projectId: string | null) {
     }
   };
 
+  // Generate website
   const handleGenerateWebsite = async () => {
     if (!projectId) return;
+    if (!brand) {
+      toast.error("Please set brand first");
+      return;
+    }
+
+    const dataSection = SECTION_TO_DATA_KEY[section];
+    const t = toast.loading("Regenerating section…");
+    setGenerating(true);
 
     try {
-      setGenerating(true);
+      const idea =
+        data.brandName?.trim() || brand.name?.trim() || "A modern business";
 
-      const idea = data.brandName || "A modern business";
-      if (!brand) return;
-      const generated = await apiGenerateWebsite({
+      const patch = await apiGenerateWebsite({
         idea,
         brand,
+        section: dataSection,
       });
 
-      setData(generated);
-      setSection("hero");
+      const merged: WebsiteData = { ...data, ...patch } as WebsiteData;
+
+      setData(merged);
+      await apiSaveWebsite(projectId, merged);
+
+      toast.success("Section regenerated", { id: t });
     } catch (e) {
-      console.error("Generate website failed", e);
-      toast.error("Failed to generate website. error: " + (e as Error).message);
+      toast.error("Failed: " + (e as Error).message, { id: t });
     } finally {
-      void handleSave(); // persist latest version
       setGenerating(false);
     }
   };
