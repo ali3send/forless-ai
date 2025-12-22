@@ -58,7 +58,7 @@ export function Navbar() {
           }
         },
       },
-      cancel: { label: "Cancel" },
+      cancel: "Cancel",
     });
   };
 
@@ -170,14 +170,14 @@ export function Navbar() {
 
                   <div className="h-px bg-slate-800" />
 
-                  <Link
+                  {/* <Link
                     href="/billing"
                     onClick={() => setBillingOpen(false)}
                     className="block px-3 py-2 text-sm text-slate-300 hover:bg-slate-900"
                     role="menuitem"
                   >
                     Billing Dashboard
-                  </Link>
+                  </Link> */}
                 </div>
               )}
             </div>
