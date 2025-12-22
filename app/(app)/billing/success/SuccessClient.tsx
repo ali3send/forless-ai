@@ -73,11 +73,11 @@ export default function SuccessClient() {
       <div className="relative rounded-2xl border border-slate-800 bg-slate-900/60 p-6 shadow-lg backdrop-blur">
         <div className="flex items-start gap-3">
           <div className="mt-0.5 flex h-11 w-11 items-center justify-center rounded-full bg-emerald-500/10">
-            <span className="text-emerald-300 text-xl">✓</span>
+            <span className="text-primary-light text-xl">✓</span>
           </div>
 
           <div className="flex-1">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-300/90">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary-light/90">
               Payment successful
             </p>
             <h1 className="mt-1 text-2xl font-semibold text-slate-100">
@@ -98,7 +98,7 @@ export default function SuccessClient() {
               className={[
                 "inline-flex items-center rounded-full border px-2 py-1 text-[11px]",
                 status === "verified"
-                  ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-200"
+                  ? "border-emerald-500/30 bg-emerald-500/10 text-primary-soft"
                   : status === "checking"
                   ? "border-slate-700 bg-slate-900/60 text-slate-300"
                   : "border-amber-500/30 bg-amber-500/10 text-amber-200",

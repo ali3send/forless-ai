@@ -83,7 +83,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => router.push("/reset-password")}
-                className="text-[11px] text-primary-hover hover:text-emerald-300 underline underline-offset-2"
+                className="text-[11px] text-primary-hover hover:text-primary-light underline underline-offset-2"
               >
                 Forgot password?
               </button>
@@ -129,7 +129,7 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={() => router.push("/auth/signup")}
-            className="text-primary-hover hover:text-emerald-300 underline underline-offset-2"
+            className="text-primary-hover hover:text-primary-light underline underline-offset-2"
           >
             Sign up
           </button>

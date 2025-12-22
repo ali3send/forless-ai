@@ -16,39 +16,6 @@ export default function NewProjectModal() {
   const [projectIdea, setProjectIdea] = useState("");
   const [projectName, setProjectName] = useState("");
 
-  async function handleCreate() {
-    if (loading) return;
-
-    const trimmedName = projectName.trim();
-    if (!trimmedName) {
-      toast.error("Please enter a project name.");
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      await apiCreateProject({
-        name: trimmedName,
-        description: projectIdea || undefined,
-      });
-
-      // Close modal + refresh dashboard
-      setModalOpen(false);
-      setProjectIdea("");
-      setProjectName("");
-
-      // Prefer router.refresh() over window.location.reload()
-      router.refresh();
-    } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : "Failed to create new project"
-      );
-    } finally {
-      setLoading(false);
-    }
-  }
-
   //for create and generate direct from dashboard
   async function handleCreateAndGenerate() {
     if (loading) return;
@@ -140,7 +107,7 @@ export default function NewProjectModal() {
                 type="button"
                 onClick={handleCreateAndGenerate}
                 disabled={loading}
-                className="rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-slate-950 hover:bg-emerald-400 disabled:opacity-60"
+                className="rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-slate-950 hover:bg-primary-hover disabled:opacity-60"
               >
                 {loading ? "Creating..." : "Create Project"}
               </button>

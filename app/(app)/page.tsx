@@ -13,7 +13,7 @@ export default function HomePage() {
           {/* Left */}
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900/60 px-3 py-1 text-xs text-slate-200">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+              <span className="h-2 w-2 rounded-full bg-emerald-500 border-primary" />
               <span className="font-semibold tracking-wide">
                 ForlessAI Website Builder
               </span>
@@ -103,7 +103,7 @@ export default function HomePage() {
                   <div className="flex gap-1.5">
                     <span className="h-2.5 w-2.5 rounded-full bg-red-400/80" />
                     <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/80" />
-                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/80" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-primary-hover/80" />
                   </div>
                   <p className="text-xs text-slate-400">ForlessAI Builder</p>
                 </div>
@@ -176,7 +176,7 @@ export default function HomePage() {
                     <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary-hover">
                       After
                     </p>
-                    <span className="rounded-full border border-slate-800 bg-slate-900/60 px-2 py-1 text-[11px] text-emerald-300">
+                    <span className="rounded-full border border-slate-800 bg-slate-900/60 px-2 py-1 text-[11px] text-primary-soft">
                       Optimized
                     </span>
                   </div>
@@ -256,8 +256,8 @@ export default function HomePage() {
                   </p>
                   <span className="inline-flex items-center gap-2 text-xs text-slate-400">
                     <span className="relative flex h-2 w-2">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/40" />
-                      <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-hover/40" />
+                      <span className="relative inline-flex h-2 w-2 rounded-full bg-primary-hover" />
                     </span>
                     Running
                   </span>
@@ -265,15 +265,15 @@ export default function HomePage() {
 
                 <div className="mt-3 space-y-2 font-mono text-[12px] leading-5">
                   <div className="flex items-start gap-2 text-slate-300">
-                    <span className="mt-0.5 text-emerald-300">✓</span>
+                    <span className="mt-0.5 text-primary-light">✓</span>
                     <span>Scaffold Next.js layout</span>
                   </div>
                   <div className="flex items-start gap-2 text-slate-300">
-                    <span className="mt-0.5 text-emerald-300">✓</span>
+                    <span className="mt-0.5 text-primary-light">✓</span>
                     <span>Generate sections: hero, features, pricing</span>
                   </div>
                   <div className="flex items-start gap-2 text-slate-300">
-                    <span className="mt-0.5 text-emerald-300">✓</span>
+                    <span className="mt-0.5 text-primary-light">✓</span>
                     <span>Wire data + forms (Supabase)</span>
                   </div>
                   <div className="flex items-start gap-2 text-slate-300">

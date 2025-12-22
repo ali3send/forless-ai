@@ -89,7 +89,7 @@ export default function ResetPasswordRequestPage() {
           Remembered it?{" "}
           <a
             href="/auth/login"
-            className="text-primary-hover hover:text-emerald-300 underline underline-offset-2"
+            className="text-primary-hover hover:text-primary-light underline underline-offset-2"
           >
             Go back to login
           </a>

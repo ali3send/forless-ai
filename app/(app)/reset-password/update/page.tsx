@@ -136,7 +136,7 @@ export default function ResetPasswordUpdatePage() {
           Remembered your password?{" "}
           <a
             href="/auth/login"
-            className="text-primary-hover hover:text-emerald-300 underline underline-offset-2"
+            className="text-primary-hover hover:text-primary-light underline underline-offset-2"
           >
             Back to login
           </a>

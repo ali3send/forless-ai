@@ -31,7 +31,7 @@ export default function ProjectGrid({
       <section className="mt-2">
         <div className="rounded-lg border border-dashed border-slate-700 bg-slate-900/40 p-6 text-center text-sm text-slate-400">
           No projects yet. Click{" "}
-          <span className="font-medium text-emerald-400">“New Project”</span> to
+          <span className="font-medium text-primary">“New Project”</span> to
           create one.
         </div>
       </section>
