@@ -24,19 +24,19 @@ export type BrandFont = {
 export const PALETTES: Palette[] = [
   {
     id: "emerald-slate",
-    label: "Emerald + Slate",
+    label: "Professional Green",
     primary: "#10b981",
     secondary: "#0f172a",
   },
   {
     id: "blue-slate",
-    label: "Blue + Slate",
+    label: "Corporate Blue",
     primary: "#0ea5e9",
     secondary: "#020617",
   },
   {
     id: "amber-slate",
-    label: "Amber + Slate",
+    label: "Warm Business",
     primary: "#f59e0b",
     secondary: "#111827",
   },
