@@ -4,7 +4,7 @@ export default function HomePage() {
       {/* Background */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -top-24 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-primary/20 blur-[110px]" />
-        <div className="absolute -bottom-32 right-[-120px] h-[520px] w-[520px] rounded-full bg-violet-500/10 blur-[120px]" />
+        <div className="absolute -bottom-32 right-[-120px] h-[520px] w-[520px] rounded-full bg-cyan-500/10 blur-[120px]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(255,255,255,0.06),transparent_40%),radial-gradient(circle_at_80%_30%,rgba(255,255,255,0.05),transparent_45%)]" />
       </div>
 
@@ -23,7 +23,7 @@ export default function HomePage() {
 
             <h1 className="mt-5 text-4xl font-bold tracking-tight text-slate-50 sm:text-5xl">
               Launch{" "}
-              <span className="bg-gradient-to-r from-primary to-violet-300 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-primary to-cyan-300 bg-clip-text text-transparent">
                 modern websites
               </span>{" "}
               in minutes — not weeks.
@@ -94,7 +94,7 @@ export default function HomePage() {
 
           {/* Right: AI Builder Console */}
           <div className="relative">
-            <div className="pointer-events-none absolute -inset-6 rounded-3xl bg-gradient-to-r from-primary/10 via-transparent to-violet-500/10 blur-2xl" />
+            <div className="pointer-events-none absolute -inset-6 rounded-3xl bg-gradient-to-r from-primary/10 via-transparent to-cyan-500/10 blur-2xl" />
 
             <div className="relative rounded-2xl border border-slate-800 bg-slate-900/45 p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.04)] backdrop-blur">
               {/* top bar */}
@@ -286,7 +286,7 @@ export default function HomePage() {
                   {/* progress bar */}
                   <div className="pt-2">
                     <div className="h-2 w-full rounded-full bg-slate-800">
-                      <div className="h-2 w-[76%] rounded-full bg-gradient-to-r from-primary to-violet-300" />
+                      <div className="h-2 w-[76%] rounded-full bg-gradient-to-r from-primary to-cyan-300" />
                     </div>
                     <div className="mt-2 flex items-center justify-between text-[11px] text-slate-500">
                       <span>Generating clean components</span>
@@ -318,7 +318,7 @@ export default function HomePage() {
                     Instant subdomain
                   </p>
                   <p className="mt-1 text-xs text-slate-400">
-                    Preview on /s/&lt;slug&gt; and go live when ready.
+                    Preview on /site/&lt;slug&gt; and go live when ready.
                   </p>
                 </div>
               </div>

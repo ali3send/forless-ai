@@ -94,7 +94,7 @@ export function Navbar() {
   }, [user?.email]);
 
   return (
-    <header className="border-b border-slate-800 bg-bg-card backdrop-blur">
+    <header className="border-b border-slate-800 bg-bg-card backdrop-blur z-50">
       <nav className="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
         <Link href="/" className="flex items-center gap-2">
           <div className="h-8 w-8 overflow-hidden">
