@@ -8,10 +8,7 @@ export const config = {
 export default function proxy(req: NextRequest) {
   const host = req.headers.get("host") || "";
   const hostname = host.split(":")[0];
-   if (
-    hostname.endsWith(".vercel.app") ||
-    hostname === "localhost"
-  ) {
+  if (hostname.endsWith(".vercel.app") || hostname === "localhost") {
     return NextResponse.next();
   }
   const parts = hostname.split(".");
@@ -25,6 +22,8 @@ export default function proxy(req: NextRequest) {
   if (subdomain === "app") return NextResponse.next();
 
   const url = req.nextUrl;
-  url.pathname = `/s/${subdomain}${url.pathname === "/" ? "" : url.pathname}`;
+  url.pathname = `/site/${subdomain}${
+    url.pathname === "/" ? "" : url.pathname
+  }`;
   return NextResponse.rewrite(url);
 }

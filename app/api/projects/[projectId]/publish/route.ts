@@ -47,6 +47,7 @@ export async function POST(
     .update({
       slug,
       published: true,
+      published_url: `http://${slug}.lvh.me:3000`,
       published_at: new Date().toISOString(),
     })
     .eq("id", projectId)
@@ -59,7 +60,8 @@ export async function POST(
   return NextResponse.json({
     success: true,
     slug,
-    previewPath: `/s/${slug}`,
+    previewUrl: `/site/${slug}`,
+    published_url: `http://${slug}.lvh.me:3000`,
     localSubdomainUrl: `http://${slug}.lvh.me:3000`,
   });
 }

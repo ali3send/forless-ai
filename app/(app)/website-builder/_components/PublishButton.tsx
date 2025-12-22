@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 type Props = {
@@ -15,6 +15,47 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
   const [localSubdomainUrl, setLocalSubdomainUrl] = useState<string | null>(
     null
   );
+
+  // pulled from projects.published_url
+  const [publishedUrl, setPublishedUrl] = useState<string | null>(null);
+
+  // ✅ Load existing published_url when component mounts / project changes
+  useEffect(() => {
+    if (!projectId) return;
+
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const res = await fetch(`/api/projects/${projectId}`, {
+          method: "GET",
+          cache: "no-store",
+          headers: { "Cache-Control": "no-store" },
+        });
+
+        const data = await res.json().catch(() => ({} as any));
+        if (!res.ok) return;
+
+        if (!cancelled) {
+          // expects { project: { published_url, slug? } } OR { published_url }
+          const url =
+            data?.project?.published_url ?? data?.published_url ?? null;
+
+          setPublishedUrl(url);
+
+          // optional: if your API returns slug and you want to prefill it
+          const dbSlug = data?.project?.slug ?? data?.slug ?? null;
+
+          if (dbSlug && !slug) setSlug(dbSlug);
+        }
+      } catch {}
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectId]);
 
   async function publish() {
     if (!projectId) return;
@@ -36,7 +77,6 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
       });
 
       const data = await res.json().catch(() => ({} as any));
-
       toast.dismiss(t);
 
       if (!res.ok) {
@@ -46,6 +86,10 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
 
       setPreviewUrl(data.previewUrl || null);
       setLocalSubdomainUrl(data.localSubdomainUrl || null);
+      if (data?.published_url) setPublishedUrl(data.published_url);
+
+      // optional: if your API returns slug and you want to prefill it
+      if (data?.slug) setSlug(data.slug);
 
       toast.success("Published successfully!");
     } catch {
@@ -56,7 +100,13 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
     }
   }
 
-  const hasLinks = !!previewUrl || !!localSubdomainUrl;
+  // Prefer DB published_url for the final URL shown
+  const finalUrl = useMemo(
+    () => publishedUrl || localSubdomainUrl,
+    [publishedUrl, localSubdomainUrl]
+  );
+
+  const hasLinks = !!previewUrl || !!finalUrl;
 
   return (
     <div className="flex flex-col gap-2 rounded-lg border border-slate-800 bg-slate-900/60 p-3">
@@ -93,22 +143,22 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
             </div>
           )}
 
-          {localSubdomainUrl && (
+          {finalUrl && (
             <div className="flex items-center justify-between gap-2">
               <span className="truncate">
                 URL:{" "}
                 <a
                   className="hover:underline"
-                  href={localSubdomainUrl}
+                  href={finalUrl}
                   target="_blank"
                   rel="noreferrer"
                 >
-                  {localSubdomainUrl}
+                  {finalUrl}
                 </a>
               </span>
               <a
                 className="text-primary hover:underline"
-                href={localSubdomainUrl}
+                href={finalUrl}
                 target="_blank"
                 rel="noreferrer"
               >
