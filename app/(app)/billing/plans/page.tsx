@@ -4,6 +4,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 type Plan = "free" | "creator" | "pro";
 
@@ -55,6 +56,7 @@ const PLANS: Array<{
 ];
 
 export default function BillingPlansPage() {
+  const router = useRouter();
   const [supabase] = useState(() => createBrowserSupabaseClient());
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -285,7 +287,7 @@ export default function BillingPlansPage() {
                   )
                 ) : (
                   <button
-                    onClick={() => toast.error("Please login to upgrade")}
+                    onClick={() => router.push("/auth/login")}
                     className={p.highlight ? "btn-fill" : "btn-secondary"}
                   >
                     Login to upgrade
