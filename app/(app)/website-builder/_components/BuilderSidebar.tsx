@@ -9,7 +9,6 @@ import type { BrandData } from "../hooks/useWebsiteBuilder";
 import { BuilderContentPanel } from "./BuilderContentPanel";
 import { BuilderDesignPanel } from "./BuilderDesignPanel";
 import { PublishButton } from "./PublishButton";
-
 type Props = {
   projectId: string;
   section: BuilderSection;

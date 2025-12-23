@@ -1,3 +1,4 @@
+// app/website-builder/_components/PublishButton.tsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -8,6 +9,14 @@ type Props = {
   defaultSlug?: string;
 };
 
+function slugify(text: string) {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 export function PublishButton({ projectId, defaultSlug }: Props) {
   const [slug, setSlug] = useState(defaultSlug ?? "");
   const [loading, setLoading] = useState(false);
@@ -15,14 +24,11 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
   const [localSubdomainUrl, setLocalSubdomainUrl] = useState<string | null>(
     null
   );
-
-  // pulled from projects.published_url
   const [publishedUrl, setPublishedUrl] = useState<string | null>(null);
 
-  // ✅ Load existing published_url when component mounts / project changes
+  // Load existing published_url / slug
   useEffect(() => {
     if (!projectId) return;
-
     let cancelled = false;
 
     (async () => {
@@ -37,15 +43,11 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
         if (!res.ok) return;
 
         if (!cancelled) {
-          // expects { project: { published_url, slug? } } OR { published_url }
           const url =
             data?.project?.published_url ?? data?.published_url ?? null;
-
           setPublishedUrl(url);
 
-          // optional: if your API returns slug and you want to prefill it
           const dbSlug = data?.project?.slug ?? data?.slug ?? null;
-
           if (dbSlug && !slug) setSlug(dbSlug);
         }
       } catch {}
@@ -57,10 +59,47 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId]);
 
+  function buildPreviewUrl(cleanSlug: string) {
+    // absolute URL so it works reliably in new tab
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    return `${origin}/site/${cleanSlug}`;
+  }
+
+  async function preview(open = true) {
+    const cleanSlug = slugify(slug);
+    if (!cleanSlug) {
+      toast.error("Please enter a subdomain (slug) to preview.");
+      return;
+    }
+
+    const t = toast.loading("Preparing preview…");
+    try {
+      const res = await fetch(`/api/projects/${projectId}/slug`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug: cleanSlug }),
+        cache: "no-store",
+      });
+
+      const json = await res.json().catch(() => ({} as any));
+      if (!res.ok) throw new Error(json?.error || "Failed to prepare preview");
+
+      const url = `${window.location.origin}${
+        json.previewUrl || `/site/${cleanSlug}`
+      }`;
+      setPreviewUrl(url);
+
+      toast.success("Preview ready", { id: t });
+      if (open) window.open(url, "_blank", "noreferrer");
+    } catch (e: any) {
+      toast.error(e?.message ?? "Preview failed", { id: t });
+    }
+  }
+
   async function publish() {
     if (!projectId) return;
 
-    const cleanSlug = slug.trim().toLowerCase();
+    const cleanSlug = slugify(slug);
     if (!cleanSlug) {
       toast.error("Please enter a subdomain (slug).");
       return;
@@ -84,11 +123,11 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
         return;
       }
 
-      setPreviewUrl(data.previewUrl || null);
+      // keep preview available too
+      setPreviewUrl(buildPreviewUrl(cleanSlug));
+
       setLocalSubdomainUrl(data.localSubdomainUrl || null);
       if (data?.published_url) setPublishedUrl(data.published_url);
-
-      // optional: if your API returns slug and you want to prefill it
       if (data?.slug) setSlug(data.slug);
 
       toast.success("Published successfully!");
@@ -100,7 +139,6 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
     }
   }
 
-  // Prefer DB published_url for the final URL shown
   const finalUrl = useMemo(
     () => publishedUrl || localSubdomainUrl,
     [publishedUrl, localSubdomainUrl]
@@ -117,6 +155,17 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
           placeholder="Subdomain (e.g. mysite)"
           className="input-base py-1.5 bg-gray-900"
         />
+
+        {/* ✅ Preview BEFORE publish */}
+        <button
+          type="button"
+          onClick={() => preview(true)}
+          disabled={!projectId || loading}
+          className="btn-secondary"
+        >
+          Preview
+        </button>
+
         <button
           onClick={publish}
           disabled={loading || !projectId}
