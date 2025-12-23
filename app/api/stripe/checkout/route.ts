@@ -9,8 +9,8 @@ import { STRIPE_PRICES } from "@/lib/stripe/price";
 export const runtime = "nodejs";
 
 const Schema = z.object({
-  plan: z.enum(["creator", "pro"]),
-  // optional: pass from client as crypto.randomUUID() to make retries safe
+  plan: z.enum(["gowebsite", "creator", "pro"]),
+  interval: z.enum(["monthly", "yearly"]).default("monthly"),
   idempotencyKey: z.string().min(8).optional(),
 });
 
@@ -20,10 +20,34 @@ function getAppUrl() {
   return url.replace(/\/$/, "");
 }
 
+// type Plan = z.infer<typeof Schema>["plan"];
+// type Interval = z.infer<typeof Schema>["interval"];
+
+type Plan = "gowebsite" | "creator" | "pro";
+type Interval = "monthly" | "yearly";
+
+function resolvePriceId(plan: Plan, interval: Interval) {
+  const priceId = STRIPE_PRICES[plan]?.[interval];
+
+  if (!priceId) {
+    throw new Error(`Missing Stripe price for ${plan} (${interval})`);
+  }
+
+  if (typeof priceId !== "string") {
+    throw new Error(`Stripe price is not a string for ${plan} (${interval})`);
+  }
+
+  if (!priceId.startsWith("price_")) {
+    throw new Error(`Invalid Stripe price id: ${priceId}`);
+  }
+
+  return priceId;
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json().catch(() => ({}));
-    const { plan, idempotencyKey } = Schema.parse(body);
+    const { plan, interval, idempotencyKey } = Schema.parse(body);
 
     const supabase = await createServerSupabaseClient();
     const {
@@ -35,7 +59,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    const priceId = STRIPE_PRICES[plan];
+    const priceId = resolvePriceId(plan, interval);
 
     const customerId = await getOrCreateCustomer({
       userId: user.id,
@@ -53,31 +77,26 @@ export async function POST(req: Request) {
         success_url: `${appUrl}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${appUrl}/billing/cancel`,
 
-        // useful, but don't rely on it alone
         client_reference_id: user.id,
 
-        // session metadata (good for checkout.session.completed)
-        metadata: { user_id: user.id, plan },
-
-        // subscription metadata (good for sub.* webhooks)
-        subscription_data: {
-          metadata: { user_id: user.id, plan },
-        },
+        metadata: { user_id: user.id, plan, interval },
+        subscription_data: { metadata: { user_id: user.id, plan, interval } },
 
         allow_promotion_codes: true,
       },
       {
-        // stable fallback key for retries
         idempotencyKey:
-          idempotencyKey ?? `checkout:${user.id}:${plan}:${priceId}`,
+          idempotencyKey ??
+          `checkout:${user.id}:${plan}:${interval}:${priceId}`,
       }
     );
 
     return NextResponse.json({ url: session.url });
   } catch (err: any) {
-    return NextResponse.json(
-      { error: err?.message ?? "Failed to create checkout session" },
-      { status: 400 }
-    );
+    // show real Stripe error if present
+    const msg =
+      err?.raw?.message || err?.message || "Failed to create checkout session";
+
+    return NextResponse.json({ error: msg }, { status: 400 });
   }
 }

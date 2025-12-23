@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
-type Plan = "free" | "creator" | "pro";
+type Plan = "free" | "gowebsite" | "creator" | "pro";
 
 type Profile = {
   plan: Plan | null;
@@ -29,32 +29,56 @@ const PLANS: Array<{
   highlight?: boolean;
 }> = [
   {
+    key: "gowebsite",
+    name: "GoWebsite",
+    price: "$0.99 / month  •  $5.99 / year",
+    tagline: "Publish your first site and go live.",
+    features: [
+      "Everything in Free",
+      "1 published website",
+      "Basic website editor",
+      "Connect your own domain",
+      "Hosting included",
+    ],
+  },
+  {
     key: "creator",
     name: "Creator",
-    price: "$10 / month",
-    tagline: "For solo builders shipping fast.",
+    price: "$2.49 / month  •  $19 / year",
+    tagline: "Brand + templates + marketing kit for creators.",
     features: [
-      "More projects & generations",
-      "Brand kit (palette + fonts)",
-      "Publish to a custom subdomain",
-      "Priority generation queue",
-      "Email support",
+      "Everything in GoWebsite",
+      "Full brand kit",
+      "Logo generations",
+      "Templates",
+      "Marketing kit",
     ],
+    highlight: true,
   },
   {
     key: "pro",
     name: "Pro",
-    price: "$20 / month",
-    tagline: "For teams & serious builders.",
-    highlight: true,
+    price: "$4.99 / month  •  $39 / year",
+    tagline: "Unlimited brands, templates, and marketing suite.",
     features: [
-      "Everything in Creator",
-      "Higher limits + faster generation",
-      "Advanced templates access",
-      "Team-ready workflow",
+      "Up to 5 published websites",
+      "Unlimited brand kits",
+      "Full template library",
+      "Full marketing suites",
       "Priority support",
     ],
   },
+];
+
+const FREE_FEATURES = [
+  "1 Brand Kit (logo, colors, fonts, slogan, tagline)",
+  "AI name & slogan generation",
+  "Unlimited logo previews",
+  "1 Website Preview",
+  "3 Marketing Posts + 3 Emails + 3 Ads",
+  "10 free design templates (cards, banners, invoice)",
+  "Manual editing enabled",
+  "1 Campaign Folder",
 ];
 
 export default function BillingPlansPage() {
@@ -65,7 +89,6 @@ export default function BillingPlansPage() {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<Profile | null>(null);
 
-  // Hydration-safe cache read (NO sessionStorage access during render)
   useEffect(() => {
     setHydrated(true);
     try {
@@ -75,13 +98,16 @@ export default function BillingPlansPage() {
   }, []);
 
   const currentPlan: Plan = (profile?.plan ?? "free") as Plan;
-  const isPaidPlan = profile?.plan === "creator" || profile?.plan === "pro";
+
+  const isPaidPlan =
+    profile?.plan === "gowebsite" ||
+    profile?.plan === "creator" ||
+    profile?.plan === "pro";
 
   useEffect(() => {
     let alive = true;
 
     async function load() {
-      // If we already have a cached profile, refresh quietly (avoid flicker)
       if (!profile) setLoading(true);
 
       try {
@@ -115,7 +141,6 @@ export default function BillingPlansPage() {
         };
 
         setProfile(nextProfile);
-
         try {
           sessionStorage.setItem(
             PROFILE_CACHE_KEY,
@@ -130,10 +155,8 @@ export default function BillingPlansPage() {
       }
     }
 
-    // initial + refresh
     void load();
 
-    // re-load when auth changes (fixes "needs refresh after login")
     const { data: sub } = supabase.auth.onAuthStateChange(() => {
       void load();
     });
@@ -142,7 +165,6 @@ export default function BillingPlansPage() {
       alive = false;
       sub?.subscription?.unsubscribe();
     };
-    // NOTE: profile intentionally not in deps (we don't want to resubscribe)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [supabase]);
 
@@ -157,7 +179,7 @@ export default function BillingPlansPage() {
     return s;
   }, [profile]);
 
-  async function startCheckout(plan: "creator" | "pro") {
+  async function startCheckout(plan: Exclude<Plan, "free">) {
     const t = toast.loading("Redirecting to checkout…");
     try {
       const res = await fetch("/api/stripe/checkout", {
@@ -223,8 +245,8 @@ export default function BillingPlansPage() {
             Packages
           </h1>
           <p className="text-sm text-text-muted mt-1">
-            Upgrade to unlock higher limits, better templates, and faster
-            generation.
+            Upgrade to unlock publishing, more websites, more brand kits, and
+            the full marketing suite.
           </p>
         </div>
 
@@ -252,7 +274,6 @@ export default function BillingPlansPage() {
             </div>
           )}
 
-          {/* Show manage ASAP if cached profile indicates paid (no refresh needed) */}
           {hydrated && isPaidPlan && (
             <button onClick={openPortal} className="btn-secondary">
               Manage
@@ -261,10 +282,59 @@ export default function BillingPlansPage() {
         </div>
       </div>
 
-      {/* Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+      {/* Free plan (always visible) */}
+      <div className="mt-6 rounded-2xl border border-slate-800 bg-bg-card p-5">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="text-lg font-semibold">Free</h2>
+              {currentPlan === "free" && (
+                <span className="text-[11px] rounded-full border border-slate-700 bg-slate-900 px-2 py-0.5 text-slate-200">
+                  Current
+                </span>
+              )}
+            </div>
+            <div className="text-2xl font-bold mt-2">$0</div>
+            <div className="text-sm text-text-muted mt-1">
+              Try the full flow once and preview your website.
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {!profile ? (
+              <button
+                onClick={() => router.push("/auth/login")}
+                className="btn-secondary"
+              >
+                Login
+              </button>
+            ) : currentPlan !== "free" ? (
+              <button onClick={openPortal} className="btn-secondary">
+                Manage
+              </button>
+            ) : null}
+          </div>
+        </div>
+
+        <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+          {FREE_FEATURES.map((f) => (
+            <li key={f} className="flex gap-2 text-slate-200">
+              <span className="text-primary mt-0.5">✓</span>
+              <span className="text-slate-200">{f}</span>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-3 text-[11px] text-text-muted">
+          Upgrade anytime to publish and unlock higher limits.
+        </div>
+      </div>
+
+      {/* Paid cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
         {PLANS.map((p) => {
           const isCurrent = currentPlan === p.key;
+
           return (
             <div
               key={p.key}
@@ -288,7 +358,7 @@ export default function BillingPlansPage() {
                       </span>
                     )}
                   </div>
-                  <div className="text-2xl font-bold mt-2">{p.price}</div>
+                  <div className="text-xl font-bold mt-2">{p.price}</div>
                   <div className="text-sm text-text-muted mt-1">
                     {p.tagline}
                   </div>
@@ -304,7 +374,7 @@ export default function BillingPlansPage() {
                 ))}
               </ul>
 
-              <div className="mt-5 flex gap-2">
+              <div className="mt-5 flex gap-2 flex-wrap">
                 {!hydrated ? (
                   <button
                     className={p.highlight ? "btn-fill" : "btn-secondary"}
@@ -368,8 +438,7 @@ export default function BillingPlansPage() {
               Will my projects be deleted if I cancel?
             </div>
             <div>
-              Never. You can keep your projects. Paid features/limits may revert
-              to Free.
+              Never. You can keep your projects. Paid limits may revert to Free.
             </div>
           </div>
           <div>
