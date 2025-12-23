@@ -67,17 +67,18 @@ export function HeroSection({
           >
             {hero.primaryCta}
           </Link>
-
-          <Link
-            href={hero.secondaryCtaLink || "#"}
-            className="rounded-full border border-slate-600 px-5 py-2 text-sm font-medium transition"
-            style={{
-              backgroundColor: withAlpha(primary, 0.08),
-              borderColor: withAlpha(primary, 0.35),
-            }}
-          >
-            {hero.secondaryCta}
-          </Link>
+          {hero.secondaryCta && hero.secondaryCtaLink && (
+            <Link
+              href={hero.secondaryCtaLink || "#"}
+              className="rounded-full border border-slate-600 px-5 py-2 text-sm font-medium transition"
+              style={{
+                backgroundColor: withAlpha(primary, 0.08),
+                borderColor: withAlpha(primary, 0.35),
+              }}
+            >
+              {hero.secondaryCta}
+            </Link>
+          )}
         </div>
       </div>
 
