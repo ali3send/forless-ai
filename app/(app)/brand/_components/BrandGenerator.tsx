@@ -89,14 +89,14 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
       const businessIdea =
         idea.trim() || `${brandPayload.name} - ${brandPayload.slogan}`;
 
-      const websiteData = await apiGenerateWebsite({
-        idea: businessIdea,
-        brand: brandPayload,
-        // websiteType: "product", // keep for future if needed
-      });
+      // const websiteData = await apiGenerateWebsite({
+      //   idea: businessIdea,
+      //   brand: brandPayload,
+      //   // websiteType: "product", // keep for future if needed
+      // });
 
       // 3) Save generated website to DB
-      await apiSaveWebsite(projectId, websiteData);
+      // await apiSaveWebsite(projectId, websiteData);
 
       // 4) Go to builder
       router.push(`/website-builder?projectId=${projectId}`);

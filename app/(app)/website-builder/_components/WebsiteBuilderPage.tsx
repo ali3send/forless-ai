@@ -49,7 +49,7 @@ export default function WebsiteBuilderPage() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-50">
-      <div className="mx-auto flex max-w-full flex-col gap-6 px-4 py-6 lg:flex-row">
+      <div className="mx-auto flex max-w-full flex-col gap-6 px-0 sm:px-4 sm:py-6 lg:flex-row">
         <BuilderSidebar
           projectId={projectId}
           section={section}

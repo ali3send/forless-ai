@@ -1,4 +1,3 @@
-// app/billing/plans/page.tsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -6,84 +5,19 @@ import { toast } from "sonner";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
-type Plan = "free" | "gowebsite" | "creator" | "pro";
+import BillingHeader from "./_components/BillingHeader";
+import FreePlanCard from "./_components/FreePlanCard";
+import PaidPlanCard from "./_components/PaidPlanCard";
 
-type Profile = {
-  plan: Plan | null;
-  subscription_status: string | null;
-  current_period_end: string | null;
-};
-
-const PROFILE_CACHE_KEY = "billing_profile_cache_v1";
-
-function cx(...s: Array<string | false | undefined | null>) {
-  return s.filter(Boolean).join(" ");
-}
-
-const PLANS: Array<{
-  key: Exclude<Plan, "free">;
-  name: string;
-  price: string;
-  tagline: string;
-  features: string[];
-  highlight?: boolean;
-}> = [
-  {
-    key: "gowebsite",
-    name: "GoWebsite",
-    price: "$0.99 / month  •  $5.99 / year",
-    tagline: "Publish your first site and go live.",
-    features: [
-      "Everything in Free",
-      "1 published website",
-      "Basic website editor",
-      "Connect your own domain",
-      "Hosting included",
-    ],
-  },
-  {
-    key: "creator",
-    name: "Creator",
-    price: "$2.49 / month  •  $19 / year",
-    tagline: "Brand + templates + marketing kit for creators.",
-    features: [
-      "Everything in GoWebsite",
-      "Full brand kit",
-      "Logo generations",
-      "Templates",
-      "Marketing kit",
-    ],
-    highlight: true,
-  },
-  {
-    key: "pro",
-    name: "Pro",
-    price: "$4.99 / month  •  $39 / year",
-    tagline: "Unlimited brands, templates, and marketing suite.",
-    features: [
-      "Up to 5 published websites",
-      "Unlimited brand kits",
-      "Full template library",
-      "Full marketing suites",
-      "Priority support",
-    ],
-  },
-];
-
-const FREE_FEATURES = [
-  "1 Brand Kit (logo, colors, fonts, slogan, tagline)",
-  "AI name & slogan generation",
-  "Unlimited logo previews",
-  "1 Website Preview",
-  "3 Marketing Posts + 3 Emails + 3 Ads",
-  "10 free design templates (cards, banners, invoice)",
-  "Manual editing enabled",
-  "1 Campaign Folder",
-];
+import { PLANS, FREE_FEATURES } from "./_data/plans";
+import type { BillingInterval, PaidPlan, Plan, Profile } from "./_lib/types";
+import { PROFILE_CACHE_KEY } from "./_lib/utils";
 
 export default function BillingPlansPage() {
   const router = useRouter();
   const [supabase] = useState(() => createBrowserSupabaseClient());
+
+  const [interval, setInterval] = useState<BillingInterval>("month");
 
   const [hydrated, setHydrated] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -179,7 +113,10 @@ export default function BillingPlansPage() {
     return s;
   }, [profile]);
 
-  async function startCheckout(plan: Exclude<Plan, "free">) {
+  async function startCheckout(
+    plan: PaidPlan,
+    billingInterval: BillingInterval
+  ) {
     const t = toast.loading("Redirecting to checkout…");
     try {
       const res = await fetch("/api/stripe/checkout", {
@@ -191,6 +128,7 @@ export default function BillingPlansPage() {
         cache: "no-store",
         body: JSON.stringify({
           plan,
+          interval: billingInterval, // ✅ NEW
           idempotencyKey:
             typeof crypto !== "undefined" && "randomUUID" in crypto
               ? crypto.randomUUID()
@@ -238,198 +176,43 @@ export default function BillingPlansPage() {
 
   return (
     <div className="max-w-5xl mx-auto">
-      {/* Header */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">
-            Packages
-          </h1>
-          <p className="text-sm text-text-muted mt-1">
-            Upgrade to unlock publishing, more websites, more brand kits, and
-            the full marketing suite.
-          </p>
-        </div>
+      <BillingHeader
+        hydrated={hydrated}
+        loading={loading}
+        profile={profile}
+        currentPlan={currentPlan}
+        statusText={statusText}
+        isPaidPlan={isPaidPlan}
+        interval={interval}
+        setInterval={setInterval}
+        onManage={openPortal}
+      />
 
-        <div className="flex items-center gap-2">
-          {!hydrated ? (
-            <span className="text-xs text-slate-400">Loading…</span>
-          ) : loading && !profile ? (
-            <span className="text-xs text-slate-400">Loading…</span>
-          ) : profile ? (
-            <div className="rounded-lg border border-slate-800 bg-bg-card px-3 py-2">
-              <div className="text-[11px] text-text-muted">Current plan</div>
-              <div className="text-sm font-semibold capitalize">
-                {currentPlan}
-                {statusText ? (
-                  <span className="ml-2 text-[11px] font-normal text-slate-400">
-                    • {statusText}
-                  </span>
-                ) : null}
-              </div>
-            </div>
-          ) : (
-            <div className="rounded-lg border border-slate-800 bg-bg-card px-3 py-2">
-              <div className="text-[11px] text-text-muted">Not signed in</div>
-              <div className="text-sm font-semibold">Free</div>
-            </div>
-          )}
+      <FreePlanCard
+        currentPlan={currentPlan}
+        profile={profile}
+        freeFeatures={FREE_FEATURES}
+        onLogin={() => router.push("/auth/login")}
+        onManage={openPortal}
+      />
 
-          {hydrated && isPaidPlan && (
-            <button onClick={openPortal} className="btn-secondary">
-              Manage
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Free plan (always visible) */}
-      <div className="mt-6 rounded-2xl border border-slate-800 bg-bg-card p-5">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-lg font-semibold">Free</h2>
-              {currentPlan === "free" && (
-                <span className="text-[11px] rounded-full border border-slate-700 bg-slate-900 px-2 py-0.5 text-slate-200">
-                  Current
-                </span>
-              )}
-            </div>
-            <div className="text-2xl font-bold mt-2">$0</div>
-            <div className="text-sm text-text-muted mt-1">
-              Try the full flow once and preview your website.
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            {!profile ? (
-              <button
-                onClick={() => router.push("/auth/login")}
-                className="btn-secondary"
-              >
-                Login
-              </button>
-            ) : currentPlan !== "free" ? (
-              <button onClick={openPortal} className="btn-secondary">
-                Manage
-              </button>
-            ) : null}
-          </div>
-        </div>
-
-        <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-          {FREE_FEATURES.map((f) => (
-            <li key={f} className="flex gap-2 text-slate-200">
-              <span className="text-primary mt-0.5">✓</span>
-              <span className="text-slate-200">{f}</span>
-            </li>
-          ))}
-        </ul>
-
-        <div className="mt-3 text-[11px] text-text-muted">
-          Upgrade anytime to publish and unlock higher limits.
-        </div>
-      </div>
-
-      {/* Paid cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-        {PLANS.map((p) => {
-          const isCurrent = currentPlan === p.key;
-
-          return (
-            <div
-              key={p.key}
-              className={cx(
-                "rounded-2xl border p-5 bg-bg-card",
-                p.highlight ? "border-primary/50" : "border-slate-800"
-              )}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-lg font-semibold">{p.name}</h2>
-                    {p.highlight && (
-                      <span className="text-[11px] rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 text-primary">
-                        Popular
-                      </span>
-                    )}
-                    {isCurrent && (
-                      <span className="text-[11px] rounded-full border border-slate-700 bg-slate-900 px-2 py-0.5 text-slate-200">
-                        Current
-                      </span>
-                    )}
-                  </div>
-                  <div className="text-xl font-bold mt-2">{p.price}</div>
-                  <div className="text-sm text-text-muted mt-1">
-                    {p.tagline}
-                  </div>
-                </div>
-              </div>
-
-              <ul className="mt-4 space-y-2 text-sm">
-                {p.features.map((f) => (
-                  <li key={f} className="flex gap-2 text-slate-200">
-                    <span className="text-primary mt-[2px]">✓</span>
-                    <span className="text-slate-200">{f}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-5 flex gap-2 flex-wrap">
-                {!hydrated ? (
-                  <button
-                    className={p.highlight ? "btn-fill" : "btn-secondary"}
-                    disabled
-                  >
-                    Loading…
-                  </button>
-                ) : loading && !profile ? (
-                  <button
-                    className={p.highlight ? "btn-fill" : "btn-secondary"}
-                    disabled
-                  >
-                    Loading…
-                  </button>
-                ) : profile ? (
-                  isCurrent ? (
-                    <>
-                      <button onClick={openPortal} className="btn-secondary">
-                        Manage subscription
-                      </button>
-                      <button
-                        onClick={() => startCheckout(p.key)}
-                        className="btn-secondary"
-                        title="Use this if you want to switch plans"
-                      >
-                        Switch plan
-                      </button>
-                    </>
-                  ) : (
-                    <button
-                      onClick={() => startCheckout(p.key)}
-                      className={p.highlight ? "btn-fill" : "btn-secondary"}
-                    >
-                      Upgrade to {p.name}
-                    </button>
-                  )
-                ) : (
-                  <button
-                    onClick={() => router.push("/auth/login")}
-                    className={p.highlight ? "btn-fill" : "btn-secondary"}
-                  >
-                    Login to upgrade
-                  </button>
-                )}
-              </div>
-
-              <div className="mt-3 text-[11px] text-text-muted">
-                Cancel anytime. Payments handled securely by Stripe.
-              </div>
-            </div>
-          );
-        })}
+        {PLANS.map((p) => (
+          <PaidPlanCard
+            key={p.key}
+            plan={p}
+            interval={interval}
+            currentPlan={currentPlan}
+            hydrated={hydrated}
+            loading={loading}
+            profile={profile}
+            onCheckout={startCheckout}
+            onManage={openPortal}
+            onLogin={() => router.push("/auth/login")}
+          />
+        ))}
       </div>
 
-      {/* Bottom info */}
       <div className="mt-8 rounded-2xl border border-slate-800 bg-bg-card p-5">
         <div className="text-sm font-semibold">FAQ</div>
         <div className="mt-2 grid gap-3 text-sm text-text-muted">
