@@ -19,6 +19,8 @@ export type WebsiteData = {
   about: {
     title: string;
     body: string;
+    imageUrl?: string;
+    imagePath?: string;
     imageQuery: string;
   };
 

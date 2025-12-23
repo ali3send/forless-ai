@@ -6,6 +6,7 @@ type AboutData = {
   title: string;
   body: string;
   imageQuery: string;
+  imageUrl?: string; // ✅ NEW
 };
 
 type Props = {
@@ -13,7 +14,13 @@ type Props = {
 };
 
 export function AboutSection({ about }: Props) {
-  const aboutImage = useUnsplashImage(about.imageQuery);
+  // Unsplash fallback
+  const unsplashImage = useUnsplashImage(about.imageQuery);
+
+  const imageSrc =
+    about.imageUrl && about.imageUrl.trim() !== ""
+      ? about.imageUrl
+      : unsplashImage;
 
   return (
     <section id="about" className="border-t border-slate-800 bg-slate-900/40">
@@ -22,17 +29,18 @@ export function AboutSection({ about }: Props) {
           <h2 className="text-xl font-semibold">{about.title}</h2>
           <p className="mt-4 text-sm text-slate-300">{about.body}</p>
         </div>
+
         <div className="overflow-hidden rounded-2xl border border-slate-800">
-          {aboutImage ? (
+          {imageSrc ? (
             <Image
-              src={aboutImage}
+              src={imageSrc}
               alt={about.title}
               width={500}
               height={800}
               className="h-full w-full object-cover"
             />
           ) : (
-            <div className="h-full w-full bg-slate-800 animate-pulse" />
+            <div className="h-full w-full animate-pulse bg-slate-800" />
           )}
         </div>
       </div>

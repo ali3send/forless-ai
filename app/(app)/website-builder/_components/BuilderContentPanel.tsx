@@ -12,6 +12,7 @@ import { ProductsSectionForm } from "./ProductsSectionForm";
 import { ContactSectionForm } from "./ContactSectionForm";
 
 type ContentProps = {
+  projectId: string;
   section: BuilderSection;
   setSection: Dispatch<SetStateAction<BuilderSection>>;
   builderSections: ReadonlyArray<{ id: BuilderSection; label: string }>;
@@ -37,6 +38,7 @@ export function BuilderContentPanel({
   setData,
   generating,
   onGenerate,
+  projectId,
 }: ContentProps) {
   return (
     <>
@@ -59,7 +61,7 @@ export function BuilderContentPanel({
       {section === "hero" && <HeroSectionForm data={data} setData={setData} />}
 
       {section === "about" && (
-        <AboutSectionForm data={data} setData={setData} />
+        <AboutSectionForm data={data} setData={setData} projectId={projectId} />
       )}
 
       {section === "features" && (
