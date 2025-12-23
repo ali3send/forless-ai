@@ -44,6 +44,7 @@ export function HeroSectionForm({
       <label className="block text-xs text-slate-400">
         Brand name
         <input
+          placeholder="Enter Brand name"
           value={data.brandName}
           onChange={(e) =>
             setData((d) => ({ ...d, brandName: e.target.value }))
@@ -56,6 +57,7 @@ export function HeroSectionForm({
       <label className="block text-xs text-slate-400">
         Tagline
         <input
+          placeholder="Enter tagline for website"
           value={data.tagline ?? ""}
           onChange={(e) => setData((d) => ({ ...d, tagline: e.target.value }))}
           className="input-base"
@@ -66,6 +68,7 @@ export function HeroSectionForm({
       <label className="block text-xs text-slate-400">
         Hero headline
         <input
+          placeholder="Enter headline"
           value={data.hero.headline}
           onChange={(e) =>
             setData((d) => ({
@@ -81,6 +84,7 @@ export function HeroSectionForm({
       <label className="block text-xs text-slate-400">
         Sub Headline
         <input
+          placeholder="Enter subheadline"
           value={data.hero.subheadline}
           onChange={(e) =>
             setData((d) => ({
@@ -94,8 +98,9 @@ export function HeroSectionForm({
 
       {/* Hero image keyword */}
       <label className="block text-xs text-slate-400">
-        Hero image keyword (Unsplash)
+        Hero image keyword
         <input
+          placeholder="e.g., technology, solar panels, office"
           value={data.hero.imageQuery}
           onChange={(e) =>
             setData((d) => ({
@@ -112,6 +117,7 @@ export function HeroSectionForm({
         Primary CTA
         <input
           value={data.hero.primaryCta}
+          placeholder="e.g., Get Started, Order Now"
           onChange={(e) =>
             setData((d) => ({
               ...d,
@@ -126,6 +132,7 @@ export function HeroSectionForm({
       <label className="block text-xs text-slate-400">
         Primary CTA Link
         <input
+          placeholder="e.g., https://yourwebsite.com/signup or #contact"
           value={data.hero.primaryCtaLink}
           onChange={(e) =>
             setData((d) => ({
@@ -139,8 +146,9 @@ export function HeroSectionForm({
 
       {/* Secondary CTA */}
       <label className="block text-xs text-slate-400">
-        Secondary CTA
+        Secondary CTA (optional)
         <input
+          placeholder="e.g., Learn More"
           value={data.hero.secondaryCta ?? ""}
           onChange={(e) =>
             setData((d) => ({
@@ -156,6 +164,7 @@ export function HeroSectionForm({
       <label className="block text-xs text-slate-400">
         Secondary CTA Link
         <input
+          placeholder="e.g., https://yourwebsite.com/learn-more or #about"
           value={data.hero.secondaryCtaLink ?? ""}
           onChange={(e) =>
             setData((d) => ({

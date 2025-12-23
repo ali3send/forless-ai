@@ -57,6 +57,7 @@ export function ProductsSectionForm({ data, setData }: OffersSectionFormProps) {
       <label className="block text-xs text-slate-400">
         Offers Section Title
         <input
+          placeholder="e.g Our offers, our products"
           value={data.offers.title}
           onChange={(e) =>
             setData((prev) => ({
@@ -95,6 +96,7 @@ export function ProductsSectionForm({ data, setData }: OffersSectionFormProps) {
               Name
               <input
                 value={offer.name}
+                placeholder="e.g, offer-1,product-1"
                 onChange={(e) => updateOffer(index, "name", e.target.value)}
                 className="input-base"
               />
@@ -103,6 +105,7 @@ export function ProductsSectionForm({ data, setData }: OffersSectionFormProps) {
             <label className="mt-2 block text-xs text-slate-400">
               Description
               <textarea
+                placeholder="Describe this offer/product..."
                 value={offer.description}
                 onChange={(e) =>
                   updateOffer(index, "description", e.target.value)

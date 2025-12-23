@@ -57,6 +57,7 @@ export function FeaturesSectionForm({
         Features Section Title
         <input
           value={data.features.title}
+          placeholder="e.g., Features, Our Services, Benefits"
           onChange={(e) =>
             setData((prev) => ({
               ...prev,
@@ -92,6 +93,8 @@ export function FeaturesSectionForm({
             <label className="block text-xs text-slate-400 mt-2">
               Label
               <input
+                type="text"
+                placeholder="e.g., Feature 1, Feature 2, Feature 3"
                 value={item.label}
                 onChange={(e) => updateItem(index, "label", e.target.value)}
                 className="input-base"

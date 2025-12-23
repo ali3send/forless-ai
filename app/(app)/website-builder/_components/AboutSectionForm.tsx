@@ -13,6 +13,8 @@ export function AboutSectionForm({ data, setData }: AboutSectionFormProps) {
       <label className="block text-xs text-slate-400">
         About section title
         <input
+          type="text"
+          placeholder="e.g., About Us, Our Story, Our Mission"
           value={data.about.title}
           onChange={(e) =>
             setData((d) => ({
@@ -27,6 +29,7 @@ export function AboutSectionForm({ data, setData }: AboutSectionFormProps) {
       <label className="block text-xs text-slate-400">
         About text
         <textarea
+          placeholder="describe your company, mission, or story"
           value={data.about.body}
           onChange={(e) =>
             setData((d) => ({
@@ -42,6 +45,7 @@ export function AboutSectionForm({ data, setData }: AboutSectionFormProps) {
       <label className="block text-xs text-slate-400">
         About image keyword (Unsplash)
         <input
+          placeholder="e.g., technology, solar panels, office"
           value={data.about.imageQuery}
           onChange={(e) =>
             setData((d) => ({

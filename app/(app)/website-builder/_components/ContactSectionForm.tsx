@@ -14,6 +14,7 @@ export function ContactSectionForm({ data, setData }: ContactSectionFormProps) {
       <label className="block text-xs text-slate-400">
         Contact Section Title
         <input
+          placeholder="e.g., Contact Us, Get in Touch, Reach Out"
           value={data.contact.title}
           onChange={(e) =>
             setData((prev) => ({
@@ -29,6 +30,7 @@ export function ContactSectionForm({ data, setData }: ContactSectionFormProps) {
       <label className="block text-xs text-slate-400">
         Contact Description
         <textarea
+          placeholder="e.g., Feel free to reach out to us via the form below or through our contact details. "
           value={data.contact.description}
           onChange={(e) =>
             setData((prev) => ({
