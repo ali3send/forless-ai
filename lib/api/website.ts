@@ -78,3 +78,20 @@ export async function apiSaveSectionHistory(payload: {
   const json = await res.json().catch(() => ({} as any));
   if (!res.ok) throw new Error(json.error || "Failed to save section history");
 }
+export async function apiRestoreSection(payload: {
+  projectId: string;
+  section: "hero" | "about" | "features" | "offers" | "contact";
+}): Promise<{ sectionData: any }> {
+  const res = await fetch("/api/website/section-restore", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  const json = await res.json().catch(() => ({} as any));
+  if (!res.ok) {
+    throw new Error(json.error || "Failed to restore section");
+  }
+
+  return json;
+}

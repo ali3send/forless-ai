@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { WebsiteData, getDefaultWebsiteData } from "@/lib/types/websiteTypes";
 import {
   apiGetProjectWithBrand,
-  apiSaveProjectBrand,
   apiPatchProjectBrand,
 } from "@/lib/api/project";
 
@@ -17,6 +16,7 @@ import {
   apiSaveWebsite,
   apiSaveSectionHistory,
   apiGenerateWebsite,
+  apiRestoreSection,
 } from "@/lib/api/website";
 import { toast } from "sonner";
 
@@ -37,6 +37,7 @@ export function useWebsiteBuilder(projectId: string | null) {
   const [saving, setSaving] = useState<boolean>(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [generating, setGenerating] = useState<boolean>(false);
+  const [restoring, setRestoring] = useState<boolean>(false); // ✅ add
 
   const currentIndex = builderSections.findIndex((s) => s.id === section);
   const isFirst = currentIndex <= 0;
@@ -58,10 +59,7 @@ export function useWebsiteBuilder(projectId: string | null) {
         const brandData = (project?.brand_data as BrandData) ?? null;
         setBrand(brandData || null);
 
-        const applyBrand = (
-          base: WebsiteData,
-          bd: BrandData | null
-        ): WebsiteData => {
+        const applyBrand = (base: WebsiteData, bd: BrandData | null) => {
           if (!bd) return base;
 
           const next: WebsiteData = {
@@ -77,7 +75,6 @@ export function useWebsiteBuilder(projectId: string | null) {
 
           if (bd.slogan) {
             next.tagline = bd.slogan;
-            // keep hero.subheadline independent so user can edit it separately
           }
 
           return next;
@@ -110,7 +107,6 @@ export function useWebsiteBuilder(projectId: string | null) {
         await apiPatchProjectBrand(projectId, brand);
       }
 
-      // 2) Save website content
       await apiSaveWebsite(projectId, data);
       toast.success("Website saved successfully!");
     } catch (err) {
@@ -120,7 +116,6 @@ export function useWebsiteBuilder(projectId: string | null) {
     }
   };
 
-  // Generate website
   const handleGenerateWebsite = async () => {
     if (!projectId) return;
     if (!brand) {
@@ -128,7 +123,7 @@ export function useWebsiteBuilder(projectId: string | null) {
       return;
     }
 
-    const dataSection = SECTION_TO_DATA_KEY[section]; // "hero" | "about" | ...
+    const dataSection = SECTION_TO_DATA_KEY[section]; // hero/about/features/offers/contact
     const t = toast.loading("Regenerating section…");
     setGenerating(true);
 
@@ -136,8 +131,7 @@ export function useWebsiteBuilder(projectId: string | null) {
       const idea =
         data.brandName?.trim() || brand.name?.trim() || "A modern business";
 
-      // ✅ 1) Save current section to section-history BEFORE overwriting it
-      // (this enables section-wise restore later)
+      // save previous section before overwriting
       const prevSectionData = (data as any)[dataSection];
       await apiSaveSectionHistory({
         projectId,
@@ -146,14 +140,12 @@ export function useWebsiteBuilder(projectId: string | null) {
         maxSlots: 2,
       });
 
-      // ✅ 2) Generate new section patch
       const patch = await apiGenerateWebsite({
         idea,
         brand,
         section: dataSection,
       });
 
-      // ✅ 3) Merge + save full website like you already do
       const merged: WebsiteData = { ...data, ...patch } as WebsiteData;
 
       setData(merged);
@@ -164,6 +156,35 @@ export function useWebsiteBuilder(projectId: string | null) {
       toast.error("Failed: " + (e as Error).message, { id: t });
     } finally {
       setGenerating(false);
+    }
+  };
+
+  const handleRestoreSection = async () => {
+    if (!projectId) return;
+
+    const dataSection = SECTION_TO_DATA_KEY[section];
+    const t = toast.loading("Restoring section…");
+    setRestoring(true);
+
+    try {
+      const res = await apiRestoreSection({
+        projectId,
+        section: dataSection,
+      });
+
+      const merged: WebsiteData = {
+        ...data,
+        [dataSection]: res.sectionData,
+      };
+
+      setData(merged);
+      await apiSaveWebsite(projectId, merged);
+
+      toast.success("Section restored", { id: t });
+    } catch (err) {
+      toast.error("Restore failed: " + (err as Error).message, { id: t });
+    } finally {
+      setRestoring(false);
     }
   };
 
@@ -179,6 +200,7 @@ export function useWebsiteBuilder(projectId: string | null) {
     saving,
     saveMessage,
     generating,
+    restoring, // ✅ return
 
     // steps
     builderSections,
@@ -189,5 +211,6 @@ export function useWebsiteBuilder(projectId: string | null) {
     // actions
     handleSave,
     handleGenerateWebsite,
+    handleRestoreSection,
   };
 }

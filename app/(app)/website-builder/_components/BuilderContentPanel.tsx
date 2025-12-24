@@ -23,6 +23,8 @@ type ContentProps = {
   data: WebsiteData;
   setData: Dispatch<SetStateAction<WebsiteData>>;
 
+  restoring: boolean;
+  handleRestoreSection: () => void;
   generating: boolean;
   onGenerate: () => void;
 };
@@ -38,24 +40,52 @@ export function BuilderContentPanel({
   setData,
   generating,
   onGenerate,
+  restoring,
+  handleRestoreSection,
   projectId,
 }: ContentProps) {
   return (
     <>
-      {/* Step info + regenerate are ONLY in content panel */}
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-xs text-slate-400">
-          Step {currentIndex + 1} of {builderSections.length}
-        </span>
+      {/* Header: Step row + Actions row (separate, mobile-safe) */}
+      <div className="mb-3 w-full space-y-2">
+        {/* Row 1: Step info */}
+        <div className="w-full">
+          <span className="block text-xs text-slate-400">
+            Step {currentIndex + 1} of {builderSections.length}
+          </span>
+        </div>
 
-        <button
-          type="button"
-          className="rounded-full border border-slate-600 px-2 py-1 text-[10px]"
-          onClick={onGenerate}
-          disabled={generating}
-        >
-          {generating ? "Generating..." : "Re-generate"}
-        </button>
+        {/* Row 2: Actions */}
+        <div className="w-full">
+          <div className="flex w-full justify-end gap-2">
+            {/* Restore */}
+            <button
+              type="button"
+              onClick={handleRestoreSection}
+              disabled={restoring || generating}
+              className="rounded-full border border-slate-700 bg-slate-900/60
+          px-4 py-1.5 text-[11px] font-medium text-slate-200
+          hover:border-slate-600 hover:bg-slate-900
+          disabled:opacity-50 disabled:cursor-not-allowed
+          active:scale-[0.98]"
+            >
+              {restoring ? "Restoring..." : "Restore Previous"}
+            </button>
+
+            {/* Re-generate */}
+            <button
+              type="button"
+              onClick={onGenerate}
+              disabled={generating || restoring}
+              className="rounded-full bg-primary
+          px-4 py-1.5 text-[11px] font-semibold text-slate-950
+          hover:brightness-110
+          disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {generating ? "Generating..." : "Regenerate"}
+            </button>
+          </div>
+        </div>
       </div>
 
       {section === "hero" && (

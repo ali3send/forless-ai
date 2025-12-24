@@ -21,12 +21,14 @@ export default function WebsiteBuilderPage() {
     saving,
     saveMessage,
     generating,
+    restoring, // ✅
     builderSections,
     currentIndex,
     isFirst,
     isLast,
     handleSave,
     handleGenerateWebsite,
+    handleRestoreSection, // ✅
   } = useWebsiteBuilder(projectId);
 
   if (!projectId) {
@@ -63,6 +65,8 @@ export default function WebsiteBuilderPage() {
           brand={brand}
           setBrand={setBrand}
           generating={generating}
+          restoring={restoring} // ✅
+          handleRestoreSection={handleRestoreSection} // ✅
           saving={saving}
           saveMessage={saveMessage}
           onGenerate={handleGenerateWebsite}

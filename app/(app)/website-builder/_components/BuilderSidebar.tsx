@@ -17,6 +17,8 @@ type Props = {
   currentIndex: number;
   isFirst: boolean;
   isLast: boolean;
+  restoring: boolean;
+  handleRestoreSection: () => void;
 
   data: WebsiteData;
   setData: Dispatch<SetStateAction<WebsiteData>>;
