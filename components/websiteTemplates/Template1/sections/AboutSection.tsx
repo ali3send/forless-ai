@@ -6,7 +6,7 @@ type AboutData = {
   title: string;
   body: string;
   imageQuery: string;
-  imageUrl?: string; // ✅ NEW
+  imageUrl?: string;
 };
 
 type Props = {

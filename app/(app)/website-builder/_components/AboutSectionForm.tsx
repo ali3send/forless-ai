@@ -3,7 +3,7 @@
 import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import { WebsiteData } from "@/lib/types/websiteTypes";
-import { createBrowserSupabaseClient } from "@/lib/supabase/client";
+// import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
 export type AboutSectionFormProps = {
   data: WebsiteData;
@@ -16,7 +16,7 @@ export function AboutSectionForm({
   setData,
   projectId,
 }: AboutSectionFormProps) {
-  const supabase = useMemo(() => createBrowserSupabaseClient(), []);
+  // const supabase = useMemo(() => createBrowserSupabaseClient(), []);
   const [uploading, setUploading] = useState(false);
   const [removing, setRemoving] = useState(false);
   const [err, setErr] = useState<string | null>(null);

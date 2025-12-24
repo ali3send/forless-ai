@@ -11,6 +11,7 @@ type HeroData = {
   primaryCtaLink?: string;
   secondaryCta?: string;
   secondaryCtaLink?: string;
+  imageUrl?: string;
   imageQuery: string;
 };
 
@@ -30,6 +31,8 @@ export function HeroSection({
   primaryHover,
 }: Props) {
   const heroImage = useUnsplashImage(hero.imageQuery);
+  const imageSrc =
+    hero.imageUrl && hero.imageUrl.trim() !== "" ? hero.imageUrl : heroImage;
   // console.log("hero: ", hero);
 
   return (
@@ -85,7 +88,7 @@ export function HeroSection({
       <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900">
         {heroImage ? (
           <Image
-            src={heroImage}
+            src={imageSrc}
             alt={brandName}
             width={500}
             height={800}
