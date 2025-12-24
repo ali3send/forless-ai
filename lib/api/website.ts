@@ -63,3 +63,18 @@ export async function apiGetWebsite(
   if (!json.data) return null;
   return json.data as WebsiteData;
 }
+export async function apiSaveSectionHistory(payload: {
+  projectId: string;
+  section: "hero" | "about" | "features" | "offers" | "contact";
+  prevSectionData: any; // section object only
+  maxSlots?: number; // default 2
+}): Promise<void> {
+  const res = await fetch("/api/website/section-history", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  const json = await res.json().catch(() => ({} as any));
+  if (!res.ok) throw new Error(json.error || "Failed to save section history");
+}

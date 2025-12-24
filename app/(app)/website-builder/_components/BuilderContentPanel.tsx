@@ -58,7 +58,9 @@ export function BuilderContentPanel({
         </button>
       </div>
 
-      {section === "hero" && <HeroSectionForm data={data} setData={setData} />}
+      {section === "hero" && (
+        <HeroSectionForm data={data} setData={setData} projectId={projectId} />
+      )}
 
       {section === "about" && (
         <AboutSectionForm data={data} setData={setData} projectId={projectId} />

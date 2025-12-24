@@ -122,7 +122,6 @@ export async function POST(req: Request) {
     }
   } catch (e) {
     console.warn("Thumbnail update failed:", e);
-    // do NOT fail the whole request
   }
 
   return NextResponse.json({ data: upserted });

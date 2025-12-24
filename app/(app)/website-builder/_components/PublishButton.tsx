@@ -145,23 +145,29 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
   );
 
   const hasLinks = !!previewUrl || !!finalUrl;
-
   return (
-    <div className="flex flex-col gap-2 rounded-lg border border-slate-800 bg-slate-900/60 p-3">
-      <div className="flex items-center gap-2">
+    <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 space-y-4">
+      {/* Slug row */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <p className="text-xs font-medium text-slate-300">Subdomain</p>
+        </div>
+
         <input
           value={slug}
           onChange={(e) => setSlug(e.target.value)}
-          placeholder="Subdomain (e.g. mysite)"
-          className="input-base py-1.5 bg-gray-900"
+          placeholder="e.g., my-company"
+          className="input-base w-full bg-slate-950/60 border border-slate-800 focus:border-primary/60"
         />
+      </div>
 
-        {/* ✅ Preview BEFORE publish */}
+      {/* Actions row */}
+      <div className="flex items-center gap-2">
         <button
           type="button"
           onClick={() => preview(true)}
           disabled={!projectId || loading}
-          className="btn-secondary"
+          className="btn-secondary flex-1"
         >
           Preview
         </button>
@@ -169,51 +175,60 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
         <button
           onClick={publish}
           disabled={loading || !projectId}
-          className="btn-fill"
+          className="btn-fill flex-1"
           type="button"
         >
           {loading ? "Publishing..." : "Publish"}
         </button>
       </div>
 
+      {/* Links */}
       {hasLinks && (
-        <div className="text-xs text-slate-300 space-y-2">
+        <div className="space-y-2">
           {previewUrl && (
-            <div className="flex items-center justify-between gap-2">
-              <span className="truncate">Preview: {previewUrl}</span>
-              <a
-                className="text-primary hover:underline"
-                href={previewUrl}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Open
-              </a>
+            <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-3">
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-[11px] text-slate-500">Preview</p>
+                  <p className="truncate text-xs text-slate-200">
+                    {previewUrl}
+                  </p>
+                </div>
+
+                {/* <div className="flex items-center gap-2 shrink-0"> */}
+                <a
+                  className="rounded-md bg-primary px-2 py-1 text-[11px] text-slate-950 hover:opacity-90"
+                  href={previewUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Open
+                </a>
+                {/* </div> */}
+              </div>
             </div>
           )}
 
           {finalUrl && (
-            <div className="flex items-center justify-between gap-2">
-              <span className="truncate">
-                URL:{" "}
+            <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-3">
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-[11px] text-slate-500">Published</p>
+                  <p className="truncate text-xs text-slate-200">{finalUrl}</p>
+                </div>
+
+                {/* <div className="flex items-center gap-2 shrink-0"> */}
                 <a
-                  className="hover:underline"
+                  className="rounded-md bg-primary px-2 py-1 text-[11px] text-slate-950 hover:opacity-90"
                   href={finalUrl}
                   target="_blank"
                   rel="noreferrer"
                 >
-                  {finalUrl}
+                  Open
                 </a>
-              </span>
-              <a
-                className="text-primary hover:underline"
-                href={finalUrl}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Open
-              </a>
+              </div>
             </div>
+            // </div>
           )}
         </div>
       )}

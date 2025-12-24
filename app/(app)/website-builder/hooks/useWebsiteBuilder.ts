@@ -15,6 +15,7 @@ import { SECTION_TO_DATA_KEY } from "../sectionMap";
 import {
   apiGetWebsite,
   apiSaveWebsite,
+  apiSaveSectionHistory,
   apiGenerateWebsite,
 } from "@/lib/api/website";
 import { toast } from "sonner";
@@ -127,7 +128,7 @@ export function useWebsiteBuilder(projectId: string | null) {
       return;
     }
 
-    const dataSection = SECTION_TO_DATA_KEY[section];
+    const dataSection = SECTION_TO_DATA_KEY[section]; // "hero" | "about" | ...
     const t = toast.loading("Regenerating section…");
     setGenerating(true);
 
@@ -135,12 +136,24 @@ export function useWebsiteBuilder(projectId: string | null) {
       const idea =
         data.brandName?.trim() || brand.name?.trim() || "A modern business";
 
+      // ✅ 1) Save current section to section-history BEFORE overwriting it
+      // (this enables section-wise restore later)
+      const prevSectionData = (data as any)[dataSection];
+      await apiSaveSectionHistory({
+        projectId,
+        section: dataSection,
+        prevSectionData,
+        maxSlots: 2,
+      });
+
+      // ✅ 2) Generate new section patch
       const patch = await apiGenerateWebsite({
         idea,
         brand,
         section: dataSection,
       });
 
+      // ✅ 3) Merge + save full website like you already do
       const merged: WebsiteData = { ...data, ...patch } as WebsiteData;
 
       setData(merged);
