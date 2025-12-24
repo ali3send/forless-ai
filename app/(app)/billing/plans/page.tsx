@@ -1,3 +1,4 @@
+// app/(app)/billing/plans/page.tsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -17,7 +18,7 @@ export default function BillingPlansPage() {
   const router = useRouter();
   const [supabase] = useState(() => createBrowserSupabaseClient());
 
-  const [interval, setInterval] = useState<BillingInterval>("month");
+  // const [interval, setInterval] = useState<BillingInterval>("monthly");
 
   const [hydrated, setHydrated] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -183,8 +184,8 @@ export default function BillingPlansPage() {
         currentPlan={currentPlan}
         statusText={statusText}
         isPaidPlan={isPaidPlan}
-        interval={interval}
-        setInterval={setInterval}
+        // interval={interval}
+        // setInterval={setInterval}
         onManage={openPortal}
       />
 
@@ -201,7 +202,7 @@ export default function BillingPlansPage() {
           <PaidPlanCard
             key={p.key}
             plan={p}
-            interval={interval}
+            // interval={interval}
             currentPlan={currentPlan}
             hydrated={hydrated}
             loading={loading}

@@ -1,7 +1,7 @@
 "use client";
 
-import BillingIntervalToggle from "./BillingIntervalToggle";
-import type { BillingInterval, Plan, Profile } from "../_lib/types";
+// import BillingIntervalToggle from "./BillingIntervalToggle";
+import type { Plan, Profile } from "../_lib/types";
 
 export default function BillingHeader(props: {
   hydrated: boolean;
@@ -10,8 +10,8 @@ export default function BillingHeader(props: {
   currentPlan: Plan;
   statusText: string | null;
   isPaidPlan: boolean;
-  interval: BillingInterval;
-  setInterval: (v: BillingInterval) => void;
+  // interval: BillingInterval;
+  // setInterval: (v: BillingInterval) => void;
   onManage: () => void;
 }) {
   const {
@@ -21,8 +21,8 @@ export default function BillingHeader(props: {
     currentPlan,
     statusText,
     isPaidPlan,
-    interval,
-    setInterval,
+    // interval,
+    // setInterval,
     onManage,
   } = props;
 
@@ -39,7 +39,7 @@ export default function BillingHeader(props: {
       </div>
 
       <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-        <BillingIntervalToggle interval={interval} setInterval={setInterval} />
+        {/* <BillingIntervalToggle interval={interval} setInterval={setInterval} /> */}
 
         <div className="flex items-center gap-2">
           {!hydrated ? (

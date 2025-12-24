@@ -1,7 +1,10 @@
+// app/(app)/billing/plans/_components/PaidPlanCard.tsx
 "use client";
 
+import { useState } from "react";
 import type { BillingInterval, PaidPlan, Plan, Profile } from "../_lib/types";
 import { cx } from "../_lib/utils";
+import BillingIntervalToggle from "./BillingIntervalToggle";
 
 export default function PaidPlanCard(props: {
   plan: {
@@ -15,7 +18,6 @@ export default function PaidPlanCard(props: {
       yearly: { label: string; note?: string };
     };
   };
-  interval: BillingInterval;
   currentPlan: Plan;
   hydrated: boolean;
   loading: boolean;
@@ -26,7 +28,6 @@ export default function PaidPlanCard(props: {
 }) {
   const {
     plan: p,
-    interval,
     currentPlan,
     hydrated,
     loading,
@@ -35,6 +36,9 @@ export default function PaidPlanCard(props: {
     onManage,
     onLogin,
   } = props;
+
+  // ✅ per-card interval (default monthly)
+  const [interval, setInterval] = useState<BillingInterval>("monthly");
 
   const isCurrent = currentPlan === p.key;
 
@@ -46,7 +50,7 @@ export default function PaidPlanCard(props: {
       )}
     >
       <div className="flex items-start justify-between gap-3">
-        <div>
+        <div className="w-full">
           <div className="flex items-center gap-2">
             <h2 className="text-lg font-semibold">{p.name}</h2>
 
@@ -63,10 +67,19 @@ export default function PaidPlanCard(props: {
             )}
           </div>
 
-          <div className="text-xl font-bold mt-2">
+          {/* ✅ Toggle inside each card */}
+          <div className="mt-3">
+            <BillingIntervalToggle
+              interval={interval}
+              setInterval={setInterval}
+            />
+          </div>
+
+          <div className="text-xl font-bold mt-3">
             {interval === "monthly"
               ? p.pricing.monthly.label
               : p.pricing.yearly.label}
+
             {interval === "yearly" && p.pricing.yearly.note ? (
               <span className="ml-2 text-[11px] font-normal text-primary">
                 • {p.pricing.yearly.note}
@@ -109,7 +122,7 @@ export default function PaidPlanCard(props: {
                 Manage subscription
               </button>
               <button
-                onClick={() => onCheckout(p.key, interval)}
+                onClick={() => onCheckout(p.key, interval)} // ✅ use per-card interval
                 className="btn-secondary"
                 title="Use this if you want to switch plans"
               >
@@ -118,7 +131,7 @@ export default function PaidPlanCard(props: {
             </>
           ) : (
             <button
-              onClick={() => onCheckout(p.key, interval)}
+              onClick={() => onCheckout(p.key, interval)} // ✅ use per-card interval
               className={p.highlight ? "btn-fill" : "btn-secondary"}
             >
               Upgrade to {p.name}
