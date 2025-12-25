@@ -31,6 +31,7 @@
 
   /* Secondary Dark Variants */
   --color-secondary-dark: #1e293b;   /* slate-800 */
+  --color-secondary-darker: #0f172a; /* slate-900 */
 
   --color-bg: #0f172a;
   --color-bg-card: rgba(30, 41, 59, 0.7);
@@ -56,21 +57,6 @@
   }
 }
 
-theme {
-  --color-primary: #10b981;
-  --color-primary-hover: #34d399;
-
-  --color-secondary: #0ea5e9;
-  --color-secondary-hover: #38bdf8;
-
-  --color-bg: #0f172a;
-  --color-bg-card: rgba(30, 41, 59, 0.7);
-
-  --color-text: #f8fafc;
-  --color-text-muted: #94a3b8;
-
-  --font-sans: Arial, Helvetica, sans-serif;
-}
 
 
 
@@ -94,7 +80,7 @@ theme {
   }
 }
 
-/* Global body style */
+/* Global body style
 body {
   @apply bg-bg text-text font-sans;
-}
+} */

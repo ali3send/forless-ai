@@ -11,14 +11,12 @@ import { toast } from "sonner";
 
 export function Navbar() {
   const router = useRouter();
-  const { user, loading, isAdmin, role } = useAuth();
+  const { user, isAdmin } = useAuth();
   const [supabase] = useState(() => createBrowserSupabaseClient());
 
-  // --- Billing dropdown state
   const [billingOpen, setBillingOpen] = useState(false);
   const billingRef = useRef<HTMLDivElement | null>(null);
 
-  // Close dropdown on outside click / ESC
   useEffect(() => {
     function onDocMouseDown(e: MouseEvent) {
       if (!billingOpen) return;
@@ -27,7 +25,6 @@ export function Navbar() {
       if (e.target instanceof Node && !el.contains(e.target))
         setBillingOpen(false);
     }
-
     function onKeyDown(e: KeyboardEvent) {
       if (!billingOpen) return;
       if (e.key === "Escape") setBillingOpen(false);
@@ -51,7 +48,7 @@ export function Navbar() {
             await supabase.auth.signOut();
             router.push("/auth/login");
             toast.success("Logged out successfully!");
-          } catch (error) {
+          } catch {
             toast.error("Failed to log out.");
           } finally {
             toast.dismiss(t);
@@ -94,10 +91,10 @@ export function Navbar() {
   }, [user?.email]);
 
   return (
-    <header className="border-b border-secondary-dark bg-bg-card backdrop-blur z-50">
+    <header className="border-b border-secondary-fade bg-bg/90 backdrop-blur z-50">
       <nav className="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
         <Link href="/" className="flex items-center gap-2">
-          <div className="h-8 w-8 overflow-hidden">
+          <div className="h-8 w-8 overflow-hidden rounded-md">
             <Image
               src="/img.jpeg"
               alt="ForlessAI Logo"
@@ -107,52 +104,47 @@ export function Navbar() {
             />
           </div>
 
-          <span className="font-semibold tracking-tight text-sm sm:text-base">
+          <span className="font-semibold tracking-tight text-sm sm:text-base text-text">
             ForlessAI
           </span>
         </Link>
 
-        <div className="flex items-center gap-4 text-xs sm:text-sm">
-          <Link href="/" className="text-secondary-soft hover:text-white">
+        <div className="flex items-center gap-4 text-xs sm:text-sm text-text-muted">
+          <Link href="/" className="hover:text-text">
             Home
           </Link>
 
           {user && (
-            <Link
-              href="/dashboard"
-              className="text-secondary-soft hover:text-white"
-            >
+            <Link href="/dashboard" className="hover:text-text">
               Dashboard
             </Link>
           )}
 
-          {/* ✅ Packages / Billing dropdown (only when logged in) */}
           {user && (
             <div className="relative" ref={billingRef}>
               <button
                 type="button"
                 onClick={() => setBillingOpen((v) => !v)}
-                className="text-secondary-soft hover:text-white inline-flex items-center gap-1"
+                className="inline-flex items-center gap-1 hover:text-text"
                 aria-haspopup="menu"
                 aria-expanded={billingOpen}
               >
-                Packages{" "}
-                <span className="text-[10px] text-secondary-light">▾</span>
+                Packages <span className="text-[10px]">▾</span>
               </button>
 
               {billingOpen && (
                 <div
-                  className="absolute right-0 mt-2 w-52 rounded-lg border border-secondary-active bg-slate-950 shadow-lg overflow-hidden z-50"
+                  className="absolute right-0 mt-2 w-56 rounded-lg border border-secondary-fade bg-bg-card shadow-lg overflow-hidden z-50"
                   role="menu"
                 >
                   <Link
                     href="/billing/plans"
                     onClick={() => setBillingOpen(false)}
-                    className="block px-3 py-2 text-sm text-secondary-fade hover:bg-slate-900"
+                    className="block px-3 py-2 text-sm text-text hover:bg-secondary-hover"
                     role="menuitem"
                   >
-                    View Plans
-                    <div className="text-[11px] text-secondary-light">
+                    <div className="font-semibold">View Plans</div>
+                    <div className="text-[11px] text-text-muted">
                       Upgrade or compare packages
                     </div>
                   </Link>
@@ -163,69 +155,57 @@ export function Navbar() {
                       setBillingOpen(false);
                       openBillingPortal();
                     }}
-                    className="w-full text-left px-3 py-2 text-sm text-secondary-fade hover:bg-slate-900"
+                    className="w-full text-left px-3 py-2 text-sm text-text hover:bg-secondary-hover"
                     role="menuitem"
                   >
-                    Manage Subscription
-                    <div className="text-[11px] text-secondary-light">
+                    <div className="font-semibold">Manage Subscription</div>
+                    <div className="text-[11px] text-text-muted">
                       Cancel, invoices, payment method
                     </div>
                   </button>
 
-                  <div className="h-px bg-secondary-dark" />
-
-                  {/* <Link
-                    href="/billing"
-                    onClick={() => setBillingOpen(false)}
-                    className="block px-3 py-2 text-sm text-secondary-soft hover:bg-slate-900"
-                    role="menuitem"
-                  >
-                    Billing Dashboard
-                  </Link> */}
+                  <div className="h-px bg-secondary-fade" />
                 </div>
               )}
             </div>
           )}
 
           {user && isAdmin && (
-            <Link
-              href="/admin"
-              className="text-sm text-white/80 hover:text-white"
-            >
+            <Link href="/admin" className="hover:text-text">
               Admin Panel
             </Link>
           )}
 
-          <div className="h-4 w-px bg-secondary-active hidden sm:block" />
+          <div className="h-4 w-px bg-secondary-fade hidden sm:block" />
 
           {user ? (
             <>
-              <button
-                onClick={handleLogout}
-                className="text-secondary-soft hover:text-white"
-              >
+              <button onClick={handleLogout} className="hover:text-text">
                 Logout
               </button>
 
-              <button className="flex items-center gap-2 rounded-full border border-secondary-active bg-slate-900 px-3 py-1.5 text-xs">
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-secondary-active text-[10px]">
+              <button className="flex items-center gap-2 rounded-full border border-secondary-fade bg-secondary-hover px-3 py-1.5 text-xs text-text">
+                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-secondary-active text-[10px] text-text">
                   {userInitial}
                 </span>
-                <span className="hidden sm:inline">{user.email}</span>
-                <span className="text-[10px] text-secondary-light">▾</span>
+                <span className="hidden sm:inline text-text-muted">
+                  {user.email}
+                </span>
+                <span className="text-[10px] text-text-muted">▾</span>
               </button>
             </>
           ) : (
             <>
               <Link
                 href="/auth/login"
-                className="text-secondary-soft hover:text-white"
+                className="text-text-muted hover:text-text"
               >
                 Login
               </Link>
+
               <Link
                 href="/auth/signup"
-                className="rounded-md bg-primary px-3 py-1 text-slate-950 font-semibold hover:bg-primary-hover transition text-xs sm:text-sm"
+                className="rounded-md bg-primary px-3 py-1 text-white font-semibold hover:bg-primary-hover transition text-xs sm:text-sm"
               >
                 Sign up
               </Link>

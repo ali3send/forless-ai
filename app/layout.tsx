@@ -15,16 +15,25 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-slate-950 text-slate-100">
+      <body className="bg-white text-black antialiased">
         <AuthProvider>{children}</AuthProvider>
+
         <Toaster
           richColors
           position="top-center"
           toastOptions={{
             classNames: {
-              actionButton: "!bg-red-600 !text-white hover:!bg-red-700",
+              /* destructive / danger */
+              actionButton:
+                "!bg-primary-hover !text-white hover:!bg-primary-active",
+
+              /* cancel / neutral */
               cancelButton:
-                "!bg-secondary-active !text-secondary-fade hover:!bg-secondary-hover",
+                "!bg-secondary-hover !text-text hover:!bg-secondary-active",
+
+              toast: "!bg-bg-card !border !border-secondary-fade !text-text",
+              title: "!text-text",
+              description: "!text-text-muted",
             },
           }}
         />
