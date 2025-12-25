@@ -46,6 +46,11 @@ export async function POST(
   if (!slug) {
     return NextResponse.json({ error: "Invalid slug" }, { status: 400 });
   }
+  const siteHost = (process.env.NEXT_PUBLIC_SITE_BASE_URL || "lvh.me:3000")
+    .replace(/^https?:\/\//, "")
+    .replace(/\/$/, "");
+
+  const publishedUrl = `http://${slug}.${siteHost}`;
 
   // Load profile (plan + billing period + suspension)
   const { data: profile, error: profileError } = await supabase
@@ -147,7 +152,7 @@ export async function POST(
     .update({
       slug,
       published: true,
-      published_url: `http://${slug}.lvh.me:3000`,
+      published_url: publishedUrl,
       published_at: alreadyPublished ? undefined : new Date().toISOString(),
     })
     .eq("id", projectId)
@@ -176,7 +181,7 @@ export async function POST(
     success: true,
     slug,
     previewUrl: `/site/${slug}`,
-    published_url: `http://${slug}.lvh.me:3000`,
-    localSubdomainUrl: `http://${slug}.lvh.me:3000`,
+    published_url: publishedUrl,
+    localSubdomainUrl: publishedUrl,
   });
 }
