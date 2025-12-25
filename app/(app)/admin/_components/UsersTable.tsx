@@ -246,7 +246,7 @@ export function UsersTable() {
   }
 
   return (
-    <div className="rounded-2xl border border-secondary-active bg-bg-card">
+    <div className="rounded-2xl border border-secondary-fade bg-secondary-soft">
       <UsersToolbar
         q={q}
         setQ={setQ}

@@ -14,7 +14,7 @@ export function Menu({
   return (
     <div className="relative">
       <div className="fixed inset-0 z-40" onClick={onClose} />
-      <div className="absolute right-0 top-2 z-50 w-56 rounded-xl border border-secondary-active bg-bg shadow-lg">
+      <div className="absolute right-0 top-2 z-50 w-56 rounded-xl border border-secondary-fade bg-secondary-soft shadow-sm">
         {children}
       </div>
     </div>

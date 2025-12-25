@@ -12,11 +12,11 @@ export function UsersToolbar(props: {
   total: number;
 }) {
   return (
-    <div className="sticky top-0 z-10 rounded-t-2xl border-b border-secondary-active bg-bg-card/95 backdrop-blur p-4">
+    <div className="sticky top-0 z-10 rounded-t-2xl border-b border-secondary-fade bg-secondary-soft/95 backdrop-blur p-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <div className="text-sm font-semibold text-text">Users</div>
-          <div className="mt-0.5 text-xs text-text-muted">
+          <div className="text-sm font-semibold text-secondary-dark">Users</div>
+          <div className="mt-0.5 text-xs text-secondary">
             Manage roles, suspension, and deletion.
           </div>
         </div>
@@ -34,7 +34,7 @@ export function UsersToolbar(props: {
             onChange={(e) =>
               props.setStatus(e.target.value as "all" | "active" | "suspended")
             }
-            className="rounded-md border border-secondary-active bg-slate-900 px-3 py-2 text-xs text-text focus:outline-none focus:border-primary"
+            className="rounded-md border border-secondary-fade bg-secondary-soft px-3 py-2 text-xs text-secondary-dark focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/40"
           >
             <option value="all">All statuses</option>
             <option value="active">Active</option>
@@ -46,7 +46,7 @@ export function UsersToolbar(props: {
             onChange={(e) =>
               props.setRoleFilter(e.target.value as "all" | "user" | "admin")
             }
-            className="rounded-md border border-secondary-active bg-slate-900 px-3 py-2 text-xs text-text focus:outline-none focus:border-primary"
+            className="rounded-md border border-secondary-fade bg-secondary-soft px-3 py-2 text-xs text-secondary-dark focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/40"
           >
             <option value="all">All roles</option>
             <option value="user">Users</option>
@@ -55,16 +55,20 @@ export function UsersToolbar(props: {
 
           <button
             onClick={props.onRefresh}
-            className="rounded-md border border-secondary-active bg-bg px-3 py-2 text-xs text-text-muted hover:text-text transition"
+            className="rounded-md border border-secondary-fade bg-secondary-soft px-3 py-2 text-xs font-semibold text-secondary-dark transition hover:border-primary hover:text-primary"
           >
             Refresh
           </button>
         </div>
       </div>
 
-      <div className="mt-3 text-xs text-text-muted">
-        Showing <span className="text-text">{props.showing}</span> of{" "}
-        <span className="text-text">{props.total}</span>
+      <div className="mt-3 text-xs text-secondary">
+        Showing{" "}
+        <span className="font-semibold text-secondary-dark">
+          {props.showing}
+        </span>{" "}
+        of{" "}
+        <span className="font-semibold text-secondary-dark">{props.total}</span>
       </div>
     </div>
   );
