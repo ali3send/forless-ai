@@ -29,7 +29,7 @@ export default function ProjectGrid({
   if (!hasAnyProjects) {
     return (
       <section className="mt-2">
-        <div className="rounded-lg border border-dashed border-secondary-active bg-slate-900/40 p-6 text-center text-sm text-secondary-light">
+        <div className="rounded-lg border border-dashed border-secondary-fade bg-secondary-soft p-6 text-center text-sm text-secondary">
           No projects yet. Click{" "}
           <span className="font-medium text-primary">“New Project”</span> to
           create one.
@@ -40,7 +40,7 @@ export default function ProjectGrid({
 
   return (
     <section className="mt-2">
-      <div className="rounded-lg border border-secondary-dark bg-slate-900/40 p-6 text-center text-sm text-secondary-light">
+      <div className="rounded-lg border border-secondary-fade bg-secondary-soft p-6 text-center text-sm text-secondary">
         No projects match your filters.
       </div>
     </section>
@@ -98,9 +98,9 @@ function ProjectCard({ project }: { project: ProjectRow }) {
   return (
     <Link
       href={`/website-builder?projectId=${project.id}`}
-      className="group flex flex-col rounded-lg border border-secondary-dark bg-slate-900/60 p-3 text-xs transition hover:border-primary hover:bg-slate-900"
+      className="group flex flex-col rounded-lg border border-secondary-fade bg-secondary-soft p-3 text-xs transition hover:border-primary"
     >
-      <div className="relative h-28 overflow-hidden rounded-md border border-secondary-dark bg-slate-900">
+      <div className="relative h-28 overflow-hidden rounded-md border border-secondary-fade bg-secondary-light">
         {project.thumbnail_url ? (
           <Image
             src={project.thumbnail_url}
@@ -111,13 +111,13 @@ function ProjectCard({ project }: { project: ProjectRow }) {
             height={500}
           />
         ) : (
-          <div className="h-full w-full bg-linear-to-br from-secondary-dark to-slate-900" />
+          <div className="h-full w-full bg-linear-to-br from-secondary-light to-secondary-soft" />
         )}
 
         {/* Delete Button */}
         <button
           onClick={handleDelete}
-          className="absolute right-2 top-2 hidden rounded-md bg-black/60 p-1.5 text-secondary-soft hover:bg-red-600 hover:text-white group-hover:block"
+          className="absolute right-2 top-2 hidden rounded-md border border-secondary-fade bg-secondary-soft/90 p-1.5 text-secondary-dark transition hover:border-red-500 hover:text-red-600 group-hover:block"
           title="Delete project"
           type="button"
         >
@@ -127,13 +127,15 @@ function ProjectCard({ project }: { project: ProjectRow }) {
 
       <div className="mt-3 flex items-start justify-between gap-2">
         <div>
-          <div className="truncate text-sm font-medium">{name}</div>
-          <div className="mt-1 text-[11px] capitalize text-secondary-light">
+          <div className="truncate text-sm font-medium text-secondary-dark">
+            {name}
+          </div>
+          <div className="mt-1 text-[11px] capitalize text-secondary">
             Status: {status}
           </div>
         </div>
 
-        <span className="rounded-full bg-secondary-dark px-2 py-0.5 text-[10px] text-secondary-soft">
+        <span className="rounded-full border border-secondary-fade bg-secondary-light px-2 py-0.5 text-[10px] font-semibold text-secondary-dark">
           Open
         </span>
       </div>

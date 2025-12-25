@@ -5,10 +5,8 @@ export default function WebsiteBuilder() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-slate-950 text-secondary-text flex items-center justify-center">
-          <p className="text-sm text-secondary-soft">
-            Loading website builder…
-          </p>
+        <div className="min-h-screen bg-secondary-soft flex items-center justify-center">
+          <p className="text-sm text-secondary">Loading website builder…</p>
         </div>
       }
     >

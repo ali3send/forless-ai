@@ -50,7 +50,7 @@ export function BuilderContentPanel({
       <div className="mb-3 w-full space-y-2">
         {/* Row 1: Step info */}
         <div className="w-full">
-          <span className="block text-xs text-secondary-light">
+          <span className="block text-xs text-secondary">
             Step {currentIndex + 1} of {builderSections.length}
           </span>
         </div>
@@ -63,11 +63,7 @@ export function BuilderContentPanel({
               type="button"
               onClick={handleRestoreSection}
               disabled={restoring || generating}
-              className="rounded-full border border-secondary-active bg-slate-900/60
-          px-4 py-1.5 text-[11px] font-medium text-secondary-fade
-          hover:border-secondary-hover hover:bg-slate-900
-          disabled:opacity-50 disabled:cursor-not-allowed
-          active:scale-[0.98]"
+              className="rounded-full border border-secondary-fade bg-secondary-light px-4 py-1.5 text-[11px] font-semibold text-secondary-dark transition hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
             >
               {restoring ? "Restoring..." : "Restore Previous"}
             </button>
@@ -77,10 +73,7 @@ export function BuilderContentPanel({
               type="button"
               onClick={onGenerate}
               disabled={generating || restoring}
-              className="rounded-full bg-primary
-          px-4 py-1.5 text-[11px] font-semibold text-slate-950
-          hover:brightness-110
-          disabled:opacity-50 disabled:cursor-not-allowed"
+              className="rounded-full bg-primary px-4 py-1.5 text-[11px] font-semibold text-white transition hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {generating ? "Generating..." : "Regenerate"}
             </button>
@@ -117,7 +110,7 @@ export function BuilderContentPanel({
               setSection(builderSections[currentIndex - 1].id);
             }
           }}
-          className="rounded-full border border-secondary-hover px-3 py-1 text-xs disabled:opacity-40"
+          className="rounded-full border border-secondary-fade bg-secondary-soft px-3 py-1 text-xs font-semibold text-secondary-dark transition hover:border-primary hover:text-primary disabled:opacity-40"
         >
           Previous
         </button>
@@ -130,7 +123,7 @@ export function BuilderContentPanel({
               setSection(builderSections[currentIndex + 1].id);
             }
           }}
-          className="rounded-full bg-primary px-3 py-1 text-xs font-medium text-slate-950 disabled:opacity-40"
+          className="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-white transition hover:bg-primary-hover disabled:opacity-40"
         >
           Next
         </button>

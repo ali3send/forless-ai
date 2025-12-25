@@ -42,32 +42,39 @@ export default function PaidPlanCard(props: {
 
   const isCurrent = currentPlan === p.key;
 
+  const primaryBtn = "btn-fill";
+  const secondaryBtn =
+    "inline-flex items-center justify-center rounded-md border border-secondary-fade px-4 py-1 text-sm font-semibold text-secondary-dark transition hover:border-primary hover:text-primary disabled:opacity-60 disabled:pointer-events-none";
+
   return (
     <div
       className={cx(
-        "rounded-2xl border p-5 bg-bg-card",
-        p.highlight ? "border-primary/50" : "border-secondary-dark"
+        "rounded-2xl border border-secondary-fade bg-secondary-soft p-5 shadow-sm",
+        p.highlight ? "ring-1 ring-primary/20" : ""
       )}
     >
+      {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div className="w-full">
-          <div className="flex items-center gap-2">
-            <h2 className="text-lg font-semibold">{p.name}</h2>
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 className="text-lg font-semibold text-secondary-dark">
+              {p.name}
+            </h2>
 
             {p.highlight && (
-              <span className="text-[11px] rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 text-primary">
+              <span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">
                 Popular
               </span>
             )}
 
             {isCurrent && (
-              <span className="text-[11px] rounded-full border border-secondary-active bg-slate-900 px-2 py-0.5 text-secondary-fade">
+              <span className="rounded-full border border-secondary-fade bg-secondary-light px-2 py-0.5 text-[11px] font-semibold text-secondary-dark">
                 Current
               </span>
             )}
           </div>
 
-          {/* ✅ Toggle inside each card */}
+          {/* Toggle inside each card */}
           <div className="mt-3">
             <BillingIntervalToggle
               interval={interval}
@@ -75,7 +82,8 @@ export default function PaidPlanCard(props: {
             />
           </div>
 
-          <div className="text-xl font-bold mt-3">
+          {/* Price */}
+          <div className="mt-3 text-xl font-bold text-secondary-dark">
             {interval === "monthly"
               ? p.pricing.monthly.label
               : p.pricing.yearly.label}
@@ -87,43 +95,35 @@ export default function PaidPlanCard(props: {
             ) : null}
           </div>
 
-          <div className="text-sm text-text-muted mt-1">{p.tagline}</div>
+          <div className="mt-1 text-sm text-secondary">{p.tagline}</div>
         </div>
       </div>
 
+      {/* Features */}
       <ul className="mt-4 space-y-2 text-sm">
         {p.features.map((f) => (
-          <li key={f} className="flex gap-2 text-secondary-fade">
-            <span className="text-primary mt-[2px]">✓</span>
-            <span className="text-secondary-fade">{f}</span>
+          <li key={f} className="flex gap-2">
+            <span className="mt-[2px] text-primary">✓</span>
+            <span className="text-secondary-dark">{f}</span>
           </li>
         ))}
       </ul>
 
-      <div className="mt-5 flex gap-2 flex-wrap">
-        {!hydrated ? (
-          <button
-            className={p.highlight ? "btn-fill" : "btn-secondary"}
-            disabled
-          >
-            Loading…
-          </button>
-        ) : loading && !profile ? (
-          <button
-            className={p.highlight ? "btn-fill" : "btn-secondary"}
-            disabled
-          >
+      {/* Actions */}
+      <div className="mt-5 flex flex-wrap gap-2">
+        {!hydrated || (loading && !profile) ? (
+          <button className={p.highlight ? primaryBtn : secondaryBtn} disabled>
             Loading…
           </button>
         ) : profile ? (
           isCurrent ? (
             <>
-              <button onClick={onManage} className="btn-secondary">
+              <button onClick={onManage} className={secondaryBtn}>
                 Manage subscription
               </button>
               <button
-                onClick={() => onCheckout(p.key, interval)} // ✅ use per-card interval
-                className="btn-secondary"
+                onClick={() => onCheckout(p.key, interval)}
+                className={secondaryBtn}
                 title="Use this if you want to switch plans"
               >
                 Switch plan
@@ -131,8 +131,8 @@ export default function PaidPlanCard(props: {
             </>
           ) : (
             <button
-              onClick={() => onCheckout(p.key, interval)} // ✅ use per-card interval
-              className={p.highlight ? "btn-fill" : "btn-secondary"}
+              onClick={() => onCheckout(p.key, interval)}
+              className={p.highlight ? primaryBtn : secondaryBtn}
             >
               Upgrade to {p.name}
             </button>
@@ -140,14 +140,14 @@ export default function PaidPlanCard(props: {
         ) : (
           <button
             onClick={onLogin}
-            className={p.highlight ? "btn-fill" : "btn-secondary"}
+            className={p.highlight ? primaryBtn : secondaryBtn}
           >
             Login to upgrade
           </button>
         )}
       </div>
 
-      <div className="mt-3 text-[11px] text-text-muted">
+      <div className="mt-3 text-[11px] text-secondary">
         Cancel anytime. Payments handled securely by Stripe.
       </div>
     </div>

@@ -13,11 +13,14 @@ export default function DashboardHeader({
   return (
     <header className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div>
-        <h1 className="text-xl font-semibold">Your Projects</h1>
-        <p className="text-xs text-secondary-light">
+        <h1 className="text-xl font-semibold text-secondary-dark">
+          Your Projects
+        </h1>
+        <p className="text-xs text-secondary">
           Describe once. Build brand, website, and marketing from one place.
         </p>
       </div>
+
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="hidden sm:block">
           <SearchInput value={search} onChange={onSearchChange} />
@@ -42,7 +45,17 @@ function SearchInput({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder="Search projects…"
-      className="w-full sm:w-64 rounded-md border border-secondary-active bg-slate-900 px-3 py-1.5 text-xs outline-none ring-primary/40 focus:ring-1"
+      className="
+        w-full sm:w-64
+        rounded-md
+        border border-secondary-fade
+        bg-secondary-soft
+        px-3 py-1.5
+        text-xs text-secondary-dark
+        outline-none
+        ring-primary/30
+        focus:ring-1
+      "
     />
   );
 }

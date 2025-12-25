@@ -78,7 +78,7 @@ export function HeroSectionForm({
   return (
     <div className="space-y-2">
       {/* Brand name */}
-      <label className="block text-xs text-secondary-light">
+      <label className="block text-xs text-secondary">
         Brand name
         <input
           placeholder="Enter Brand name"
@@ -86,12 +86,12 @@ export function HeroSectionForm({
           onChange={(e) =>
             setData((d) => ({ ...d, brandName: e.target.value }))
           }
-          className="input-base "
+          className="input-base"
         />
       </label>
 
       {/* Tagline */}
-      <label className="block text-xs text-secondary-light">
+      <label className="block text-xs text-secondary">
         Tagline
         <input
           placeholder="Enter tagline for website"
@@ -102,7 +102,7 @@ export function HeroSectionForm({
       </label>
 
       {/* Hero headline */}
-      <label className="block text-xs text-secondary-light">
+      <label className="block text-xs text-secondary">
         Hero headline
         <input
           placeholder="Enter headline"
@@ -118,7 +118,7 @@ export function HeroSectionForm({
       </label>
 
       {/* Sub headline */}
-      <label className="block text-xs text-secondary-light">
+      <label className="block text-xs text-secondary">
         Sub Headline
         <input
           placeholder="Enter subheadline"
@@ -132,9 +132,10 @@ export function HeroSectionForm({
           className="input-base"
         />
       </label>
+
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <p className="text-xs text-secondary-light">Hero image</p>
+          <p className="text-xs text-secondary">Hero image</p>
           {uploading && (
             <span className="text-[11px] text-secondary">Uploading…</span>
           )}
@@ -144,7 +145,7 @@ export function HeroSectionForm({
         </div>
 
         {data.hero.imageUrl ? (
-          <div className="rounded-lg border border-secondary-dark bg-slate-950 p-2">
+          <div className="rounded-lg border border-secondary-fade bg-secondary-light p-2">
             <Image
               key={data.hero.imageUrl || "empty"}
               src={data.hero.imageUrl}
@@ -161,7 +162,7 @@ export function HeroSectionForm({
                 className={`text-[11px] underline underline-offset-2 ${
                   busy
                     ? "text-secondary cursor-not-allowed"
-                    : "text-rose-300 hover:text-rose-200"
+                    : "text-primary hover:text-primary-hover"
                 }`}
               >
                 Remove image
@@ -180,7 +181,7 @@ export function HeroSectionForm({
                 if (!f) return;
                 await onUpload(f);
               }}
-              className="block w-full text-xs text-secondary-soft file:mr-3 file:rounded-md file:border-0 file:bg-secondary-dark file:px-3 file:py-2 file:text-xs file:text-slate-100 hover:file:bg-secondary-active disabled:opacity-60"
+              className="block w-full text-xs text-secondary file:mr-3 file:rounded-md file:border file:border-secondary-fade file:bg-secondary-soft file:px-3 file:py-2 file:text-xs file:font-semibold file:text-secondary-dark hover:file:border-primary hover:file:text-primary disabled:opacity-60"
             />
             <p className="mt-1 text-[11px] text-secondary">
               JPG/PNG/WEBP/SVG • up to 5MB
@@ -188,11 +189,11 @@ export function HeroSectionForm({
           </label>
         )}
 
-        {err && <p className="text-[11px] text-rose-300">{err}</p>}
+        {err && <p className="text-[11px] text-secondary">{err}</p>}
       </div>
 
       {/* Hero image keyword */}
-      <label className="block text-xs text-secondary-light">
+      <label className="block text-xs text-secondary">
         Hero image keyword
         <input
           placeholder="e.g., technology, solar panels, office"
@@ -208,7 +209,7 @@ export function HeroSectionForm({
       </label>
 
       {/* Primary CTA */}
-      <label className="block text-xs text-secondary-light">
+      <label className="block text-xs text-secondary">
         Primary CTA
         <input
           value={data.hero.primaryCta}
@@ -224,7 +225,7 @@ export function HeroSectionForm({
       </label>
 
       {/* Primary CTA Link */}
-      <label className="block text-xs text-secondary-light">
+      <label className="block text-xs text-secondary">
         Primary CTA Link
         <input
           placeholder="e.g., https://yourwebsite.com/signup or #contact"
@@ -240,7 +241,7 @@ export function HeroSectionForm({
       </label>
 
       {/* Secondary CTA */}
-      <label className="block text-xs text-secondary-light">
+      <label className="block text-xs text-secondary">
         Secondary CTA (optional)
         <input
           placeholder="e.g., Learn More"
@@ -256,7 +257,7 @@ export function HeroSectionForm({
       </label>
 
       {/* Secondary CTA Link */}
-      <label className="block text-xs text-secondary-light">
+      <label className="block text-xs text-secondary">
         Secondary CTA Link
         <input
           placeholder="e.g., https://yourwebsite.com/learn-more or #about"

@@ -53,7 +53,7 @@ export function FeaturesSectionForm({
   return (
     <div className="space-y-4">
       {/* Features Title */}
-      <label className="block text-xs text-secondary-light">
+      <label className="block text-xs text-secondary">
         Features Section Title
         <input
           value={data.features.title}
@@ -73,24 +73,24 @@ export function FeaturesSectionForm({
         {data.features.items.map((item, index) => (
           <div
             key={index}
-            className="rounded-xl border border-secondary-active bg-slate-900/50 p-3"
+            className="rounded-xl border border-secondary-fade bg-secondary-light p-3 space-y-2"
           >
-            <div className="flex justify-between items-center mb-2">
-              <h4 className="text-xs font-semibold text-secondary-soft">
+            <div className="flex justify-between items-center">
+              <h4 className="text-xs font-semibold text-secondary-dark">
                 Feature {index + 1}
               </h4>
 
               {data.features.items.length > 1 && (
                 <button
                   onClick={() => removeFeature(index)}
-                  className="text-red-400 text-xs hover:text-red-300"
+                  className="text-xs text-red-500 hover:text-red-700 transition"
                 >
                   Remove
                 </button>
               )}
             </div>
 
-            <label className="block text-xs text-secondary-light mt-2">
+            <label className="block text-xs text-secondary">
               Label
               <input
                 type="text"
@@ -101,7 +101,7 @@ export function FeaturesSectionForm({
               />
             </label>
 
-            <label className="block text-xs text-secondary-light mt-2">
+            <label className="block text-xs text-secondary">
               Description
               <textarea
                 value={item.description}
@@ -119,7 +119,7 @@ export function FeaturesSectionForm({
       {/* Add Feature Button */}
       <button
         onClick={addFeature}
-        className="w-full rounded-full bg-primary px-3 py-2 text-xs font-medium text-slate-950"
+        className="w-full rounded-full bg-primary px-3 py-2 text-xs font-semibold text-white transition hover:bg-primary-hover"
       >
         + Add Feature
       </button>

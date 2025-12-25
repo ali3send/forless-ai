@@ -33,8 +33,8 @@ export default function WebsiteBuilderPage() {
 
   if (!projectId) {
     return (
-      <div className="min-h-screen bg-slate-950 text-secondary-text flex items-center justify-center">
-        <p className="text-sm text-secondary-soft">
+      <div className="min-h-screen bg-secondary-soft flex items-center justify-center">
+        <p className="text-sm text-secondary">
           Missing <code>?projectId=...</code> in URL
         </p>
       </div>
@@ -43,14 +43,14 @@ export default function WebsiteBuilderPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 text-secondary-text flex items-center justify-center">
-        <p className="text-sm text-secondary-soft">Loading website...</p>
+      <div className="min-h-screen bg-secondary-soft flex items-center justify-center">
+        <p className="text-sm text-secondary">Loading website...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-secondary-text">
+    <div className="min-h-screen bg-secondary-soft">
       <div className="mx-auto flex max-w-full flex-col gap-6 px-0 sm:px-4 sm:py-6 lg:flex-row">
         <BuilderSidebar
           projectId={projectId}
@@ -73,7 +73,7 @@ export default function WebsiteBuilderPage() {
           onSave={handleSave}
         />
 
-        <main className="w-full overflow-hidden rounded-2xl border border-secondary-dark bg-slate-900/60">
+        <main className="w-full overflow-hidden rounded-2xl border border-secondary-fade bg-secondary-light shadow-sm">
           <WebsiteTemplateBasic
             data={data}
             theme={{

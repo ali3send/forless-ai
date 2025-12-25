@@ -214,19 +214,21 @@ export default function BillingPlansPage() {
         ))}
       </div>
 
-      <div className="mt-8 rounded-2xl border border-secondary-dark bg-bg-card p-5">
-        <div className="text-sm font-semibold">FAQ</div>
-        <div className="mt-2 grid gap-3 text-sm text-text-muted">
+      <div className="mt-8 rounded-2xl border border-secondary-fade bg-secondary-soft p-5 shadow-sm">
+        <div className="text-sm font-semibold text-secondary-dark">FAQ</div>
+
+        <div className="mt-2 grid gap-3 text-sm text-secondary">
           <div>
-            <div className="text-secondary-fade">
+            <div className="font-semibold text-secondary-dark">
               Will my projects be deleted if I cancel?
             </div>
             <div>
               Never. You can keep your projects. Paid limits may revert to Free.
             </div>
           </div>
+
           <div>
-            <div className="text-secondary-fade">
+            <div className="font-semibold text-secondary-dark">
               How do I change or cancel my plan?
             </div>
             <div>

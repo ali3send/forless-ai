@@ -146,18 +146,18 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
 
   const hasLinks = !!previewUrl || !!finalUrl;
   return (
-    <div className="rounded-2xl border border-secondary-dark bg-slate-900/60 p-4 space-y-4">
+    <div className="rounded-2xl border border-secondary-fade bg-secondary-light p-4 space-y-4">
       {/* Slug row */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <p className="text-xs font-medium text-secondary-soft">Subdomain</p>
+          <p className="text-xs font-medium text-secondary-dark">Subdomain</p>
         </div>
 
         <input
           value={slug}
           onChange={(e) => setSlug(e.target.value)}
           placeholder="e.g., my-company"
-          className="input-base w-full bg-slate-950/60 border border-secondary-dark focus:border-primary/60"
+          className="input-base w-full"
         />
       </div>
 
@@ -186,42 +186,39 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
       {hasLinks && (
         <div className="space-y-2">
           {previewUrl && (
-            <div className="rounded-xl border border-secondary-dark bg-slate-950/40 p-3">
+            <div className="rounded-xl border border-secondary-fade bg-secondary-soft p-3">
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-[11px] text-secondary">Preview</p>
-                  <p className="truncate text-xs text-secondary-fade">
+                  <p className="truncate text-xs text-secondary-dark">
                     {previewUrl}
                   </p>
                 </div>
 
-                {/* <div className="flex items-center gap-2 shrink-0"> */}
                 <a
-                  className="rounded-md bg-primary px-2 py-1 text-[11px] text-slate-950 hover:opacity-90"
+                  className="rounded-md bg-primary px-2 py-1 text-[11px] font-semibold text-white transition hover:bg-primary-hover"
                   href={previewUrl}
                   target="_blank"
                   rel="noreferrer"
                 >
                   Open
                 </a>
-                {/* </div> */}
               </div>
             </div>
           )}
 
           {finalUrl && (
-            <div className="rounded-xl border border-secondary-dark bg-slate-950/40 p-3">
+            <div className="rounded-xl border border-secondary-fade bg-secondary-soft p-3">
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-[11px] text-secondary">Published</p>
-                  <p className="truncate text-xs text-secondary-fade">
+                  <p className="truncate text-xs text-secondary-dark">
                     {finalUrl}
                   </p>
                 </div>
 
-                {/* <div className="flex items-center gap-2 shrink-0"> */}
                 <a
-                  className="rounded-md bg-primary px-2 py-1 text-[11px] text-slate-950 hover:opacity-90"
+                  className="rounded-md bg-primary px-2 py-1 text-[11px] font-semibold text-white transition hover:bg-primary-hover"
                   href={finalUrl}
                   target="_blank"
                   rel="noreferrer"
@@ -230,7 +227,6 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
                 </a>
               </div>
             </div>
-            // </div>
           )}
         </div>
       )}

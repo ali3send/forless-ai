@@ -26,8 +26,8 @@ export default function FilterTabs({ active, onChange }: Props) {
             onClick={() => onChange(filter.id)}
             className={`rounded-full px-3 py-1 transition ${
               isActive
-                ? "bg-primary text-slate-950"
-                : "bg-slate-900 text-secondary-soft hover:bg-secondary-dark"
+                ? "bg-primary text-secondary-fade"
+                : "bg-secondary text-secondary-fade hover:bg-secondary-dark"
             }`}
           >
             {filter.label}
