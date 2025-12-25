@@ -47,15 +47,15 @@ export default function ResetPasswordRequestPage() {
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center">
-      <div className="w-full max-w-md rounded-2xl border border-secondary-dark bg-slate-900/70 p-6 shadow-xl">
+      <div className="w-full max-w-md rounded-2xl border border-secondary-fade bg-secondary-soft p-6 shadow-sm">
         <div className="mb-5">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-hover mb-2">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-2">
             ForlessAI
           </p>
-          <h1 className="text-2xl font-bold tracking-tight mb-1">
+          <h1 className="text-2xl font-bold tracking-tight mb-1 text-secondary-dark">
             Reset your password
           </h1>
-          <p className="text-xs text-secondary-light">
+          <p className="text-xs text-secondary">
             Enter the email linked with your ForlessAI account. We&apos;ll send
             you a secure link to create a new password.
           </p>
@@ -63,7 +63,7 @@ export default function ResetPasswordRequestPage() {
 
         <form onSubmit={handleResetRequest} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-secondary-fade mb-1.5">
+            <label className="block text-xs font-medium text-secondary mb-1.5">
               Email address
             </label>
             <input
@@ -71,7 +71,7 @@ export default function ResetPasswordRequestPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-md border border-secondary-active bg-slate-900 px-3 py-2 text-sm text-secondary-text placeholder-secondary outline-none focus:border-primary focus:ring-1 focus:ring-primary/70"
+              className="input-base w-full"
               placeholder="you@example.com"
             />
           </div>
@@ -79,17 +79,17 @@ export default function ResetPasswordRequestPage() {
           <button
             type="submit"
             disabled={loading}
-            className="mt-1 w-full inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-primary-hover disabled:opacity-60 disabled:cursor-not-allowed"
+            className="mt-1 w-full inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-hover disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {loading ? "Sending reset link..." : "Send reset link"}
           </button>
         </form>
 
-        <p className="mt-4 text-xs text-secondary-light">
+        <p className="mt-4 text-xs text-secondary">
           Remembered it?{" "}
           <a
             href="/auth/login"
-            className="text-primary-hover hover:text-primary-light underline underline-offset-2"
+            className="text-primary hover:text-primary-hover underline underline-offset-2"
           >
             Go back to login
           </a>

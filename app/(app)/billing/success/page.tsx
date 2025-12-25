@@ -19,16 +19,17 @@ export default function BillingSuccessPage() {
     </main>
   );
 }
+
 function SuccessFallback() {
   return (
-    <section className="w-full max-w-md rounded-2xl border border-secondary-dark bg-slate-900/60 p-6 shadow-lg backdrop-blur">
+    <section className="w-full max-w-md rounded-2xl border border-secondary-fade bg-secondary-soft p-6 shadow-sm backdrop-blur">
       <div className="animate-pulse">
-        <div className="h-12 w-12 rounded-full bg-secondary-dark" />
-        <div className="mt-4 h-6 w-2/3 rounded bg-secondary-dark" />
-        <div className="mt-3 h-4 w-full rounded bg-secondary-dark" />
-        <div className="mt-2 h-4 w-5/6 rounded bg-secondary-dark" />
-        <div className="mt-6 h-10 w-full rounded bg-secondary-dark" />
-        <div className="mt-3 h-10 w-full rounded bg-secondary-dark" />
+        <div className="h-12 w-12 rounded-full bg-secondary-light" />
+        <div className="mt-4 h-6 w-2/3 rounded bg-secondary-light" />
+        <div className="mt-3 h-4 w-full rounded bg-secondary-light" />
+        <div className="mt-2 h-4 w-5/6 rounded bg-secondary-light" />
+        <div className="mt-6 h-10 w-full rounded bg-secondary-light" />
+        <div className="mt-3 h-10 w-full rounded bg-secondary-light" />
       </div>
     </section>
   );

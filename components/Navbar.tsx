@@ -91,7 +91,7 @@ export function Navbar() {
   }, [user?.email]);
 
   return (
-    <header className="border-b border-secondary-fade bg-bg/90 backdrop-blur z-50">
+    <header className="border-b border-secondary-fade bg-secondary-soft/90 backdrop-blur z-50">
       <nav className="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
         <Link href="/" className="flex items-center gap-2">
           <div className="h-8 w-8 overflow-hidden rounded-md">
@@ -104,18 +104,18 @@ export function Navbar() {
             />
           </div>
 
-          <span className="font-semibold tracking-tight text-sm sm:text-base text-text">
+          <span className="font-semibold tracking-tight text-sm sm:text-base text-secondary-dark">
             ForlessAI
           </span>
         </Link>
 
-        <div className="flex items-center gap-4 text-xs sm:text-sm text-text-muted">
-          <Link href="/" className="hover:text-text">
+        <div className="flex items-center gap-4 text-xs sm:text-sm text-secondary">
+          <Link href="/" className="hover:text-secondary-dark">
             Home
           </Link>
 
           {user && (
-            <Link href="/dashboard" className="hover:text-text">
+            <Link href="/dashboard" className="hover:text-secondary-dark">
               Dashboard
             </Link>
           )}
@@ -125,7 +125,7 @@ export function Navbar() {
               <button
                 type="button"
                 onClick={() => setBillingOpen((v) => !v)}
-                className="inline-flex items-center gap-1 hover:text-text"
+                className="inline-flex items-center gap-1 hover:text-secondary-dark"
                 aria-haspopup="menu"
                 aria-expanded={billingOpen}
               >
@@ -134,17 +134,17 @@ export function Navbar() {
 
               {billingOpen && (
                 <div
-                  className="absolute right-0 mt-2 w-56 rounded-lg border border-secondary-fade bg-bg-card shadow-lg overflow-hidden z-50"
+                  className="absolute right-0 mt-2 w-56 rounded-lg border border-secondary-fade bg-secondary-soft shadow-lg overflow-hidden z-50"
                   role="menu"
                 >
                   <Link
                     href="/billing/plans"
                     onClick={() => setBillingOpen(false)}
-                    className="block px-3 py-2 text-sm text-text hover:bg-secondary-hover"
+                    className="block px-3 py-2 text-sm text-secondary-dark hover:bg-secondary-light"
                     role="menuitem"
                   >
                     <div className="font-semibold">View Plans</div>
-                    <div className="text-[11px] text-text-muted">
+                    <div className="text-[11px] text-secondary">
                       Upgrade or compare packages
                     </div>
                   </Link>
@@ -155,11 +155,11 @@ export function Navbar() {
                       setBillingOpen(false);
                       openBillingPortal();
                     }}
-                    className="w-full text-left px-3 py-2 text-sm text-text hover:bg-secondary-hover"
+                    className="w-full text-left px-3 py-2 text-sm text-secondary-dark hover:bg-secondary-light"
                     role="menuitem"
                   >
                     <div className="font-semibold">Manage Subscription</div>
-                    <div className="text-[11px] text-text-muted">
+                    <div className="text-[11px] text-secondary">
                       Cancel, invoices, payment method
                     </div>
                   </button>
@@ -171,7 +171,7 @@ export function Navbar() {
           )}
 
           {user && isAdmin && (
-            <Link href="/admin" className="hover:text-text">
+            <Link href="/admin" className="hover:text-secondary-dark">
               Admin Panel
             </Link>
           )}
@@ -180,25 +180,28 @@ export function Navbar() {
 
           {user ? (
             <>
-              <button onClick={handleLogout} className="hover:text-text">
+              <button
+                onClick={handleLogout}
+                className="hover:text-secondary-dark"
+              >
                 Logout
               </button>
 
-              <button className="flex items-center gap-2 rounded-full border border-secondary-fade bg-secondary-hover px-3 py-1.5 text-xs text-text">
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-secondary-active text-[10px] text-text">
+              <button className="flex items-center gap-2 rounded-full border border-secondary-fade bg-secondary-light px-3 py-1.5 text-xs text-secondary-dark">
+                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-secondary-soft text-[10px] text-secondary-dark border border-secondary-fade">
                   {userInitial}
                 </span>
-                <span className="hidden sm:inline text-text-muted">
+                <span className="hidden sm:inline text-secondary">
                   {user.email}
                 </span>
-                <span className="text-[10px] text-text-muted">▾</span>
+                <span className="text-[10px] text-secondary">▾</span>
               </button>
             </>
           ) : (
             <>
               <Link
                 href="/auth/login"
-                className="text-text-muted hover:text-text"
+                className="text-secondary hover:text-secondary-dark"
               >
                 Login
               </Link>
