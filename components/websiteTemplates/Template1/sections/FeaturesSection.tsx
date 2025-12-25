@@ -18,20 +18,22 @@ type Props = {
 
 export function FeaturesSection({ features, primary }: Props) {
   return (
-    <section className="border-t border-slate-800">
+    <section className="border-t border-secondary-dark">
       <div className="mx-auto max-w-5xl px-4 py-12">
         <h2 className="text-xl font-semibold">{features.title}</h2>
         <div className="mt-6 grid gap-6 md:grid-cols-3">
           {features.items.map((item, i) => (
             <div
               key={i}
-              className="rounded-2xl border border-slate-800 bg-slate-900/50 p-4"
+              className="rounded-2xl border border-secondary-dark bg-slate-900/50 p-4"
               style={{
                 borderColor: withAlpha(primary, 0.22),
               }}
             >
               <div className="text-sm font-medium">{item.label}</div>
-              <p className="mt-2 text-xs text-slate-300">{item.description}</p>
+              <p className="mt-2 text-xs text-secondary-soft">
+                {item.description}
+              </p>
             </div>
           ))}
         </div>

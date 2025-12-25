@@ -3,19 +3,22 @@
 /* project theme */
 @theme {
 
-  --color-primary: #10b981;          /* emerald-500 */
-  --color-primary-hover: #34d399;    /* emerald-400 */
-  --color-primary-active: #059669;   /* emerald-600 */
+  /* #0148e0  #fe6b0e */
 
-  /* Primary Variants */
-  --color-primary-light: #6ee7b7;    /* emerald-300 */
-  --color-primary-soft: #a7f3d0;     /* emerald-200*/
+--color-primary: #2563eb;          /* blue-600 */
+--color-primary-hover: #3b82f6;    /* blue-500 */
+--color-primary-active: #1d4ed8;   /* blue-700 */
+
+/* Primary Variants */
+--color-primary-light: #60a5fa;    /* blue-400 */
+--color-primary-soft: #93c5fd;     /* blue-300 */
+
+/* Primary Strong / Dark */
+--color-primary-dark: #1e40af;     /* blue-800 */
+--color-primary-darker: #1e3a8a;   /* blue-900 */
 
 
-  /* Primary Strong / Dark */
-  --color-primary-dark: #047857;     /* emerald-700 */
-  --color-primary-darker: #065f46;   /* emerald-800 */
-
+  
 /* Secondary Base */
   --color-secondary: #64748b;          /* slate-500 */
   --color-secondary-hover: #475569;    /* slate-600 */
@@ -27,17 +30,7 @@
   --color-secondary-fade: #e2e8f0;     /* slate-200 */
 
   /* Secondary Dark Variants */
-  --color-secondary-dark: #334155;     /* slate-700 */
-  --color-secondary-darker: #1e293b;   /* slate-800 */
-
-  /* Secondary Background / Surface */
-  --color-secondary-surface: #0f172a;  /* slate-900 */
-  --color-secondary-surface-soft: #1e293b; /* slate-800 */
-
-  /* Secondary Text */
-  --color-secondary-text: #f8fafc;     /* slate-50 */
-  --color-secondary-text-muted: #cbd5e1; /* slate-300 */
-
+  --color-secondary-dark: #1e293b;   /* slate-800 */
 
   --color-bg: #0f172a;
   --color-bg-card: rgba(30, 41, 59, 0.7);
@@ -49,7 +42,7 @@
 }
 @layer components {
   .input-base {
-    @apply mt-1 w-full rounded-md border border-slate-700 bg-slate-900
+    @apply mt-1 w-full rounded-md border border-secondary-active bg-slate-900
            px-2 py-1 text-xs 
            focus:outline-none 
            focus:border-primary
@@ -59,7 +52,7 @@
     @apply   rounded-md bg-primary  py-1 px-4  text-sm  text-slate-950 shadow-sm hover:bg-primary-hover cursor-pointer
   }
   .btn-secondary{
-    @apply  rounded-md border border-slate-700 bg-bg-card px-4 py-1 text-sm text-text-muted hover:text-text transition cursor-pointer
+    @apply  rounded-md border border-secondary-active bg-bg-card px-4 py-1 text-sm text-text-muted hover:text-text transition cursor-pointer
   }
 }
 

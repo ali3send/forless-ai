@@ -22,10 +22,10 @@ export function UserCard(props: {
   const role = (u.role || "user") as "user" | "admin";
 
   return (
-    <div className="rounded-2xl border border-slate-700 bg-bg p-4">
+    <div className="rounded-2xl border border-secondary-active bg-bg p-4">
       <div className="flex items-start justify-between gap-4">
         <div className="flex min-w-0 items-start gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-700 bg-bg-card text-sm font-semibold text-text">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-secondary-active bg-bg-card text-sm font-semibold text-text">
             {initials(u.full_name, u.email)}
           </div>
 
@@ -72,7 +72,7 @@ export function UserCard(props: {
         <div className="flex items-center gap-2">
           <button
             onClick={props.onToggleExpanded}
-            className="rounded-md border border-slate-700 bg-bg px-3 py-2 text-xs text-text-muted hover:text-text transition"
+            className="rounded-md border border-secondary-active bg-bg px-3 py-2 text-xs text-text-muted hover:text-text transition"
           >
             {props.expanded ? "Hide" : "Details"}
           </button>

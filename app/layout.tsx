@@ -23,7 +23,8 @@ export default function RootLayout({
           toastOptions={{
             classNames: {
               actionButton: "!bg-red-600 !text-white hover:!bg-red-700",
-              cancelButton: "!bg-slate-700 !text-slate-200 hover:!bg-slate-600",
+              cancelButton:
+                "!bg-secondary-active !text-secondary-fade hover:!bg-secondary-hover",
             },
           }}
         />

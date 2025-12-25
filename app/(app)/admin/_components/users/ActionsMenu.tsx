@@ -20,7 +20,7 @@ export function ActionsMenu(props: {
     <div className="relative">
       <button
         onClick={() => props.setMenuOpen((cur) => (cur === u.id ? null : u.id))}
-        className="rounded-md border border-slate-700 bg-bg px-3 py-2 text-xs text-text-muted hover:text-text transition"
+        className="rounded-md border border-secondary-active bg-bg px-3 py-2 text-xs text-text-muted hover:text-text transition"
       >
         Actions ▾
       </button>
@@ -46,7 +46,7 @@ export function ActionsMenu(props: {
             Make {role === "admin" ? "User" : "Admin"}
           </button>
 
-          <div className="my-2 h-px bg-slate-800/70" />
+          <div className="my-2 h-px bg-secondary-dark/70" />
 
           <button
             onClick={() => props.onDelete(u.id, u.email)}

@@ -76,7 +76,7 @@ export function AboutSectionForm({
 
   return (
     <div className="space-y-2">
-      <label className="block text-xs text-slate-400">
+      <label className="block text-xs text-secondary-light">
         About section title
         <input
           type="text"
@@ -92,7 +92,7 @@ export function AboutSectionForm({
         />
       </label>
 
-      <label className="block text-xs text-slate-400">
+      <label className="block text-xs text-secondary-light">
         About text
         <textarea
           placeholder="describe your company, mission, or story"
@@ -110,17 +110,17 @@ export function AboutSectionForm({
 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <p className="text-xs text-slate-400">About image</p>
+          <p className="text-xs text-secondary-light">About image</p>
           {uploading && (
-            <span className="text-[11px] text-slate-500">Uploading…</span>
+            <span className="text-[11px] text-secondary">Uploading…</span>
           )}
           {removing && (
-            <span className="text-[11px] text-slate-500">Removing…</span>
+            <span className="text-[11px] text-secondary">Removing…</span>
           )}
         </div>
 
         {data.about.imageUrl ? (
-          <div className="rounded-lg border border-slate-800 bg-slate-950 p-2">
+          <div className="rounded-lg border border-secondary-dark bg-slate-950 p-2">
             <Image
               key={data.about.imageUrl || "empty"}
               src={data.about.imageUrl}
@@ -136,7 +136,7 @@ export function AboutSectionForm({
                 disabled={busy}
                 className={`text-[11px] underline underline-offset-2 ${
                   busy
-                    ? "text-slate-500 cursor-not-allowed"
+                    ? "text-secondary cursor-not-allowed"
                     : "text-rose-300 hover:text-rose-200"
                 }`}
               >
@@ -156,9 +156,9 @@ export function AboutSectionForm({
                 if (!f) return;
                 await onUpload(f);
               }}
-              className="block w-full text-xs text-slate-300 file:mr-3 file:rounded-md file:border-0 file:bg-slate-800 file:px-3 file:py-2 file:text-xs file:text-slate-100 hover:file:bg-slate-700 disabled:opacity-60"
+              className="block w-full text-xs text-secondary-soft file:mr-3 file:rounded-md file:border-0 file:bg-secondary-dark file:px-3 file:py-2 file:text-xs file:text-slate-100 hover:file:bg-secondary-active disabled:opacity-60"
             />
-            <p className="mt-1 text-[11px] text-slate-500">
+            <p className="mt-1 text-[11px] text-secondary">
               JPG/PNG/WEBP/SVG • up to 5MB
             </p>
           </label>
@@ -167,7 +167,7 @@ export function AboutSectionForm({
         {err && <p className="text-[11px] text-rose-300">{err}</p>}
       </div>
 
-      <label className="block text-xs text-slate-400">
+      <label className="block text-xs text-secondary-light">
         About image keyword (Unsplash fallback)
         <input
           placeholder="e.g., technology, solar panels, office"

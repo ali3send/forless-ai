@@ -12,16 +12,16 @@ export default function HomePage() {
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1.25fr),minmax(0,1fr)] lg:items-center">
           {/* Left */}
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900/60 px-3 py-1 text-xs text-slate-200">
+            <div className="inline-flex items-center gap-2 rounded-full border border-secondary-dark bg-slate-900/60 px-3 py-1 text-xs text-secondary-fade">
               <span className="h-2 w-2 rounded-full bg-emerald-500 border-primary" />
               <span className="font-semibold tracking-wide">
                 ForlessAI Website Builder
               </span>
-              <span className="text-slate-400">•</span>
-              <span className="text-slate-400">Next.js + Supabase</span>
+              <span className="text-secondary-light">•</span>
+              <span className="text-secondary-light">Next.js + Supabase</span>
             </div>
 
-            <h1 className="mt-5 text-4xl font-bold tracking-tight text-slate-50 sm:text-5xl">
+            <h1 className="mt-5 text-4xl font-bold tracking-tight text-secondary-text sm:text-5xl">
               Launch{" "}
               <span className="bg-linear-to-r from-primary to-cyan-300 bg-clip-text text-transparent">
                 modern websites
@@ -29,7 +29,7 @@ export default function HomePage() {
               in minutes — not weeks.
             </h1>
 
-            <p className="mt-4 max-w-xl text-sm leading-6 text-slate-300 sm:text-base">
+            <p className="mt-4 max-w-xl text-sm leading-6 text-secondary-soft sm:text-base">
               Describe your business in a few lines. ForlessAI generates clean,
               editable Next.js pages, sections, and components — backed by a
               secure Supabase setup. Publish to your subdomain instantly.
@@ -49,16 +49,16 @@ export default function HomePage() {
 
               <a
                 href="/auth/login"
-                className="inline-flex items-center justify-center rounded-md border border-slate-800 bg-slate-900/30 px-5 py-2.5 text-sm font-semibold text-slate-100 transition hover:border-primary hover:text-primary-hover"
+                className="inline-flex items-center justify-center rounded-md border border-secondary-dark bg-slate-900/30 px-5 py-2.5 text-sm font-semibold text-slate-100 transition hover:border-primary hover:text-primary-hover"
               >
                 Log in
               </a>
 
-              <div className="ml-0 flex items-center gap-2 text-xs text-slate-400 sm:ml-2">
-                <span className="inline-flex h-6 items-center rounded-full border border-slate-800 bg-slate-900/50 px-2">
+              <div className="ml-0 flex items-center gap-2 text-xs text-secondary-light sm:ml-2">
+                <span className="inline-flex h-6 items-center rounded-full border border-secondary-dark bg-slate-900/50 px-2">
                   No credit card
                 </span>
-                <span className="inline-flex h-6 items-center rounded-full border border-slate-800 bg-slate-900/50 px-2">
+                <span className="inline-flex h-6 items-center rounded-full border border-secondary-dark bg-slate-900/50 px-2">
                   Publish-ready
                 </span>
               </div>
@@ -66,27 +66,29 @@ export default function HomePage() {
 
             {/* Social proof + small features */}
             <div className="mt-8 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-lg border border-slate-800 bg-slate-900/40 p-3">
-                <p className="text-xs text-slate-400">Average first draft</p>
+              <div className="rounded-lg border border-secondary-dark bg-slate-900/40 p-3">
+                <p className="text-xs text-secondary-light">
+                  Average first draft
+                </p>
                 <p className="mt-1 text-lg font-semibold text-slate-100">
                   &lt; 2 minutes
                 </p>
               </div>
-              <div className="rounded-lg border border-slate-800 bg-slate-900/40 p-3">
-                <p className="text-xs text-slate-400">Generated output</p>
+              <div className="rounded-lg border border-secondary-dark bg-slate-900/40 p-3">
+                <p className="text-xs text-secondary-light">Generated output</p>
                 <p className="mt-1 text-lg font-semibold text-slate-100">
                   Next.js code
                 </p>
               </div>
-              <div className="rounded-lg border border-slate-800 bg-slate-900/40 p-3">
-                <p className="text-xs text-slate-400">Backend</p>
+              <div className="rounded-lg border border-secondary-dark bg-slate-900/40 p-3">
+                <p className="text-xs text-secondary-light">Backend</p>
                 <p className="mt-1 text-lg font-semibold text-slate-100">
                   Supabase
                 </p>
               </div>
             </div>
 
-            <p className="mt-4 text-xs text-slate-500">
+            <p className="mt-4 text-xs text-secondary">
               Log in → describe your project → edit components → publish to your
               subdomain.
             </p>
@@ -96,7 +98,7 @@ export default function HomePage() {
           <div className="relative">
             <div className="pointer-events-none absolute -inset-6 rounded-3xl bg-gradient-to-r from-primary/10 via-transparent to-cyan-500/10 blur-2xl" />
 
-            <div className="relative rounded-2xl border border-slate-800 bg-slate-900/45 p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.04)] backdrop-blur">
+            <div className="relative rounded-2xl border border-secondary-dark bg-slate-900/45 p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.04)] backdrop-blur">
               {/* top bar */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -105,10 +107,12 @@ export default function HomePage() {
                     <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/80" />
                     <span className="h-2.5 w-2.5 rounded-full bg-primary-hover/80" />
                   </div>
-                  <p className="text-xs text-slate-400">ForlessAI Builder</p>
+                  <p className="text-xs text-secondary-light">
+                    ForlessAI Builder
+                  </p>
                 </div>
 
-                <span className="rounded-full border border-slate-800 bg-slate-900/60 px-2 py-1 text-[11px] text-slate-300">
+                <span className="rounded-full border border-secondary-dark bg-slate-900/60 px-2 py-1 text-[11px] text-secondary-soft">
                   Live
                 </span>
               </div>
@@ -118,7 +122,7 @@ export default function HomePage() {
                 <h3 className="text-lg font-semibold text-slate-100">
                   From basic layout to polished landing page
                 </h3>
-                <p className="mt-1 text-sm text-slate-300">
+                <p className="mt-1 text-sm text-secondary-soft">
                   ForlessAI improves structure, spacing, hierarchy, and section
                   flow — while keeping everything editable.
                 </p>
@@ -127,31 +131,31 @@ export default function HomePage() {
               {/* Split preview */}
               <div className="mt-4 grid gap-3 md:grid-cols-2">
                 {/* BEFORE */}
-                <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
+                <div className="rounded-xl border border-secondary-dark bg-slate-950/40 p-4">
                   <div className="flex items-center justify-between">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-secondary-light">
                       Before
                     </p>
-                    <span className="rounded-full border border-slate-800 bg-slate-900/60 px-2 py-1 text-[11px] text-slate-400">
+                    <span className="rounded-full border border-secondary-dark bg-slate-900/60 px-2 py-1 text-[11px] text-secondary-light">
                       Draft
                     </span>
                   </div>
 
                   {/* messy blocks */}
                   <div className="mt-4 space-y-2">
-                    <div className="h-8 w-2/3 rounded-md border border-slate-800 bg-slate-900/40" />
-                    <div className="h-3 w-full rounded border border-slate-800 bg-slate-900/30" />
-                    <div className="h-3 w-5/6 rounded border border-slate-800 bg-slate-900/30" />
+                    <div className="h-8 w-2/3 rounded-md border border-secondary-dark bg-slate-900/40" />
+                    <div className="h-3 w-full rounded border border-secondary-dark bg-slate-900/30" />
+                    <div className="h-3 w-5/6 rounded border border-secondary-dark bg-slate-900/30" />
 
                     <div className="mt-3 grid grid-cols-2 gap-2">
-                      <div className="h-16 rounded-lg border border-slate-800 bg-slate-900/30" />
-                      <div className="h-16 rounded-lg border border-slate-800 bg-slate-900/30" />
+                      <div className="h-16 rounded-lg border border-secondary-dark bg-slate-900/30" />
+                      <div className="h-16 rounded-lg border border-secondary-dark bg-slate-900/30" />
                     </div>
 
-                    <div className="h-10 rounded-lg border border-slate-800 bg-slate-900/30" />
-                    <div className="h-10 w-3/4 rounded-lg border border-slate-800 bg-slate-900/30" />
+                    <div className="h-10 rounded-lg border border-secondary-dark bg-slate-900/30" />
+                    <div className="h-10 w-3/4 rounded-lg border border-secondary-dark bg-slate-900/30" />
 
-                    <div className="mt-3 h-8 rounded-md border border-slate-800 bg-slate-900/30" />
+                    <div className="mt-3 h-8 rounded-md border border-secondary-dark bg-slate-900/30" />
                   </div>
 
                   <div className="mt-4 flex flex-wrap gap-2">
@@ -159,7 +163,7 @@ export default function HomePage() {
                       (x) => (
                         <span
                           key={x}
-                          className="rounded-md border border-slate-800 bg-slate-900/60 px-2 py-1 text-xs text-slate-400"
+                          className="rounded-md border border-secondary-dark bg-slate-900/60 px-2 py-1 text-xs text-secondary-light"
                         >
                           {x}
                         </span>
@@ -169,14 +173,14 @@ export default function HomePage() {
                 </div>
 
                 {/* AFTER */}
-                <div className="relative overflow-hidden rounded-xl border border-slate-800 bg-slate-950/40 p-4">
+                <div className="relative overflow-hidden rounded-xl border border-secondary-dark bg-slate-950/40 p-4">
                   <div className="pointer-events-none absolute -top-16 -right-16 h-56 w-56 rounded-full bg-primary/18 blur-3xl" />
 
                   <div className="flex items-center justify-between">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary-hover">
                       After
                     </p>
-                    <span className="rounded-full border border-slate-800 bg-slate-900/60 px-2 py-1 text-[11px] text-primary-soft">
+                    <span className="rounded-full border border-secondary-dark bg-slate-900/60 px-2 py-1 text-[11px] text-primary-soft">
                       Optimized
                     </span>
                   </div>
@@ -184,29 +188,29 @@ export default function HomePage() {
                   {/* polished blocks */}
                   <div className="mt-4 space-y-3">
                     {/* hero */}
-                    <div className="rounded-lg border border-slate-800 bg-slate-900/40 p-3">
+                    <div className="rounded-lg border border-secondary-dark bg-slate-900/40 p-3">
                       <div className="h-3 w-24 rounded bg-primary/30" />
-                      <div className="mt-2 h-6 w-3/4 rounded bg-slate-200/10" />
-                      <div className="mt-2 h-3 w-full rounded bg-slate-200/5" />
-                      <div className="mt-1 h-3 w-5/6 rounded bg-slate-200/5" />
+                      <div className="mt-2 h-6 w-3/4 rounded bg-secondary-fade/10" />
+                      <div className="mt-2 h-3 w-full rounded bg-secondary-fade/5" />
+                      <div className="mt-1 h-3 w-5/6 rounded bg-secondary-fade/5" />
                       <div className="mt-3 flex gap-2">
                         <div className="h-8 w-24 rounded-md bg-primary/80" />
-                        <div className="h-8 w-20 rounded-md border border-slate-700 bg-slate-900/40" />
+                        <div className="h-8 w-20 rounded-md border border-secondary-active bg-slate-900/40" />
                       </div>
                     </div>
 
                     {/* features */}
                     <div className="grid grid-cols-3 gap-2">
-                      <div className="h-16 rounded-lg border border-slate-800 bg-slate-900/35" />
-                      <div className="h-16 rounded-lg border border-slate-800 bg-slate-900/35" />
-                      <div className="h-16 rounded-lg border border-slate-800 bg-slate-900/35" />
+                      <div className="h-16 rounded-lg border border-secondary-dark bg-slate-900/35" />
+                      <div className="h-16 rounded-lg border border-secondary-dark bg-slate-900/35" />
+                      <div className="h-16 rounded-lg border border-secondary-dark bg-slate-900/35" />
                     </div>
 
                     {/* section */}
-                    <div className="h-12 rounded-lg border border-slate-800 bg-slate-900/35" />
+                    <div className="h-12 rounded-lg border border-secondary-dark bg-slate-900/35" />
 
                     {/* footer */}
-                    <div className="h-9 rounded-lg border border-slate-800 bg-slate-900/35" />
+                    <div className="h-9 rounded-lg border border-secondary-dark bg-slate-900/35" />
                   </div>
 
                   <div className="mt-4 flex flex-wrap gap-2">
@@ -214,7 +218,7 @@ export default function HomePage() {
                       (x) => (
                         <span
                           key={x}
-                          className="rounded-md border border-slate-800 bg-slate-900/60 px-2 py-1 text-xs text-slate-300"
+                          className="rounded-md border border-secondary-dark bg-slate-900/60 px-2 py-1 text-xs text-secondary-soft"
                         >
                           {x}
                         </span>
@@ -224,13 +228,13 @@ export default function HomePage() {
                 </div>
               </div>
               {/* prompt */}
-              <div className="mt-4 rounded-xl border border-slate-800 bg-slate-950/40 p-4">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
+              <div className="mt-4 rounded-xl border border-secondary-dark bg-slate-950/40 p-4">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-secondary-light">
                   Prompt
                 </p>
 
                 <div className="mt-3 space-y-2">
-                  <div className="rounded-lg border border-slate-800 bg-slate-900/50 px-3 py-2 text-sm text-slate-200">
+                  <div className="rounded-lg border border-secondary-dark bg-slate-900/50 px-3 py-2 text-sm text-secondary-fade">
                     “Create a modern landing page with a hero, features,
                     pricing, and a contact section.”
                   </div>
@@ -239,7 +243,7 @@ export default function HomePage() {
                     {["Business", "Minimal", "Dark", "Fast"].map((x) => (
                       <span
                         key={x}
-                        className="rounded-md border border-slate-800 bg-slate-900/60 px-2 py-1 text-xs text-slate-300"
+                        className="rounded-md border border-secondary-dark bg-slate-900/60 px-2 py-1 text-xs text-secondary-soft"
                       >
                         {x}
                       </span>
@@ -249,12 +253,12 @@ export default function HomePage() {
               </div>
 
               {/* console */}
-              <div className="mt-3 rounded-xl border border-slate-800 bg-slate-950/40 p-4">
+              <div className="mt-3 rounded-xl border border-secondary-dark bg-slate-950/40 p-4">
                 <div className="flex items-center justify-between">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-secondary-light">
                     Build log
                   </p>
-                  <span className="inline-flex items-center gap-2 text-xs text-slate-400">
+                  <span className="inline-flex items-center gap-2 text-xs text-secondary-light">
                     <span className="relative flex h-2 w-2">
                       <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-hover/40" />
                       <span className="relative inline-flex h-2 w-2 rounded-full bg-primary-hover" />
@@ -264,31 +268,31 @@ export default function HomePage() {
                 </div>
 
                 <div className="mt-3 space-y-2 font-mono text-[12px] leading-5">
-                  <div className="flex items-start gap-2 text-slate-300">
+                  <div className="flex items-start gap-2 text-secondary-soft">
                     <span className="mt-0.5 text-primary-light">✓</span>
                     <span>Scaffold Next.js layout</span>
                   </div>
-                  <div className="flex items-start gap-2 text-slate-300">
+                  <div className="flex items-start gap-2 text-secondary-soft">
                     <span className="mt-0.5 text-primary-light">✓</span>
                     <span>Generate sections: hero, features, pricing</span>
                   </div>
-                  <div className="flex items-start gap-2 text-slate-300">
+                  <div className="flex items-start gap-2 text-secondary-soft">
                     <span className="mt-0.5 text-primary-light">✓</span>
                     <span>Wire data + forms (Supabase)</span>
                   </div>
-                  <div className="flex items-start gap-2 text-slate-300">
+                  <div className="flex items-start gap-2 text-secondary-soft">
                     <span className="mt-0.5 text-primary-hover">›</span>
-                    <span className="text-slate-200">
+                    <span className="text-secondary-fade">
                       Optimize styling + spacing…
                     </span>
                   </div>
 
                   {/* progress bar */}
                   <div className="pt-2">
-                    <div className="h-2 w-full rounded-full bg-slate-800">
+                    <div className="h-2 w-full rounded-full bg-secondary-dark">
                       <div className="h-2 w-[76%] rounded-full bg-gradient-to-r from-primary to-cyan-300" />
                     </div>
-                    <div className="mt-2 flex items-center justify-between text-[11px] text-slate-500">
+                    <div className="mt-2 flex items-center justify-between text-[11px] text-secondary">
                       <span>Generating clean components</span>
                       <span>76%</span>
                     </div>
@@ -298,26 +302,26 @@ export default function HomePage() {
 
               {/* output */}
               <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
+                <div className="rounded-xl border border-secondary-dark bg-slate-950/40 p-4">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-secondary-light">
                     Output
                   </p>
                   <p className="mt-2 text-sm font-semibold text-slate-100">
                     Editable Next.js code
                   </p>
-                  <p className="mt-1 text-xs text-slate-400">
+                  <p className="mt-1 text-xs text-secondary-light">
                     Components you can tweak, move, or delete.
                   </p>
                 </div>
 
-                <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
+                <div className="rounded-xl border border-secondary-dark bg-slate-950/40 p-4">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-secondary-light">
                     Publish
                   </p>
                   <p className="mt-2 text-sm font-semibold text-slate-100">
                     Instant subdomain
                   </p>
-                  <p className="mt-1 text-xs text-slate-400">
+                  <p className="mt-1 text-xs text-secondary-light">
                     Preview on /site/&lt;slug&gt; and go live when ready.
                   </p>
                 </div>

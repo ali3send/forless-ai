@@ -46,7 +46,7 @@ export default function PaidPlanCard(props: {
     <div
       className={cx(
         "rounded-2xl border p-5 bg-bg-card",
-        p.highlight ? "border-primary/50" : "border-slate-800"
+        p.highlight ? "border-primary/50" : "border-secondary-dark"
       )}
     >
       <div className="flex items-start justify-between gap-3">
@@ -61,7 +61,7 @@ export default function PaidPlanCard(props: {
             )}
 
             {isCurrent && (
-              <span className="text-[11px] rounded-full border border-slate-700 bg-slate-900 px-2 py-0.5 text-slate-200">
+              <span className="text-[11px] rounded-full border border-secondary-active bg-slate-900 px-2 py-0.5 text-secondary-fade">
                 Current
               </span>
             )}
@@ -93,9 +93,9 @@ export default function PaidPlanCard(props: {
 
       <ul className="mt-4 space-y-2 text-sm">
         {p.features.map((f) => (
-          <li key={f} className="flex gap-2 text-slate-200">
+          <li key={f} className="flex gap-2 text-secondary-fade">
             <span className="text-primary mt-[2px]">✓</span>
-            <span className="text-slate-200">{f}</span>
+            <span className="text-secondary-fade">{f}</span>
           </li>
         ))}
       </ul>

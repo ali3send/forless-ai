@@ -214,11 +214,11 @@ export default function BillingPlansPage() {
         ))}
       </div>
 
-      <div className="mt-8 rounded-2xl border border-slate-800 bg-bg-card p-5">
+      <div className="mt-8 rounded-2xl border border-secondary-dark bg-bg-card p-5">
         <div className="text-sm font-semibold">FAQ</div>
         <div className="mt-2 grid gap-3 text-sm text-text-muted">
           <div>
-            <div className="text-slate-200">
+            <div className="text-secondary-fade">
               Will my projects be deleted if I cancel?
             </div>
             <div>
@@ -226,7 +226,7 @@ export default function BillingPlansPage() {
             </div>
           </div>
           <div>
-            <div className="text-slate-200">
+            <div className="text-secondary-fade">
               How do I change or cancel my plan?
             </div>
             <div>

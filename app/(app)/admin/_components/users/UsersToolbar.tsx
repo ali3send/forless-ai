@@ -12,7 +12,7 @@ export function UsersToolbar(props: {
   total: number;
 }) {
   return (
-    <div className="sticky top-0 z-10 rounded-t-2xl border-b border-slate-700 bg-bg-card/95 backdrop-blur p-4">
+    <div className="sticky top-0 z-10 rounded-t-2xl border-b border-secondary-active bg-bg-card/95 backdrop-blur p-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="text-sm font-semibold text-text">Users</div>
@@ -34,7 +34,7 @@ export function UsersToolbar(props: {
             onChange={(e) =>
               props.setStatus(e.target.value as "all" | "active" | "suspended")
             }
-            className="rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-xs text-text focus:outline-none focus:border-primary"
+            className="rounded-md border border-secondary-active bg-slate-900 px-3 py-2 text-xs text-text focus:outline-none focus:border-primary"
           >
             <option value="all">All statuses</option>
             <option value="active">Active</option>
@@ -46,7 +46,7 @@ export function UsersToolbar(props: {
             onChange={(e) =>
               props.setRoleFilter(e.target.value as "all" | "user" | "admin")
             }
-            className="rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-xs text-text focus:outline-none focus:border-primary"
+            className="rounded-md border border-secondary-active bg-slate-900 px-3 py-2 text-xs text-text focus:outline-none focus:border-primary"
           >
             <option value="all">All roles</option>
             <option value="user">Users</option>
@@ -55,7 +55,7 @@ export function UsersToolbar(props: {
 
           <button
             onClick={props.onRefresh}
-            className="rounded-md border border-slate-700 bg-bg px-3 py-2 text-xs text-text-muted hover:text-text transition"
+            className="rounded-md border border-secondary-active bg-bg px-3 py-2 text-xs text-text-muted hover:text-text transition"
           >
             Refresh
           </button>

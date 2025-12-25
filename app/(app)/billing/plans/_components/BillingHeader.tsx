@@ -43,23 +43,23 @@ export default function BillingHeader(props: {
 
         <div className="flex items-center gap-2">
           {!hydrated ? (
-            <span className="text-xs text-slate-400">Loading…</span>
+            <span className="text-xs text-secondary-light">Loading…</span>
           ) : loading && !profile ? (
-            <span className="text-xs text-slate-400">Loading…</span>
+            <span className="text-xs text-secondary-light">Loading…</span>
           ) : profile ? (
-            <div className="rounded-lg border border-slate-800 bg-bg-card px-3 py-2">
+            <div className="rounded-lg border border-secondary-dark bg-bg-card px-3 py-2">
               <div className="text-[11px] text-text-muted">Current plan</div>
               <div className="text-sm font-semibold capitalize">
                 {currentPlan}
                 {statusText ? (
-                  <span className="ml-2 text-[11px] font-normal text-slate-400">
+                  <span className="ml-2 text-[11px] font-normal text-secondary-light">
                     • {statusText}
                   </span>
                 ) : null}
               </div>
             </div>
           ) : (
-            <div className="rounded-lg border border-slate-800 bg-bg-card px-3 py-2">
+            <div className="rounded-lg border border-secondary-dark bg-bg-card px-3 py-2">
               <div className="text-[11px] text-text-muted">Not signed in</div>
               <div className="text-sm font-semibold">Free</div>
             </div>

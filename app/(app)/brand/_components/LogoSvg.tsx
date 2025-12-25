@@ -21,7 +21,7 @@ export default function LogoSvg({
   return (
     <svg
       viewBox="0 0 64 64"
-      className="h-10 w-10 rounded-md border border-slate-700"
+      className="h-10 w-10 rounded-md border border-secondary-active"
     >
       <defs>
         <linearGradient id="brandGradient" x1="0" x2="1" y1="0" y2="1">

@@ -11,15 +11,15 @@ export default function BillingIntervalToggle(props: {
   const { interval, setInterval } = props;
 
   return (
-    <div className="inline-flex rounded-xl border border-slate-800 bg-bg-card p-1">
+    <div className="inline-flex rounded-xl border border-secondary-dark bg-bg-card p-1">
       <button
         type="button"
         onClick={() => setInterval("monthly")}
         className={cx(
           "px-3 py-1.5 text-sm rounded-lg",
           interval === "monthly"
-            ? "bg-slate-900 text-slate-50"
-            : "text-slate-300 hover:text-slate-50"
+            ? "bg-slate-900 text-secondary-text"
+            : "text-secondary-soft hover:text-secondary-text"
         )}
       >
         Monthly
@@ -31,8 +31,8 @@ export default function BillingIntervalToggle(props: {
         className={cx(
           "px-3 py-1.5 text-sm rounded-lg flex items-center gap-2",
           interval === "yearly"
-            ? "bg-slate-900 text-slate-50"
-            : "text-slate-300 hover:text-slate-50"
+            ? "bg-slate-900 text-secondary-text"
+            : "text-secondary-soft hover:text-secondary-text"
         )}
       >
         Yearly

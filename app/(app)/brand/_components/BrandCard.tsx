@@ -23,7 +23,7 @@ export default function BrandCard({ option, onUse }: BrandCardProps) {
   }
 
   return (
-    <div className="flex h-full flex-col justify-between rounded-lg border border-slate-800 bg-slate-900/60 p-3 text-xs">
+    <div className="flex h-full flex-col justify-between rounded-lg border border-secondary-dark bg-slate-900/60 p-3 text-xs">
       <div className="space-y-2">
         <div className="flex items-center gap-2">
           <LogoSvg
@@ -38,11 +38,13 @@ export default function BrandCard({ option, onUse }: BrandCardProps) {
             >
               {option.name}
             </div>
-            <div className="text-[11px] text-slate-400">{option.slogan}</div>
+            <div className="text-[11px] text-secondary-light">
+              {option.slogan}
+            </div>
           </div>
         </div>
 
-        <div className="mt-2 flex items-center justify-between text-[10px] text-slate-500">
+        <div className="mt-2 flex items-center justify-between text-[10px] text-secondary">
           <span>Palette</span>
           <span className="flex gap-1">
             <span

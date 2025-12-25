@@ -80,7 +80,7 @@ export default function ResetPasswordUpdatePage() {
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center">
-      <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl">
+      <div className="w-full max-w-md rounded-2xl border border-secondary-dark bg-slate-900/70 p-6 shadow-xl">
         <div className="mb-5">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-hover mb-2">
             ForlessAI
@@ -88,12 +88,12 @@ export default function ResetPasswordUpdatePage() {
           <h1 className="text-2xl font-bold tracking-tight mb-1">
             Choose a new password
           </h1>
-          {info && <p className="text-xs text-slate-400">{info}</p>}
+          {info && <p className="text-xs text-secondary-light">{info}</p>}
         </div>
 
         <form onSubmit={handleUpdatePassword} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-slate-200 mb-1.5">
+            <label className="block text-xs font-medium text-secondary-fade mb-1.5">
               New password
             </label>
             <input
@@ -103,13 +103,13 @@ export default function ResetPasswordUpdatePage() {
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               disabled={loading || linkInvalid}
-              className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-50 placeholder-slate-500 outline-none focus:border-primary focus:ring-1 focus:ring-primary/70 disabled:opacity-60"
+              className="w-full rounded-md border border-secondary-active bg-slate-900 px-3 py-2 text-sm text-secondary-text placeholder-secondary outline-none focus:border-primary focus:ring-1 focus:ring-primary/70 disabled:opacity-60"
               placeholder="Minimum 6 characters"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-200 mb-1.5">
+            <label className="block text-xs font-medium text-secondary-fade mb-1.5">
               Confirm new password
             </label>
             <input
@@ -118,7 +118,7 @@ export default function ResetPasswordUpdatePage() {
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
               disabled={loading || linkInvalid}
-              className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-50 placeholder-slate-500 outline-none focus:border-primary focus:ring-1 focus:ring-primary/70 disabled:opacity-60"
+              className="w-full rounded-md border border-secondary-active bg-slate-900 px-3 py-2 text-sm text-secondary-text placeholder-secondary outline-none focus:border-primary focus:ring-1 focus:ring-primary/70 disabled:opacity-60"
               placeholder="Repeat new password"
             />
           </div>
@@ -132,7 +132,7 @@ export default function ResetPasswordUpdatePage() {
           </button>
         </form>
 
-        <p className="mt-4 text-xs text-slate-400">
+        <p className="mt-4 text-xs text-secondary-light">
           Remembered your password?{" "}
           <a
             href="/auth/login"

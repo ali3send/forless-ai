@@ -23,14 +23,17 @@ export function AboutSection({ about }: Props) {
       : unsplashImage;
 
   return (
-    <section id="about" className="border-t border-slate-800 bg-slate-900/40">
+    <section
+      id="about"
+      className="border-t border-secondary-dark bg-slate-900/40"
+    >
       <div className="mx-auto grid max-w-5xl gap-8 px-4 py-12 md:grid-cols-2">
         <div>
           <h2 className="text-xl font-semibold">{about.title}</h2>
-          <p className="mt-4 text-sm text-slate-300">{about.body}</p>
+          <p className="mt-4 text-sm text-secondary-soft">{about.body}</p>
         </div>
 
-        <div className="overflow-hidden rounded-2xl border border-slate-800">
+        <div className="overflow-hidden rounded-2xl border border-secondary-dark">
           {imageSrc ? (
             <Image
               src={imageSrc}
@@ -40,7 +43,7 @@ export function AboutSection({ about }: Props) {
               className="h-full w-full object-cover"
             />
           ) : (
-            <div className="h-full w-full animate-pulse bg-slate-800" />
+            <div className="h-full w-full animate-pulse bg-secondary-dark" />
           )}
         </div>
       </div>

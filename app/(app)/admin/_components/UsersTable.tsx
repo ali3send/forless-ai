@@ -239,13 +239,14 @@ export function UsersTable() {
       cancel: "Cancel",
       classNames: {
         actionButton: "bg-red-600 text-white hover:bg-red-700",
-        cancelButton: "bg-slate-700 text-slate-200 hover:bg-slate-600",
+        cancelButton:
+          "bg-secondary-active text-secondary-fade hover:bg-secondary-hover",
       },
     });
   }
 
   return (
-    <div className="rounded-2xl border border-slate-700 bg-bg-card">
+    <div className="rounded-2xl border border-secondary-active bg-bg-card">
       <UsersToolbar
         q={q}
         setQ={setQ}

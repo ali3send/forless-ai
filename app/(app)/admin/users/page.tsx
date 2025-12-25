@@ -21,13 +21,13 @@ export default async function AdminUsersPage() {
 
         <a
           href="/admin"
-          className="rounded-md border border-slate-700 bg-bg-card px-3 py-1.5 text-sm text-text-muted hover:text-text transition"
+          className="rounded-md border border-secondary-active bg-bg-card px-3 py-1.5 text-sm text-text-muted hover:text-text transition"
         >
           ← Back
         </a>
       </div>
 
-      <div className="mt-6 rounded-xl border border-slate-700 bg-bg-card p-4">
+      <div className="mt-6 rounded-xl border border-secondary-active bg-bg-card p-4">
         <UsersTable />
       </div>
     </div>

@@ -50,7 +50,7 @@ export function BuilderContentPanel({
       <div className="mb-3 w-full space-y-2">
         {/* Row 1: Step info */}
         <div className="w-full">
-          <span className="block text-xs text-slate-400">
+          <span className="block text-xs text-secondary-light">
             Step {currentIndex + 1} of {builderSections.length}
           </span>
         </div>
@@ -63,9 +63,9 @@ export function BuilderContentPanel({
               type="button"
               onClick={handleRestoreSection}
               disabled={restoring || generating}
-              className="rounded-full border border-slate-700 bg-slate-900/60
-          px-4 py-1.5 text-[11px] font-medium text-slate-200
-          hover:border-slate-600 hover:bg-slate-900
+              className="rounded-full border border-secondary-active bg-slate-900/60
+          px-4 py-1.5 text-[11px] font-medium text-secondary-fade
+          hover:border-secondary-hover hover:bg-slate-900
           disabled:opacity-50 disabled:cursor-not-allowed
           active:scale-[0.98]"
             >
@@ -117,7 +117,7 @@ export function BuilderContentPanel({
               setSection(builderSections[currentIndex - 1].id);
             }
           }}
-          className="rounded-full border border-slate-600 px-3 py-1 text-xs disabled:opacity-40"
+          className="rounded-full border border-secondary-hover px-3 py-1 text-xs disabled:opacity-40"
         >
           Previous
         </button>

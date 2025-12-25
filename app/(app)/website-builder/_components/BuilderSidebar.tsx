@@ -42,7 +42,7 @@ export function BuilderSidebar(props: Props) {
   );
 
   return (
-    <aside className="w-full space-y-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-4 lg:w-80 lg:min-w-80 lg:max-w-80">
+    <aside className="w-full space-y-4 rounded-2xl border border-secondary-dark bg-slate-900/60 p-4 lg:w-80 lg:min-w-80 lg:max-w-80">
       <h1 className="text-lg font-semibold">Website Builder</h1>
 
       {/* 🔴 PUBLISH PANEL — TOP PRIORITY */}
@@ -52,14 +52,14 @@ export function BuilderSidebar(props: Props) {
       />
 
       {/* Panel toggle */}
-      <div className="flex gap-1 rounded-full border border-slate-700 bg-slate-900 p-1 text-[11px]">
+      <div className="flex gap-1 rounded-full border border-secondary-active bg-slate-900 p-1 text-[11px]">
         <button
           type="button"
           onClick={() => setActivePanel("content")}
           className={`flex-1 rounded-full px-2 py-1 ${
             activePanel === "content"
               ? "bg-primary text-slate-950 font-medium"
-              : "text-slate-300"
+              : "text-secondary-soft"
           }`}
         >
           Content
@@ -70,7 +70,7 @@ export function BuilderSidebar(props: Props) {
           className={`flex-1 rounded-full px-2 py-1 ${
             activePanel === "design"
               ? "bg-primary text-slate-950 font-medium"
-              : "text-slate-300"
+              : "text-secondary-soft"
           }`}
         >
           Design
@@ -89,13 +89,13 @@ export function BuilderSidebar(props: Props) {
           type="button"
           onClick={onSave}
           disabled={saving}
-          className="w-full rounded-full bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-100 disabled:opacity-60"
+          className="w-full rounded-full bg-secondary-dark px-3 py-1.5 text-xs font-semibold text-slate-100 disabled:opacity-60"
         >
           {saving ? "Saving..." : "Save changes"}
         </button>
 
         {saveMessage && (
-          <p className="text-[11px] text-slate-400">{saveMessage}</p>
+          <p className="text-[11px] text-secondary-light">{saveMessage}</p>
         )}
       </div>
     </aside>

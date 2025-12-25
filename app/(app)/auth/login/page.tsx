@@ -38,7 +38,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center">
-      <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl">
+      <div className="w-full max-w-md rounded-2xl border border-secondary-dark bg-slate-900/70 p-6 shadow-xl">
         {/* Header */}
         <div className="mb-5">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-hover mb-2">
@@ -47,7 +47,7 @@ export default function LoginPage() {
           <h1 className="text-2xl font-bold tracking-tight mb-1">
             Welcome back
           </h1>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-secondary-light">
             Log in to continue building and managing your AI-generated websites.
           </p>
         </div>
@@ -62,7 +62,7 @@ export default function LoginPage() {
         {/* Form */}
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-slate-200 mb-1.5">
+            <label className="block text-xs font-medium text-secondary-fade mb-1.5">
               Email
             </label>
             <input
@@ -70,14 +70,14 @@ export default function LoginPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-50 placeholder-slate-500 outline-none focus:border-primary focus:ring-1 focus:ring-primary/70"
+              className="w-full rounded-md border border-secondary-active bg-slate-900 px-3 py-2 text-sm text-secondary-text placeholder-secondary outline-none focus:border-primary focus:ring-1 focus:ring-primary/70"
               placeholder="you@example.com"
             />
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-xs font-medium text-slate-200">
+              <label className="block text-xs font-medium text-secondary-fade">
                 Password
               </label>
               <button
@@ -95,14 +95,14 @@ export default function LoginPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 pr-10 text-sm text-slate-50 placeholder-slate-500 outline-none focus:border-primary focus:ring-1 focus:ring-primary/70"
+                className="w-full rounded-md border border-secondary-active bg-slate-900 px-3 py-2 pr-10 text-sm text-secondary-text placeholder-secondary outline-none focus:border-primary focus:ring-1 focus:ring-primary/70"
                 placeholder="Your password"
               />
 
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute inset-y-0 right-2 flex items-center text-slate-400 hover:text-slate-200 transition"
+                className="absolute inset-y-0 right-2 flex items-center text-secondary-light hover:text-secondary-fade transition"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
@@ -124,7 +124,7 @@ export default function LoginPage() {
         </form>
 
         {/* Footer */}
-        <p className="mt-4 text-xs text-slate-400">
+        <p className="mt-4 text-xs text-secondary-light">
           Dont have an account?{" "}
           <button
             type="button"

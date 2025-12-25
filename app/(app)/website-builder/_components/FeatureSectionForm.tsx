@@ -53,7 +53,7 @@ export function FeaturesSectionForm({
   return (
     <div className="space-y-4">
       {/* Features Title */}
-      <label className="block text-xs text-slate-400">
+      <label className="block text-xs text-secondary-light">
         Features Section Title
         <input
           value={data.features.title}
@@ -73,10 +73,10 @@ export function FeaturesSectionForm({
         {data.features.items.map((item, index) => (
           <div
             key={index}
-            className="rounded-xl border border-slate-700 bg-slate-900/50 p-3"
+            className="rounded-xl border border-secondary-active bg-slate-900/50 p-3"
           >
             <div className="flex justify-between items-center mb-2">
-              <h4 className="text-xs font-semibold text-slate-300">
+              <h4 className="text-xs font-semibold text-secondary-soft">
                 Feature {index + 1}
               </h4>
 
@@ -90,7 +90,7 @@ export function FeaturesSectionForm({
               )}
             </div>
 
-            <label className="block text-xs text-slate-400 mt-2">
+            <label className="block text-xs text-secondary-light mt-2">
               Label
               <input
                 type="text"
@@ -101,7 +101,7 @@ export function FeaturesSectionForm({
               />
             </label>
 
-            <label className="block text-xs text-slate-400 mt-2">
+            <label className="block text-xs text-secondary-light mt-2">
               Description
               <textarea
                 value={item.description}

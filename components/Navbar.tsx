@@ -94,7 +94,7 @@ export function Navbar() {
   }, [user?.email]);
 
   return (
-    <header className="border-b border-slate-800 bg-bg-card backdrop-blur z-50">
+    <header className="border-b border-secondary-dark bg-bg-card backdrop-blur z-50">
       <nav className="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
         <Link href="/" className="flex items-center gap-2">
           <div className="h-8 w-8 overflow-hidden">
@@ -113,12 +113,15 @@ export function Navbar() {
         </Link>
 
         <div className="flex items-center gap-4 text-xs sm:text-sm">
-          <Link href="/" className="text-slate-300 hover:text-white">
+          <Link href="/" className="text-secondary-soft hover:text-white">
             Home
           </Link>
 
           {user && (
-            <Link href="/dashboard" className="text-slate-300 hover:text-white">
+            <Link
+              href="/dashboard"
+              className="text-secondary-soft hover:text-white"
+            >
               Dashboard
             </Link>
           )}
@@ -129,26 +132,27 @@ export function Navbar() {
               <button
                 type="button"
                 onClick={() => setBillingOpen((v) => !v)}
-                className="text-slate-300 hover:text-white inline-flex items-center gap-1"
+                className="text-secondary-soft hover:text-white inline-flex items-center gap-1"
                 aria-haspopup="menu"
                 aria-expanded={billingOpen}
               >
-                Packages <span className="text-[10px] text-slate-400">▾</span>
+                Packages{" "}
+                <span className="text-[10px] text-secondary-light">▾</span>
               </button>
 
               {billingOpen && (
                 <div
-                  className="absolute right-0 mt-2 w-52 rounded-lg border border-slate-700 bg-slate-950 shadow-lg overflow-hidden z-50"
+                  className="absolute right-0 mt-2 w-52 rounded-lg border border-secondary-active bg-slate-950 shadow-lg overflow-hidden z-50"
                   role="menu"
                 >
                   <Link
                     href="/billing/plans"
                     onClick={() => setBillingOpen(false)}
-                    className="block px-3 py-2 text-sm text-slate-200 hover:bg-slate-900"
+                    className="block px-3 py-2 text-sm text-secondary-fade hover:bg-slate-900"
                     role="menuitem"
                   >
                     View Plans
-                    <div className="text-[11px] text-slate-400">
+                    <div className="text-[11px] text-secondary-light">
                       Upgrade or compare packages
                     </div>
                   </Link>
@@ -159,21 +163,21 @@ export function Navbar() {
                       setBillingOpen(false);
                       openBillingPortal();
                     }}
-                    className="w-full text-left px-3 py-2 text-sm text-slate-200 hover:bg-slate-900"
+                    className="w-full text-left px-3 py-2 text-sm text-secondary-fade hover:bg-slate-900"
                     role="menuitem"
                   >
                     Manage Subscription
-                    <div className="text-[11px] text-slate-400">
+                    <div className="text-[11px] text-secondary-light">
                       Cancel, invoices, payment method
                     </div>
                   </button>
 
-                  <div className="h-px bg-slate-800" />
+                  <div className="h-px bg-secondary-dark" />
 
                   {/* <Link
                     href="/billing"
                     onClick={() => setBillingOpen(false)}
-                    className="block px-3 py-2 text-sm text-slate-300 hover:bg-slate-900"
+                    className="block px-3 py-2 text-sm text-secondary-soft hover:bg-slate-900"
                     role="menuitem"
                   >
                     Billing Dashboard
@@ -192,30 +196,30 @@ export function Navbar() {
             </Link>
           )}
 
-          <div className="h-4 w-px bg-slate-700 hidden sm:block" />
+          <div className="h-4 w-px bg-secondary-active hidden sm:block" />
 
           {user ? (
             <>
               <button
                 onClick={handleLogout}
-                className="text-slate-300 hover:text-white"
+                className="text-secondary-soft hover:text-white"
               >
                 Logout
               </button>
 
-              <button className="flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs">
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-700 text-[10px]">
+              <button className="flex items-center gap-2 rounded-full border border-secondary-active bg-slate-900 px-3 py-1.5 text-xs">
+                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-secondary-active text-[10px]">
                   {userInitial}
                 </span>
                 <span className="hidden sm:inline">{user.email}</span>
-                <span className="text-[10px] text-slate-400">▾</span>
+                <span className="text-[10px] text-secondary-light">▾</span>
               </button>
             </>
           ) : (
             <>
               <Link
                 href="/auth/login"
-                className="text-slate-300 hover:text-white"
+                className="text-secondary-soft hover:text-white"
               >
                 Login
               </Link>

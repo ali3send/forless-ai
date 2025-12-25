@@ -20,19 +20,22 @@ type Props = {
 
 export function OffersSection({ offers, primary, primaryHover }: Props) {
   return (
-    <section id="offers" className="border-t border-slate-800 bg-slate-900/40">
+    <section
+      id="offers"
+      className="border-t border-secondary-dark bg-slate-900/40"
+    >
       <div className="mx-auto max-w-5xl px-4 py-12">
         <h2 className="text-xl font-semibold">{offers.title}</h2>
         <div className="mt-6 grid gap-6 md:grid-cols-3">
           {offers.items.map((offer, i) => (
             <div
               key={i}
-              className="flex flex-col justify-between rounded-2xl border border-slate-800 bg-slate-950/60 p-4"
+              className="flex flex-col justify-between rounded-2xl border border-secondary-dark bg-slate-950/60 p-4"
               style={{ borderColor: withAlpha(primary, 0.22) }}
             >
               <div>
                 <div className="text-sm font-semibold">{offer.name}</div>
-                <p className="mt-2 text-xs text-slate-300">
+                <p className="mt-2 text-xs text-secondary-soft">
                   {offer.description}
                 </p>
               </div>

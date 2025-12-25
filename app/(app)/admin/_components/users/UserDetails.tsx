@@ -6,7 +6,7 @@ export function UserDetails({ u }: { u: UserRow }) {
   const suspended = !!u.is_suspended;
 
   return (
-    <div className="mt-4 rounded-xl border border-slate-700 bg-bg-card p-4">
+    <div className="mt-4 rounded-xl border border-secondary-active bg-bg-card p-4">
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div>
           <div className="text-xs text-text-muted">User ID</div>

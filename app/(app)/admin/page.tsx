@@ -65,7 +65,7 @@ export default async function AdminPage() {
         ].map((item) => (
           <div
             key={item.label}
-            className="rounded-xl border border-slate-700 bg-bg-card p-4"
+            className="rounded-xl border border-secondary-active bg-bg-card p-4"
           >
             <div className="text-xs text-text-muted">{item.label}</div>
             <div className="mt-2 text-2xl font-semibold">{item.value}</div>
@@ -75,7 +75,7 @@ export default async function AdminPage() {
       </div>
 
       <div className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-2">
-        <div className="rounded-xl border border-slate-700 bg-bg-card p-5">
+        <div className="rounded-xl border border-secondary-active bg-bg-card p-5">
           <h2 className="text-base font-semibold">Users</h2>
           <p className="mt-1 text-sm text-text-muted">
             Manage users, assign roles, and suspend accounts.
@@ -88,7 +88,7 @@ export default async function AdminPage() {
           </a>
         </div>
 
-        <div className="rounded-xl border border-slate-700 bg-bg-card p-5">
+        <div className="rounded-xl border border-secondary-active bg-bg-card p-5">
           <h2 className="text-base font-semibold">Projects</h2>
           <p className="mt-1 text-sm text-text-muted">
             View and inspect all user projects.
@@ -101,7 +101,7 @@ export default async function AdminPage() {
           </a>
         </div>
 
-        <div className="rounded-xl border border-slate-700 bg-bg-card p-5">
+        <div className="rounded-xl border border-secondary-active bg-bg-card p-5">
           <h2 className="text-base font-semibold">Sites</h2>
           <p className="mt-1 text-sm text-text-muted">
             Moderate published websites and unpublish content.

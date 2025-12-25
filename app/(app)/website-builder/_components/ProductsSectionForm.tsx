@@ -54,7 +54,7 @@ export function ProductsSectionForm({ data, setData }: OffersSectionFormProps) {
   return (
     <div className="space-y-4">
       {/* Offers section title */}
-      <label className="block text-xs text-slate-400">
+      <label className="block text-xs text-secondary-light">
         Offers Section Title
         <input
           placeholder="e.g Our offers, our products"
@@ -74,10 +74,10 @@ export function ProductsSectionForm({ data, setData }: OffersSectionFormProps) {
         {data.offers.items.map((offer, index) => (
           <div
             key={index}
-            className="rounded-xl border border-slate-700 bg-slate-900/50 p-3"
+            className="rounded-xl border border-secondary-active bg-slate-900/50 p-3"
           >
             <div className="mb-2 flex items-center justify-between">
-              <h4 className="text-xs font-semibold text-slate-300">
+              <h4 className="text-xs font-semibold text-secondary-soft">
                 Offer {index + 1}
               </h4>
 
@@ -92,7 +92,7 @@ export function ProductsSectionForm({ data, setData }: OffersSectionFormProps) {
               )}
             </div>
 
-            <label className="mt-2 block text-xs text-slate-400">
+            <label className="mt-2 block text-xs text-secondary-light">
               Name
               <input
                 value={offer.name}
@@ -102,7 +102,7 @@ export function ProductsSectionForm({ data, setData }: OffersSectionFormProps) {
               />
             </label>
 
-            <label className="mt-2 block text-xs text-slate-400">
+            <label className="mt-2 block text-xs text-secondary-light">
               Description
               <textarea
                 placeholder="Describe this offer/product..."
@@ -115,7 +115,7 @@ export function ProductsSectionForm({ data, setData }: OffersSectionFormProps) {
               />
             </label>
 
-            <label className="mt-2 block text-xs text-slate-400">
+            <label className="mt-2 block text-xs text-secondary-light">
               Price label (optional)
               <input
                 value={offer.priceLabel ?? ""}

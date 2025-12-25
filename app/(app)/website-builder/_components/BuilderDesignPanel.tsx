@@ -72,15 +72,15 @@ export function BuilderDesignPanel({ brand, setBrand }: DesignProps) {
   };
 
   return (
-    <div className="mt-3 space-y-4 text-[11px] text-slate-300">
-      <p className="text-[11px] text-slate-400">
+    <div className="mt-3 space-y-4 text-[11px] text-secondary-soft">
+      <p className="text-[11px] text-secondary-light">
         Choose a color palette and font family. The preview on the right updates
         instantly.
       </p>
 
       {/* Palettes */}
       <div>
-        <h3 className="text-[11px] font-semibold text-slate-200 mb-1">
+        <h3 className="text-[11px] font-semibold text-secondary-fade mb-1">
           Color palette
         </h3>
         <div className="space-y-2">
@@ -92,7 +92,7 @@ export function BuilderDesignPanel({ brand, setBrand }: DesignProps) {
               className={`flex w-full items-center justify-between rounded-lg border px-2 py-2 ${
                 p.id === currentPaletteId
                   ? "border-primary bg-primary/10"
-                  : "border-slate-700 bg-slate-900/70 hover:bg-slate-900"
+                  : "border-secondary-active bg-slate-900/70 hover:bg-slate-900"
               }`}
             >
               <div className="flex items-center gap-2">
@@ -104,7 +104,9 @@ export function BuilderDesignPanel({ brand, setBrand }: DesignProps) {
                   className="h-4 w-4 rounded-full"
                   style={{ backgroundColor: p.secondary }}
                 />
-                <span className="text-[11px] text-slate-200">{p.label}</span>
+                <span className="text-[11px] text-secondary-fade">
+                  {p.label}
+                </span>
               </div>
               {p.id === currentPaletteId && (
                 <span className="text-[10px] text-primary">Selected</span>
@@ -116,7 +118,7 @@ export function BuilderDesignPanel({ brand, setBrand }: DesignProps) {
 
       {/* Fonts */}
       <div>
-        <h3 className="text-[11px] font-semibold text-slate-200 mb-1">
+        <h3 className="text-[11px] font-semibold text-secondary-fade mb-1">
           Font family
         </h3>
         <div className="space-y-2">
@@ -128,11 +130,11 @@ export function BuilderDesignPanel({ brand, setBrand }: DesignProps) {
               className={`flex w-full items-center justify-between rounded-lg border px-2 py-2 ${
                 f.id === currentFontId
                   ? "border-primary bg-primary/10"
-                  : "border-slate-700 bg-slate-900/70 hover:bg-slate-900"
+                  : "border-secondary-active bg-slate-900/70 hover:bg-slate-900"
               }`}
               style={{ fontFamily: f.css }}
             >
-              <span className="text-[11px] text-slate-200">{f.label}</span>
+              <span className="text-[11px] text-secondary-fade">{f.label}</span>
               {f.id === currentFontId && (
                 <span className="text-[10px] text-primary">Selected</span>
               )}

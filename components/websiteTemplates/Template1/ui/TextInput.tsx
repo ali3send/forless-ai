@@ -17,7 +17,7 @@ export function TextInput({
   const baseBorder = withAlpha(focusColor, 0.25);
 
   return (
-    <label className="text-xs text-slate-300">
+    <label className="text-xs text-secondary-soft">
       {label}
       <input
         type={type}

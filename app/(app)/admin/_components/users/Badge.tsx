@@ -14,7 +14,7 @@ export function Badge({
       ? "border-red-500/30 bg-red-500/10 text-red-200"
       : tone === "primary"
       ? "border-primary/30 bg-primary/10 text-primary"
-      : "border-slate-700 bg-bg text-text-muted";
+      : "border-secondary-active bg-bg text-text-muted";
 
   return (
     <span

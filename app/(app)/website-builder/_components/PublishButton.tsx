@@ -146,18 +146,18 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
 
   const hasLinks = !!previewUrl || !!finalUrl;
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 space-y-4">
+    <div className="rounded-2xl border border-secondary-dark bg-slate-900/60 p-4 space-y-4">
       {/* Slug row */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <p className="text-xs font-medium text-slate-300">Subdomain</p>
+          <p className="text-xs font-medium text-secondary-soft">Subdomain</p>
         </div>
 
         <input
           value={slug}
           onChange={(e) => setSlug(e.target.value)}
           placeholder="e.g., my-company"
-          className="input-base w-full bg-slate-950/60 border border-slate-800 focus:border-primary/60"
+          className="input-base w-full bg-slate-950/60 border border-secondary-dark focus:border-primary/60"
         />
       </div>
 
@@ -186,11 +186,11 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
       {hasLinks && (
         <div className="space-y-2">
           {previewUrl && (
-            <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-3">
+            <div className="rounded-xl border border-secondary-dark bg-slate-950/40 p-3">
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="text-[11px] text-slate-500">Preview</p>
-                  <p className="truncate text-xs text-slate-200">
+                  <p className="text-[11px] text-secondary">Preview</p>
+                  <p className="truncate text-xs text-secondary-fade">
                     {previewUrl}
                   </p>
                 </div>
@@ -210,11 +210,13 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
           )}
 
           {finalUrl && (
-            <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-3">
+            <div className="rounded-xl border border-secondary-dark bg-slate-950/40 p-3">
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="text-[11px] text-slate-500">Published</p>
-                  <p className="truncate text-xs text-slate-200">{finalUrl}</p>
+                  <p className="text-[11px] text-secondary">Published</p>
+                  <p className="truncate text-xs text-secondary-fade">
+                    {finalUrl}
+                  </p>
                 </div>
 
                 {/* <div className="flex items-center gap-2 shrink-0"> */}

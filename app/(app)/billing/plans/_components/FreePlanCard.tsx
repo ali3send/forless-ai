@@ -12,13 +12,13 @@ export default function FreePlanCard(props: {
   const { currentPlan, profile, freeFeatures, onLogin, onManage } = props;
 
   return (
-    <div className="mt-6 rounded-2xl border border-slate-800 bg-bg-card p-5">
+    <div className="mt-6 rounded-2xl border border-secondary-dark bg-bg-card p-5">
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-lg font-semibold">Free</h2>
             {currentPlan === "free" && (
-              <span className="text-[11px] rounded-full border border-slate-700 bg-slate-900 px-2 py-0.5 text-slate-200">
+              <span className="text-[11px] rounded-full border border-secondary-active bg-slate-900 px-2 py-0.5 text-secondary-fade">
                 Current
               </span>
             )}
@@ -44,9 +44,9 @@ export default function FreePlanCard(props: {
 
       <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
         {freeFeatures.map((f) => (
-          <li key={f} className="flex gap-2 text-slate-200">
+          <li key={f} className="flex gap-2 text-secondary-fade">
             <span className="text-primary mt-0.5">✓</span>
-            <span className="text-slate-200">{f}</span>
+            <span className="text-secondary-fade">{f}</span>
           </li>
         ))}
       </ul>
