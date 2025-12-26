@@ -191,10 +191,10 @@ export function Navbar() {
                 <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-secondary-soft text-[10px] text-secondary-dark border border-secondary-fade">
                   {userInitial}
                 </span>
-                <span className="hidden sm:inline text-secondary">
+                <span className="hidden sm:inline text-secondary-darker">
                   {user.email}
                 </span>
-                <span className="text-[10px] text-secondary">▾</span>
+                <span className="text-[10px] text-secondary-dark">▾</span>
               </button>
             </>
           ) : (
