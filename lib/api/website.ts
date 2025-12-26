@@ -1,17 +1,18 @@
 // lib/api/website.ts
 import type { WebsiteData } from "@/lib/types/websiteTypes";
-// import { WebsiteData } from "../types/websiteTypes";
 import type { BrandPayload } from "./brand";
 
-type GenerateWebsitePayload = {
+type SectionKey = "hero" | "about" | "features" | "offers" | "contact";
+
+type GenerateSectionPayload = {
   idea: string;
   brand: BrandPayload;
-  websiteType?: string; // e.g. "product" | "service" if you need later
+  section: SectionKey;
 };
 
 export async function apiGenerateWebsite(
-  payload: GenerateWebsitePayload | null
-): Promise<WebsiteData> {
+  payload: GenerateSectionPayload
+): Promise<Pick<WebsiteData, SectionKey>> {
   const res = await fetch("/api/website/generate", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -19,12 +20,10 @@ export async function apiGenerateWebsite(
   });
 
   const json = await res.json().catch(() => ({} as any));
+  if (!res.ok || !json.data)
+    throw new Error(json.error || "Failed to generate section");
 
-  if (!res.ok || !json.data) {
-    throw new Error((json as any).error || "Failed to generate website");
-  }
-
-  return json.data as WebsiteData;
+  return json.data as Pick<WebsiteData, SectionKey>;
 }
 
 export async function apiSaveWebsite(
@@ -63,4 +62,36 @@ export async function apiGetWebsite(
   // expect handler to return { data: WebsiteData | null }
   if (!json.data) return null;
   return json.data as WebsiteData;
+}
+export async function apiSaveSectionHistory(payload: {
+  projectId: string;
+  section: "hero" | "about" | "features" | "offers" | "contact";
+  prevSectionData: any; // section object only
+  maxSlots?: number; // default 2
+}): Promise<void> {
+  const res = await fetch("/api/website/section-history", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  const json = await res.json().catch(() => ({} as any));
+  if (!res.ok) throw new Error(json.error || "Failed to save section history");
+}
+export async function apiRestoreSection(payload: {
+  projectId: string;
+  section: "hero" | "about" | "features" | "offers" | "contact";
+}): Promise<{ sectionData: any }> {
+  const res = await fetch("/api/website/section-restore", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  const json = await res.json().catch(() => ({} as any));
+  if (!res.ok) {
+    throw new Error(json.error || "Failed to restore section");
+  }
+
+  return json;
 }

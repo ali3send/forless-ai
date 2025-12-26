@@ -12,9 +12,9 @@ export function useMe(userId?: string) {
 
   useEffect(() => {
     let alive = true;
-
-    // reset immediately s
-    setMe(null);
+    Promise.resolve().then(() => {
+      if (alive) setMe(null);
+    });
 
     fetch("/api/me", {
       method: "GET",

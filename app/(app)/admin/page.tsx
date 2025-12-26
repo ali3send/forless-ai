@@ -28,14 +28,17 @@ export default async function AdminPage() {
   const stats = await getAdminStats();
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-8 text-text">
+    <div className="mx-auto max-w-6xl px-6 py-8 text-secondary-dark">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">
             Admin Dashboard
           </h1>
-          <p className="mt-1 text-sm text-text-muted">
-            Signed in as <span className="text-text">{admin.user.email}</span>
+          <p className="mt-1 text-sm text-secondary">
+            Signed in as{" "}
+            <span className="text-secondary-dark font-semibold">
+              {admin.user.email}
+            </span>
             <span className="mx-2 opacity-40">•</span>
             Role:{" "}
             <span className="text-primary font-medium">
@@ -65,19 +68,21 @@ export default async function AdminPage() {
         ].map((item) => (
           <div
             key={item.label}
-            className="rounded-xl border border-slate-700 bg-bg-card p-4"
+            className="rounded-xl border border-secondary-fade bg-secondary-soft p-4"
           >
-            <div className="text-xs text-text-muted">{item.label}</div>
-            <div className="mt-2 text-2xl font-semibold">{item.value}</div>
-            <div className="mt-1 text-xs text-text-muted">{item.hint}</div>
+            <div className="text-xs text-secondary">{item.label}</div>
+            <div className="mt-2 text-2xl font-semibold text-secondary-dark">
+              {item.value}
+            </div>
+            <div className="mt-1 text-xs text-secondary">{item.hint}</div>
           </div>
         ))}
       </div>
 
       <div className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-2">
-        <div className="rounded-xl border border-slate-700 bg-bg-card p-5">
-          <h2 className="text-base font-semibold">Users</h2>
-          <p className="mt-1 text-sm text-text-muted">
+        <div className="rounded-xl border border-secondary-fade bg-secondary-soft p-5">
+          <h2 className="text-base font-semibold text-secondary-dark">Users</h2>
+          <p className="mt-1 text-sm text-secondary">
             Manage users, assign roles, and suspend accounts.
           </p>
           <a
@@ -88,9 +93,11 @@ export default async function AdminPage() {
           </a>
         </div>
 
-        <div className="rounded-xl border border-slate-700 bg-bg-card p-5">
-          <h2 className="text-base font-semibold">Projects</h2>
-          <p className="mt-1 text-sm text-text-muted">
+        <div className="rounded-xl border border-secondary-fade bg-secondary-soft p-5">
+          <h2 className="text-base font-semibold text-secondary-dark">
+            Projects
+          </h2>
+          <p className="mt-1 text-sm text-secondary">
             View and inspect all user projects.
           </p>
           <a
@@ -101,9 +108,9 @@ export default async function AdminPage() {
           </a>
         </div>
 
-        <div className="rounded-xl border border-slate-700 bg-bg-card p-5">
-          <h2 className="text-base font-semibold">Sites</h2>
-          <p className="mt-1 text-sm text-text-muted">
+        <div className="rounded-xl border border-secondary-fade bg-secondary-soft p-5">
+          <h2 className="text-base font-semibold text-secondary-dark">Sites</h2>
+          <p className="mt-1 text-sm text-secondary">
             Moderate published websites and unpublish content.
           </p>
           <a

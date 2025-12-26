@@ -13,12 +13,16 @@ export type WebsiteData = {
     secondaryCta?: string;
     primaryCtaLink?: string;
     secondaryCtaLink?: string;
+    imageUrl?: string;
+    imagePath?: string;
     imageQuery: string; // for Unsplash
   };
 
   about: {
     title: string;
     body: string;
+    imageUrl?: string;
+    imagePath?: string;
     imageQuery: string;
   };
 

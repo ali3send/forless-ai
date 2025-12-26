@@ -6,13 +6,17 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
       { protocol: "https", hostname: "unsplash.com", pathname: "/**" },
       { protocol: "https", hostname: "source.unsplash.com", pathname: "/**" },
+      {
+        protocol: "https",
+        hostname: "**.supabase.co",
+        pathname: "/storage/v1/object/public/site-images/**",
+      },
     ],
   },
 
   allowedDevOrigins: [
     "http://localhost:3000",
     "http://lvh.me:3000",
-
     // Try wildcard first (if your Next build supports it)
     "http://*.lvh.me:3000",
   ],

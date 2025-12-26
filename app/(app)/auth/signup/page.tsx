@@ -3,67 +3,56 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function SignupPage() {
   const router = useRouter();
   const [supabase] = useState(() => createBrowserSupabaseClient());
   const [email, setEmail] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [fullName, setFullName] = useState("");
 
   const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
   const handleSignup = async (e: FormEvent) => {
     e.preventDefault();
-    setErrorMsg(null);
-    setSuccessMsg(null);
-    setLoading(true);
+    if (loading) return;
 
     if (password !== confirmPassword) {
-      setLoading(false);
-      setErrorMsg("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
-    const { data: signUpData, error: signUpError } = await supabase.auth.signUp(
-      {
+    setLoading(true);
+    const t = toast.loading("Creating your account…");
+
+    try {
+      const { error } = await supabase.auth.signUp({
         email,
         password,
-      }
-    );
-
-    if (signUpError) {
-      setLoading(false);
-      setErrorMsg(signUpError.message);
-      return;
-    }
-
-    const user = signUpData.user;
-
-    if (user) {
-      const { error: profileError } = await supabase.from("profiles").insert({
-        id: user.id, // must match profiles.id PK
-        full_name: fullName, // if you add name field later
-        // role: "user",
+        options: {
+          data: { full_name: fullName },
+        },
       });
 
-      if (profileError) {
-        console.error("Profile insert error:", profileError);
-      }
-    }
+      if (error) throw error;
 
-    setLoading(false);
-    setSuccessMsg(
-      "Account created! Please check your email to verify your account"
-    );
+      toast.dismiss(t);
+      toast.success("Account created! Please check your email to verify.");
+    } catch (err: any) {
+      toast.dismiss(t);
+      toast.error(err?.message ?? "Signup failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center">
-      <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl">
+      <div className="w-full max-w-md rounded-2xl border border-secondary-dark bg-slate-900/70 p-6 shadow-xl">
         <div className="mb-5">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-hover mb-2">
             ForlessAI
@@ -71,26 +60,13 @@ export default function SignupPage() {
           <h1 className="text-2xl font-bold tracking-tight mb-1">
             Create your account
           </h1>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-secondary-light">
             Sign up with email & password to access your ForlessAI dashboard.
           </p>
         </div>
-
-        {errorMsg && (
-          <div className="mb-3 rounded-md border border-red-500/40 bg-red-950/40 px-3 py-2 text-xs text-red-200">
-            {errorMsg}
-          </div>
-        )}
-
-        {successMsg && (
-          <div className="mb-3 rounded-md border border-primary/40 bg-emerald-950/40 px-3 py-2 text-xs text-emerald-200">
-            {successMsg}
-          </div>
-        )}
-
         <form onSubmit={handleSignup} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-slate-200 mb-1.5">
+            <label className="block text-xs font-medium text-secondary-fade mb-1.5">
               Full Name
             </label>
             <input
@@ -98,12 +74,12 @@ export default function SignupPage() {
               required
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-50 placeholder-slate-500 outline-none focus:border-primary focus:ring-1 focus:ring-primary/70"
+              className="w-full rounded-md border border-secondary-active bg-slate-900 px-3 py-2 text-sm text-secondary-text placeholder-secondary outline-none focus:border-primary focus:ring-1 focus:ring-primary/70"
               placeholder="John Doe"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-200 mb-1.5">
+            <label className="block text-xs font-medium text-secondary-fade mb-1.5">
               Email
             </label>
             <input
@@ -111,38 +87,72 @@ export default function SignupPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-50 placeholder-slate-500 outline-none focus:border-primary focus:ring-1 focus:ring-primary/70"
+              className="w-full rounded-md border border-secondary-active bg-slate-900 px-3 py-2 text-sm text-secondary-text placeholder-secondary outline-none focus:border-primary focus:ring-1 focus:ring-primary/70"
               placeholder="you@example.com"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-200 mb-1.5">
-              Password
-            </label>
-            <input
-              type="password"
-              required
-              minLength={6}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-50 placeholder-slate-500 outline-none focus:border-primary focus:ring-1 focus:ring-primary/70"
-              placeholder="Minimum 6 characters"
-            />
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-xs font-medium text-secondary-fade">
+                Password
+              </label>
+            </div>
+
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full rounded-md border border-secondary-active bg-slate-900 px-3 py-2 pr-10 text-sm text-secondary-text placeholder-secondary outline-none focus:border-primary focus:ring-1 focus:ring-primary/70"
+                placeholder="Minimum 6 characters"
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                className="absolute inset-y-0 right-2 flex items-center text-secondary-light hover:text-secondary-fade transition"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
+              </button>
+            </div>
           </div>
+
           <div>
-            <label className="block text-xs font-medium text-slate-200 mb-1.5">
-              Confirm Password
-            </label>
-            <input
-              type="password"
-              required
-              minLength={6}
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-50 placeholder-slate-500 outline-none focus:border-primary focus:ring-1 focus:ring-primary/70"
-              placeholder="Minimum 6 characters"
-            />
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-xs font-medium text-secondary-fade">
+                Confirm Password
+              </label>
+            </div>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full rounded-md border border-secondary-active bg-slate-900 px-3 py-2 pr-10 text-sm text-secondary-text placeholder-secondary outline-none focus:border-primary focus:ring-1 focus:ring-primary/70"
+                placeholder="Minimum 6 characters"
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                className="absolute inset-y-0 right-2 flex items-center text-secondary-light hover:text-secondary-fade transition"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
+              </button>
+            </div>
           </div>
 
           <button
@@ -154,12 +164,12 @@ export default function SignupPage() {
           </button>
         </form>
 
-        <p className="mt-4 text-xs text-slate-400">
+        <p className="mt-4 text-xs text-secondary-light">
           Already have an account?{" "}
           <button
             type="button"
             onClick={() => router.push("/auth/login")}
-            className="text-primary-hover hover:text-emerald-300 underline underline-offset-2"
+            className="text-primary-hover hover:text-primary-light underline underline-offset-2"
           >
             Log in
           </button>

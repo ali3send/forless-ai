@@ -2,11 +2,36 @@
 
 /* project theme */
 @theme {
-  --color-primary: #10b981;
-  --color-primary-hover: #34d399;
 
-  --color-secondary: #0ea5e9;
-  --color-secondary-hover: #38bdf8;
+  /* #0148e0  #fe6b0e */
+
+--color-primary: #2563eb;          /* blue-600 */
+--color-primary-hover: #3b82f6;    /* blue-500 */
+--color-primary-active: #1d4ed8;   /* blue-700 */
+
+/* Primary Variants */
+--color-primary-light: #60a5fa;    /* blue-400 */
+--color-primary-soft: #93c5fd;     /* blue-300 */
+
+/* Primary Strong / Dark */
+--color-primary-dark: #1e40af;     /* blue-800 */
+--color-primary-darker: #1e3a8a;   /* blue-900 */
+
+
+  
+/* Secondary Base */
+  --color-secondary: #64748b;          /* slate-500 */
+  --color-secondary-hover: #475569;    /* slate-600 */
+  --color-secondary-active: #334155;   /* slate-700 */
+
+  /* Secondary Light Variants */
+  --color-secondary-light: #94a3b8;    /* slate-400 */
+  --color-secondary-soft: #cbd5e1;     /* slate-300 */
+  --color-secondary-fade: #e2e8f0;     /* slate-200 */
+
+  /* Secondary Dark Variants */
+  --color-secondary-dark: #1e293b;   /* slate-800 */
+  --color-secondary-darker: #0f172a; /* slate-900 */
 
   --color-bg: #0f172a;
   --color-bg-card: rgba(30, 41, 59, 0.7);
@@ -17,36 +42,27 @@
   --font-sans: Arial, Helvetica, sans-serif;
 }
 @layer components {
-  .input-base {
-    @apply mt-1 w-full rounded-md border border-slate-700 bg-slate-900
-           px-2 py-1 text-xs 
-           focus:outline-none 
-           focus:border-primary
-           transition-all;
-  }
+.input-base {
+  @apply mt-1 w-full rounded-md
+         border border-secondary-fade
+         bg-secondary-soft
+         px-2 py-1 text-xs
+         text-secondary-dark
+         placeholder:text-secondary
+         focus:outline-none
+         focus:border-primary
+         focus:ring-2 focus:ring-primary/40
+         transition-all;
+}
+
   .btn-fill{
     @apply   rounded-md bg-primary  py-1 px-4  text-sm  text-slate-950 shadow-sm hover:bg-primary-hover cursor-pointer
   }
   .btn-secondary{
-    @apply  rounded-md border border-slate-700 bg-bg-card px-4 py-1.5 text-sm text-text-muted hover:text-text transition cursor-pointer
+    @apply  rounded-md border  bg-secondary px-4 py-1 text-sm text-secondary-fade hover:text-secondary-hover transition cursor-pointer
   }
 }
 
-/* theme {
-  --color-primary: #10b981;
-  --color-primary-hover: #34d399;
-
-  --color-secondary: #0ea5e9;
-  --color-secondary-hover: #38bdf8;
-
-  --color-bg: #0f172a;
-  --color-bg-card: rgba(30, 41, 59, 0.7);
-
-  --color-text: #f8fafc;
-  --color-text-muted: #94a3b8;
-
-  --font-sans: Arial, Helvetica, sans-serif;
-} */
 
 
 
@@ -70,7 +86,7 @@
   }
 }
 
-/* Global body style */
+/* Global body style
 body {
   @apply bg-bg text-text font-sans;
-}
+} */

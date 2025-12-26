@@ -2,12 +2,22 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import type { WebsiteData } from "@/lib/types/websiteTypes";
 import { fetchUnsplashImage } from "@/lib/unsplash";
+import type { WebsiteData } from "@/lib/types/websiteTypes";
+
+const websiteDataSchema = z
+  .object({
+    hero: z
+      .object({
+        imageQuery: z.string().optional(),
+      })
+      .passthrough(),
+  })
+  .passthrough();
 
 const postSchema = z.object({
   projectId: z.string().uuid(),
-  data: z.custom<WebsiteData>(),
+  data: websiteDataSchema, // ✅ real validation (not z.custom)
 });
 
 // GET /api/website?projectId=...
@@ -37,20 +47,18 @@ export async function GET(req: Request) {
     .single();
 
   if (error && error.code !== "PGRST116") {
-    // not "no rows"
-    console.error(error);
+    console.error("Failed to load website:", error);
     return NextResponse.json(
       { error: "Failed to load website" },
       { status: 500 }
     );
   }
 
-  return NextResponse.json({ data: data?.data ?? null });
+  return NextResponse.json({ data: (data as any)?.data ?? null });
 }
 
 // POST /api/website
 export async function POST(req: Request) {
-  //   console.log("website route");
   const supabase = await createServerSupabaseClient();
 
   const {
@@ -61,9 +69,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const body = await req.json();
+  const body = await req.json().catch(() => ({}));
   const parsed = postSchema.safeParse(body);
-  //   console.log("backend parsed:", parsed);
 
   if (!parsed.success) {
     return NextResponse.json(
@@ -72,8 +79,10 @@ export async function POST(req: Request) {
     );
   }
 
-  const { projectId, data } = parsed.data;
+  const { projectId } = parsed.data;
+  const data = parsed.data.data as WebsiteData; // safe enough for our usage
 
+  // ✅ Upsert first
   const { data: upserted, error } = await supabase
     .from("websites")
     .upsert(
@@ -87,21 +96,32 @@ export async function POST(req: Request) {
     .select()
     .single();
 
-  const heroQuery = data.hero?.imageQuery ?? "";
-  const heroUrl = heroQuery ? await fetchUnsplashImage(heroQuery) : null;
-
-  await supabase
-    .from("projects")
-    .update({ thumbnail_url: heroUrl })
-    .eq("id", projectId)
-    .eq("user_id", user.id);
-
+  // ✅ Always check error before using results
   if (error) {
     console.error("Supabase upsert error:", error);
     return NextResponse.json(
       { error: error.message, details: error },
       { status: 500 }
     );
+  }
+
+  // ✅ Safe hero query
+  const heroQuery =
+    typeof data?.hero?.imageQuery === "string" ? data.hero.imageQuery : "";
+
+  // Update thumbnail (non-blocking style: best effort)
+  try {
+    const heroUrl = heroQuery ? await fetchUnsplashImage(heroQuery) : null;
+
+    if (heroUrl) {
+      await supabase
+        .from("projects")
+        .update({ thumbnail_url: heroUrl })
+        .eq("id", projectId)
+        .eq("user_id", user.id);
+    }
+  } catch (e) {
+    console.warn("Thumbnail update failed:", e);
   }
 
   return NextResponse.json({ data: upserted });

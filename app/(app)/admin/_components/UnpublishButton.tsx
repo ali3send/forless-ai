@@ -31,7 +31,7 @@ export function UnpublishButton({ projectId }: { projectId: string }) {
     <button
       onClick={unpublish}
       disabled={loading}
-      className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/80 hover:text-white disabled:opacity-50"
+      className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-500/20 disabled:opacity-50"
     >
       {loading ? "Unpublishing..." : "Unpublish"}
     </button>

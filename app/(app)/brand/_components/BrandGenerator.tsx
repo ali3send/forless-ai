@@ -89,14 +89,14 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
       const businessIdea =
         idea.trim() || `${brandPayload.name} - ${brandPayload.slogan}`;
 
-      const websiteData = await apiGenerateWebsite({
-        idea: businessIdea,
-        brand: brandPayload,
-        // websiteType: "product", // keep for future if needed
-      });
+      // const websiteData = await apiGenerateWebsite({
+      //   idea: businessIdea,
+      //   brand: brandPayload,
+      //   // websiteType: "product", // keep for future if needed
+      // });
 
       // 3) Save generated website to DB
-      await apiSaveWebsite(projectId, websiteData);
+      // await apiSaveWebsite(projectId, websiteData);
 
       // 4) Go to builder
       router.push(`/website-builder?projectId=${projectId}`);
@@ -109,7 +109,7 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
     <div className="space-y-6 text-xs">
       <div>
         <h1 className="text-xl font-semibold">Brand Generator</h1>
-        <p className="mt-1 text-slate-400">
+        <p className="mt-1 text-secondary-light">
           Configure a color palette and font, then generate name, slogan and a
           simple SVG logo.
         </p>

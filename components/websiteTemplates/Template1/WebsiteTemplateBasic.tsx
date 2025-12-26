@@ -24,7 +24,7 @@ export function WebsiteTemplateBasic({ data, theme }: Props) {
   const { style, primary, primaryHover, secondary } = resolveTheme(theme);
   return (
     <div
-      className="min-h-screen bg-slate-950 text-slate-50"
+      className="min-h-screen bg-slate-950 text-white"
       style={style as React.CSSProperties}
     >
       <Navbar brandName={data.brandName} offersTitle={data.offers.title} />

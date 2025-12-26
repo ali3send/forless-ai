@@ -33,12 +33,14 @@ export function ContactSection({
   return (
     <section
       id="contact"
-      className="border-t border-slate-800 bg-linear-to-b from-slate-900 to-slate-950"
+      className="border-t border-secondary-dark bg-linear-to-b from-slate-900 to-slate-950"
     >
       <div className="mx-auto max-w-5xl px-4 py-12">
         <div className="max-w-xl">
           <h2 className="text-xl font-semibold">{contact.title}</h2>
-          <p className="mt-3 text-sm text-slate-300">{contact.description}</p>
+          <p className="mt-3 text-sm text-secondary-soft">
+            {contact.description}
+          </p>
         </div>
 
         <div className="mt-8 grid gap-8 md:grid-cols-2">
@@ -53,7 +55,7 @@ export function ContactSection({
               <h3 className="text-sm font-semibold text-slate-100">
                 Contact details
               </h3>
-              <p className="mt-2 text-xs text-slate-400">
+              <p className="mt-2 text-xs text-secondary-light">
                 Prefer email, WhatsApp, or a quick call? Reach us using any of
                 the options below.
               </p>
@@ -69,7 +71,7 @@ export function ContactSection({
               </div>
             </div>
 
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-secondary-light">
               We usually reply within 24 hours on business days.
             </p>
           </div>
@@ -83,7 +85,7 @@ export function ContactSection({
             <h3 className="text-lg font-semibold text-slate-100">
               {finalCta.headline}
             </h3>
-            <p className="mt-2 text-sm text-slate-300">
+            <p className="mt-2 text-sm text-secondary-soft">
               {finalCta.subheadline}
             </p>
 
@@ -101,11 +103,11 @@ export function ContactSection({
               />
             </div>
 
-            <label className="mt-3 block text-xs text-slate-300">
+            <label className="mt-3 block text-xs text-secondary-soft">
               Message
               <textarea
                 rows={4}
-                className="mt-1 w-full rounded-md border border-slate-700 bg-slate-900 px-2 py-1.5 text-xs text-slate-100 outline-none"
+                className="mt-1 w-full rounded-md border border-secondary-active bg-slate-900 px-2 py-1.5 text-xs text-slate-100 outline-none"
                 style={{ borderColor: withAlpha(primary, 0.25) }}
                 placeholder="Tell us a bit about what you need help with..."
                 onFocus={(e) =>

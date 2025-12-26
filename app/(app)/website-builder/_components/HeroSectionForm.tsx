@@ -1,12 +1,15 @@
 "use client";
 
 import { WebsiteData } from "@/lib/types/websiteTypes";
+import Image from "next/image";
+import { useState } from "react";
 
 export type HeroSectionFormProps = {
   // type: WebsiteType;
   // onTypeChange: (t: WebsiteType) => void;
   data: WebsiteData;
   setData: React.Dispatch<React.SetStateAction<WebsiteData>>;
+  projectId: string;
 };
 
 export function HeroSectionForm({
@@ -14,48 +17,84 @@ export function HeroSectionForm({
   // onTypeChange,
   data,
   setData,
+  projectId,
 }: HeroSectionFormProps) {
+  const [uploading, setUploading] = useState(false);
+  const [removing, setRemoving] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  async function onUpload(file: File) {
+    setErr(null);
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("projectId", projectId);
+      fd.append("file", file);
+
+      const res = await fetch("/api/storage/upload/hero", {
+        method: "POST",
+        body: fd,
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error || "Upload failed");
+      const bustedUrl = `${json.publicUrl}?v=${Date.now()}`;
+      setData((d) => ({
+        ...d,
+        hero: { ...d.hero, imagePath: json.path, imageUrl: bustedUrl },
+      }));
+    } catch (e: any) {
+      setErr(e?.message ?? "Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  async function removeImage() {
+    setErr(null);
+
+    // optimistic UI
+    setData((d) => ({
+      ...d,
+      hero: { ...d.hero, imagePath: undefined, imageUrl: undefined },
+    }));
+
+    setRemoving(true);
+    try {
+      const res = await fetch("/api/storage/remove/hero", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ projectId }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error || "Remove failed");
+    } catch (e: any) {
+      setErr(e?.message ?? "Failed to remove image");
+    } finally {
+      setRemoving(false);
+    }
+  }
+
+  const busy = uploading || removing;
   return (
     <div className="space-y-2">
-      {/* Website type selector */}
-      {/* <div>
-        <p className="mb-2 text-xs text-slate-400">Website type</p>
-        <div className="flex gap-2">
-          {(
-            ["product", "service", "personal", "business"] as WebsiteType[]
-          ).map((t) => (
-            <button
-              key={t}
-              type="button"
-              onClick={() => onTypeChange(t)}
-              className={`rounded-full px-3 py-1 text-xs ${
-                type === t
-                  ? "bg-primary text-slate-950"
-                  : "bg-slate-800 text-slate-200"
-              }`}
-            >
-              {t.charAt(0).toUpperCase() + t.slice(1)}
-            </button>
-          ))}
-        </div>
-      </div> */}
-
       {/* Brand name */}
-      <label className="block text-xs text-slate-400">
+      <label className="block text-xs text-secondary">
         Brand name
         <input
+          placeholder="Enter Brand name"
           value={data.brandName}
           onChange={(e) =>
             setData((d) => ({ ...d, brandName: e.target.value }))
           }
-          className="input-base "
+          className="input-base"
         />
       </label>
 
       {/* Tagline */}
-      <label className="block text-xs text-slate-400">
+      <label className="block text-xs text-secondary">
         Tagline
         <input
+          placeholder="Enter tagline for website"
           value={data.tagline ?? ""}
           onChange={(e) => setData((d) => ({ ...d, tagline: e.target.value }))}
           className="input-base"
@@ -63,9 +102,10 @@ export function HeroSectionForm({
       </label>
 
       {/* Hero headline */}
-      <label className="block text-xs text-slate-400">
+      <label className="block text-xs text-secondary">
         Hero headline
         <input
+          placeholder="Enter headline"
           value={data.hero.headline}
           onChange={(e) =>
             setData((d) => ({
@@ -78,9 +118,10 @@ export function HeroSectionForm({
       </label>
 
       {/* Sub headline */}
-      <label className="block text-xs text-slate-400">
+      <label className="block text-xs text-secondary">
         Sub Headline
         <input
+          placeholder="Enter subheadline"
           value={data.hero.subheadline}
           onChange={(e) =>
             setData((d) => ({
@@ -92,10 +133,70 @@ export function HeroSectionForm({
         />
       </label>
 
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <p className="text-xs text-secondary">Hero image</p>
+          {uploading && (
+            <span className="text-[11px] text-secondary">Uploading…</span>
+          )}
+          {removing && (
+            <span className="text-[11px] text-secondary">Removing…</span>
+          )}
+        </div>
+
+        {data.hero.imageUrl ? (
+          <div className="rounded-lg border border-secondary-fade bg-secondary-light p-2">
+            <Image
+              key={data.hero.imageUrl || "empty"}
+              src={data.hero.imageUrl}
+              alt="hero"
+              className="h-40 w-full rounded-md object-cover"
+              width={400}
+              height={200}
+            />
+            <div className="mt-2 flex justify-end">
+              <button
+                type="button"
+                onClick={removeImage}
+                disabled={busy}
+                className={`text-[11px] underline underline-offset-2 ${
+                  busy
+                    ? "text-secondary cursor-not-allowed"
+                    : "text-primary hover:text-primary-hover"
+                }`}
+              >
+                Remove image
+              </button>
+            </div>
+          </div>
+        ) : (
+          <label className="block">
+            <input
+              type="file"
+              accept="image/*"
+              disabled={busy}
+              onChange={async (e) => {
+                const f = e.target.files?.[0];
+                e.currentTarget.value = "";
+                if (!f) return;
+                await onUpload(f);
+              }}
+              className="block w-full text-xs text-secondary file:mr-3 file:rounded-md file:border file:border-secondary-fade file:bg-secondary-soft file:px-3 file:py-2 file:text-xs file:font-semibold file:text-secondary-dark hover:file:border-primary hover:file:text-primary disabled:opacity-60"
+            />
+            <p className="mt-1 text-[11px] text-secondary">
+              JPG/PNG/WEBP/SVG • up to 5MB
+            </p>
+          </label>
+        )}
+
+        {err && <p className="text-[11px] text-secondary">{err}</p>}
+      </div>
+
       {/* Hero image keyword */}
-      <label className="block text-xs text-slate-400">
-        Hero image keyword (Unsplash)
+      <label className="block text-xs text-secondary">
+        Hero image keyword
         <input
+          placeholder="e.g., technology, solar panels, office"
           value={data.hero.imageQuery}
           onChange={(e) =>
             setData((d) => ({
@@ -108,10 +209,11 @@ export function HeroSectionForm({
       </label>
 
       {/* Primary CTA */}
-      <label className="block text-xs text-slate-400">
+      <label className="block text-xs text-secondary">
         Primary CTA
         <input
           value={data.hero.primaryCta}
+          placeholder="e.g., Get Started, Order Now"
           onChange={(e) =>
             setData((d) => ({
               ...d,
@@ -123,9 +225,10 @@ export function HeroSectionForm({
       </label>
 
       {/* Primary CTA Link */}
-      <label className="block text-xs text-slate-400">
+      <label className="block text-xs text-secondary">
         Primary CTA Link
         <input
+          placeholder="e.g., https://yourwebsite.com/signup or #contact"
           value={data.hero.primaryCtaLink}
           onChange={(e) =>
             setData((d) => ({
@@ -138,9 +241,10 @@ export function HeroSectionForm({
       </label>
 
       {/* Secondary CTA */}
-      <label className="block text-xs text-slate-400">
-        Secondary CTA
+      <label className="block text-xs text-secondary">
+        Secondary CTA (optional)
         <input
+          placeholder="e.g., Learn More"
           value={data.hero.secondaryCta ?? ""}
           onChange={(e) =>
             setData((d) => ({
@@ -153,9 +257,10 @@ export function HeroSectionForm({
       </label>
 
       {/* Secondary CTA Link */}
-      <label className="block text-xs text-slate-400">
+      <label className="block text-xs text-secondary">
         Secondary CTA Link
         <input
+          placeholder="e.g., https://yourwebsite.com/learn-more or #about"
           value={data.hero.secondaryCtaLink ?? ""}
           onChange={(e) =>
             setData((d) => ({

@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -12,6 +13,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
@@ -36,23 +38,23 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center">
-      <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl">
+      <div className="w-full max-w-md rounded-2xl border border-secondary-fade bg-secondary-soft p-6 shadow-sm">
         {/* Header */}
         <div className="mb-5">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-hover mb-2">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-2">
             ForlessAI
           </p>
-          <h1 className="text-2xl font-bold tracking-tight mb-1">
+          <h1 className="text-2xl font-bold tracking-tight mb-1 text-secondary-dark">
             Welcome back
           </h1>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-secondary">
             Log in to continue building and managing your AI-generated websites.
           </p>
         </div>
 
         {/* Error */}
         {errorMsg && (
-          <div className="mb-3 rounded-md border border-red-500/40 bg-red-950/40 px-3 py-2 text-xs text-red-200">
+          <div className="mb-3 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-700">
             {errorMsg}
           </div>
         )}
@@ -60,7 +62,7 @@ export default function LoginPage() {
         {/* Form */}
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-slate-200 mb-1.5">
+            <label className="block text-xs font-medium text-secondary mb-1.5">
               Email
             </label>
             <input
@@ -68,50 +70,66 @@ export default function LoginPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-50 placeholder-slate-500 outline-none focus:border-primary focus:ring-1 focus:ring-primary/70"
+              className="input-base w-full"
               placeholder="you@example.com"
             />
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-xs font-medium text-slate-200">
+              <label className="block text-xs font-medium text-secondary">
                 Password
               </label>
               <button
                 type="button"
                 onClick={() => router.push("/reset-password")}
-                className="text-[11px] text-primary-hover hover:text-emerald-300 underline underline-offset-2"
+                className="text-[11px] text-primary hover:text-primary-hover underline underline-offset-2"
               >
                 Forgot password?
               </button>
             </div>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-50 placeholder-slate-500 outline-none focus:border-primary focus:ring-1 focus:ring-primary/70"
-              placeholder="Your password"
-            />
+
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="input-base w-full pr-10"
+                placeholder="Your password"
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                className="absolute inset-y-0 right-2 flex items-center text-secondary hover:text-secondary-dark transition"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
+              </button>
+            </div>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="mt-1 w-full inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-primary-hover disabled:opacity-60 disabled:cursor-not-allowed"
+            className="mt-1 w-full inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-hover disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {loading ? "Logging in..." : "Log in"}
           </button>
         </form>
 
         {/* Footer */}
-        <p className="mt-4 text-xs text-slate-400">
+        <p className="mt-4 text-xs text-secondary">
           Dont have an account?{" "}
           <button
             type="button"
             onClick={() => router.push("/auth/signup")}
-            className="text-primary-hover hover:text-emerald-300 underline underline-offset-2"
+            className="text-primary hover:text-primary-hover underline underline-offset-2"
           >
             Sign up
           </button>

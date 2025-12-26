@@ -21,18 +21,20 @@ export default function WebsiteBuilderPage() {
     saving,
     saveMessage,
     generating,
+    restoring, // ✅
     builderSections,
     currentIndex,
     isFirst,
     isLast,
     handleSave,
     handleGenerateWebsite,
+    handleRestoreSection, // ✅
   } = useWebsiteBuilder(projectId);
 
   if (!projectId) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-50 flex items-center justify-center">
-        <p className="text-sm text-slate-300">
+      <div className="min-h-screen bg-secondary-soft flex items-center justify-center">
+        <p className="text-sm text-secondary">
           Missing <code>?projectId=...</code> in URL
         </p>
       </div>
@@ -41,15 +43,15 @@ export default function WebsiteBuilderPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-50 flex items-center justify-center">
-        <p className="text-sm text-slate-300">Loading website...</p>
+      <div className="min-h-screen bg-secondary-soft flex items-center justify-center">
+        <p className="text-sm text-secondary">Loading website...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-50">
-      <div className="mx-auto flex max-w-full flex-col gap-6 px-4 py-6 lg:flex-row">
+    <div className="min-h-screen bg-secondary-soft">
+      <div className="mx-auto flex max-w-full flex-col gap-6 px-0 sm:px-4 sm:py-6 lg:flex-row">
         <BuilderSidebar
           projectId={projectId}
           section={section}
@@ -63,13 +65,15 @@ export default function WebsiteBuilderPage() {
           brand={brand}
           setBrand={setBrand}
           generating={generating}
+          restoring={restoring} // ✅
+          handleRestoreSection={handleRestoreSection} // ✅
           saving={saving}
           saveMessage={saveMessage}
           onGenerate={handleGenerateWebsite}
           onSave={handleSave}
         />
 
-        <main className="w-full overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60">
+        <main className="w-full overflow-hidden rounded-2xl border border-secondary-fade bg-secondary-light shadow-sm">
           <WebsiteTemplateBasic
             data={data}
             theme={{

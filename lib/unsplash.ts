@@ -1,7 +1,5 @@
 export async function fetchUnsplashImage(query: string): Promise<string> {
-  const accessKey =
-    process.env.UNSPLASH_ACCESS_KEY ||
-    process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY;
+  const accessKey = process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY;
 
   const fallback =
     "https://images.unsplash.com/photo-1526045612212-70caf35c14df?fit=crop&w=1200&h=675&q=80";

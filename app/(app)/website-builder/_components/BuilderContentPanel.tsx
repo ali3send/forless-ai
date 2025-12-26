@@ -12,6 +12,7 @@ import { ProductsSectionForm } from "./ProductsSectionForm";
 import { ContactSectionForm } from "./ContactSectionForm";
 
 type ContentProps = {
+  projectId: string;
   section: BuilderSection;
   setSection: Dispatch<SetStateAction<BuilderSection>>;
   builderSections: ReadonlyArray<{ id: BuilderSection; label: string }>;
@@ -22,6 +23,8 @@ type ContentProps = {
   data: WebsiteData;
   setData: Dispatch<SetStateAction<WebsiteData>>;
 
+  restoring: boolean;
+  handleRestoreSection: () => void;
   generating: boolean;
   onGenerate: () => void;
 };
@@ -37,29 +40,53 @@ export function BuilderContentPanel({
   setData,
   generating,
   onGenerate,
+  restoring,
+  handleRestoreSection,
+  projectId,
 }: ContentProps) {
   return (
     <>
-      {/* Step info + regenerate are ONLY in content panel */}
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-xs text-slate-400">
-          Step {currentIndex + 1} of {builderSections.length}
-        </span>
+      {/* Header: Step row + Actions row (separate, mobile-safe) */}
+      <div className="mb-3 w-full space-y-2">
+        {/* Row 1: Step info */}
+        <div className="w-full">
+          <span className="block text-xs text-secondary">
+            Step {currentIndex + 1} of {builderSections.length}
+          </span>
+        </div>
 
-        <button
-          type="button"
-          className="rounded-full border border-slate-600 px-2 py-1 text-[10px]"
-          onClick={onGenerate}
-          disabled={generating}
-        >
-          {generating ? "Generating..." : "Re-generate"}
-        </button>
+        {/* Row 2: Actions */}
+        <div className="w-full">
+          <div className="flex w-full justify-end gap-2">
+            {/* Restore */}
+            <button
+              type="button"
+              onClick={handleRestoreSection}
+              disabled={restoring || generating}
+              className="rounded-full border border-secondary-fade bg-secondary-light px-4 py-1.5 text-[11px] font-semibold text-secondary-dark transition hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
+            >
+              {restoring ? "Restoring..." : "Restore Previous"}
+            </button>
+
+            {/* Re-generate */}
+            <button
+              type="button"
+              onClick={onGenerate}
+              disabled={generating || restoring}
+              className="rounded-full bg-primary px-4 py-1.5 text-[11px] font-semibold text-white transition hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {generating ? "Generating..." : "Regenerate"}
+            </button>
+          </div>
+        </div>
       </div>
 
-      {section === "hero" && <HeroSectionForm data={data} setData={setData} />}
+      {section === "hero" && (
+        <HeroSectionForm data={data} setData={setData} projectId={projectId} />
+      )}
 
       {section === "about" && (
-        <AboutSectionForm data={data} setData={setData} />
+        <AboutSectionForm data={data} setData={setData} projectId={projectId} />
       )}
 
       {section === "features" && (
@@ -83,7 +110,7 @@ export function BuilderContentPanel({
               setSection(builderSections[currentIndex - 1].id);
             }
           }}
-          className="rounded-full border border-slate-600 px-3 py-1 text-xs disabled:opacity-40"
+          className="rounded-full border border-secondary-fade bg-secondary-soft px-3 py-1 text-xs font-semibold text-secondary-dark transition hover:border-primary hover:text-primary disabled:opacity-40"
         >
           Previous
         </button>
@@ -96,7 +123,7 @@ export function BuilderContentPanel({
               setSection(builderSections[currentIndex + 1].id);
             }
           }}
-          className="rounded-full bg-primary px-3 py-1 text-xs font-medium text-slate-950 disabled:opacity-40"
+          className="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-white transition hover:bg-primary-hover disabled:opacity-40"
         >
           Next
         </button>

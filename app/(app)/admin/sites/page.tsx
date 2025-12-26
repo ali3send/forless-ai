@@ -26,11 +26,14 @@ export default async function AdminSitesPage() {
   const sites = (data ?? []) as SiteRow[];
 
   return (
-    <div className="p-6">
+    <div className="p-6 text-secondary-dark">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">Admin · Sites</h1>
-        <a href="/admin" className="text-sm text-white/70 hover:text-white">
-          Back
+        <a
+          href="/admin"
+          className="text-sm font-semibold text-secondary hover:text-primary"
+        >
+          ← Back
         </a>
       </div>
 
@@ -38,20 +41,20 @@ export default async function AdminSitesPage() {
         {sites.map((s) => (
           <div
             key={s.id}
-            className="rounded-xl border border-white/10 bg-white/5 p-4"
+            className="rounded-xl border border-secondary-fade bg-secondary-soft p-4"
           >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <div className="font-medium">
+                <div className="font-medium text-secondary-dark">
                   {s.name ?? "(no name)"}{" "}
                   {s.slug ? (
-                    <span className="text-white/60">· {s.slug}</span>
+                    <span className="text-secondary">· {s.slug}</span>
                   ) : null}
                 </div>
-                <div className="mt-1 text-xs text-white/60">
+                <div className="mt-1 text-xs text-secondary">
                   Project ID: {s.id}
                 </div>
-                <div className="mt-1 text-xs text-white/60">
+                <div className="mt-1 text-xs text-secondary">
                   Owner: {s.user_id ?? "—"}
                 </div>
               </div>
@@ -62,7 +65,7 @@ export default async function AdminSitesPage() {
         ))}
 
         {sites.length === 0 && (
-          <div className="rounded-xl border border-white/10 bg-white/5 p-6 text-sm text-white/70">
+          <div className="rounded-xl border border-secondary-fade bg-secondary-soft p-6 text-sm text-secondary">
             No published sites found.
           </div>
         )}

@@ -5,6 +5,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { fetchUnsplashImage } from "@/lib/unsplash";
 import { openai } from "@/lib/openai";
 import type { WebsiteData } from "@/lib/types/websiteTypes";
+import { PLAN_LIMITS, type PlanKey } from "@/lib/billing/planLimits";
 
 const Schema = z.object({
   name: z.string().min(3, "Name is required"),
@@ -12,7 +13,6 @@ const Schema = z.object({
   websiteType: z.string().optional(),
 });
 
-//  output shape
 type AiOut = {
   brand: { name: string; slogan: string };
   website: {
@@ -49,14 +49,14 @@ function toWebsiteData(ai: AiOut, websiteType: string): WebsiteData {
 
   return {
     type: websiteType,
-    brandName, // server-side
+    brandName,
     hero: {
-      headline: slogan, // server-side
+      headline: slogan,
       subheadline: ai.website.hero.subheadline ?? "",
       primaryCta: ai.website.hero.primaryCta ?? "",
-      primaryCtaLink: "#", // server-side
+      primaryCtaLink: "#",
       secondaryCta: ai.website.hero.secondaryCta ?? "",
-      secondaryCtaLink: "#", // server-side
+      secondaryCtaLink: "#",
       imageQuery: ai.website.hero.imageQuery ?? "",
     },
     about: {
@@ -95,9 +95,23 @@ function toWebsiteData(ai: AiOut, websiteType: string): WebsiteData {
       subheadline: ai.website.finalCta.subheadline ?? "",
       buttonLabel: ai.website.finalCta.buttonLabel ?? "",
     },
-    tagline: ""
+    tagline: "",
   };
 }
+
+function normalizePlan(plan: string | null): PlanKey {
+  if (plan === "gowebsite" || plan === "creator" || plan === "pro") return plan;
+  return "free";
+}
+
+function nextMonthStartISO() {
+  const now = new Date();
+  const next = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1)
+  );
+  return next.toISOString();
+}
+
 export async function POST(req: Request) {
   const supabase = await createServerSupabaseClient();
 
@@ -109,6 +123,25 @@ export async function POST(req: Request) {
   if (userError || !user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
+
+  // ── Load profile (plan + billing window)
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("plan, is_suspended, current_period_end")
+    .eq("id", user.id)
+    .single();
+
+  if (profileError || !profile) {
+    return NextResponse.json({ error: "Profile not found" }, { status: 404 });
+  }
+  if (profile.is_suspended) {
+    return NextResponse.json({ error: "Account suspended" }, { status: 403 });
+  }
+
+  const plan = normalizePlan(profile.plan);
+  const periodEndISO = profile.current_period_end
+    ? new Date(profile.current_period_end).toISOString()
+    : nextMonthStartISO();
 
   const body = await req.json().catch(() => ({}));
   const parsed = Schema.safeParse(body);
@@ -122,6 +155,68 @@ export async function POST(req: Request) {
 
   const { name, idea, websiteType } = parsed.data;
   const type = websiteType || "product";
+
+  // ─────────────────────────────────────────
+  //  USAGE CONTROL #1: Project limit
+  // ─────────────────────────────────────────
+  const projectLimit = Number(PLAN_LIMITS?.[plan]?.projects ?? 0);
+  if (projectLimit > 0) {
+    const { count: projectsCount, error: projectsCountErr } = await supabase
+      .from("projects")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id);
+
+    if (projectsCountErr) {
+      return NextResponse.json(
+        { error: "Failed to check projects limit" },
+        { status: 500 }
+      );
+    }
+
+    if ((projectsCount ?? 0) >= projectLimit) {
+      return NextResponse.json(
+        {
+          error:
+            "Project limit reached for your plan. Upgrade to create more projects.",
+        },
+        { status: 403 }
+      );
+    }
+  }
+
+  // ─────────────────────────────────────────
+  //  USAGE CONTROL #2: First-time website generation limit
+  // ─────────────────────────────────────────
+  const genLimit = Number(PLAN_LIMITS?.[plan]?.website_generate ?? 0);
+  if (genLimit <= 0) {
+    return NextResponse.json(
+      {
+        error:
+          "Website generation is not available on your plan. Upgrade to continue.",
+      },
+      { status: 403 }
+    );
+  }
+
+  const { data: genCounter } = await supabase
+    .from("usage_counters")
+    .select("count")
+    .eq("user_id", user.id)
+    .eq("project_id", null) // user-wide
+    .eq("key", "website_generate")
+    .eq("period_end", periodEndISO)
+    .maybeSingle();
+
+  const genUsed = genCounter?.count ?? 0;
+  if (genUsed >= genLimit) {
+    return NextResponse.json(
+      {
+        error:
+          "Website generation limit reached for your plan. Upgrade to generate more.",
+      },
+      { status: 403 }
+    );
+  }
 
   // 1) Create project
   const { data: project, error: createErr } = await supabase
@@ -143,7 +238,7 @@ export async function POST(req: Request) {
     );
   }
 
-  // 2) One OpenAI call (smaller prompt + smaller response)
+  // 2) One OpenAI call
   const resp = await openai.responses.create({
     model: "gpt-4o-mini",
     input: [
@@ -175,7 +270,7 @@ Rules:
 - Keep copy short.
 - features.items 5-8 words each.
 - Use placeholders if unknown.
--imageQuery must be a short Unsplash search phrase (1–2 words), generic and visual
+- imageQuery must be a short Unsplash search phrase (1–2 words), generic and visual
         `.trim(),
       },
     ],
@@ -183,7 +278,7 @@ Rules:
 
   const text = resp.output_text || "";
   console.log("usage: ", resp.usage);
-  console.log("usage: ", resp.model);
+  console.log("model: ", resp.model);
 
   let ai: AiOut;
 
@@ -203,7 +298,6 @@ Rules:
     );
   }
 
-  // Server-side computed values
   const brand_data = {
     name: ai.brand.name.trim() || name,
     slogan: ai.brand.slogan.trim(),
@@ -265,6 +359,21 @@ Rules:
         .eq("user_id", user.id);
     }
   } catch {}
+
+  // ─────────────────────────────────────────
+  // Increment website_generate ONLY AFTER SUCCESS
+  // ─────────────────────────────────────────
+  await supabase.from("usage_counters").upsert(
+    {
+      user_id: user.id,
+      project_id: null,
+      key: "website_generate",
+      period_end: periodEndISO,
+      count: genUsed + 1,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "user_id,project_id,key,period_end" }
+  );
 
   return NextResponse.json({
     success: true,

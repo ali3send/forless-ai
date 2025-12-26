@@ -68,13 +68,12 @@ export async function GET(req: Request, context: RouteContext) {
   const { data, error } = await supabase
     .from("projects")
     .select(
-      "id, name, status, description, brand_data, thumbnail_url, updated_at"
+      "id, name, status, description, brand_data, thumbnail_url, updated_at, slug, published, published_url, published_at"
     )
     .eq("id", projectId)
     .eq("user_id", user.id)
     .single();
 
-  // If you want simple behavior, keep your 404:
   if (error || !data) {
     return NextResponse.json({ error: "Project not found" }, { status: 404 });
   }

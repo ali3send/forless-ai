@@ -54,9 +54,10 @@ export function ProductsSectionForm({ data, setData }: OffersSectionFormProps) {
   return (
     <div className="space-y-4">
       {/* Offers section title */}
-      <label className="block text-xs text-slate-400">
+      <label className="block text-xs text-secondary">
         Offers Section Title
         <input
+          placeholder="e.g Our offers, our products"
           value={data.offers.title}
           onChange={(e) =>
             setData((prev) => ({
@@ -73,10 +74,10 @@ export function ProductsSectionForm({ data, setData }: OffersSectionFormProps) {
         {data.offers.items.map((offer, index) => (
           <div
             key={index}
-            className="rounded-xl border border-slate-700 bg-slate-900/50 p-3"
+            className="rounded-xl border border-secondary-fade bg-secondary-light p-3 space-y-2"
           >
-            <div className="mb-2 flex items-center justify-between">
-              <h4 className="text-xs font-semibold text-slate-300">
+            <div className="flex items-center justify-between">
+              <h4 className="text-xs font-semibold text-secondary-dark">
                 Offer {index + 1}
               </h4>
 
@@ -84,25 +85,27 @@ export function ProductsSectionForm({ data, setData }: OffersSectionFormProps) {
                 <button
                   type="button"
                   onClick={() => removeOffer(index)}
-                  className="text-xs text-red-400 hover:text-red-300"
+                  className="text-xs text-red-500 hover:text-red-700 transition"
                 >
                   Remove
                 </button>
               )}
             </div>
 
-            <label className="mt-2 block text-xs text-slate-400">
+            <label className="block text-xs text-secondary">
               Name
               <input
                 value={offer.name}
+                placeholder="e.g, offer-1,product-1"
                 onChange={(e) => updateOffer(index, "name", e.target.value)}
                 className="input-base"
               />
             </label>
 
-            <label className="mt-2 block text-xs text-slate-400">
+            <label className="block text-xs text-secondary">
               Description
               <textarea
+                placeholder="Describe this offer/product..."
                 value={offer.description}
                 onChange={(e) =>
                   updateOffer(index, "description", e.target.value)
@@ -112,7 +115,7 @@ export function ProductsSectionForm({ data, setData }: OffersSectionFormProps) {
               />
             </label>
 
-            <label className="mt-2 block text-xs text-slate-400">
+            <label className="block text-xs text-secondary">
               Price label (optional)
               <input
                 value={offer.priceLabel ?? ""}
@@ -130,7 +133,7 @@ export function ProductsSectionForm({ data, setData }: OffersSectionFormProps) {
       <button
         type="button"
         onClick={addOffer}
-        className="w-full rounded-full bg-primary px-3 py-2 text-xs font-medium text-slate-950"
+        className="w-full rounded-full bg-primary px-3 py-2 text-xs font-semibold text-white transition hover:bg-primary-hover"
       >
         + Add Offer
       </button>

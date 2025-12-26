@@ -11,9 +11,10 @@ export function ContactSectionForm({ data, setData }: ContactSectionFormProps) {
   return (
     <div className="space-y-4">
       {/* Contact Section Title */}
-      <label className="block text-xs text-slate-400">
+      <label className="block text-xs text-secondary">
         Contact Section Title
         <input
+          placeholder="e.g., Contact Us, Get in Touch, Reach Out"
           value={data.contact.title}
           onChange={(e) =>
             setData((prev) => ({
@@ -26,9 +27,10 @@ export function ContactSectionForm({ data, setData }: ContactSectionFormProps) {
       </label>
 
       {/* Description */}
-      <label className="block text-xs text-slate-400">
+      <label className="block text-xs text-secondary">
         Contact Description
         <textarea
+          placeholder="e.g., Feel free to reach out to us via the form below or through our contact details. "
           value={data.contact.description}
           onChange={(e) =>
             setData((prev) => ({
@@ -42,7 +44,7 @@ export function ContactSectionForm({ data, setData }: ContactSectionFormProps) {
       </label>
 
       {/* Email */}
-      <label className="block text-xs text-slate-400">
+      <label className="block text-xs text-secondary">
         Email Address
         <input
           value={data.contact.email}
@@ -59,7 +61,7 @@ export function ContactSectionForm({ data, setData }: ContactSectionFormProps) {
       </label>
 
       {/* WhatsApp */}
-      <label className="block text-xs text-slate-400">
+      <label className="block text-xs text-secondary">
         WhatsApp Number (optional)
         <input
           value={data.contact.whatsapp ?? ""}
@@ -75,7 +77,7 @@ export function ContactSectionForm({ data, setData }: ContactSectionFormProps) {
       </label>
 
       {/* Phone */}
-      <label className="block text-xs text-slate-400">
+      <label className="block text-xs text-secondary">
         Phone Number (optional)
         <input
           value={data.contact.phone ?? ""}
@@ -91,11 +93,13 @@ export function ContactSectionForm({ data, setData }: ContactSectionFormProps) {
       </label>
 
       {/* FINAL CTA CARD */}
-      <div className="rounded-xl border border-slate-700 bg-slate-900/50 p-3 space-y-3 mt-6">
-        <h4 className="text-xs font-semibold text-slate-300">Final CTA Box</h4>
+      <div className="rounded-xl border border-secondary-fade bg-secondary-light p-3 space-y-3 mt-6">
+        <h4 className="text-xs font-semibold text-secondary-dark">
+          Final CTA Box
+        </h4>
 
         {/* CTA Headline */}
-        <label className="block text-xs text-slate-400">
+        <label className="block text-xs text-secondary">
           CTA Headline
           <input
             value={data.finalCta.headline}
@@ -111,7 +115,7 @@ export function ContactSectionForm({ data, setData }: ContactSectionFormProps) {
         </label>
 
         {/* CTA Subheadline */}
-        <label className="block text-xs text-slate-400">
+        <label className="block text-xs text-secondary">
           CTA Subheadline
           <textarea
             value={data.finalCta.subheadline}
@@ -128,7 +132,7 @@ export function ContactSectionForm({ data, setData }: ContactSectionFormProps) {
         </label>
 
         {/* CTA Button Label */}
-        <label className="block text-xs text-slate-400">
+        <label className="block text-xs text-secondary">
           CTA Button Label
           <input
             value={data.finalCta.buttonLabel}

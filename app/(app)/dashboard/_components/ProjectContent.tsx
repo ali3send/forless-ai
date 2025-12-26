@@ -30,7 +30,7 @@ export default function ProjectContent({ project }: { project: ProjectRow }) {
   return (
     <div className="space-y-6">
       {/* Breadcrumb / Back */}
-      <div className="text-xs text-slate-400">
+      <div className="text-xs text-secondary-light">
         <Link href="/dashboard" className="hover:underline">
           ← Back to projects
         </Link>
@@ -42,14 +42,14 @@ export default function ProjectContent({ project }: { project: ProjectRow }) {
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full max-w-md rounded-md border border-slate-700 bg-slate-900 px-3 py-1.5 text-lg font-semibold outline-none ring-primary/40 focus:ring-1"
+            className="w-full max-w-md rounded-md border border-secondary-active bg-slate-900 px-3 py-1.5 text-lg font-semibold outline-none ring-primary/40 focus:ring-1"
           />
-          <div className="flex items-center gap-2 text-xs text-slate-400">
+          <div className="flex items-center gap-2 text-xs text-secondary-light">
             <span>Project status:</span>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="rounded border border-slate-700 bg-slate-900 px-2 py-1 text-xs outline-none"
+              className="rounded border border-secondary-active bg-slate-900 px-2 py-1 text-xs outline-none"
             >
               <option value="active">Active</option>
               <option value="draft">Draft</option>
@@ -104,10 +104,10 @@ function ActionCard({
   ctaLabel: string;
 }) {
   return (
-    <div className="flex h-full flex-col justify-between rounded-lg border border-slate-800 bg-slate-900/60 p-4 text-xs">
+    <div className="flex h-full flex-col justify-between rounded-lg border border-secondary-dark bg-slate-900/60 p-4 text-xs">
       <div>
         <h2 className="text-sm font-semibold">{title}</h2>
-        <p className="mt-2 text-slate-400">{description}</p>
+        <p className="mt-2 text-secondary-light">{description}</p>
       </div>
 
       <div className="mt-4">

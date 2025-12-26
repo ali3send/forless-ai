@@ -8,7 +8,7 @@ type Props = {
 
 export function Navbar({ brandName, offersTitle }: Props) {
   return (
-    <header className="border-b border-slate-800">
+    <header className="border-b border-secondary-dark">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
         <div className="font-semibold">{brandName}</div>
         <nav className="hidden gap-6 text-sm md:flex">

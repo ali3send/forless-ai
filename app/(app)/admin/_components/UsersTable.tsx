@@ -111,7 +111,6 @@ export function UsersTable() {
     const title = suspend ? "Suspend this user?" : "Unsuspend this user?";
     const confirmLabel = suspend ? "Suspend" : "Unsuspend";
 
-    // Unsuspend: simple confirm like logout/delete
     if (!suspend) {
       toast.error(title, {
         description: `${
@@ -129,8 +128,10 @@ export function UsersTable() {
       return;
     }
 
-    // Suspend: same confirm style, but with reason input inside toast
-    const toastId = toast.error(title, {
+    //  use local variable + state inside render closure
+    let currentReason = "";
+
+    const id = toast.error(title, {
       description: (
         <div className="space-y-2">
           <p className="text-sm text-muted-foreground">
@@ -141,12 +142,13 @@ export function UsersTable() {
             autoFocus
             className="w-full rounded-md border px-3 py-2 text-sm outline-none"
             placeholder="Reason (optional)"
-            data-suspend-reason
+            onChange={(e) => {
+              currentReason = e.target.value;
+            }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                const reason = e.currentTarget.value.trim() || undefined;
-                toast.dismiss(toastId);
-
+                const reason = currentReason.trim() || undefined;
+                toast.dismiss(id);
                 const t = toast.loading("Suspending user...");
                 performSuspend(userId, true, reason, t);
               }
@@ -157,18 +159,8 @@ export function UsersTable() {
       action: {
         label: confirmLabel,
         onClick: () => {
-          const root = document.querySelector(
-            `[data-sonner-toast="${toastId}"]`
-          ) as HTMLElement | null;
-
-          const input = root?.querySelector(
-            "input[data-suspend-reason]"
-          ) as HTMLInputElement | null;
-
-          const reason = input?.value?.trim() || undefined;
-
-          toast.dismiss(toastId);
-
+          const reason = currentReason.trim() || undefined;
+          toast.dismiss(id);
           const t = toast.loading("Suspending user...");
           performSuspend(userId, true, reason, t);
         },
@@ -247,13 +239,14 @@ export function UsersTable() {
       cancel: "Cancel",
       classNames: {
         actionButton: "bg-red-600 text-white hover:bg-red-700",
-        cancelButton: "bg-slate-700 text-slate-200 hover:bg-slate-600",
+        cancelButton:
+          "bg-secondary-active text-secondary-fade hover:bg-secondary-hover",
       },
     });
   }
 
   return (
-    <div className="rounded-2xl border border-slate-700 bg-bg-card">
+    <div className="rounded-2xl border border-secondary-fade bg-secondary-soft">
       <UsersToolbar
         q={q}
         setQ={setQ}
