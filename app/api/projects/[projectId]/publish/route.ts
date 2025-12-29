@@ -46,7 +46,7 @@ export async function POST(
   if (!slug) {
     return NextResponse.json({ error: "Invalid slug" }, { status: 400 });
   }
-  const siteHost = (process.env.NEXT_PUBLIC_SITE_BASE_URL || "lvh.me:3000")
+  const siteHost = (process.env.NEXT_PUBLIC_BASE_URL || "lvh.me:3000")
     .replace(/^https?:\/\//, "")
     .replace(/\/$/, "");
 

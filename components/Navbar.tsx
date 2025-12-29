@@ -11,7 +11,12 @@ import { toast } from "sonner";
 
 export function Navbar() {
   const router = useRouter();
+
   const { user, isAdmin } = useAuth();
+
+  //memoizing user and isAdmin
+  // const memoizedUser = useMemo(() => user, [user]);
+  // const memoizedIsAdmin = useMemo(() => isAdmin, [isAdmin]);
   const [supabase] = useState(() => createBrowserSupabaseClient());
 
   const [billingOpen, setBillingOpen] = useState(false);
@@ -170,7 +175,7 @@ export function Navbar() {
             </div>
           )}
 
-          {user && isAdmin && (
+          {isAdmin && (
             <Link href="/admin" className="hover:text-secondary-dark">
               Admin Panel
             </Link>
