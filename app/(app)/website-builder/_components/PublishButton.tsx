@@ -157,7 +157,7 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
           value={slug}
           onChange={(e) => setSlug(e.target.value)}
           placeholder="e.g., my-company"
-          className="input-base w-full"
+          className="input-base w-full border-none"
         />
       </div>
 

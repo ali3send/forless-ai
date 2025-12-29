@@ -14,8 +14,8 @@ export default function StatsRow({ stats }: { stats: DashboardStats }) {
 
 function StatCard({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-lg border border-secondary-fade bg-secondary-soft p-3 shadow-sm">
-      <div className="text-[10px] uppercase tracking-wide text-secondary">
+    <div className="rounded-lg  bg-secondary-soft p-3">
+      <div className="text-[10px] uppercase font-semibold  tracking-wide text-secondary-active">
         {label}
       </div>
       <div className="mt-1 text-lg font-semibold text-secondary-dark">

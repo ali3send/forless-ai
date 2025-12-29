@@ -48,12 +48,12 @@ function SearchInput({
       className="
         w-full sm:w-64
         rounded-md
-        border border-secondary-fade
+         
         bg-secondary-soft
         px-3 py-1.5
         text-xs text-secondary-dark
         outline-none
-        ring-primary/30
+        ring-primary/60
         focus:ring-1
       "
     />
