@@ -50,16 +50,16 @@
          text-secondary-dark
          placeholder:text-secondary
          focus:outline-none
-         focus:border-primary
-         focus:ring-2 focus:ring-primary/40
+         
+         focus:ring-2 focus:ring-primary/50
          transition-all;
 }
 
   .btn-fill{
-    @apply   rounded-md bg-primary  py-1 px-4  text-sm  text-slate-950 shadow-sm hover:bg-primary-hover cursor-pointer
+    @apply   rounded-md bg-primary  py-1 px-4  text-sm  text-secondary-fade shadow-sm font-semibold hover:bg-primary-active cursor-pointer
   }
   .btn-secondary{
-    @apply  rounded-md border  bg-secondary px-4 py-1 text-sm text-secondary-fade hover:text-secondary-hover transition cursor-pointer
+    @apply  rounded-md  bg-secondary px-4 py-1 text-sm text-secondary-fade font-semibold hover:bg-secondary-hover transition cursor-pointer
   }
 }
 

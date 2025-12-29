@@ -17,7 +17,7 @@ export default function ProjectGrid({
   if (projects.length > 0) {
     return (
       <section className="mt-2">
-        <div className="grid max-h-[480px] gap-4 overflow-y-auto pr-1 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid  grid-cols-1 gap-4 overflow-y-auto pr-1 md:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) => (
             <ProjectCard key={project.id} project={project} />
           ))}
@@ -40,7 +40,7 @@ export default function ProjectGrid({
 
   return (
     <section className="mt-2">
-      <div className="rounded-lg border border-secondary-fade bg-secondary-soft p-6 text-center text-sm text-secondary">
+      <div className="rounded-lg  bg-secondary-soft p-6 text-center text-sm text-secondary-dark">
         No projects match your filters.
       </div>
     </section>
@@ -98,9 +98,9 @@ function ProjectCard({ project }: { project: ProjectRow }) {
   return (
     <Link
       href={`/website-builder?projectId=${project.id}`}
-      className="group flex flex-col rounded-lg border border-secondary-fade bg-secondary-soft p-3 text-xs transition hover:border-primary"
+      className="group flex flex-col rounded-lg border border-secondary-light  bg-secondary-soft p-3 text-xs transition hover:border-primary"
     >
-      <div className="relative h-28 overflow-hidden rounded-md border border-secondary-fade bg-secondary-light">
+      <div className="relative h-28 overflow-hidden rounded-md bg-secondary-light">
         {project.thumbnail_url ? (
           <Image
             src={project.thumbnail_url}
@@ -127,10 +127,10 @@ function ProjectCard({ project }: { project: ProjectRow }) {
 
       <div className="mt-3 flex items-start justify-between gap-2">
         <div>
-          <div className="truncate text-sm font-medium text-secondary-dark">
+          <div className="truncate text-sm font-semibold text-secondary-dark">
             {name}
           </div>
-          <div className="mt-1 text-[11px] capitalize text-secondary">
+          <div className="mt-1 text-[11px] capitalize text-secondary-dark">
             Status: {status}
           </div>
         </div>

@@ -92,30 +92,26 @@ export function Navbar() {
 
   return (
     <header className="border-b border-secondary-fade bg-secondary-soft/90 backdrop-blur z-50">
-      <nav className="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="h-8 w-8 overflow-hidden rounded-md">
+      <nav className=" mx-auto flex items-center justify-between px-5  py-3">
+        <Link href="/" className="">
+          <div className=" overflow-hidden rounded-md">
             <Image
-              src="/img.jpeg"
+              src="/img.png"
               alt="ForlessAI Logo"
-              width={32}
-              height={32}
+              width={100}
+              height={100}
               className="object-cover mt-1.5"
             />
           </div>
-
-          <span className="font-semibold tracking-tight text-sm sm:text-base text-secondary-dark">
-            ForlessAI
-          </span>
         </Link>
 
-        <div className="flex items-center gap-4 text-xs sm:text-sm text-secondary">
-          <Link href="/" className="hover:text-secondary-dark">
+        <div className="flex items-center gap-4 text-xs sm:text-sm text-secondary-dark font-semibold">
+          <Link href="/" className="hover:underline">
             Home
           </Link>
 
           {user && (
-            <Link href="/dashboard" className="hover:text-secondary-dark">
+            <Link href="/dashboard" className="hover:underline">
               Dashboard
             </Link>
           )}
@@ -125,7 +121,7 @@ export function Navbar() {
               <button
                 type="button"
                 onClick={() => setBillingOpen((v) => !v)}
-                className="inline-flex items-center gap-1 hover:text-secondary-dark"
+                className="inline-flex items-center gap-1 "
                 aria-haspopup="menu"
                 aria-expanded={billingOpen}
               >
@@ -170,8 +166,8 @@ export function Navbar() {
             </div>
           )}
 
-          {user && isAdmin && (
-            <Link href="/admin" className="hover:text-secondary-dark">
+          {isAdmin && (
+            <Link href="/admin" className="hover:underline">
               Admin Panel
             </Link>
           )}
@@ -180,10 +176,7 @@ export function Navbar() {
 
           {user ? (
             <>
-              <button
-                onClick={handleLogout}
-                className="hover:text-secondary-dark"
-              >
+              <button onClick={handleLogout} className="hover:underline">
                 Logout
               </button>
 
@@ -201,7 +194,7 @@ export function Navbar() {
             <>
               <Link
                 href="/auth/login"
-                className="text-secondary hover:text-secondary-dark"
+                className="text-secondary hover:underline"
               >
                 Login
               </Link>
