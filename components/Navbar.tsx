@@ -11,12 +11,7 @@ import { toast } from "sonner";
 
 export function Navbar() {
   const router = useRouter();
-
   const { user, isAdmin } = useAuth();
-
-  //memoizing user and isAdmin
-  // const memoizedUser = useMemo(() => user, [user]);
-  // const memoizedIsAdmin = useMemo(() => isAdmin, [isAdmin]);
   const [supabase] = useState(() => createBrowserSupabaseClient());
 
   const [billingOpen, setBillingOpen] = useState(false);
@@ -98,20 +93,16 @@ export function Navbar() {
   return (
     <header className="border-b border-secondary-fade bg-secondary-soft/90 backdrop-blur z-50">
       <nav className="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="h-8 w-8 overflow-hidden rounded-md">
+        <Link href="/" className="">
+          <div className=" overflow-hidden rounded-md">
             <Image
-              src="/img.jpeg"
+              src="/img.png"
               alt="ForlessAI Logo"
-              width={32}
-              height={32}
+              width={100}
+              height={100}
               className="object-cover mt-1.5"
             />
           </div>
-
-          <span className="font-semibold tracking-tight text-sm sm:text-base text-secondary-dark">
-            ForlessAI
-          </span>
         </Link>
 
         <div className="flex items-center gap-4 text-xs sm:text-sm text-secondary">
