@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
+import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 
 export async function GET() {
   const admin = await requireAdmin();
@@ -8,7 +9,7 @@ export async function GET() {
     return NextResponse.json({ error: admin.error }, { status: admin.status });
   }
 
-  const { supabase } = admin;
+  const supabase = createAdminSupabaseClient();
 
   // Adjust selected columns to match your schema
   const { data, error } = await supabase

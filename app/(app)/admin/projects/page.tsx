@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
+import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 
 type ProjectRow = {
   id: string;
@@ -13,8 +14,9 @@ type ProjectRow = {
 export default async function AdminProjectsPage() {
   const admin = await requireAdmin();
   if (!admin.ok) redirect("/");
+  const supabase = createAdminSupabaseClient();
 
-  const { data, error } = await admin.supabase
+  const { data, error } = await supabase
     .from("projects")
     .select("id, name, slug, user_id, created_at, updated_at")
     .order("created_at", { ascending: false })

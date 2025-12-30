@@ -13,6 +13,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: admin.error }, { status: admin.status });
   }
 
+  const supabaseAdmin = createAdminSupabaseClient();
+
   const body = await req.json().catch(() => null);
   const parsed = Schema.safeParse(body);
   if (!parsed.success) {
@@ -22,14 +24,14 @@ export async function POST(req: Request) {
   const { userId } = parsed.data;
 
   // 1) Delete from Auth (this is the real "user delete")
-  const supabaseAdmin = createAdminSupabaseClient();
+  // const supabaseAdmin = createAdminSupabaseClient();
   const { error: authErr } = await supabaseAdmin.auth.admin.deleteUser(userId);
   if (authErr) {
     return NextResponse.json({ error: authErr.message }, { status: 500 });
   }
 
   // 2) Clean up profile row
-  const { error: profileErr } = await admin.supabase
+  const { error: profileErr } = await supabaseAdmin
     .from("profiles")
     .delete()
     .eq("id", userId);

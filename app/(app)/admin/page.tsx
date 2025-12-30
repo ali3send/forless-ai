@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 
 async function getAdminStats() {
-  const supabase = await createServerSupabaseClient();
+  const supabase = await createAdminSupabaseClient();
 
   const [projects, sites, users] = await Promise.all([
     supabase.from("projects").select("id", { count: "exact", head: true }),

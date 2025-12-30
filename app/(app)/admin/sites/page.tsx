@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
 import { UnpublishButton } from "../_components/UnpublishButton";
+import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 // import { UnpublishButton } from "./_components/UnpublishButton";
 
 type SiteRow = {
@@ -15,8 +16,10 @@ export default async function AdminSitesPage() {
   const admin = await requireAdmin();
   if (!admin.ok) redirect("/");
 
+  const supabase = createAdminSupabaseClient();
+
   // IMPORTANT: adjust this filter to match your real "published" logic.
-  const { data } = await admin.supabase
+  const { data } = await supabase
     .from("projects")
     .select("id, name, slug, user_id, updated_at")
     .not("slug", "is", null)
