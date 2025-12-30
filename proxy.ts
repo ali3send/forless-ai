@@ -17,7 +17,7 @@ export default function proxy(req: NextRequest) {
   // allow localhost
   if (hostname === "localhost") return NextResponse.next();
 
-  const siteBaseHost = (process.env.NEXT_PUBLIC_SITE_BASE_URL || "lvh.me")
+  const siteBaseHost = (process.env.NEXT_PUBLIC_BASE_URL || "lvh.me")
     .replace(/^https?:\/\//, "")
     .replace(/\/$/, "")
     .toLowerCase();
