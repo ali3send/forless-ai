@@ -38,7 +38,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .single();
 
     if (error) {
-      setRole(null);
       return;
     }
 

@@ -25,7 +25,7 @@ export default function RootLayout({
             classNames: {
               /* destructive / danger */
               actionButton:
-                "!bg-primary-hover !text-white hover:!bg-primary-active",
+                "!bg-primary-active !text-white hover:!bg-primary-dark",
 
               /* cancel / neutral */
               cancelButton:

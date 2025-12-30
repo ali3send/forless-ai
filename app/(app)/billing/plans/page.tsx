@@ -143,7 +143,7 @@ export default function BillingPlansPage() {
 
       toast.dismiss(t);
       toast.success("Opening Stripe checkout…");
-      window.location.href = json.url;
+      router.push(json.url);
     } catch (e: any) {
       toast.dismiss(t);
       toast.error(e?.message ?? "Checkout failed");
@@ -168,7 +168,7 @@ export default function BillingPlansPage() {
 
       toast.dismiss(t);
       toast.success("Redirecting…");
-      window.location.href = json.url;
+      router.push(json.url);
     } catch (e: any) {
       toast.dismiss(t);
       toast.error(e?.message ?? "Could not open billing portal");

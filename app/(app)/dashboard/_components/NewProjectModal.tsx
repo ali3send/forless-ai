@@ -3,10 +3,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  apiCreateAndGenerateProject,
-  apiCreateProject,
-} from "@/lib/api/project";
+import { apiCreateAndGenerateProject } from "@/lib/api/project";
 import { toast } from "sonner";
 
 export default function NewProjectModal() {

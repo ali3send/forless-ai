@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export function UnpublishButton({ projectId }: { projectId: string }) {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   async function unpublish() {
     setLoading(true);
@@ -20,8 +22,7 @@ export function UnpublishButton({ projectId }: { projectId: string }) {
         alert(data?.error || "Failed to unpublish");
         return;
       }
-
-      window.location.reload();
+      router.refresh();
     } finally {
       setLoading(false);
     }

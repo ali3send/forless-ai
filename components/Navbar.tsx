@@ -151,7 +151,7 @@ export function Navbar() {
                       setBillingOpen(false);
                       openBillingPortal();
                     }}
-                    className="w-full text-left px-3 py-2 text-sm text-secondary-dark hover:bg-secondary-light"
+                    className="cursor-pointer block w-full text-left px-3 py-2 text-sm text-secondary-dark hover:bg-secondary-light"
                     role="menuitem"
                   >
                     <div className="font-semibold">Manage Subscription</div>
