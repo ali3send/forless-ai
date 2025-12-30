@@ -109,7 +109,7 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
     <div className="space-y-6 text-xs">
       <div>
         <h1 className="text-xl font-semibold">Brand Generator</h1>
-        <p className="mt-1 text-secondary-light">
+        <p className="mt-1 text-secondary">
           Configure a color palette and font, then generate name, slogan and a
           simple SVG logo.
         </p>

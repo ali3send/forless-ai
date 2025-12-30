@@ -30,7 +30,7 @@ export default function ProjectContent({ project }: { project: ProjectRow }) {
   return (
     <div className="space-y-6">
       {/* Breadcrumb / Back */}
-      <div className="text-xs text-secondary-light">
+      <div className="text-xs text-secondary-dark">
         <Link href="/dashboard" className="hover:underline">
           ← Back to projects
         </Link>
@@ -42,14 +42,14 @@ export default function ProjectContent({ project }: { project: ProjectRow }) {
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full max-w-md rounded-md border border-secondary-active bg-slate-900 px-3 py-1.5 text-lg font-semibold outline-none ring-primary/40 focus:ring-1"
+            className="w-full max-w-md rounded-md ring-1 input-base px-3 py-1.5 border-0  text-lg font-semibold outline-none focus:border-0 focus:ring-2 focus:ring-primary/60"
           />
-          <div className="flex items-center gap-2 text-xs text-secondary-light">
+          <div className="flex items-center gap-2 text-xs text-secondary-darker">
             <span>Project status:</span>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="rounded border border-secondary-active bg-slate-900 px-2 py-1 text-xs outline-none"
+              className="rounded border border-secondary-active  px-2 py-1 text-xs outline-none"
             >
               <option value="active">Active</option>
               <option value="draft">Draft</option>
@@ -104,16 +104,16 @@ function ActionCard({
   ctaLabel: string;
 }) {
   return (
-    <div className="flex h-full flex-col justify-between rounded-lg border border-secondary-dark bg-slate-900/60 p-4 text-xs">
+    <div className="flex h-full flex-col justify-between rounded-lg border border-secondary-dark bg-secondary-soft p-4 text-xs">
       <div>
         <h2 className="text-sm font-semibold">{title}</h2>
-        <p className="mt-2 text-secondary-light">{description}</p>
+        <p className="mt-2 text-secondary-dark">{description}</p>
       </div>
 
       <div className="mt-4">
         <Link
           href={href}
-          className="inline-flex items-center rounded-md bg-primary px-3 py-1.5 text-[11px] font-medium text-slate-950"
+          className="btn-fill   px-3 py-1.5 text-[11px] font-medium"
         >
           {ctaLabel}
         </Link>
