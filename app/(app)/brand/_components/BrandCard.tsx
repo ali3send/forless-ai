@@ -23,7 +23,7 @@ export default function BrandCard({ option, onUse }: BrandCardProps) {
   }
 
   return (
-    <div className="flex h-full flex-col justify-between rounded-lg border border-secondary-dark bg-slate-900/60 p-3 text-xs">
+    <div className="flex h-full flex-col justify-between rounded-lg border border-secondary-light bg-secondary-soft p-3 text-xs">
       <div className="space-y-2">
         <div className="flex items-center gap-2">
           <LogoSvg
@@ -38,13 +38,11 @@ export default function BrandCard({ option, onUse }: BrandCardProps) {
             >
               {option.name}
             </div>
-            <div className="text-[11px] text-secondary-light">
-              {option.slogan}
-            </div>
+            <div className="text-[11px] text-secondary">{option.slogan}</div>
           </div>
         </div>
 
-        <div className="mt-2 flex items-center justify-between text-[10px] text-secondary">
+        <div className="mt-2 flex items-center justify-between text-[10px] text-secondary-active">
           <span>Palette</span>
           <span className="flex gap-1">
             <span
@@ -63,7 +61,7 @@ export default function BrandCard({ option, onUse }: BrandCardProps) {
         type="button"
         onClick={handleClick}
         disabled={loading}
-        className="mt-3 w-full rounded-md bg-primary px-3 py-1.5 text-[11px] font-medium text-slate-950 disabled:opacity-60"
+        className="mt-3 w-full rounded-md btn-fill px-3 py-1.5 text-[11px] font-medium disabled:opacity-60"
       >
         {loading ? "Creating website..." : "Use this brand"}
       </button>
