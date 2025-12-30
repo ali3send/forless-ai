@@ -1,12 +1,11 @@
 // app/brand/_components/BrandGenerator.tsx
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   PALETTES,
   FONTS,
-  generateBrandOptions,
   type BrandOption,
 } from "@/app/(app)/brand/brandConfig";
 import BrandControls from "./BrandControls";
@@ -16,7 +15,10 @@ import {
   apiSaveProjectBrand,
   type BrandPayload,
 } from "@/lib/api/brand";
-import { apiGenerateWebsite, apiSaveWebsite } from "@/lib/api/website";
+import {
+  apiGetGeneratedBrands,
+  apiSaveGeneratedBrands,
+} from "@/lib/api/brand-options";
 import { toast } from "sonner";
 
 interface Props {
@@ -42,6 +44,27 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
     [selectedFontId]
   );
 
+  /**
+   * 🔹 Load saved generated brands on page load
+   */
+  useEffect(() => {
+    async function loadSavedBrands() {
+      try {
+        const saved = await apiGetGeneratedBrands(projectId);
+        if (saved && saved.length > 0) {
+          setGenerated(saved);
+        }
+      } catch (err) {
+        console.error("Failed to load saved brands", err);
+      }
+    }
+
+    loadSavedBrands();
+  }, [projectId]);
+
+  /**
+   * 🔹 Generate brands (AI)
+   */
   async function handleGenerate() {
     if (!idea.trim()) {
       toast.warning("Please enter a business idea to generate a brand.");
@@ -62,6 +85,9 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
       }));
 
       setGenerated(options);
+
+      // ✅ Persist generated brands
+      await apiSaveGeneratedBrands(projectId, options);
     } catch (err) {
       console.error(err);
       toast.error("Failed to generate brand. " + (err as Error).message);
@@ -70,9 +96,11 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
     }
   }
 
+  /**
+   * 🔹 User selects one brand
+   */
   async function handleUse(option: BrandOption) {
     try {
-      // 1) Save brand_data
       const brandPayload: BrandPayload = {
         name: option.name,
         slogan: option.slogan,
@@ -85,20 +113,6 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
 
       await apiSaveProjectBrand(projectId, brandPayload);
 
-      // 2) Generate website JSON
-      const businessIdea =
-        idea.trim() || `${brandPayload.name} - ${brandPayload.slogan}`;
-
-      // const websiteData = await apiGenerateWebsite({
-      //   idea: businessIdea,
-      //   brand: brandPayload,
-      //   // websiteType: "product", // keep for future if needed
-      // });
-
-      // 3) Save generated website to DB
-      // await apiSaveWebsite(projectId, websiteData);
-
-      // 4) Go to builder
       router.push(`/website-builder?projectId=${projectId}`);
     } catch (err) {
       toast.error("Failed to use brand option. " + (err as Error).message);
