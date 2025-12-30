@@ -74,7 +74,7 @@ export default async function AdminProjectsPage() {
                   </div>
 
                   <a
-                    href={`/dashboard/projects/${p.id}`}
+                    href={`/admin/projects/${p.id}`}
                     className="text-sm font-semibold text-primary hover:text-primary-hover underline"
                   >
                     Open

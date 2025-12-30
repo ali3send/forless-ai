@@ -1,17 +1,17 @@
-// app/dashboard/projects/[projectId]/page.tsx
 import { redirect, notFound } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/requireAdmin";
 
 import type { ProjectRow } from "@/app/(app)/dashboard/types";
 import ProjectContent from "../../_components/ProjectContent";
 
 interface PageProps {
-  // params: { projectId: string };
   params: Promise<{ projectId: string }>;
 }
 
 export default async function ProjectDetailsPage({ params }: PageProps) {
   const { projectId } = await params;
+
   const supabase = await createServerSupabaseClient();
 
   const {
@@ -22,12 +22,21 @@ export default async function ProjectDetailsPage({ params }: PageProps) {
     redirect("/auth/login");
   }
 
-  const { data: project, error } = await supabase
+  // 👇 check admin role
+  const admin = await requireAdmin();
+  const isAdmin = admin.ok;
+
+  let query = supabase
     .from("projects")
     .select("id, name, status, thumbnail_url, updated_at")
-    .eq("id", projectId)
-    .eq("user_id", user.id)
-    .single();
+    .eq("id", projectId);
+
+  // 👇 only enforce ownership for NON-admins
+  if (!isAdmin) {
+    query = query.eq("user_id", user.id);
+  }
+
+  const { data: project, error } = await query.single();
 
   if (error || !project) {
     console.error(error);
