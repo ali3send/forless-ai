@@ -5,37 +5,41 @@ export const config = {
   matcher: ["/((?!_next|api|favicon.ico).*)"],
 };
 
-export default function proxy(req: NextRequest) {
-  const host = req.headers.get("host") || "";
-  const hostname = host.split(":")[0]; // remove port
+function getHostname(req: NextRequest) {
+  const forwarded = req.headers.get("x-forwarded-host");
+  const host = forwarded ?? req.headers.get("host") ?? "";
+  return host.split(",")[0].trim().split(":")[0].toLowerCase();
+}
 
-  // Allow localhost normally
-  if (hostname === "localhost") {
-    return NextResponse.next();
-  }
+export default function proxy(req: NextRequest) {
+  const hostname = getHostname(req);
+
+  // allow localhost
+  if (hostname === "localhost") return NextResponse.next();
 
   const siteBaseHost = (process.env.NEXT_PUBLIC_SITE_BASE_URL || "lvh.me")
     .replace(/^https?:\/\//, "")
-    .replace(/\/$/, "");
+    .replace(/\/$/, "")
+    .toLowerCase();
 
-  if (!hostname.endsWith(siteBaseHost)) {
+  // only handle our domains
+  if (!hostname.endsWith(siteBaseHost)) return NextResponse.next();
+
+  // ignore apex + www
+  if (hostname === siteBaseHost || hostname === `www.${siteBaseHost}`) {
     return NextResponse.next();
   }
 
-  const parts = hostname.split(".");
-
-  // mysite.lvh.me → ["mysite","lvh","me"]
-  if (parts.length < 3) return NextResponse.next();
-
-  const subdomain = parts[0].toLowerCase();
+  // subdomain parsing: sub.forless.ai
+  const subdomain = hostname.slice(0, -(siteBaseHost.length + 1)); // remove ".forless.ai"
+  if (!subdomain) return NextResponse.next();
 
   // reserved subdomains
-  if (subdomain === "app") return NextResponse.next();
+  if (["app", "api", "www"].includes(subdomain)) return NextResponse.next();
 
   const url = req.nextUrl;
   url.pathname = `/site/${subdomain}${
     url.pathname === "/" ? "" : url.pathname
   }`;
-
   return NextResponse.rewrite(url);
 }
