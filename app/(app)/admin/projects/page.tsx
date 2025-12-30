@@ -12,7 +12,7 @@ type ProjectRow = {
 
 export default async function AdminProjectsPage() {
   const admin = await requireAdmin();
-  if (!admin.ok) redirect("/dashboard");
+  if (!admin.ok) redirect("/");
 
   const { data, error } = await admin.supabase
     .from("projects")
@@ -37,10 +37,6 @@ export default async function AdminProjectsPage() {
       {error ? (
         <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-700">
           Error loading projects: {error.message}
-          <div className="mt-2 text-secondary">
-            If this is an RLS issue, we’ll fix it in the next step without
-            breaking users.
-          </div>
         </div>
       ) : (
         <>

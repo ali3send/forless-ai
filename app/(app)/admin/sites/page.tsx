@@ -13,7 +13,7 @@ type SiteRow = {
 
 export default async function AdminSitesPage() {
   const admin = await requireAdmin();
-  if (!admin.ok) redirect("/dashboard");
+  if (!admin.ok) redirect("/");
 
   // IMPORTANT: adjust this filter to match your real "published" logic.
   const { data } = await admin.supabase

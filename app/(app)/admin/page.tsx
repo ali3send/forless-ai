@@ -23,7 +23,7 @@ async function getAdminStats() {
 
 export default async function AdminPage() {
   const admin = await requireAdmin();
-  if (!admin.ok) return redirect("/dashboard");
+  if (!admin.ok) return redirect("/");
 
   const stats = await getAdminStats();
 

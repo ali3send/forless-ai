@@ -5,7 +5,7 @@ import { UsersTable } from "../_components/UsersTable";
 
 export default async function AdminUsersPage() {
   const admin = await requireAdmin();
-  if (!admin.ok) redirect("/dashboard");
+  if (!admin.ok) redirect("/");
 
   // We fetch via API so it merges auth.users emails + profiles fields.
   // (You could also fetch server-side directly, but this keeps it consistent.)
