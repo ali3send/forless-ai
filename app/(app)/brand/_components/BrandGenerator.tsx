@@ -20,6 +20,8 @@ import {
   apiSaveGeneratedBrands,
 } from "@/lib/api/brand-options";
 import { toast } from "sonner";
+import { apiGetWebsite, apiSaveWebsite } from "@/lib/api/website";
+import { getDefaultWebsiteData } from "@/lib/types/websiteTypes";
 
 interface Props {
   projectId: string;
@@ -101,6 +103,7 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
    */
   async function handleUse(option: BrandOption) {
     try {
+      // 1️⃣ Save selected brand to project
       const brandPayload: BrandPayload = {
         name: option.name,
         slogan: option.slogan,
@@ -113,6 +116,27 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
 
       await apiSaveProjectBrand(projectId, brandPayload);
 
+      // 2️⃣ Check if website already exists
+      const existingWebsite = await apiGetWebsite(projectId);
+
+      // 3️⃣ If website DOES NOT exist → generate ONCE
+      if (!existingWebsite) {
+        const base = getDefaultWebsiteData("product");
+
+        const initialWebsite = {
+          ...base,
+          brandName: brandPayload.name,
+          tagline: brandPayload.slogan,
+          hero: {
+            ...base.hero,
+            headline: brandPayload.name,
+          },
+        };
+
+        await apiSaveWebsite(projectId, initialWebsite);
+      }
+
+      // 4️⃣ Redirect to builder
       router.push(`/website-builder?projectId=${projectId}`);
     } catch (err) {
       toast.error("Failed to use brand option. " + (err as Error).message);
