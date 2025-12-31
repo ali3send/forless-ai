@@ -3,7 +3,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { apiCreateAndGenerateProject } from "@/lib/api/project";
+import {
+  apiCreateAndGenerateProject,
+  apiCreateProject,
+} from "@/lib/api/project";
 import { toast } from "sonner";
 
 export default function NewProjectModal() {
@@ -46,6 +49,45 @@ export default function NewProjectModal() {
         err instanceof Error
           ? err.message
           : "Failed to create and generate project"
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleCreateProject() {
+    if (loading) return;
+
+    const trimmedName = projectName.trim();
+    const trimmedIdea = projectIdea.trim();
+
+    if (!trimmedName) {
+      toast.error("Please enter a project name.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      // ✅ CREATE ONLY (no generation)
+      const result = await apiCreateProject({
+        name: trimmedName,
+        description: trimmedIdea || trimmedName,
+      });
+
+      toast.success("Project created!");
+
+      // Reset UI
+      setModalOpen(false);
+      setProjectIdea("");
+      setProjectName("");
+
+      // ✅ Redirect to project page
+      router.push(`/dashboard/projects/${result.id}`);
+    } catch (err) {
+      console.error(err);
+      toast.error(
+        err instanceof Error ? err.message : "Failed to create project"
       );
     } finally {
       setLoading(false);
@@ -143,13 +185,10 @@ export default function NewProjectModal() {
                 onClick={() => setModalOpen(false)}
                 disabled={loading}
                 className="
-                rounded-lg
-                border border-secondary-fade
-                bg-secondary-light
                 px-4 py-2
-                text-xs font-semibold text-secondary-dark
-                hover:bg-secondary-hover
+                text-xs font-semibold
                 disabled:opacity-60
+                btn-secondary
               "
               >
                 Cancel
@@ -157,14 +196,14 @@ export default function NewProjectModal() {
 
               <button
                 type="button"
-                onClick={handleCreateAndGenerate}
+                onClick={handleCreateProject}
                 disabled={loading}
                 className="
                 rounded-lg
-                bg-primary
+                btn-fill
                 px-4 py-2
-                text-xs font-semibold text-white
-                hover:bg-primary-hover
+                text-xs font-semibold 
+              
                 disabled:opacity-60
               "
               >
