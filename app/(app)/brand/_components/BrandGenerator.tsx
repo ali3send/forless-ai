@@ -146,7 +146,8 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
         });
       }
 
-      router.push(`/website-builder?projectId=${projectId}`);
+      // router.push(`/website-builder?projectId=${projectId}`);
+      router.push(`/website-builder/${projectId}`);
     } catch (err) {
       console.error(err);
       toast.error("Failed to use brand. " + (err as Error).message);

@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import type { BuilderSection } from "../builderSections";
+
 import { useWebsiteStore } from "@/store/website.store";
 
 import { BuilderContentPanel } from "./BuilderContentPanel";
@@ -73,7 +74,10 @@ export function BuilderSidebar(props: Props) {
       </div>
 
       {activePanel === "content" ? (
-        <BuilderContentPanel />
+        <BuilderContentPanel
+          onGenerate={props.onGenerate}
+          onRestore={props.handleRestoreSection}
+        />
       ) : (
         <BuilderDesignPanel />
       )}

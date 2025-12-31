@@ -78,7 +78,7 @@ export default function ProjectContent({ project }: { project: ProjectRow }) {
         <ActionCard
           title="Build Website"
           description="Use the website builder to design and publish your site."
-          href={`/website-builder?projectId=${project.id}`}
+          href={`/website-builder/${project.id}`}
           ctaLabel="Open Builder"
         />
         <ActionCard

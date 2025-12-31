@@ -1,6 +1,6 @@
-// app/website-builder/page.tsx
+// app/website-builder/[projectId]/page.tsx
 import { Suspense } from "react";
-import WebsiteBuilderPage from "./_components/WebsiteBuilderPage";
+import WebsiteBuilderPage from "../_components/WebsiteBuilderPage";
 
 export default function WebsiteBuilder() {
   return (

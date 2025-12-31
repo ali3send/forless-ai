@@ -1,33 +1,22 @@
 // app/website-builder/_components/WebsiteBuilderPage.tsx
 "use client";
 
-import { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { useParams, useSearchParams } from "next/navigation";
 
 import { WebsiteTemplateBasic } from "@/components/websiteTemplates/Template1/WebsiteTemplateBasic";
 import { BuilderSidebar } from "./BuilderSidebar";
 import { useWebsiteBuilder } from "../hooks/useWebsiteBuilder";
 
-import { useProjectStore } from "@/store/project.store";
+// import { useProjectStore } from "@/store/project.store";
 import { useBrandStore } from "@/store/brand.store";
 import { useWebsiteStore } from "@/store/website.store";
 
 export default function WebsiteBuilderPage() {
-  const searchParams = useSearchParams();
-  const urlProjectId = searchParams.get("projectId");
-
-  const { projectId, setProjectId } = useProjectStore();
-
-  useEffect(() => {
-    if (!projectId && urlProjectId) {
-      setProjectId(urlProjectId);
-    }
-  }, [projectId, urlProjectId, setProjectId]);
+  const { projectId } = useParams<{ projectId: string }>();
 
   const brand = useBrandStore((state) => state.brand);
-
-  const { data, section, loading, saving, generating, restoring } =
-    useWebsiteStore();
+  const { data, loading, saving, generating, restoring } = useWebsiteStore();
 
   const {
     builderSections,
@@ -62,7 +51,6 @@ export default function WebsiteBuilderPage() {
       <div className="mx-auto flex max-w-full flex-col gap-6 px-0 sm:px-4 sm:py-6 lg:flex-row">
         <BuilderSidebar
           projectId={projectId}
-          section={section}
           builderSections={builderSections}
           currentIndex={currentIndex}
           isFirst={isFirst}

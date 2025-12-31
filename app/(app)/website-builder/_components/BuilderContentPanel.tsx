@@ -1,4 +1,6 @@
 "use client";
+// import { useWebsiteBuilder } from "../hooks/useWebsiteBuilder";
+// import { useProjectStore } from "@/store/project.store";
 
 import { builderSections } from "../builderSections";
 import { useWebsiteStore } from "@/store/website.store";
@@ -9,9 +11,18 @@ import { FeaturesSectionForm } from "./FeatureSectionForm";
 import { ProductsSectionForm } from "./ProductsSectionForm";
 import { ContactSectionForm } from "./ContactSectionForm";
 
-export function BuilderContentPanel() {
+type Props = {
+  onGenerate: () => void;
+  onRestore: () => void;
+};
+
+export function BuilderContentPanel({ onGenerate, onRestore }: Props) {
   const { data, setData, section, setSection, generating, restoring } =
     useWebsiteStore();
+  // const projectId = useProjectStore((s) => s.projectId);
+
+  // const { handleGenerateWebsite, handleRestoreSection } =
+  //   useWebsiteBuilder(projectId);
 
   const currentIndex = builderSections.findIndex((s) => s.id === section);
   const isFirst = currentIndex <= 0;
@@ -29,15 +40,17 @@ export function BuilderContentPanel() {
         <div className="w-full">
           <div className="flex w-full justify-end gap-2">
             <button
-              type="button"
-              disabled={restoring || generating}
               className="rounded-full border border-secondary-fade bg-secondary-light px-4 py-1.5 text-[11px] font-semibold text-secondary-dark transition hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
+              type="button"
+              onClick={onRestore}
+              disabled={restoring || generating}
             >
               {restoring ? "Restoring..." : "Restore Previous"}
             </button>
 
             <button
               type="button"
+              onClick={onGenerate}
               disabled={generating || restoring}
               className="rounded-full bg-primary px-4 py-1.5 text-[11px] font-semibold text-white transition hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -57,7 +70,7 @@ export function BuilderContentPanel() {
         <FeaturesSectionForm data={data} setData={setData} />
       )}
 
-      {section === "products" && (
+      {section === "offers" && (
         <ProductsSectionForm data={data} setData={setData} />
       )}
 

@@ -42,7 +42,8 @@ export default function NewProjectModal() {
       setProjectName("");
 
       // Go straight to builder
-      router.push(`/website-builder?projectId=${result.project.id}`);
+      // router.push(`/website-builder?projectId=${result.project.id}`);
+      router.push(`/website-builder/${result.project.id}`);
     } catch (err) {
       console.error(err);
       toast.error(
