@@ -7,6 +7,7 @@ export type BrandOption = {
   primaryColor: string;
   secondaryColor: string;
   font: string;
+  logoSvg: string;
 };
 
 export type Palette = {

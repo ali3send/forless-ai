@@ -12,6 +12,7 @@ import BrandControls from "./BrandControls";
 import BrandOptionsList from "./BrandOptionsList";
 import {
   apiGenerateBrand,
+  apiGenerateLogo,
   apiSaveProjectBrand,
   type BrandPayload,
 } from "@/lib/api/brand";
@@ -71,6 +72,7 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
   /**
    * 🔹 Generate brands (AI)
    */
+
   async function handleGenerate() {
     if (!idea.trim()) {
       toast.warning("Please enter a business idea to generate a brand.");
@@ -81,18 +83,29 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
     try {
       const rawBrands = await apiGenerateBrand(idea);
 
-      const options: BrandOption[] = rawBrands.slice(0, 3).map((b, idx) => ({
-        id: `brand-${idx}`,
-        name: String(b.name ?? "Untitled"),
-        slogan: String(b.slogan ?? ""),
-        primaryColor: selectedPalette.primary,
-        secondaryColor: selectedPalette.secondary,
-        font: selectedFont.css,
-      }));
+      const options: BrandOption[] = [];
+
+      for (let i = 0; i < rawBrands.slice(0, 3).length; i++) {
+        const b = rawBrands[i];
+
+        // 🔥 Generate logo per brand
+        const logoSvg = await apiGenerateLogo({
+          name: b.name ?? "Brand",
+          idea,
+        });
+
+        options.push({
+          id: `brand-${i}`,
+          name: String(b.name ?? "Untitled"),
+          slogan: String(b.slogan ?? ""),
+          primaryColor: selectedPalette.primary,
+          secondaryColor: selectedPalette.secondary,
+          font: selectedFont.css,
+          logoSvg,
+        });
+      }
 
       setGenerated(options);
-
-      // ✅ Persist generated brands
       await apiSaveGeneratedBrands(projectId, options);
     } catch (err) {
       console.error(err);

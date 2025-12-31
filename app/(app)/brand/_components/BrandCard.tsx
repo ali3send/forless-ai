@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { BrandOption } from "@/app/(app)/brand/brandConfig";
 import LogoSvg from "./LogoSvg";
+import BrandLogo from "./BrandLogo";
 
 interface BrandCardProps {
   option: BrandOption;
@@ -26,10 +27,10 @@ export default function BrandCard({ option, onBrandUse }: BrandCardProps) {
     <div className="flex h-full flex-col justify-between rounded-lg border border-secondary-light bg-secondary-soft p-3 text-xs">
       <div className="space-y-2">
         <div className="flex items-center gap-2">
-          <LogoSvg
-            name={option.name}
-            primaryColor={option.primaryColor}
-            secondaryColor={option.secondaryColor}
+          <BrandLogo
+            svg={option.logoSvg}
+            primary={option.primaryColor}
+            secondary={option.secondaryColor}
           />
           <div>
             <div

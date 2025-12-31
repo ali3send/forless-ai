@@ -72,3 +72,22 @@ export async function apiGetGeneratedBrands(
   if (!res.ok) return null;
   return res.json();
 }
+
+export async function apiGenerateLogo(payload: {
+  name: string;
+  idea?: string;
+}): Promise<string> {
+  const res = await fetch("/api/brand/generate-logo", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  const json = await res.json().catch(() => ({} as any));
+
+  if (!res.ok || !json.svg) {
+    throw new Error(json.error || "Failed to generate logo");
+  }
+
+  return json.svg as string;
+}
