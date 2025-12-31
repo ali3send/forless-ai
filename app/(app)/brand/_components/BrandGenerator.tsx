@@ -1,32 +1,34 @@
-// app/brand/_components/BrandGenerator.tsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+
+import { useProjectStore } from "@/store/project.store";
+import { useBrandStore } from "@/store/brand.store";
+
 import {
   PALETTES,
   FONTS,
   type BrandOption,
 } from "@/app/(app)/brand/brandConfig";
+
 import BrandControls from "./BrandControls";
 import BrandOptionsList from "./BrandOptionsList";
+
 import {
   apiGenerateBrand,
   apiGenerateLogo,
   apiSaveProjectBrand,
   type BrandPayload,
 } from "@/lib/api/brand";
+
 import {
   apiGetGeneratedBrands,
   apiSaveGeneratedBrands,
 } from "@/lib/api/brand-options";
+
 import { toast } from "sonner";
-import {
-  apiGenerateWebsiteWithBrand,
-  apiGetWebsite,
-  apiSaveWebsite,
-} from "@/lib/api/website";
-import { getDefaultWebsiteData } from "@/lib/types/websiteTypes";
+import { apiGenerateWebsiteWithBrand, apiGetWebsite } from "@/lib/api/website";
 
 interface Props {
   projectId: string;
@@ -35,6 +37,14 @@ interface Props {
 
 export default function BrandGenerator({ projectId, projectIdea }: Props) {
   const router = useRouter();
+
+  const { setProjectId } = useProjectStore();
+  const { setBrand } = useBrandStore();
+
+  useEffect(() => {
+    setProjectId(projectId);
+  }, [projectId, setProjectId]);
+
   const [idea, setIdea] = useState(projectIdea || "");
   const [selectedPaletteId, setSelectedPaletteId] = useState("emerald-slate");
   const [selectedFontId, setSelectedFontId] = useState("sans");
@@ -51,9 +61,6 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
     [selectedFontId]
   );
 
-  /**
-   * 🔹 Load saved generated brands on page load
-   */
   useEffect(() => {
     async function loadSavedBrands() {
       try {
@@ -69,10 +76,6 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
     loadSavedBrands();
   }, [projectId]);
 
-  /**
-   * 🔹 Generate brands (AI)
-   */
-
   async function handleGenerate() {
     if (!idea.trim()) {
       toast.warning("Please enter a business idea to generate a brand.");
@@ -82,13 +85,11 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
     setLoading(true);
     try {
       const rawBrands = await apiGenerateBrand(idea);
-
       const options: BrandOption[] = [];
 
       for (let i = 0; i < rawBrands.slice(0, 3).length; i++) {
         const b = rawBrands[i];
 
-        // 🔥 Generate logo per brand
         const logoSvg = await apiGenerateLogo({
           name: b.name ?? "Brand",
           idea,
@@ -115,14 +116,8 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
     }
   }
 
-  /**
-   * 🔹 User selects one brand
-   */
-  // import { apiGenerateWebsiteWithBrand } from "@/lib/api/website";
-
   async function handleBrandUse(option: BrandOption) {
     try {
-      // 1️⃣ Save brand
       const brandPayload: BrandPayload = {
         name: option.name,
         slogan: option.slogan,
@@ -135,14 +130,14 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
 
       await apiSaveProjectBrand(projectId, brandPayload);
 
-      // 2️⃣ Check if website already exists
+      setBrand(brandPayload);
+
       const existingWebsite = await apiGetWebsite(projectId);
 
       if (!existingWebsite) {
         const ideaText =
           idea.trim() || `${brandPayload.name} - ${brandPayload.slogan}`;
 
-        // 3️⃣ Generate full website (ONLY ONCE)
         await apiGenerateWebsiteWithBrand({
           projectId,
           idea: ideaText,
@@ -151,7 +146,6 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
         });
       }
 
-      // 4️⃣ Redirect to builder
       router.push(`/website-builder?projectId=${projectId}`);
     } catch (err) {
       console.error(err);

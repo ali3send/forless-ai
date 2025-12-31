@@ -1,27 +1,25 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { WebsiteData } from "@/lib/types/websiteTypes";
-// import { createBrowserSupabaseClient } from "@/lib/supabase/client";
+import { StateUpdater } from "@/lib/types/state";
+import { useProjectStore } from "@/store/project.store";
 
 export type AboutSectionFormProps = {
   data: WebsiteData;
-  setData: React.Dispatch<React.SetStateAction<WebsiteData>>;
-  projectId: string;
+  setData: StateUpdater<WebsiteData>;
 };
 
-export function AboutSectionForm({
-  data,
-  setData,
-  projectId,
-}: AboutSectionFormProps) {
-  // const supabase = useMemo(() => createBrowserSupabaseClient(), []);
+export function AboutSectionForm({ data, setData }: AboutSectionFormProps) {
+  const projectId = useProjectStore((s) => s.projectId);
+
   const [uploading, setUploading] = useState(false);
   const [removing, setRemoving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
   async function onUpload(file: File) {
+    if (!projectId) return;
     setErr(null);
     setUploading(true);
     try {
@@ -48,9 +46,9 @@ export function AboutSectionForm({
   }
 
   async function removeImage() {
+    if (!projectId) return;
     setErr(null);
 
-    // optimistic UI
     setData((d) => ({
       ...d,
       about: { ...d.about, imagePath: undefined, imageUrl: undefined },

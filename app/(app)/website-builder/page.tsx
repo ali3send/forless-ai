@@ -1,3 +1,4 @@
+// app/website-builder/page.tsx
 import { Suspense } from "react";
 import WebsiteBuilderPage from "./_components/WebsiteBuilderPage";
 

@@ -1,29 +1,27 @@
 "use client";
 
-import { WebsiteData } from "@/lib/types/websiteTypes";
 import Image from "next/image";
 import { useState } from "react";
 
+import { WebsiteData } from "@/lib/types/websiteTypes";
+import { StateUpdater } from "@/lib/types/state";
+import { useProjectStore } from "@/store/project.store";
+
 export type HeroSectionFormProps = {
-  // type: WebsiteType;
-  // onTypeChange: (t: WebsiteType) => void;
   data: WebsiteData;
-  setData: React.Dispatch<React.SetStateAction<WebsiteData>>;
-  projectId: string;
+  setData: StateUpdater<WebsiteData>;
 };
 
-export function HeroSectionForm({
-  // type,
-  // onTypeChange,
-  data,
-  setData,
-  projectId,
-}: HeroSectionFormProps) {
+export function HeroSectionForm({ data, setData }: HeroSectionFormProps) {
+  const projectId = useProjectStore((s) => s.projectId);
+
   const [uploading, setUploading] = useState(false);
   const [removing, setRemoving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
   async function onUpload(file: File) {
+    if (!projectId) return;
+
     setErr(null);
     setUploading(true);
     try {
@@ -35,9 +33,12 @@ export function HeroSectionForm({
         method: "POST",
         body: fd,
       });
+
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json.error || "Upload failed");
+
       const bustedUrl = `${json.publicUrl}?v=${Date.now()}`;
+
       setData((d) => ({
         ...d,
         hero: { ...d.hero, imagePath: json.path, imageUrl: bustedUrl },
@@ -50,9 +51,10 @@ export function HeroSectionForm({
   }
 
   async function removeImage() {
+    if (!projectId) return;
+
     setErr(null);
 
-    // optimistic UI
     setData((d) => ({
       ...d,
       hero: { ...d.hero, imagePath: undefined, imageUrl: undefined },
@@ -65,6 +67,7 @@ export function HeroSectionForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ projectId }),
       });
+
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json.error || "Remove failed");
     } catch (e: any) {
@@ -75,9 +78,9 @@ export function HeroSectionForm({
   }
 
   const busy = uploading || removing;
+
   return (
     <div className="space-y-2">
-      {/* Brand name */}
       <label className="block text-xs text-secondary">
         Brand name
         <input
@@ -90,7 +93,6 @@ export function HeroSectionForm({
         />
       </label>
 
-      {/* Tagline */}
       <label className="block text-xs text-secondary">
         Tagline
         <input
@@ -101,7 +103,6 @@ export function HeroSectionForm({
         />
       </label>
 
-      {/* Hero headline */}
       <label className="block text-xs text-secondary">
         Hero headline
         <input
@@ -117,9 +118,8 @@ export function HeroSectionForm({
         />
       </label>
 
-      {/* Sub headline */}
       <label className="block text-xs text-secondary">
-        Sub Headline
+        Sub headline
         <input
           placeholder="Enter subheadline"
           value={data.hero.subheadline}
@@ -147,7 +147,6 @@ export function HeroSectionForm({
         {data.hero.imageUrl ? (
           <div className="rounded-lg border border-secondary-fade bg-secondary-light p-2">
             <Image
-              key={data.hero.imageUrl || "empty"}
               src={data.hero.imageUrl}
               alt="hero"
               className="h-40 w-full rounded-md object-cover"
@@ -192,7 +191,6 @@ export function HeroSectionForm({
         {err && <p className="text-[11px] text-secondary">{err}</p>}
       </div>
 
-      {/* Hero image keyword */}
       <label className="block text-xs text-secondary">
         Hero image keyword
         <input
@@ -208,7 +206,6 @@ export function HeroSectionForm({
         />
       </label>
 
-      {/* Primary CTA */}
       <label className="block text-xs text-secondary">
         Primary CTA
         <input
@@ -224,7 +221,6 @@ export function HeroSectionForm({
         />
       </label>
 
-      {/* Primary CTA Link */}
       <label className="block text-xs text-secondary">
         Primary CTA Link
         <input
@@ -240,9 +236,8 @@ export function HeroSectionForm({
         />
       </label>
 
-      {/* Secondary CTA */}
       <label className="block text-xs text-secondary">
-        Secondary CTA (optional)
+        Secondary CTA
         <input
           placeholder="e.g., Learn More"
           value={data.hero.secondaryCta ?? ""}
@@ -256,7 +251,6 @@ export function HeroSectionForm({
         />
       </label>
 
-      {/* Secondary CTA Link */}
       <label className="block text-xs text-secondary">
         Secondary CTA Link
         <input

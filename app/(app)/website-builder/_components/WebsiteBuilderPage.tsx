@@ -1,34 +1,42 @@
-// app/website-builder/page.tsx
+// app/website-builder/_components/WebsiteBuilderPage.tsx
 "use client";
 
+import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+
 import { WebsiteTemplateBasic } from "@/components/websiteTemplates/Template1/WebsiteTemplateBasic";
-import { useWebsiteBuilder } from "../hooks/useWebsiteBuilder";
 import { BuilderSidebar } from "./BuilderSidebar";
+import { useWebsiteBuilder } from "../hooks/useWebsiteBuilder";
+
+import { useProjectStore } from "@/store/project.store";
+import { useBrandStore } from "@/store/brand.store";
+import { useWebsiteStore } from "@/store/website.store";
 
 export default function WebsiteBuilderPage() {
   const searchParams = useSearchParams();
-  const projectId = searchParams.get("projectId");
+  const urlProjectId = searchParams.get("projectId");
+
+  const { projectId, setProjectId } = useProjectStore();
+
+  useEffect(() => {
+    if (!projectId && urlProjectId) {
+      setProjectId(urlProjectId);
+    }
+  }, [projectId, urlProjectId, setProjectId]);
+
+  const brand = useBrandStore((state) => state.brand);
+
+  const { data, section, loading, saving, generating, restoring } =
+    useWebsiteStore();
 
   const {
-    brand,
-    setBrand,
-    data,
-    setData,
-    section,
-    setSection,
-    loading,
-    saving,
-    saveMessage,
-    generating,
-    restoring, // ✅
     builderSections,
     currentIndex,
     isFirst,
     isLast,
     handleSave,
     handleGenerateWebsite,
-    handleRestoreSection, // ✅
+    handleRestoreSection,
   } = useWebsiteBuilder(projectId);
 
   if (!projectId) {
@@ -55,20 +63,14 @@ export default function WebsiteBuilderPage() {
         <BuilderSidebar
           projectId={projectId}
           section={section}
-          setSection={setSection}
           builderSections={builderSections}
           currentIndex={currentIndex}
           isFirst={isFirst}
           isLast={isLast}
-          data={data}
-          setData={setData}
-          brand={brand}
-          setBrand={setBrand}
           generating={generating}
-          restoring={restoring} // ✅
-          handleRestoreSection={handleRestoreSection} // ✅
+          restoring={restoring}
+          handleRestoreSection={handleRestoreSection}
           saving={saving}
-          saveMessage={saveMessage}
           onGenerate={handleGenerateWebsite}
           onSave={handleSave}
         />

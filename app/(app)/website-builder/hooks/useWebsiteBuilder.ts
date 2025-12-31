@@ -1,14 +1,14 @@
 // app/website-builder/hooks/useWebsiteBuilder.ts
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { WebsiteData, getDefaultWebsiteData } from "@/lib/types/websiteTypes";
 import {
   apiGetProjectWithBrand,
   apiPatchProjectBrand,
 } from "@/lib/api/project";
 
-import { builderSections, type BuilderSection } from "../builderSections";
+import { builderSections } from "../builderSections";
 import { SECTION_TO_DATA_KEY } from "../sectionMap";
 
 import {
@@ -18,6 +18,8 @@ import {
   apiGenerateWebsite,
   apiRestoreSection,
 } from "@/lib/api/website";
+import { useBrandStore } from "@/store/brand.store";
+import { useWebsiteStore } from "@/store/website.store";
 import { toast } from "sonner";
 
 export type BrandData = {
@@ -28,16 +30,23 @@ export type BrandData = {
 };
 
 export function useWebsiteBuilder(projectId: string | null) {
-  const [brand, setBrand] = useState<BrandData | null>(null);
-  const [data, setData] = useState<WebsiteData>(() =>
-    getDefaultWebsiteData("product")
-  );
-  const [section, setSection] = useState<BuilderSection>("hero");
-  const [loading, setLoading] = useState<boolean>(true);
-  const [saving, setSaving] = useState<boolean>(false);
-  const [saveMessage, setSaveMessage] = useState<string | null>(null);
-  const [generating, setGenerating] = useState<boolean>(false);
-  const [restoring, setRestoring] = useState<boolean>(false); // ✅ add
+  const brand = useBrandStore((s) => s.brand);
+  const setBrand = useBrandStore((s) => s.setBrand);
+
+  const {
+    data,
+    setData,
+    section,
+    setSection,
+    loading,
+    saving,
+    generating,
+    restoring,
+    setLoading,
+    setSaving,
+    setGenerating,
+    setRestoring,
+  } = useWebsiteStore();
 
   const currentIndex = builderSections.findIndex((s) => s.id === section);
   const isFirst = currentIndex <= 0;
@@ -51,13 +60,18 @@ export function useWebsiteBuilder(projectId: string | null) {
 
     const load = async () => {
       try {
+        setLoading(true);
+
         const [website, project] = await Promise.all([
           apiGetWebsite(projectId),
           apiGetProjectWithBrand(projectId),
         ]);
 
         const brandData = (project?.brand_data as BrandData) ?? null;
-        setBrand(brandData || null);
+
+        if (brandData) {
+          setBrand(brandData);
+        }
 
         const applyBrand = (base: WebsiteData, bd: BrandData | null) => {
           if (!bd) return base;
@@ -82,6 +96,7 @@ export function useWebsiteBuilder(projectId: string | null) {
 
         const base = website ?? getDefaultWebsiteData("product");
         const merged = applyBrand(base, brandData);
+
         setData(merged);
       } catch (err) {
         console.error("Failed to load website/project", err);
@@ -91,7 +106,7 @@ export function useWebsiteBuilder(projectId: string | null) {
     };
 
     void load();
-  }, [projectId]);
+  }, [projectId, setBrand, setData, setLoading]);
 
   const handleSave = async () => {
     if (!projectId) {
@@ -100,7 +115,6 @@ export function useWebsiteBuilder(projectId: string | null) {
     }
 
     setSaving(true);
-    setSaveMessage(null);
 
     try {
       if (brand) {
@@ -108,9 +122,9 @@ export function useWebsiteBuilder(projectId: string | null) {
       }
 
       await apiSaveWebsite(projectId, data);
-      toast.success("Website saved successfully!");
+      toast.success("Website saved successfully");
     } catch (err) {
-      toast.error("Failed to save website. error: " + (err as Error).message);
+      toast.error("Failed to save website: " + (err as Error).message);
     } finally {
       setSaving(false);
     }
@@ -123,16 +137,16 @@ export function useWebsiteBuilder(projectId: string | null) {
       return;
     }
 
-    const dataSection = SECTION_TO_DATA_KEY[section]; // hero/about/features/offers/contact
-    const t = toast.loading("Regenerating section…");
+    const dataSection = SECTION_TO_DATA_KEY[section];
     setGenerating(true);
+    const t = toast.loading("Regenerating section");
 
     try {
       const idea =
         data.brandName?.trim() || brand.name?.trim() || "A modern business";
 
-      // save previous section before overwriting
       const prevSectionData = (data as any)[dataSection];
+
       await apiSaveSectionHistory({
         projectId,
         section: dataSection,
@@ -146,7 +160,7 @@ export function useWebsiteBuilder(projectId: string | null) {
         section: dataSection,
       });
 
-      const merged: WebsiteData = { ...data, ...patch } as WebsiteData;
+      const merged: WebsiteData = { ...data, ...patch };
 
       setData(merged);
       await apiSaveWebsite(projectId, merged);
@@ -163,8 +177,8 @@ export function useWebsiteBuilder(projectId: string | null) {
     if (!projectId) return;
 
     const dataSection = SECTION_TO_DATA_KEY[section];
-    const t = toast.loading("Restoring section…");
     setRestoring(true);
+    const t = toast.loading("Restoring section");
 
     try {
       const res = await apiRestoreSection({
@@ -189,26 +203,19 @@ export function useWebsiteBuilder(projectId: string | null) {
   };
 
   return {
-    // state
-    brand,
-    setBrand,
-    data,
-    setData,
     section,
     setSection,
-    loading,
-    saving,
-    saveMessage,
-    generating,
-    restoring, // ✅ return
 
-    // steps
     builderSections,
     currentIndex,
     isFirst,
     isLast,
 
-    // actions
+    loading,
+    saving,
+    generating,
+    restoring,
+
     handleSave,
     handleGenerateWebsite,
     handleRestoreSection,

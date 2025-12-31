@@ -1,41 +1,36 @@
 // app/website-builder/_components/BuilderSidebar.tsx
 "use client";
 
-import { useState, type Dispatch, type SetStateAction } from "react";
-import type { WebsiteData } from "@/lib/types/websiteTypes";
+import { useState } from "react";
 import type { BuilderSection } from "../builderSections";
-import type { BrandData } from "../hooks/useWebsiteBuilder";
+import { useWebsiteStore } from "@/store/website.store";
 
 import { BuilderContentPanel } from "./BuilderContentPanel";
 import { BuilderDesignPanel } from "./BuilderDesignPanel";
 import { PublishButton } from "./PublishButton";
+
 type Props = {
   projectId: string;
-  section: BuilderSection;
-  setSection: Dispatch<SetStateAction<BuilderSection>>;
+
   builderSections: ReadonlyArray<{ id: BuilderSection; label: string }>;
   currentIndex: number;
   isFirst: boolean;
   isLast: boolean;
+
   restoring: boolean;
   handleRestoreSection: () => void;
 
-  data: WebsiteData;
-  setData: Dispatch<SetStateAction<WebsiteData>>;
-
-  brand: BrandData | null;
-  setBrand: Dispatch<SetStateAction<BrandData | null>>;
-
   generating: boolean;
   saving: boolean;
-  saveMessage: string | null;
 
   onGenerate: () => void;
   onSave: () => void;
 };
 
 export function BuilderSidebar(props: Props) {
-  const { projectId, saving, saveMessage, onSave, data } = props;
+  const { projectId, saving, onSave } = props;
+
+  const { data } = useWebsiteStore();
 
   const [activePanel, setActivePanel] = useState<"content" | "design">(
     "content"
@@ -47,13 +42,11 @@ export function BuilderSidebar(props: Props) {
         Website Builder
       </h1>
 
-      {/* 🔴 PUBLISH PANEL — TOP PRIORITY */}
       <PublishButton
         projectId={projectId}
         defaultSlug={data?.brandName?.toLowerCase().replace(/\s+/g, "-")}
       />
 
-      {/* Panel toggle */}
       <div className="flex gap-1 rounded-full border border-secondary-fade bg-secondary-light p-1 text-[11px]">
         <button
           type="button"
@@ -80,12 +73,11 @@ export function BuilderSidebar(props: Props) {
       </div>
 
       {activePanel === "content" ? (
-        <BuilderContentPanel {...props} />
+        <BuilderContentPanel />
       ) : (
-        <BuilderDesignPanel brand={props.brand} setBrand={props.setBrand} />
+        <BuilderDesignPanel />
       )}
 
-      {/* Save button — secondary */}
       <div className="mt-2 flex flex-col gap-2">
         <button
           type="button"
@@ -95,10 +87,6 @@ export function BuilderSidebar(props: Props) {
         >
           {saving ? "Saving..." : "Save changes"}
         </button>
-
-        {saveMessage && (
-          <p className="text-[11px] text-secondary">{saveMessage}</p>
-        )}
       </div>
     </aside>
   );

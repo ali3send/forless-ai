@@ -4,7 +4,7 @@ export const builderSections = [
   { id: "hero", label: "Hero" },
   { id: "about", label: "About" },
   { id: "features", label: "Features" },
-  { id: "products", label: "Products" },
+  { id: "offers", label: "Offers" },
   { id: "contact", label: "Contact" },
 ] as const;
 

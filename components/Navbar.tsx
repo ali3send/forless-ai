@@ -16,7 +16,6 @@ export function Navbar() {
 
   const [billingOpen, setBillingOpen] = useState(false);
   const billingRef = useRef<HTMLDivElement | null>(null);
-
   useEffect(() => {
     function onDocMouseDown(e: MouseEvent) {
       if (!billingOpen) return;
