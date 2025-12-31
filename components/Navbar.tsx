@@ -2,17 +2,17 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/providers";
-import { createBrowserSupabaseClient } from "@/lib/supabase/client";
+// import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
 export function Navbar() {
-  const router = useRouter();
-  const { user, isAdmin } = useAuth();
-  const [supabase] = useState(() => createBrowserSupabaseClient());
+  // const router = useRouter();
+  const { user, isAdmin, logout } = useAuth();
+  // const [supabase] = useState(() => createBrowserSupabaseClient());
 
   const [billingOpen, setBillingOpen] = useState(false);
   const billingRef = useRef<HTMLDivElement | null>(null);
@@ -38,16 +38,15 @@ export function Navbar() {
     };
   }, [billingOpen]);
 
-  const handleLogout = async () => {
-    toast.error("are you sure you want to logout?", {
+  const handleLogout = () => {
+    toast.error("Are you sure you want to logout?", {
       action: {
         label: "Logout",
         onClick: async () => {
           const t = toast.loading("Logging out...");
           try {
-            await supabase.auth.signOut();
-            router.push("/auth/login");
-            toast.success("Logged out successfully!");
+            await logout(); // 🔑 provider-controlled logout
+            window.location.href = "/auth/login"; // hard navigation
           } catch {
             toast.error("Failed to log out.");
           } finally {
