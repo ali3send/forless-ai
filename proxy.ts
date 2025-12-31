@@ -14,13 +14,11 @@ function getHostname(req: NextRequest) {
 export default function proxy(req: NextRequest) {
   const hostname = getHostname(req);
 
-  // allow localhost
+  // allow localhost (non-subdomain)
   if (hostname === "localhost") return NextResponse.next();
 
-  const siteBaseHost = (process.env.NEXT_PUBLIC_BASE_URL || "lvh.me")
-    .replace(/^https?:\/\//, "")
-    .replace(/\/$/, "")
-    .toLowerCase();
+  const rawBase = process.env.NEXT_PUBLIC_BASE_URL || "http://lvh.me:3000";
+  const siteBaseHost = new URL(rawBase).hostname.toLowerCase();
 
   // only handle our domains
   if (!hostname.endsWith(siteBaseHost)) return NextResponse.next();
@@ -30,16 +28,16 @@ export default function proxy(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // subdomain parsing: sub.forless.ai
-  const subdomain = hostname.slice(0, -(siteBaseHost.length + 1)); // remove ".forless.ai"
+  const subdomain = hostname.slice(0, -(siteBaseHost.length + 1));
   if (!subdomain) return NextResponse.next();
 
   // reserved subdomains
   if (["app", "api", "www"].includes(subdomain)) return NextResponse.next();
 
-  const url = req.nextUrl;
+  const url = req.nextUrl.clone();
   url.pathname = `/site/${subdomain}${
     url.pathname === "/" ? "" : url.pathname
   }`;
+
   return NextResponse.rewrite(url);
 }
