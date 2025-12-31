@@ -5,12 +5,12 @@ import BrandCard from "./BrandCard";
 
 interface BrandOptionsListProps {
   options: BrandOption[] | null;
-  onUse: (option: BrandOption) => Promise<void>;
+  onBrandUse: (option: BrandOption) => Promise<void>;
 }
 
 export default function BrandOptionsList({
   options,
-  onUse,
+  onBrandUse,
 }: BrandOptionsListProps) {
   if (!options || options.length === 0) return null;
 
@@ -19,7 +19,7 @@ export default function BrandOptionsList({
       <h2 className="text-sm font-semibold">Generated options</h2>
       <div className="grid gap-4 md:grid-cols-3">
         {options.map((option) => (
-          <BrandCard key={option.id} option={option} onUse={onUse} />
+          <BrandCard key={option.id} option={option} onBrandUse={onBrandUse} />
         ))}
       </div>
     </div>

@@ -20,7 +20,11 @@ import {
   apiSaveGeneratedBrands,
 } from "@/lib/api/brand-options";
 import { toast } from "sonner";
-import { apiGetWebsite, apiSaveWebsite } from "@/lib/api/website";
+import {
+  apiGenerateWebsiteWithBrand,
+  apiGetWebsite,
+  apiSaveWebsite,
+} from "@/lib/api/website";
 import { getDefaultWebsiteData } from "@/lib/types/websiteTypes";
 
 interface Props {
@@ -101,9 +105,11 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
   /**
    * 🔹 User selects one brand
    */
-  async function handleUse(option: BrandOption) {
+  // import { apiGenerateWebsiteWithBrand } from "@/lib/api/website";
+
+  async function handleBrandUse(option: BrandOption) {
     try {
-      // 1️⃣ Save selected brand to project
+      // 1️⃣ Save brand
       const brandPayload: BrandPayload = {
         name: option.name,
         slogan: option.slogan,
@@ -119,27 +125,24 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
       // 2️⃣ Check if website already exists
       const existingWebsite = await apiGetWebsite(projectId);
 
-      // 3️⃣ If website DOES NOT exist → generate ONCE
       if (!existingWebsite) {
-        const base = getDefaultWebsiteData("product");
+        const ideaText =
+          idea.trim() || `${brandPayload.name} - ${brandPayload.slogan}`;
 
-        const initialWebsite = {
-          ...base,
-          brandName: brandPayload.name,
-          tagline: brandPayload.slogan,
-          hero: {
-            ...base.hero,
-            headline: brandPayload.name,
-          },
-        };
-
-        await apiSaveWebsite(projectId, initialWebsite);
+        // 3️⃣ Generate full website (ONLY ONCE)
+        await apiGenerateWebsiteWithBrand({
+          projectId,
+          idea: ideaText,
+          brand: brandPayload,
+          websiteType: "product",
+        });
       }
 
       // 4️⃣ Redirect to builder
       router.push(`/website-builder?projectId=${projectId}`);
     } catch (err) {
-      toast.error("Failed to use brand option. " + (err as Error).message);
+      console.error(err);
+      toast.error("Failed to use brand. " + (err as Error).message);
     }
   }
 
@@ -164,7 +167,7 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
         onGenerate={handleGenerate}
       />
 
-      <BrandOptionsList options={generated} onUse={handleUse} />
+      <BrandOptionsList options={generated} onBrandUse={handleBrandUse} />
     </div>
   );
 }

@@ -6,17 +6,17 @@ import LogoSvg from "./LogoSvg";
 
 interface BrandCardProps {
   option: BrandOption;
-  onUse: (option: BrandOption) => Promise<void>;
+  onBrandUse: (option: BrandOption) => Promise<void>;
 }
 
-export default function BrandCard({ option, onUse }: BrandCardProps) {
+export default function BrandCard({ option, onBrandUse }: BrandCardProps) {
   const [loading, setLoading] = useState(false);
 
   async function handleClick() {
     if (loading) return;
     try {
       setLoading(true);
-      await onUse(option);
+      await onBrandUse(option);
     } finally {
       setLoading(false);
     }
