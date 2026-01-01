@@ -25,9 +25,7 @@ export function OffersSection({ offers }: Props) {
       }}
     >
       <div className="mx-auto max-w-5xl px-4 py-12">
-        <h2 className="text-xl font-semibold text-[var(--color-text)]">
-          {offers.title}
-        </h2>
+        <h2 className="text-xl font-semibold text-text">{offers.title}</h2>
 
         <div className="mt-6 grid gap-6 md:grid-cols-3">
           {offers.items.map((offer, i) => (
@@ -41,10 +39,10 @@ export function OffersSection({ offers }: Props) {
               }}
             >
               <div>
-                <div className="text-sm font-semibold text-[var(--color-text)]">
+                <div className="text-sm font-semibold text-text">
                   {offer.name}
                 </div>
-                <p className="mt-2 text-xs text-[var(--color-muted)]">
+                <p className="mt-2 text-xs text-(--color-muted)">
                   {offer.description}
                 </p>
               </div>

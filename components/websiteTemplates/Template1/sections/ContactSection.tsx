@@ -35,10 +35,8 @@ export function ContactSection({ contact, finalCta }: Props) {
       <div className="mx-auto max-w-5xl px-4 py-12">
         {/* Heading */}
         <div className="max-w-xl">
-          <h2 className="text-xl font-semibold text-[var(--color-text)]">
-            {contact.title}
-          </h2>
-          <p className="mt-3 text-sm text-[var(--color-muted)]">
+          <h2 className="text-xl font-semibold text-text">{contact.title}</h2>
+          <p className="mt-3 text-sm text-(--color-muted)">
             {contact.description}
           </p>
         </div>
@@ -54,10 +52,10 @@ export function ContactSection({ contact, finalCta }: Props) {
                   "color-mix(in srgb, var(--color-primary) 22%, transparent)",
               }}
             >
-              <h3 className="text-sm font-semibold text-[var(--color-text)]">
+              <h3 className="text-sm font-semibold text-text">
                 Contact details
               </h3>
-              <p className="mt-2 text-xs text-[var(--color-muted)]">
+              <p className="mt-2 text-xs text-(--color-muted)">
                 Prefer email, WhatsApp, or a quick call? Reach us using any of
                 the options below.
               </p>
@@ -73,7 +71,7 @@ export function ContactSection({ contact, finalCta }: Props) {
               </div>
             </div>
 
-            <p className="text-xs text-[var(--color-muted)]">
+            <p className="text-xs text-(--color-muted)">
               We usually reply within 24 hours on business days.
             </p>
           </div>
@@ -90,10 +88,10 @@ export function ContactSection({ contact, finalCta }: Props) {
             }}
             onSubmit={(e) => e.preventDefault()}
           >
-            <h3 className="text-lg font-semibold text-[var(--color-text)]">
+            <h3 className="text-lg font-semibold text-text">
               {finalCta.headline}
             </h3>
-            <p className="mt-2 text-sm text-[var(--color-muted)]">
+            <p className="mt-2 text-sm text-(--color-muted)">
               {finalCta.subheadline}
             </p>
 
@@ -106,15 +104,15 @@ export function ContactSection({ contact, finalCta }: Props) {
               />
             </div>
 
-            <label className="mt-3 block text-xs text-[var(--color-muted)]">
+            <label className="mt-3 block text-xs text-(--color-muted)">
               Message
               <textarea
                 rows={4}
                 className="
                   mt-1 w-full rounded-md border px-2 py-1.5
                   text-xs outline-none
-                  bg-[var(--color-bg)]
-                  text-[var(--color-text)]
+                  bg-(-color-bg)
+                  text-text
                 "
                 style={{
                   borderColor:
@@ -129,7 +127,7 @@ export function ContactSection({ contact, finalCta }: Props) {
               className="
                 mt-4 rounded-full px-5 py-2
                 text-sm font-medium transition
-                bg-[var(--color-primary)]
+                bg-primary
                 text-slate-950
                 hover:opacity-90
               "

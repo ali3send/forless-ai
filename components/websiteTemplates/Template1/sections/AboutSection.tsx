@@ -33,10 +33,8 @@ export function AboutSection({ about }: Props) {
       <div className="mx-auto grid max-w-5xl gap-8 px-4 py-12 md:grid-cols-2">
         {/* Text */}
         <div>
-          <h2 className="text-xl font-semibold text-[var(--color-text)]">
-            {about.title}
-          </h2>
-          <p className="mt-4 text-sm text-[var(--color-muted)]">{about.body}</p>
+          <h2 className="text-xl font-semibold text-text">{about.title}</h2>
+          <p className="mt-4 text-sm text-(--color-muted)">{about.body}</p>
         </div>
 
         {/* Image */}
@@ -57,7 +55,7 @@ export function AboutSection({ about }: Props) {
               className="h-full w-full object-cover"
             />
           ) : (
-            <div className="h-full w-full animate-pulse bg-[var(--color-surface)]" />
+            <div className="h-full w-full animate-pulse bg-(--color-surface)" />
           )}
         </div>
       </div>

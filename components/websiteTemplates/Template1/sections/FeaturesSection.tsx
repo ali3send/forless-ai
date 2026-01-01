@@ -22,9 +22,7 @@ export function FeaturesSection({ features }: Props) {
       }}
     >
       <div className="mx-auto max-w-5xl px-4 py-12">
-        <h2 className="text-xl font-semibold text-[var(--color-text)]">
-          {features.title}
-        </h2>
+        <h2 className="text-xl font-semibold text-text">{features.title}</h2>
 
         <div className="mt-6 grid gap-6 md:grid-cols-3">
           {features.items.map((item, i) => (
@@ -37,11 +35,9 @@ export function FeaturesSection({ features }: Props) {
                   "color-mix(in srgb, var(--color-primary) 22%, transparent)",
               }}
             >
-              <div className="text-sm font-medium text-[var(--color-text)]">
-                {item.label}
-              </div>
+              <div className="text-sm font-medium text-text">{item.label}</div>
 
-              <p className="mt-2 text-xs text-[var(--color-muted)]">
+              <p className="mt-2 text-xs text-(--color-muted)">
                 {item.description}
               </p>
             </div>

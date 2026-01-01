@@ -1,8 +1,7 @@
 // app/website-builder/_components/WebsiteBuilderPage.tsx
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 
 import { WebsiteTemplateBasic } from "@/components/websiteTemplates/Template1/WebsiteTemplateBasic";
 import { BuilderSidebar } from "./BuilderSidebar";

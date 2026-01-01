@@ -35,13 +35,11 @@ export function HeroSection({ brandName, tagline, hero }: Props) {
           {tagline}
         </p>
 
-        <h1 className="mt-3 text-3xl font-bold md:text-4xl text-[var(--color-text)]">
+        <h1 className="mt-3 text-3xl font-bold md:text-4xl text-text">
           {hero.headline}
         </h1>
 
-        <p className="mt-4 text-sm text-[var(--color-muted)]">
-          {hero.subheadline}
-        </p>
+        <p className="mt-4 text-sm text-(--color-muted)">{hero.subheadline}</p>
 
         <div className="mt-6 flex flex-wrap gap-3">
           {/* Primary CTA */}
@@ -52,7 +50,7 @@ export function HeroSection({ brandName, tagline, hero }: Props) {
               px-5 py-2
               text-sm font-medium
               transition
-              bg-[var(--color-primary)]
+              bg-primary
               text-slate-950
               hover:opacity-90
             "
@@ -70,7 +68,7 @@ export function HeroSection({ brandName, tagline, hero }: Props) {
                 text-sm font-medium
                 transition
                 border
-                text-[var(--color-text)]
+                text-[text
                 bg-[color-mix(in_srgb,var(--color-primary)_8%,transparent)]
                 border-[color-mix(in_srgb,var(--color-primary)_35%,transparent)]
                 hover:bg-[color-mix(in_srgb,var(--color-primary)_14%,transparent)]
@@ -100,7 +98,7 @@ export function HeroSection({ brandName, tagline, hero }: Props) {
             className="h-full w-full object-cover"
           />
         ) : (
-          <div className="h-full w-full animate-pulse bg-[var(--color-surface)]" />
+          <div className="h-full w-full animate-pulse bg-(--color-surface)" />
         )}
       </div>
     </section>

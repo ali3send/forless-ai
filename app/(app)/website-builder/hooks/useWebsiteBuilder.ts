@@ -172,7 +172,7 @@ export function useWebsiteBuilder(projectId: string | null) {
 
       toast.success("Section regenerated", { id: t });
     } catch (err) {
-      toast.error("Regeneration failed", { id: t });
+      toast.error(`Regeneration failed + ${err}`, { id: t });
     } finally {
       setGenerating(false);
     }

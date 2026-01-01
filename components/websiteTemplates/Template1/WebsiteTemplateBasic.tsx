@@ -17,7 +17,7 @@ type Props = {
 
 export function WebsiteTemplateBasic({ data }: Props) {
   return (
-    <div className="min-h-screen bg-(--color-bg) text-[var(--color-text)]">
+    <div className="min-h-screen bg-(--color-bg) text-text">
       <Navbar brandName={data.brandName} offersTitle={data.offers.title} />
 
       <HeroSection

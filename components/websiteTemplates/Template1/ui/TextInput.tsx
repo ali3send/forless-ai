@@ -6,7 +6,7 @@ type Props = {
 
 export function TextInput({ label, placeholder, type = "text" }: Props) {
   return (
-    <label className="text-xs text-[var(--color-muted)]">
+    <label className="text-xs text-(--color-muted)">
       {label}
       <input
         type={type}
@@ -14,8 +14,8 @@ export function TextInput({ label, placeholder, type = "text" }: Props) {
         className="
           mt-1 w-full rounded-md border px-2 py-1.5
           text-xs outline-none
-          bg-[var(--color-bg)]
-          text-[var(--color-text)]
+          bg-(--color-bg)
+          t
           transition
         "
         style={{
