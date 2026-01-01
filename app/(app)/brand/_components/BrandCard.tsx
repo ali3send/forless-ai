@@ -1,8 +1,8 @@
+// app/brand/_components/BrandCard.tsx
 "use client";
 
 import { useState } from "react";
 import type { BrandOption } from "@/app/(app)/brand/brandConfig";
-import LogoSvg from "./LogoSvg";
 import BrandLogo from "./BrandLogo";
 
 interface BrandCardProps {

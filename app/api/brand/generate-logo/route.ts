@@ -1,3 +1,4 @@
+// app/api/brand/generate-logo/route.ts
 import { NextResponse } from "next/server";
 import { openai } from "@/lib/openai";
 

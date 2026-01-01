@@ -22,13 +22,7 @@ import { SECTION_TO_DATA_KEY } from "../sectionMap";
 
 import { useBrandStore } from "@/store/brand.store";
 import { useWebsiteStore } from "@/store/website.store";
-
-export type BrandData = {
-  name: string;
-  slogan: string;
-  palette: { primary: string; secondary: string };
-  font: { id: string; css: string };
-};
+import { BrandData } from "@/lib/types/brandTypes";
 
 export function useWebsiteBuilder(projectId: string | null) {
   /* ------------------ stores ------------------ */

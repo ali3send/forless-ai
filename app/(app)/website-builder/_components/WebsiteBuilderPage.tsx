@@ -71,7 +71,7 @@ export default function WebsiteBuilderPage() {
               fontFamily: brand?.font?.css,
             }}
           >
-            <WebsiteTemplateBasic data={data} />
+            <WebsiteTemplateBasic data={data} brand={brand} />
           </ThemeProvider>
         </main>
       </div>

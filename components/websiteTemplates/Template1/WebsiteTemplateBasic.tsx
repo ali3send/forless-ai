@@ -10,15 +10,22 @@ import { FeaturesSection } from "./sections/FeaturesSection";
 import { OffersSection } from "./sections/OffersSection";
 import { ContactSection } from "./sections/ContactSection";
 import { Footer } from "./sections/Footer";
+import { BrandData } from "@/lib/types/brandTypes";
 
 type Props = {
   data: WebsiteData;
+  brand: BrandData | null;
 };
 
-export function WebsiteTemplateBasic({ data }: Props) {
+export function WebsiteTemplateBasic({ data, brand }: Props) {
   return (
     <div className="min-h-screen bg-(--color-bg) text-text">
-      <Navbar brandName={data.brandName} offersTitle={data.offers.title} />
+      <Navbar
+        brandName={data.brandName}
+        primary={brand?.palette?.primary ?? "#10b981"}
+        offersTitle={data.offers.title}
+        logoSvg={brand?.logoSvg ?? null}
+      />
 
       <HeroSection
         brandName={data.brandName}

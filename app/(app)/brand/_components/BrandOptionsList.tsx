@@ -1,3 +1,4 @@
+// app/brand/_components/BrandOptionsList.tsx
 "use client";
 
 import type { BrandOption } from "@/app/(app)/brand/brandConfig";

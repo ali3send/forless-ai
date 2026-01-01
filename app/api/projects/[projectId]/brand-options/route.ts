@@ -22,13 +22,13 @@ export async function POST(req: Request, context: RouteContext) {
       .select();
 
     if (error) {
-      console.error("❌ Supabase error:", error);
+      console.error("Supabase error:", error);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error("🔥 API crash:", err);
+    console.error("API crash:", err);
     return NextResponse.json(
       { error: "Server error", raw: String(err) },
       { status: 500 }
@@ -38,7 +38,7 @@ export async function POST(req: Request, context: RouteContext) {
 
 export async function GET(_req: Request, context: RouteContext) {
   try {
-    const { projectId } = await context.params; // ✅ FIX
+    const { projectId } = await context.params;
 
     const supabase = await createServerSupabaseClient();
 

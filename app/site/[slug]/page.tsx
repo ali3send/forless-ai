@@ -41,7 +41,7 @@ export default async function SitePage({
           fontFamily: brand?.font?.css,
         }}
       >
-        <WebsiteTemplateBasic data={website.data} />
+        <WebsiteTemplateBasic data={website.data} brand={brand} />
       </ThemeProvider>
     );
   }
@@ -83,7 +83,7 @@ export default async function SitePage({
         fontFamily: brand?.font?.css,
       }}
     >
-      <WebsiteTemplateBasic data={website.data} />
+      <WebsiteTemplateBasic data={website.data} brand={brand} />
     </ThemeProvider>
   );
 }

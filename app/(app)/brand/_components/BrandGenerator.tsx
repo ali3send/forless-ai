@@ -1,3 +1,4 @@
+// app/brand/_components/BrandGenerator.tsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -121,6 +122,7 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
       const brandPayload: BrandPayload = {
         name: option.name,
         slogan: option.slogan,
+        logoSvg: option.logoSvg,
         palette: {
           primary: option.primaryColor,
           secondary: option.secondaryColor,
