@@ -1,3 +1,4 @@
+// app/api/stripe/session/route.ts
 import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe/server";
 

@@ -207,9 +207,6 @@ export function useWebsiteBuilder(projectId: string | null) {
       setRestoring(false);
     }
   }, [projectId, section, data, setData, setRestoring]);
-
-  /* ------------------ return ------------------ */
-
   return {
     section,
     setSection,

@@ -1,18 +1,21 @@
-// lib/config/urls.ts
 import { publicEnv } from "./env.public";
 import { serverEnv } from "./env.server";
 
 const IS_DEV = serverEnv.APP_ENV === "development";
-const PROTOCOL = IS_DEV ? "http" : "https";
-const PORT = IS_DEV ? ":3000" : "";
 
 export const urls = {
   site: (slug: string) =>
-    `${PROTOCOL}://${slug}.${publicEnv.NEXT_PUBLIC_ROOT_DOMAIN}${PORT}`,
+    IS_DEV
+      ? `http://${slug}.lvh.me:3000`
+      : `https://${slug}.${publicEnv.NEXT_PUBLIC_ROOT_DOMAIN}`,
 
   app: (path = "") =>
-    `${PROTOCOL}://${publicEnv.NEXT_PUBLIC_APP_SUBDOMAIN}.${publicEnv.NEXT_PUBLIC_ROOT_DOMAIN}${PORT}${path}`,
+    IS_DEV
+      ? `http://localhost:3000${path}`
+      : `https://${publicEnv.NEXT_PUBLIC_ROOT_DOMAIN}${path}`,
 
   admin: (path = "") =>
-    `${PROTOCOL}://${publicEnv.NEXT_PUBLIC_ADMIN_SUBDOMAIN}.${publicEnv.NEXT_PUBLIC_ROOT_DOMAIN}${PORT}${path}`,
+    IS_DEV
+      ? `http://localhost:3000/admin${path}`
+      : `https://${publicEnv.NEXT_PUBLIC_ADMIN_SUBDOMAIN}.${publicEnv.NEXT_PUBLIC_ROOT_DOMAIN}${path}`,
 };
