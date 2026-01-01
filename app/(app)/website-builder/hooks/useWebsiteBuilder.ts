@@ -69,8 +69,8 @@ export function useWebsiteBuilder(projectId: string | null) {
         setLoading(true);
 
         const [website, project] = await Promise.all([
-          apiGetWebsite(projectId),
-          apiGetProjectWithBrand(projectId),
+          apiGetWebsite(projectId || ""),
+          apiGetProjectWithBrand(projectId || ""),
         ]);
 
         if (cancelled) return;
