@@ -1,10 +1,10 @@
-// app/api/stripe/checkout/route.ts
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { stripe } from "@/lib/stripe/server";
 import { getOrCreateCustomer } from "@/lib/billing/getOrCreateCustomer";
 import { STRIPE_PRICES } from "@/lib/stripe/price";
+import { urls } from "@/lib/config/urls";
 
 export const runtime = "nodejs";
 
@@ -14,31 +14,18 @@ const Schema = z.object({
   idempotencyKey: z.string().min(8).optional(),
 });
 
-function getAppUrl() {
-  const url = process.env.NEXT_PUBLIC_APP_URL;
-  if (!url) throw new Error("Missing NEXT_PUBLIC_APP_URL");
-  return url.replace(/\/$/, "");
-}
-
-// type Plan = z.infer<typeof Schema>["plan"];
-// type Interval = z.infer<typeof Schema>["interval"];
-
 type Plan = "gowebsite" | "creator" | "pro";
 type Interval = "monthly" | "yearly";
 
 function resolvePriceId(plan: Plan, interval: Interval) {
   const priceId = STRIPE_PRICES[plan]?.[interval];
 
-  if (!priceId) {
-    throw new Error(`Missing Stripe price for ${plan} (${interval})`);
-  }
-
-  if (typeof priceId !== "string") {
-    throw new Error(`Stripe price is not a string for ${plan} (${interval})`);
-  }
-
-  if (!priceId.startsWith("price_")) {
-    throw new Error(`Invalid Stripe price id: ${priceId}`);
+  if (
+    !priceId ||
+    typeof priceId !== "string" ||
+    !priceId.startsWith("price_")
+  ) {
+    throw new Error(`Invalid Stripe price for ${plan} (${interval})`);
   }
 
   return priceId;
@@ -66,7 +53,7 @@ export async function POST(req: Request) {
       email: user.email,
     });
 
-    const appUrl = getAppUrl();
+    const appUrl = urls.app();
 
     const session = await stripe.checkout.sessions.create(
       {
@@ -78,7 +65,6 @@ export async function POST(req: Request) {
         cancel_url: `${appUrl}/billing/cancel`,
 
         client_reference_id: user.id,
-
         metadata: { user_id: user.id, plan, interval },
         subscription_data: { metadata: { user_id: user.id, plan, interval } },
 
@@ -93,10 +79,8 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ url: session.url });
   } catch (err: any) {
-    // show real Stripe error if present
     const msg =
       err?.raw?.message || err?.message || "Failed to create checkout session";
-
     return NextResponse.json({ error: msg }, { status: 400 });
   }
 }

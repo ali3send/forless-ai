@@ -3,18 +3,15 @@ import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getOrCreateCustomer } from "@/lib/billing/getOrCreateCustomer";
+import { urls } from "@/lib/config/urls";
 
 export const runtime = "nodejs";
 
 function getBaseUrl(req: Request) {
-  // fallback to env for production.
   const origin = req.headers.get("origin");
-  const env = process.env.NEXT_PUBLIC_APP_URL;
+  if (origin) return origin.replace(/\/$/, "");
 
-  const base = (origin || env || "").trim();
-  if (!base) throw new Error("Missing NEXT_PUBLIC_APP_URL and request origin");
-
-  return base.replace(/\/$/, "");
+  return urls.app();
 }
 
 export async function POST(req: Request) {
@@ -39,7 +36,6 @@ export async function POST(req: Request) {
     const portal = await stripe.billingPortal.sessions.create({
       customer: customerId,
       return_url: `${baseUrl}/dashboard`,
-
       locale: "auto",
     });
 

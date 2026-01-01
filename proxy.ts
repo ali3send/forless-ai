@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { publicEnv } from "@/lib/config/env.public";
 
 export const config = {
   matcher: ["/((?!_next|api|favicon.ico).*)"],
@@ -14,25 +15,22 @@ function getHostname(req: NextRequest) {
 export default function proxy(req: NextRequest) {
   const hostname = getHostname(req);
 
-  // allow localhost (non-subdomain)
   if (hostname === "localhost") return NextResponse.next();
 
-  const rawBase = process.env.NEXT_PUBLIC_BASE_URL || "http://lvh.me:3000";
-  const siteBaseHost = new URL(rawBase).hostname.toLowerCase();
+  const baseHost = publicEnv.NEXT_PUBLIC_ROOT_DOMAIN.toLowerCase();
 
-  // only handle our domains
-  if (!hostname.endsWith(siteBaseHost)) return NextResponse.next();
+  if (!hostname.endsWith(baseHost)) return NextResponse.next();
 
-  // ignore apex + www
-  if (hostname === siteBaseHost || hostname === `www.${siteBaseHost}`) {
+  if (hostname === baseHost || hostname === `www.${baseHost}`) {
     return NextResponse.next();
   }
 
-  const subdomain = hostname.slice(0, -(siteBaseHost.length + 1));
+  const subdomain = hostname.slice(0, -(baseHost.length + 1));
   if (!subdomain) return NextResponse.next();
 
-  // reserved subdomains
-  if (["app", "api", "www"].includes(subdomain)) return NextResponse.next();
+  if (["app", "api", "www", "admin"].includes(subdomain)) {
+    return NextResponse.next();
+  }
 
   const url = req.nextUrl.clone();
   url.pathname = `/site/${subdomain}${

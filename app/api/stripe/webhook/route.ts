@@ -9,6 +9,7 @@ import {
   handleInvoicePaymentSucceeded,
   handleSubscriptionEvent,
 } from "./handlers";
+import { serverEnv } from "@/lib/config/env.server";
 
 export const runtime = "nodejs";
 
@@ -28,7 +29,8 @@ export async function POST(req: Request) {
     );
   }
 
-  const secret = process.env.STRIPE_WEBHOOK_SECRET;
+  const secret = serverEnv.STRIPE_WEBHOOK_SECRET;
+
   if (!secret) {
     return NextResponse.json(
       { error: "Missing STRIPE_WEBHOOK_SECRET" },

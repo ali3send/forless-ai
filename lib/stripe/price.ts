@@ -1,3 +1,4 @@
+import { serverEnv } from "./../config/env.server";
 // lib/stripe/price.ts
 
 //  plan names
@@ -13,20 +14,19 @@ export const STRIPE_PRICES: Record<
   Record<BillingInterval, string>
 > = {
   gowebsite: {
-    monthly: process.env.STRIPE_PRICE_GO!,
-    yearly: process.env.STRIPE_PRICE_GO_YEARLY!,
+    monthly: serverEnv.STRIPE_PRICE_GO!,
+    yearly: serverEnv.STRIPE_PRICE_GO_YEARLY!,
   },
   creator: {
-    monthly: process.env.STRIPE_PRICE_CREATOR!,
-    yearly: process.env.STRIPE_PRICE_CREATOR_YEARLY!,
+    monthly: serverEnv.STRIPE_PRICE_CREATOR!,
+    yearly: serverEnv.STRIPE_PRICE_CREATOR_YEARLY!,
   },
   pro: {
-    monthly: process.env.STRIPE_PRICE_PRO!,
-    yearly: process.env.STRIPE_PRICE_PRO_YEARLY!,
+    monthly: serverEnv.STRIPE_PRICE_PRO!,
+    yearly: serverEnv.STRIPE_PRICE_PRO_YEARLY!,
   },
 };
 
-// Resolve plan from Stripe price (used in webhooks)
 export function planFromPriceId(priceId?: string | null): Plan {
   if (!priceId) return "free";
 
