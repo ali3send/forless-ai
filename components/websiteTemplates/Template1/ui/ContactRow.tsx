@@ -1,5 +1,3 @@
-// components/website/ui/ContactRow.tsx
-
 type Props = {
   label: string;
   value: string;
@@ -8,8 +6,10 @@ type Props = {
 export function ContactRow({ label, value }: Props) {
   return (
     <div className="flex items-center gap-2">
-      <span className="text-xs text-secondary-light">{label}</span>
-      <span className="text-xs font-medium text-slate-100">{value}</span>
+      <span className="text-xs text-[var(--color-muted)]">{label}</span>
+      <span className="text-xs font-medium text-[var(--color-text)]">
+        {value}
+      </span>
     </div>
   );
 }

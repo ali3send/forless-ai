@@ -1,10 +1,7 @@
 // components/website/WebsiteTemplateBasic.tsx
 "use client";
 
-import type React from "react";
-import { WebsiteData } from "@/lib/types/websiteTypes";
-import type { Theme } from "./theme";
-import { resolveTheme } from "./theme";
+import type { WebsiteData } from "@/lib/types/websiteTypes";
 
 import { Navbar } from "./sections/Navbar";
 import { HeroSection } from "./sections/HeroSection";
@@ -16,43 +13,26 @@ import { Footer } from "./sections/Footer";
 
 type Props = {
   data: WebsiteData;
-  theme?: Theme;
 };
 
-export function WebsiteTemplateBasic({ data, theme }: Props) {
-  // console.log("from template data: ", data);
-  const { style, primary, primaryHover, secondary } = resolveTheme(theme);
+export function WebsiteTemplateBasic({ data }: Props) {
   return (
-    <div
-      className="min-h-screen bg-slate-950 text-white"
-      style={style as React.CSSProperties}
-    >
+    <div className="min-h-screen bg-(--color-bg) text-[var(--color-text)]">
       <Navbar brandName={data.brandName} offersTitle={data.offers.title} />
 
       <HeroSection
         brandName={data.brandName}
         tagline={data.tagline}
         hero={data.hero}
-        primary={primary}
-        primaryHover={primaryHover}
       />
 
       <AboutSection about={data.about} />
 
-      <FeaturesSection features={data.features} primary={primary} />
+      <FeaturesSection features={data.features} />
 
-      <OffersSection
-        offers={data.offers}
-        primary={primary}
-        primaryHover={primaryHover}
-      />
+      <OffersSection offers={data.offers} />
 
-      <ContactSection
-        contact={data.contact}
-        finalCta={data.finalCta}
-        primary={primary}
-        primaryHover={primaryHover}
-      />
+      <ContactSection contact={data.contact} finalCta={data.finalCta} />
 
       <Footer brandName={data.brandName} />
     </div>

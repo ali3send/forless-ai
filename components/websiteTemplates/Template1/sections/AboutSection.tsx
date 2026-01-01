@@ -1,4 +1,3 @@
-// components/website/sections/AboutSection.tsx
 import Image from "next/image";
 import { useUnsplashImage } from "../hooks/useUnsplashImage";
 
@@ -14,7 +13,6 @@ type Props = {
 };
 
 export function AboutSection({ about }: Props) {
-  // Unsplash fallback
   const unsplashImage = useUnsplashImage(about.imageQuery);
 
   const imageSrc =
@@ -25,15 +23,31 @@ export function AboutSection({ about }: Props) {
   return (
     <section
       id="about"
-      className="border-t border-secondary-dark bg-slate-900/40"
+      className="border-t"
+      style={{
+        backgroundColor: "color-mix(in srgb, var(--color-bg) 92%, black)",
+        borderColor:
+          "color-mix(in srgb, var(--color-primary) 18%, transparent)",
+      }}
     >
       <div className="mx-auto grid max-w-5xl gap-8 px-4 py-12 md:grid-cols-2">
+        {/* Text */}
         <div>
-          <h2 className="text-xl font-semibold">{about.title}</h2>
-          <p className="mt-4 text-sm text-secondary-soft">{about.body}</p>
+          <h2 className="text-xl font-semibold text-[var(--color-text)]">
+            {about.title}
+          </h2>
+          <p className="mt-4 text-sm text-[var(--color-muted)]">{about.body}</p>
         </div>
 
-        <div className="overflow-hidden rounded-2xl border border-secondary-dark">
+        {/* Image */}
+        <div
+          className="overflow-hidden rounded-2xl border"
+          style={{
+            backgroundColor: "var(--color-surface)",
+            borderColor:
+              "color-mix(in srgb, var(--color-primary) 22%, transparent)",
+          }}
+        >
           {imageSrc ? (
             <Image
               src={imageSrc}
@@ -43,7 +57,7 @@ export function AboutSection({ about }: Props) {
               className="h-full w-full object-cover"
             />
           ) : (
-            <div className="h-full w-full animate-pulse bg-secondary-dark" />
+            <div className="h-full w-full animate-pulse bg-[var(--color-surface)]" />
           )}
         </div>
       </div>

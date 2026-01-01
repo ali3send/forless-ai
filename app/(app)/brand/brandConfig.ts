@@ -41,6 +41,31 @@ export const PALETTES: Palette[] = [
     primary: "#f59e0b",
     secondary: "#111827",
   },
+  {
+    id: "red-slate",
+    label: "Alert Red",
+    primary: "#ef4444",
+    secondary: "#0f172a",
+  },
+  //also add light themes
+  {
+    id: "emerald-slate-light",
+    label: "Professional Green Light",
+    primary: "#10b981",
+    secondary: "#f3f4f6",
+  },
+  {
+    id: "blue-slate-light",
+    label: "Corporate Blue Light",
+    primary: "#0ea5e9",
+    secondary: "#f3f4f6",
+  },
+  {
+    id: "amber-slate-light",
+    label: "Warm Business Light",
+    primary: "#f59e0b",
+    secondary: "#f3f4f6",
+  },
 ];
 
 export const FONTS: BrandFont[] = [

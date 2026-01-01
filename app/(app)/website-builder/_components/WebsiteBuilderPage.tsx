@@ -11,6 +11,7 @@ import { useWebsiteBuilder } from "../hooks/useWebsiteBuilder";
 // import { useProjectStore } from "@/store/project.store";
 import { useBrandStore } from "@/store/brand.store";
 import { useWebsiteStore } from "@/store/website.store";
+import { ThemeProvider } from "@/components/websiteTheme/ThemeProvider";
 
 export default function WebsiteBuilderPage() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -64,14 +65,15 @@ export default function WebsiteBuilderPage() {
         />
 
         <main className="w-full overflow-hidden rounded-2xl border border-secondary-fade bg-secondary-light shadow-sm">
-          <WebsiteTemplateBasic
-            data={data}
-            theme={{
+          <ThemeProvider
+            value={{
               primary: brand?.palette?.primary,
               secondary: brand?.palette?.secondary,
               fontFamily: brand?.font?.css,
             }}
-          />
+          >
+            <WebsiteTemplateBasic data={data} />
+          </ThemeProvider>
         </main>
       </div>
     </div>
