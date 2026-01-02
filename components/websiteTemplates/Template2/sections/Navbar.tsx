@@ -27,7 +27,7 @@ export function Navbar({ brandName, offersTitle, logoSvg, primary }: Props) {
         {/* Brand */}
         <div className="flex items-center gap-2">
           {logoSvg && (
-            <div className="h-6 w-6">
+            <div>
               <BrandLogo svg={logoSvg} primary={primary} secondary={primary} />
             </div>
           )}

@@ -20,7 +20,7 @@ export default function WebsiteBuilderPage() {
 
   const brand = useBrandStore((state) => state.brand);
   const { data, loading, saving, generating, restoring } = useWebsiteStore();
-  const templateKey = (data.template ?? "template3") as TemplateKey;
+  const templateKey = (data.template ?? "template1") as TemplateKey;
   const ActiveTemplate = WEBSITE_TEMPLATES[templateKey];
   const {
     builderSections,

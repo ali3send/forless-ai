@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { createPublicSupabaseClient } from "@/lib/supabase/public";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { ThemeProvider } from "@/components/websiteTheme/ThemeProvider";
-import { WebsiteTemplateImmersive } from "@/components/websiteTemplates/Template3/WebsiteTemplateBasic";
 import {
   WEBSITE_TEMPLATES,
   type TemplateKey,
@@ -49,7 +48,6 @@ export default async function SitePage({
         }}
       >
         <ActiveTemplate data={website.data} brand={brand} />;
-        <WebsiteTemplateImmersive data={website.data} brand={brand} />
       </ThemeProvider>
     );
   }
@@ -93,7 +91,6 @@ export default async function SitePage({
       }}
     >
       <ActiveTemplate data={website.data} brand={brand} />;
-      <WebsiteTemplateImmersive data={website.data} brand={brand} />
     </ThemeProvider>
   );
 }

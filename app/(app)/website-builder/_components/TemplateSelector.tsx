@@ -52,7 +52,7 @@ export default function TemplateSelector() {
           className="
             absolute z-50 mt-1 w-full
             rounded-md border border-secondary-fade
-            bg-secondary-light shadow-lg
+            bg-secondary-soft shadow-lg
           "
         >
           <div className="py-1">
@@ -73,7 +73,7 @@ export default function TemplateSelector() {
                     ${
                       isActive
                         ? "bg-primary/30 text-primary-active"
-                        : "text-secondary-dark hover:bg-secondary-soft"
+                        : "text-secondary-dark hover:bg-secondary-light"
                     }
                   `}
                 >

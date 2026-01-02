@@ -9,9 +9,9 @@ export function Badge({
 }) {
   const cls =
     tone === "success"
-      ? "border-emerald-500/30 bg-emerald-500/10 text-primary-soft"
+      ? "border-emerald-500 bg-emerald-500/20 text-emerald-500"
       : tone === "danger"
-      ? "border-red-500/30 bg-red-500/10 text-red-200"
+      ? "border-red-300 bg-red-300/20 text-red-400"
       : tone === "primary"
       ? "border-primary/30 bg-primary/10 text-primary"
       : "border-secondary-active bg-bg text-text-muted";

@@ -7,18 +7,18 @@ export async function GET() {
   if (!admin.ok) {
     return NextResponse.json({ error: admin.error }, { status: admin.status });
   }
+  const supabaseAdmin = createAdminSupabaseClient();
 
-  const { data: profiles, error: pErr } = await admin.supabase
+  const { data: profiles, error: pErr } = await supabaseAdmin
     .from("profiles")
     .select(
       "id, full_name, role, is_suspended, suspended_at, suspended_reason, created_at"
     )
     .order("created_at", { ascending: false })
-    .limit(500);
+    .limit(50);
 
   if (pErr) return NextResponse.json({ error: pErr.message }, { status: 500 });
 
-  const supabaseAdmin = createAdminSupabaseClient();
   const { data: authData, error: aErr } =
     await supabaseAdmin.auth.admin.listUsers({
       page: 1,
