@@ -1,7 +1,6 @@
 "use client";
-
-import type { BrandData } from "../hooks/useWebsiteBuilder";
 import { PALETTES, FONTS } from "@/app/(app)/brand/brandConfig";
+import { BrandData } from "@/lib/types/brandTypes";
 import { useBrandStore } from "@/store/brand.store";
 
 // normalize BrandData so we always have all fields
@@ -9,6 +8,7 @@ function ensureBrand(prev: BrandData | null): BrandData {
   return {
     name: prev?.name ?? "",
     slogan: prev?.slogan ?? "",
+    logoSvg: prev?.logoSvg ?? null,
     palette: {
       primary: prev?.palette?.primary ?? PALETTES[0]?.primary ?? "#10b981",
       secondary:
