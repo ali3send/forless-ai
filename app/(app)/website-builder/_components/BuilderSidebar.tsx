@@ -9,6 +9,11 @@ import { useWebsiteStore } from "@/store/website.store";
 import { BuilderContentPanel } from "./BuilderContentPanel";
 import { BuilderDesignPanel } from "./BuilderDesignPanel";
 import { PublishButton } from "./PublishButton";
+import {
+  WEBSITE_TEMPLATES,
+  type TemplateKey,
+} from "@/components/websiteTemplates/templates";
+import TemplateSelector from "./TemplateSelector";
 
 type Props = {
   projectId: string;
@@ -47,6 +52,7 @@ export function BuilderSidebar(props: Props) {
         projectId={projectId}
         defaultSlug={data?.brandName?.toLowerCase().replace(/\s+/g, "-")}
       />
+      <TemplateSelector />
 
       <div className="flex gap-1 rounded-full border border-secondary-fade bg-secondary-light p-1 text-[11px]">
         <button

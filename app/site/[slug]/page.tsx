@@ -3,9 +3,11 @@ import { notFound } from "next/navigation";
 import { createPublicSupabaseClient } from "@/lib/supabase/public";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { ThemeProvider } from "@/components/websiteTheme/ThemeProvider";
-import { WebsiteTemplateBasic } from "@/components/websiteTemplates/Template1/WebsiteTemplateBasic";
 import { WebsiteTemplateImmersive } from "@/components/websiteTemplates/Template3/WebsiteTemplateBasic";
-import { WebsiteTemplateAlt } from "@/components/websiteTemplates/Template2/WebsiteTemplateAlt";
+import {
+  WEBSITE_TEMPLATES,
+  type TemplateKey,
+} from "@/components/websiteTemplates/templates";
 
 export default async function SitePage({
   params,
@@ -35,6 +37,8 @@ export default async function SitePage({
     if (!website?.data) return notFound();
 
     const brand = publicProject.brand_data;
+    const templateKey = (website.data.template ?? "template1") as TemplateKey;
+    const ActiveTemplate = WEBSITE_TEMPLATES[templateKey];
 
     return (
       <ThemeProvider
@@ -44,8 +48,7 @@ export default async function SitePage({
           fontFamily: brand?.font?.css,
         }}
       >
-        {/* <WebsiteTemplateBasic data={website.data} brand={brand} /> */}
-        {/* <WebsiteTemplateAlt data={website.data} brand={brand} /> */}
+        <ActiveTemplate data={website.data} brand={brand} />;
         <WebsiteTemplateImmersive data={website.data} brand={brand} />
       </ThemeProvider>
     );
@@ -79,7 +82,8 @@ export default async function SitePage({
   if (!website?.data) return notFound();
 
   const brand = ownerProject.brand_data;
-
+  const templateKey = (website.data.template ?? "template1") as TemplateKey;
+  const ActiveTemplate = WEBSITE_TEMPLATES[templateKey];
   return (
     <ThemeProvider
       value={{
@@ -88,7 +92,8 @@ export default async function SitePage({
         fontFamily: brand?.font?.css,
       }}
     >
-      <WebsiteTemplateBasic data={website.data} brand={brand} />
+      <ActiveTemplate data={website.data} brand={brand} />;
+      <WebsiteTemplateImmersive data={website.data} brand={brand} />
     </ThemeProvider>
   );
 }
