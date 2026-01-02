@@ -160,6 +160,7 @@ Rules:
   }
 
   const website: WebsiteData = {
+    template: "template1",
     type,
     brandName: brand.name,
     tagline: brand.slogan ?? "",

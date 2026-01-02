@@ -1,12 +1,12 @@
 // lib/api/website.ts
 import type { WebsiteData } from "@/lib/types/websiteTypes";
-import type { BrandPayload } from "./brand";
+import { BrandData } from "../types/brandTypes";
 
 type SectionKey = "hero" | "about" | "features" | "offers" | "contact";
 
 type GenerateSectionPayload = {
   idea: string;
-  brand: BrandPayload;
+  brand: BrandData;
   section: SectionKey;
 };
 
@@ -29,7 +29,7 @@ export async function apiGenerateWebsite(
 export async function apiGenerateWebsiteWithBrand(payload: {
   projectId: string;
   idea: string;
-  brand: BrandPayload;
+  brand: BrandData;
   websiteType?: "product" | "service" | "business" | "personal";
 }): Promise<WebsiteData> {
   const res = await fetch("/api/website/generate-with-brand", {

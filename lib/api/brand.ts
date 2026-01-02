@@ -4,14 +4,6 @@
 import { BrandOption } from "@/app/(app)/brand/brandConfig";
 import { BrandData } from "../types/brandTypes";
 
-export type BrandPayload = {
-  name: string;
-  slogan: string;
-  logoSvg: string;
-  palette: { primary: string; secondary: string };
-  font: { id: string; css: string };
-};
-
 export type GeneratedBrandFromApi = {
   name?: string;
   slogan?: string;

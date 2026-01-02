@@ -33,12 +33,12 @@ export function BuilderDesignPanel() {
   const currentPaletteId =
     PALETTES.find(
       (p) =>
-        p.primary === current.palette.primary &&
-        p.secondary === current.palette.secondary
+        p.primary === current.palette?.primary &&
+        p.secondary === current.palette?.secondary
     )?.id ?? PALETTES[0]?.id;
 
   const currentFontId =
-    FONTS.find((f) => f.css === current.font.css)?.id ?? FONTS[0]?.id;
+    FONTS.find((f) => f.css === current.font?.css)?.id ?? FONTS[0]?.id;
 
   const handlePaletteChange = (paletteId: string) => {
     const p = PALETTES.find((x) => x.id === paletteId) ?? PALETTES[0];

@@ -20,7 +20,6 @@ import {
   apiGenerateBrand,
   apiGenerateLogo,
   apiSaveProjectBrand,
-  type BrandPayload,
 } from "@/lib/api/brand";
 
 import {
@@ -30,6 +29,7 @@ import {
 
 import { toast } from "sonner";
 import { apiGenerateWebsiteWithBrand, apiGetWebsite } from "@/lib/api/website";
+import { BrandData } from "@/lib/types/brandTypes";
 
 interface Props {
   projectId: string;
@@ -119,7 +119,7 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
 
   async function handleBrandUse(option: BrandOption) {
     try {
-      const brandPayload: BrandPayload = {
+      const brandPayload: BrandData = {
         name: option.name,
         slogan: option.slogan,
         logoSvg: option.logoSvg,
