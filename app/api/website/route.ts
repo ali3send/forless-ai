@@ -5,18 +5,14 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { fetchUnsplashImage } from "@/lib/unsplash";
 import type { WebsiteData } from "@/lib/types/websiteTypes";
 
-const websiteDataSchema = z
-  .object({
-    hero: z
-      .object({
-        imageQuery: z.string().optional(),
-      })
-      .passthrough(),
-  })
-  .passthrough();
+const websiteDataSchema = z.looseObject({
+  hero: z.looseObject({
+    imageQuery: z.string().optional(),
+  }),
+});
 
 const postSchema = z.object({
-  projectId: z.string().uuid(),
+  projectId: z.uuid(),
   data: websiteDataSchema, // ✅ real validation (not z.custom)
 });
 

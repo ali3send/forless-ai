@@ -11,6 +11,11 @@ import { useWebsiteBuilder } from "../hooks/useWebsiteBuilder";
 import { useBrandStore } from "@/store/brand.store";
 import { useWebsiteStore } from "@/store/website.store";
 import { ThemeProvider } from "@/components/websiteTheme/ThemeProvider";
+import {
+  WebsiteTemplate3,
+  WebsiteTemplateAlt,
+} from "@/components/websiteTemplates/Template2/WebsiteTemplateAlt";
+import { WebsiteTemplateImmersive } from "@/components/websiteTemplates/Template3/WebsiteTemplateBasic";
 
 export default function WebsiteBuilderPage() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -71,7 +76,9 @@ export default function WebsiteBuilderPage() {
               fontFamily: brand?.font?.css,
             }}
           >
-            <WebsiteTemplateBasic data={data} brand={brand} />
+            {/* <WebsiteTemplateBasic data={data} brand={brand} /> */}
+            <WebsiteTemplateAlt data={data} brand={brand} />
+            {/* <WebsiteTemplateImmersive data={data} brand={brand} /> */}
           </ThemeProvider>
         </main>
       </div>

@@ -7,7 +7,7 @@ import type { WebsiteData } from "@/lib/types/websiteTypes";
 import { PLAN_LIMITS, type PlanKey } from "@/lib/billing/planLimits";
 
 const Schema = z.object({
-  projectId: z.string().uuid(),
+  projectId: z.uuid(),
   idea: z.string().min(1),
   websiteType: z.string().optional(),
   brand: z.object({

@@ -4,7 +4,6 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/providers";
 import { Eye, EyeOff } from "lucide-react";
-
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();

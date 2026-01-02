@@ -6,7 +6,7 @@ import { PLAN_LIMITS, type PlanKey } from "@/lib/billing/planLimits";
 export const runtime = "nodejs";
 
 const Schema = z.object({
-  projectId: z.string().uuid().optional(),
+  projectId: z.uuid().optional(),
   key: z.enum(["website_generate", "website_regen", "websites_published"]),
   increment: z.boolean().default(false),
 });

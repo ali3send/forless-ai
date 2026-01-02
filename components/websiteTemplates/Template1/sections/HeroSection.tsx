@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { useUnsplashImage } from "../hooks/useUnsplashImage";
+import { useUnsplashImage } from "../../hooks/useUnsplashImage";
 
 type HeroData = {
   headline: string;

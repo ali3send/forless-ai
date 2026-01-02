@@ -1,8 +1,11 @@
+// app/site/[slug]/page.tsx
 import { notFound } from "next/navigation";
 import { createPublicSupabaseClient } from "@/lib/supabase/public";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { ThemeProvider } from "@/components/websiteTheme/ThemeProvider";
 import { WebsiteTemplateBasic } from "@/components/websiteTemplates/Template1/WebsiteTemplateBasic";
+import { WebsiteTemplateImmersive } from "@/components/websiteTemplates/Template3/WebsiteTemplateBasic";
+import { WebsiteTemplateAlt } from "@/components/websiteTemplates/Template2/WebsiteTemplateAlt";
 
 export default async function SitePage({
   params,
@@ -41,7 +44,9 @@ export default async function SitePage({
           fontFamily: brand?.font?.css,
         }}
       >
-        <WebsiteTemplateBasic data={website.data} brand={brand} />
+        {/* <WebsiteTemplateBasic data={website.data} brand={brand} /> */}
+        {/* <WebsiteTemplateAlt data={website.data} brand={brand} /> */}
+        <WebsiteTemplateImmersive data={website.data} brand={brand} />
       </ThemeProvider>
     );
   }

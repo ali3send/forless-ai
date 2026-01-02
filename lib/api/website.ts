@@ -76,7 +76,6 @@ export async function apiGetWebsite(
   const json = await res.json().catch(() => ({} as any));
 
   if (!res.ok) {
-    // no website yet is not a hard error for the builder – just return null
     return null;
   }
 
@@ -86,7 +85,7 @@ export async function apiGetWebsite(
 }
 export async function apiSaveSectionHistory(payload: {
   projectId: string;
-  section: "hero" | "about" | "features" | "offers" | "contact";
+  section: SectionKey;
   prevSectionData: any; // section object only
   maxSlots?: number; // default 2
 }): Promise<void> {
