@@ -9,10 +9,6 @@ import { useWebsiteStore } from "@/store/website.store";
 import { BuilderContentPanel } from "./BuilderContentPanel";
 import { BuilderDesignPanel } from "./BuilderDesignPanel";
 import { PublishButton } from "./PublishButton";
-import {
-  WEBSITE_TEMPLATES,
-  type TemplateKey,
-} from "@/components/websiteTemplates/templates";
 import TemplateSelector from "./TemplateSelector";
 
 type Props = {

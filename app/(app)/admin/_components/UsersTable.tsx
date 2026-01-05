@@ -207,7 +207,7 @@ export function UsersTable() {
     }
   }
 
-  async function deleteUser(userId: string, email?: string | null) {
+  async function deleteUser(userId: string) {
     setMenuOpen(null);
 
     toast.error("Are you sure you want to delete this user?", {

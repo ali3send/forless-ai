@@ -3,10 +3,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  apiCreateAndGenerateProject,
-  apiCreateProject,
-} from "@/lib/api/project";
+import { apiCreateProject } from "@/lib/api/project";
 import { toast } from "sonner";
 
 export default function NewProjectModal() {
@@ -17,44 +14,6 @@ export default function NewProjectModal() {
   const [projectName, setProjectName] = useState("");
 
   //for create and generate direct from dashboard
-  async function handleCreateAndGenerate() {
-    if (loading) return;
-
-    const trimmedName = projectName.trim();
-    const trimmedIdea = projectIdea.trim();
-
-    if (!trimmedName) {
-      toast.error("Please enter a project name.");
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      const result = await apiCreateAndGenerateProject({
-        name: trimmedName,
-        idea: trimmedIdea || trimmedName,
-      });
-      toast.success("Project created and website generated!");
-      // Close modal
-      setModalOpen(false);
-      setProjectIdea("");
-      setProjectName("");
-
-      // Go straight to builder
-      router.push(`/website-builder/${result.project.id}`);
-    } catch (err) {
-      console.error(err);
-      toast.error(
-        err instanceof Error
-          ? err.message
-          : "Failed to create and generate project"
-      );
-    } finally {
-      setLoading(false);
-    }
-  }
-
   async function handleCreateProject() {
     if (loading) return;
 
