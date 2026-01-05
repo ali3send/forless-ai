@@ -4,7 +4,7 @@
 import { useState } from "react";
 import type { BillingInterval, PaidPlan, Plan, Profile } from "../_lib/types";
 import { cx } from "../_lib/utils";
-import BillingIntervalToggle from "./BillingIntervalToggle";
+import BillingIntervalToggle from "@/app/(app)/components/BillingIntervalToggle";
 
 export default function PaidPlanCard(props: {
   plan: {
@@ -44,13 +44,15 @@ export default function PaidPlanCard(props: {
 
   const primaryBtn = "btn-fill";
   const secondaryBtn =
-    "inline-flex items-center justify-center rounded-md border border-secondary-fade px-4 py-1 text-sm font-semibold text-secondary-dark transition hover:border-primary hover:text-primary disabled:opacity-60 disabled:pointer-events-none";
+    "inline-flex items-center justify-center rounded-md border border-secondary-light px-4 py-1 text-sm font-semibold text-secondary-dark transition hover:border-primary hover:text-primary disabled:opacity-60 disabled:pointer-events-none";
 
   return (
     <div
       className={cx(
-        "rounded-2xl border border-secondary-fade bg-secondary-soft p-5 shadow-sm",
-        p.highlight ? "ring-1 ring-primary/20" : ""
+        "relative rounded-2xl border p-6 transition shadow-sm",
+        p.highlight
+          ? "border-primary/40 bg-white ring-1 ring-primary/20"
+          : "border-secondary-fade bg-secondary-fade"
       )}
     >
       {/* Header */}
@@ -62,20 +64,20 @@ export default function PaidPlanCard(props: {
             </h2>
 
             {p.highlight && (
-              <span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">
+              <span className="rounded-full bg-primary  px-2 py-0.5 text-[11px] font-semibold text-white">
                 Popular
               </span>
             )}
 
             {isCurrent && (
-              <span className="rounded-full border border-secondary-fade bg-secondary-light px-2 py-0.5 text-[11px] font-semibold text-secondary-dark">
+              <span className="rounded-full border border-secondary-fade bg-accent px-2 py-0.5 text-[11px] font-semibold text-white">
                 Current
               </span>
             )}
           </div>
 
-          {/* Toggle inside each card */}
-          <div className="mt-3">
+          {/* Interval toggle */}
+          <div className="mt-4">
             <BillingIntervalToggle
               interval={interval}
               setInterval={setInterval}
@@ -83,13 +85,13 @@ export default function PaidPlanCard(props: {
           </div>
 
           {/* Price */}
-          <div className="mt-3 text-xl font-bold text-secondary-dark">
+          <div className="mt-4 text-2xl font-bold text-secondary-dark">
             {interval === "monthly"
               ? p.pricing.monthly.label
               : p.pricing.yearly.label}
 
             {interval === "yearly" && p.pricing.yearly.note ? (
-              <span className="ml-2 text-[11px] font-normal text-primary">
+              <span className="ml-2 text-xs font-normal text-primary">
                 • {p.pricing.yearly.note}
               </span>
             ) : null}
@@ -100,17 +102,17 @@ export default function PaidPlanCard(props: {
       </div>
 
       {/* Features */}
-      <ul className="mt-4 space-y-2 text-sm">
+      <ul className="mt-5 space-y-2 text-sm">
         {p.features.map((f) => (
           <li key={f} className="flex gap-2">
-            <span className="mt-[2px] text-primary">✓</span>
+            <span className="mt-0.5 text-primary">✓</span>
             <span className="text-secondary-dark">{f}</span>
           </li>
         ))}
       </ul>
 
       {/* Actions */}
-      <div className="mt-5 flex flex-wrap gap-2">
+      <div className="mt-6 flex flex-wrap gap-2">
         {!hydrated || (loading && !profile) ? (
           <button className={p.highlight ? primaryBtn : secondaryBtn} disabled>
             Loading…
@@ -147,7 +149,7 @@ export default function PaidPlanCard(props: {
         )}
       </div>
 
-      <div className="mt-3 text-[11px] text-secondary">
+      <div className="mt-4 text-[11px] text-secondary">
         Cancel anytime. Payments handled securely by Stripe.
       </div>
     </div>

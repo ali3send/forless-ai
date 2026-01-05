@@ -12,7 +12,7 @@ export default function FreePlanCard(props: {
   const { currentPlan, profile, freeFeatures, onLogin, onManage } = props;
 
   return (
-    <div className="mt-6 rounded-2xl border border-secondary-fade bg-secondary-soft p-5 shadow-sm">
+    <div className="mt-6 rounded-2xl border border-secondary-fade bg-secondary-fade p-5 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
@@ -36,10 +36,6 @@ export default function FreePlanCard(props: {
           {!profile ? (
             <button onClick={onLogin} className="btn-secondary">
               Login
-            </button>
-          ) : currentPlan !== "free" ? (
-            <button onClick={onManage} className="btn-secondary">
-              Manage
             </button>
           ) : null}
         </div>

@@ -89,7 +89,7 @@ export function Navbar() {
   }, [user?.email]);
 
   return (
-    <header className="border-b border-secondary-fade bg-secondary-soft/90 backdrop-blur z-50">
+    <header className="border-b border-secondary-fade bg-secondary-fade backdrop-blur z-50">
       <nav className=" mx-auto flex items-center justify-between px-5  py-3">
         <Link href="/" className="">
           <div className=" overflow-hidden rounded-md">
@@ -178,8 +178,8 @@ export function Navbar() {
                 Logout
               </button>
 
-              <button className="flex items-center gap-2 rounded-full border border-secondary-fade bg-secondary-light px-3 py-1.5 text-xs text-secondary-dark">
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-secondary-soft text-[10px] text-secondary-dark border border-secondary-fade">
+              <button className="flex items-center gap-2 rounded-full border border-secondary-fade bg-secondary-soft px-3 py-1.5 text-xs text-secondary-dark">
+                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-secondary-light text-[10px] text-secondary-dark ">
                   {userInitial}
                 </span>
                 <span className="hidden sm:inline text-secondary-darker">

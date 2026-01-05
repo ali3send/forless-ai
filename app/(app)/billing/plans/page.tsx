@@ -215,7 +215,7 @@ export default function BillingPlansPage() {
         ))}
       </div>
 
-      <div className="mt-8 rounded-2xl border border-secondary-fade bg-secondary-soft p-5 shadow-sm">
+      <div className="mt-8 rounded-2xl border border-secondary-fade bg-secondary-fade p-5 shadow-sm">
         <div className="text-sm font-semibold text-secondary-dark">FAQ</div>
 
         <div className="mt-2 grid gap-3 text-sm text-secondary">

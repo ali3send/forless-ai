@@ -1,8 +1,8 @@
+// app/(app)/billing/plans/_components/BillingIntervalToggle.tsx
 "use client";
 
-import { BillingInterval } from "@/lib/stripe/price";
-
-// import type { BillingInterval } from "../_lib/types";
+// import { cx } from "../_lib/utils";
+import type { BillingInterval } from "../billing/plans/_lib/types";
 
 export default function BillingIntervalToggle(props: {
   interval: BillingInterval;
@@ -19,7 +19,7 @@ export default function BillingIntervalToggle(props: {
         inline-flex items-center gap-1
         rounded-xl border border-secondary-fade
         bg-white/70 backdrop-blur
-        p-1 shadow-sm
+        p-0.5 
       "
     >
       <button
@@ -46,9 +46,9 @@ export default function BillingIntervalToggle(props: {
         Yearly
         <span
           className={`
-            text-[10px] rounded-full
+            text-[8px] rounded-full
             border border-primary/30
-            px-2 py-0.5
+            px-1.5 py-0.5
             font-semibold
             ${
               interval === "monthly"

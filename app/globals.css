@@ -41,7 +41,7 @@
 
   --font-sans: Arial, Helvetica, sans-serif;
 
-  
+
     --color-accent: #ff6b10;          /* base accent */
   --color-accent-hover: #ff812e;    /* lighter for hover */
   --color-accent-active: #e85d00;   /* pressed / active */
@@ -62,10 +62,10 @@
 }
 
   .btn-fill{
-    @apply   rounded-md bg-primary  py-1 px-4  text-sm  text-secondary-fade shadow-sm font-semibold hover:bg-primary-active cursor-pointer
+    @apply   rounded-md bg-primary  py-1 px-4  text-sm  text-white shadow-sm font-semibold hover:bg-primary-active cursor-pointer
   }
   .btn-secondary{
-    @apply  rounded-md  bg-secondary px-4 py-1 text-sm text-secondary-fade font-semibold hover:bg-secondary-hover transition cursor-pointer
+    @apply  rounded-md  bg-secondary px-4 py-1 text-sm text-white font-semibold hover:bg-secondary-hover transition cursor-pointer
   }
 }
 
