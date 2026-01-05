@@ -1,24 +1,12 @@
 import Image from "next/image";
 import { useUnsplashImage } from "../../hooks/useUnsplashImage";
+import { AboutData } from "../../template.types";
 
-type AboutData = {
-  title: string;
-  body: string;
-  imageQuery: string;
-  imageUrl?: string;
-};
-
-type Props = {
-  about: AboutData;
-};
-
-export function AboutSection({ about }: Props) {
-  const unsplashImage = useUnsplashImage(about.imageQuery);
+export function AboutSection({ title, body, imageQuery, imageUrl }: AboutData) {
+  const unsplashImage = useUnsplashImage(imageQuery);
 
   const imageSrc =
-    about.imageUrl && about.imageUrl.trim() !== ""
-      ? about.imageUrl
-      : unsplashImage;
+    imageUrl && imageUrl.trim() !== "" ? imageUrl : unsplashImage;
 
   return (
     <section
@@ -33,8 +21,8 @@ export function AboutSection({ about }: Props) {
       <div className="mx-auto grid max-w-5xl gap-8 px-4 py-12 md:grid-cols-2">
         {/* Text */}
         <div>
-          <h2 className="text-xl font-semibold text-text">{about.title}</h2>
-          <p className="mt-4 text-sm text-(--color-muted)">{about.body}</p>
+          <h2 className="text-xl font-semibold text-text">{title}</h2>
+          <p className="mt-4 text-sm text-(--color-muted)">{body}</p>
         </div>
 
         {/* Image */}
@@ -49,7 +37,7 @@ export function AboutSection({ about }: Props) {
           {imageSrc ? (
             <Image
               src={imageSrc}
-              alt={about.title}
+              alt={title}
               width={500}
               height={800}
               className="h-full w-full object-cover"

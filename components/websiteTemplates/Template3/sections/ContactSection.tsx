@@ -1,19 +1,6 @@
+import { ContactData, FinalCtaData } from "../../template.types";
 import { ContactRow } from "../../ui/ContactRow";
 import { TextInput } from "../../ui/TextInput";
-
-type ContactData = {
-  title: string;
-  description: string;
-  email: string;
-  whatsapp?: string;
-  phone?: string;
-};
-
-type FinalCtaData = {
-  headline: string;
-  subheadline: string;
-  buttonLabel: string;
-};
 
 type Props = {
   contact: ContactData;

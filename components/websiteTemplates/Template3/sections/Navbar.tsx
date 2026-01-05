@@ -1,15 +1,14 @@
 // components/website/sections/Navbar.tsx
 
 import BrandLogo from "@/app/(app)/brand/_components/BrandLogo";
+import { NavbarData } from "../../template.types";
 
-type Props = {
-  brandName: string;
-  offersTitle: string;
-  logoSvg: string | null;
-  primary: string;
-};
-
-export function Navbar({ brandName, offersTitle, logoSvg, primary }: Props) {
+export function Navbar({
+  brandName,
+  offersTitle,
+  logoSvg,
+  primary,
+}: NavbarData) {
   return (
     <header className="relative z-20">
       <div className="mx-auto max-w-6xl px-4 pt-6">

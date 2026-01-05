@@ -1,19 +1,6 @@
-type OfferItem = {
-  name: string;
-  description: string;
-  priceLabel?: string;
-};
+import { OffersData } from "../../template.types";
 
-type OffersData = {
-  title: string;
-  items: OfferItem[];
-};
-
-type Props = {
-  offers: OffersData;
-};
-
-export function OffersSection({ offers }: Props) {
+export function OffersSection({ title, offers }: OffersData) {
   return (
     <section
       id="offers"
@@ -29,13 +16,13 @@ export function OffersSection({ offers }: Props) {
         {/* Title */}
         <div className="mb-12 max-w-xl">
           <h2 className="text-2xl font-semibold tracking-tight text-text">
-            {offers.title}
+            {title}
           </h2>
         </div>
 
         {/* Horizontal offer bands */}
         <div className="space-y-6">
-          {offers.items.map((offer, i) => (
+          {offers.map((offer, i) => (
             <div
               key={i}
               className="

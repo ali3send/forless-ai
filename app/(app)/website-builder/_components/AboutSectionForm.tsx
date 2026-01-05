@@ -19,6 +19,8 @@ export function AboutSectionForm({ data, setData }: AboutSectionFormProps) {
   const [err, setErr] = useState<string | null>(null);
 
   async function onUpload(file: File) {
+    console.log("file", file);
+    console.log("projectId", projectId);
     if (!projectId) return;
     setErr(null);
     setUploading(true);
@@ -26,7 +28,7 @@ export function AboutSectionForm({ data, setData }: AboutSectionFormProps) {
       const fd = new FormData();
       fd.append("projectId", projectId);
       fd.append("file", file);
-
+      console.log(fd);
       const res = await fetch("/api/storage/upload/about", {
         method: "POST",
         body: fd,

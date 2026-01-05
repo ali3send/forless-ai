@@ -33,11 +33,19 @@ export function WebsiteTemplateBasic({ data, brand }: Props) {
         hero={data.hero}
       />
 
-      <AboutSection about={data.about} />
+      <AboutSection
+        title={data.about.title}
+        body={data.about.body}
+        imageQuery={data.about.imageQuery}
+        imageUrl={data.about.imageUrl}
+      />
 
-      <FeaturesSection features={data.features} />
+      <FeaturesSection
+        title={data.features.title}
+        features={data.features.items}
+      />
 
-      <OffersSection offers={data.offers} />
+      <OffersSection title={data.offers.title} offers={data.offers.items} />
 
       <ContactSection contact={data.contact} finalCta={data.finalCta} />
 

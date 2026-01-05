@@ -48,13 +48,21 @@ export function WebsiteTemplateImmersive({ data, brand }: Props) {
 
       {/* Act 2: Story + Value */}
       <section className="relative z-0">
-        <AboutSection about={data.about} />
-        <FeaturesSection features={data.features} />
+        <AboutSection
+          title={data.about.title}
+          body={data.about.body}
+          imageQuery={data.about.imageQuery}
+          imageUrl={data.about.imageUrl}
+        />
+        <FeaturesSection
+          title={data.features.title}
+          features={data.features.items}
+        />{" "}
       </section>
 
       {/* Act 3: Offer */}
       <section className="relative">
-        <OffersSection offers={data.offers} />
+        <OffersSection title={data.offers.title} offers={data.offers.items} />
       </section>
 
       {/* Act 4: Conversion */}

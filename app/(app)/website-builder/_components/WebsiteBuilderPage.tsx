@@ -14,9 +14,18 @@ import {
   WEBSITE_TEMPLATES,
   type TemplateKey,
 } from "@/components/websiteTemplates/templates";
+import { useProjectStore } from "@/store/project.store";
+import { useEffect } from "react";
 
 export default function WebsiteBuilderPage() {
   const { projectId } = useParams<{ projectId: string }>();
+  const setProjectId = useProjectStore((s) => s.setProjectId);
+
+  useEffect(() => {
+    if (projectId) {
+      setProjectId(projectId);
+    }
+  }, [projectId, setProjectId]);
 
   const brand = useBrandStore((state) => state.brand);
   const { data, loading, saving, generating, restoring } = useWebsiteStore();

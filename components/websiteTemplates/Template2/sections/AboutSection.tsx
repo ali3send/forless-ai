@@ -1,25 +1,12 @@
-"use client";
 import Image from "next/image";
 import { useUnsplashImage } from "../../hooks/useUnsplashImage";
+import { AboutData } from "../../template.types";
 
-type AboutData = {
-  title: string;
-  body: string;
-  imageQuery: string;
-  imageUrl?: string;
-};
-
-type Props = {
-  about: AboutData;
-};
-
-export function AboutSection({ about }: Props) {
-  const unsplashImage = useUnsplashImage(about.imageQuery);
+export function AboutSection({ title, body, imageQuery, imageUrl }: AboutData) {
+  const unsplashImage = useUnsplashImage(imageQuery);
 
   const imageSrc =
-    about.imageUrl && about.imageUrl.trim() !== ""
-      ? about.imageUrl
-      : unsplashImage;
+    imageUrl && imageUrl.trim() !== "" ? imageUrl : unsplashImage;
 
   return (
     <section
@@ -46,11 +33,11 @@ export function AboutSection({ about }: Props) {
             />
 
             <h2 className="text-2xl font-semibold tracking-tight text-text">
-              {about.title}
+              {title}
             </h2>
 
             <p className="mt-5 max-w-xl text-sm leading-relaxed text-(--color-muted)">
-              {about.body}
+              {body}
             </p>
           </div>
 
@@ -66,7 +53,7 @@ export function AboutSection({ about }: Props) {
             {imageSrc ? (
               <Image
                 src={imageSrc}
-                alt={about.title}
+                alt={title}
                 width={600}
                 height={600}
                 className="h-full w-full object-cover"

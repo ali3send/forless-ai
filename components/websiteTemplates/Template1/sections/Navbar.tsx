@@ -1,16 +1,14 @@
 // components/website/sections/Navbar.tsx
-// import Link from "next/link";
 
 import BrandLogo from "@/app/(app)/brand/_components/BrandLogo";
+import { NavbarData } from "../../template.types";
 
-type Props = {
-  brandName: string;
-  offersTitle: string;
-  logoSvg: string | null;
-  primary: string;
-};
-
-export function Navbar({ brandName, offersTitle, logoSvg, primary }: Props) {
+export function Navbar({
+  brandName,
+  offersTitle,
+  logoSvg,
+  primary,
+}: NavbarData) {
   return (
     <header className="border-b border-secondary-dark">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">

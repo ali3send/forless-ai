@@ -1,24 +1,12 @@
 import Image from "next/image";
 import { useUnsplashImage } from "../../hooks/useUnsplashImage";
+import { AboutData } from "../../template.types";
 
-type AboutData = {
-  title: string;
-  body: string;
-  imageQuery: string;
-  imageUrl?: string;
-};
-
-type Props = {
-  about: AboutData;
-};
-
-export function AboutSection({ about }: Props) {
-  const unsplashImage = useUnsplashImage(about.imageQuery);
+export function AboutSection({ title, body, imageQuery, imageUrl }: AboutData) {
+  const unsplashImage = useUnsplashImage(imageQuery);
 
   const imageSrc =
-    about.imageUrl && about.imageUrl.trim() !== ""
-      ? about.imageUrl
-      : unsplashImage;
+    imageUrl && imageUrl.trim() !== "" ? imageUrl : unsplashImage;
 
   return (
     <section
@@ -35,7 +23,7 @@ export function AboutSection({ about }: Props) {
           {imageSrc && (
             <Image
               src={imageSrc}
-              alt={about.title}
+              alt={title}
               width={1400}
               height={800}
               className="h-[420px] w-full object-cover"
@@ -65,12 +53,10 @@ export function AboutSection({ about }: Props) {
                   "1px solid color-mix(in srgb, var(--color-primary) 14%, transparent)",
               }}
             >
-              <h2 className="text-2xl font-semibold text-text">
-                {about.title}
-              </h2>
+              <h2 className="text-2xl font-semibold text-text">{title}</h2>
 
               <p className="mt-4 text-sm leading-relaxed text-(--color-muted)">
-                {about.body}
+                {body}
               </p>
             </div>
           </div>

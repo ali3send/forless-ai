@@ -1,19 +1,6 @@
-type OfferItem = {
-  name: string;
-  description: string;
-  priceLabel?: string;
-};
+import { OffersData } from "../../template.types";
 
-type OffersData = {
-  title: string;
-  items: OfferItem[];
-};
-
-type Props = {
-  offers: OffersData;
-};
-
-export function OffersSection({ offers }: Props) {
+export function OffersSection({ title, offers }: OffersData) {
   return (
     <section
       id="offers"
@@ -36,13 +23,13 @@ export function OffersSection({ offers }: Props) {
             }}
           />
           <h2 className="text-2xl font-semibold tracking-tight text-text">
-            {offers.title}
+            {title}
           </h2>
         </div>
 
         {/* Offers grid */}
         <div className="mt-12 grid gap-8 md:grid-cols-3">
-          {offers.items.map((offer, i) => (
+          {offers.map((offer, i) => (
             <div
               key={i}
               className="

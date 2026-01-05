@@ -1,6 +1,6 @@
 import { WebsiteTemplateBasic } from "./Template1/WebsiteTemplateBasic";
 import { WebsiteTemplateAlt } from "./Template2/WebsiteTemplateAlt";
-import { WebsiteTemplateImmersive } from "./Template3/WebsiteTemplateBasic";
+import { WebsiteTemplateImmersive } from "./Template3/WebsiteTemplateImmersive";
 
 export const WEBSITE_TEMPLATES = {
   template1: WebsiteTemplateBasic,

@@ -1,18 +1,5 @@
-type FeatureItem = {
-  label: string;
-  description: string;
-};
-
-type FeaturesData = {
-  title: string;
-  items: FeatureItem[];
-};
-
-type Props = {
-  features: FeaturesData;
-};
-
-export function FeaturesSection({ features }: Props) {
+import { FeaturesData } from "../../template.types";
+export function FeaturesSection({ title, features }: FeaturesData) {
   return (
     <section
       className="relative"
@@ -25,13 +12,13 @@ export function FeaturesSection({ features }: Props) {
         {/* Title */}
         <div className="mb-20 max-w-xl">
           <h2 className="text-3xl font-semibold tracking-tight text-text">
-            {features.title}
+            {title}
           </h2>
         </div>
 
         {/* Vertical feature flow */}
         <div className="space-y-20">
-          {features.items.map((item, i) => (
+          {features.map((item, i) => (
             <div key={i} className="relative flex gap-6">
               {/* Index / marker */}
               <div className="flex flex-col items-center">
@@ -47,7 +34,7 @@ export function FeaturesSection({ features }: Props) {
                 </div>
 
                 {/* Line */}
-                {i !== features.items.length - 1 && (
+                {i !== features.length - 1 && (
                   <div
                     className="mt-4 w-px flex-1"
                     style={{

@@ -1,17 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useUnsplashImage } from "../../hooks/useUnsplashImage";
-
-type HeroData = {
-  headline: string;
-  subheadline: string;
-  primaryCta: string;
-  primaryCtaLink?: string;
-  secondaryCta?: string;
-  secondaryCtaLink?: string;
-  imageUrl?: string;
-  imageQuery: string;
-};
+import { HeroData } from "../../template.types";
 
 type Props = {
   brandName: string;

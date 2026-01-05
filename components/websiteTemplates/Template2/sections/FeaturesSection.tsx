@@ -1,18 +1,5 @@
-type FeatureItem = {
-  label: string;
-  description: string;
-};
-
-type FeaturesData = {
-  title: string;
-  items: FeatureItem[];
-};
-
-type Props = {
-  features: FeaturesData;
-};
-
-export function FeaturesSection({ features }: Props) {
+import { FeaturesData } from "../../template.types";
+export function FeaturesSection({ title, features }: FeaturesData) {
   return (
     <section
       className="relative border-t"
@@ -32,13 +19,13 @@ export function FeaturesSection({ features }: Props) {
             }}
           />
           <h2 className="text-2xl font-semibold tracking-tight text-text">
-            {features.title}
+            {title}
           </h2>
         </div>
 
         {/* Features grid */}
         <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {features.items.map((item, i) => (
+          {features.map((item, i) => (
             <div
               key={i}
               className="

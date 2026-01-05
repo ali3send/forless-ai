@@ -5,7 +5,6 @@ import { BrandData } from "@/lib/types/brandTypes";
 
 import { Navbar } from "./sections/Navbar";
 import { HeroSection } from "./sections/HeroSection";
-// import { AboutSection } from "./sections/AboutSection";
 import { FeaturesSection } from "./sections/FeaturesSection";
 import { OffersSection } from "./sections/OffersSection";
 import { ContactSection } from "./sections/ContactSection";
@@ -34,11 +33,18 @@ export function WebsiteTemplateAlt({
         hero={data.hero}
       />
 
-      <FeaturesSection features={data.features} />
+      <FeaturesSection
+        title={data.features.title}
+        features={data.features.items}
+      />
 
-      <AboutSection about={data.about} />
-
-      <OffersSection offers={data.offers} />
+      <AboutSection
+        title={data.about.title}
+        body={data.about.body}
+        imageQuery={data.about.imageQuery}
+        imageUrl={data.about.imageUrl}
+      />
+      <OffersSection title={data.offers.title} offers={data.offers.items} />
 
       <ContactSection contact={data.contact} finalCta={data.finalCta} />
 
