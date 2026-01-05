@@ -40,6 +40,12 @@
   --color-text-muted: #94a3b8;
 
   --font-sans: Arial, Helvetica, sans-serif;
+
+  
+    --color-accent: #ff6b10;          /* base accent */
+  --color-accent-hover: #ff812e;    /* lighter for hover */
+  --color-accent-active: #e85d00;   /* pressed / active */
+  --color-accent-soft: #ff6b10cc;   /* soft / translucent use */
 }
 @layer components {
 .input-base {
