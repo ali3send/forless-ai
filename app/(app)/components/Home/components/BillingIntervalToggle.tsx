@@ -1,6 +1,6 @@
 "use client";
 
-import { BillingInterval } from "@/app/(app)/billing/plans/_lib/types";
+import { BillingInterval } from "@/lib/stripe/price";
 
 // import type { BillingInterval } from "../_lib/types";
 
@@ -10,16 +10,24 @@ export default function BillingIntervalToggle(props: {
 }) {
   const { interval, setInterval } = props;
 
-  const base = "px-3 py-1.5 text-sm rounded-lg font-semibold transition";
+  const baseBtn =
+    "relative px-4 py-1.5 text-sm rounded-lg font-semibold transition-all";
 
   return (
-    <div className="inline-flex rounded-xl border border-secondary-fade bg-secondary-soft p-1">
+    <div
+      className="
+        inline-flex items-center gap-1
+        rounded-xl border border-secondary-fade
+        bg-white/70 backdrop-blur
+        p-1 shadow-sm
+      "
+    >
       <button
         type="button"
         onClick={() => setInterval("monthly")}
-        className={`${base} ${
+        className={`${baseBtn} ${
           interval === "monthly"
-            ? "bg-secondary-light text-secondary-dark"
+            ? "bg-accent-soft text-white"
             : "text-secondary hover:text-secondary-dark"
         }`}
       >
@@ -29,14 +37,26 @@ export default function BillingIntervalToggle(props: {
       <button
         type="button"
         onClick={() => setInterval("yearly")}
-        className={`${base} flex items-center gap-2 ${
+        className={`${baseBtn} flex items-center gap-2 ${
           interval === "yearly"
-            ? "bg-secondary-light text-secondary-dark"
+            ? "bg-accent-soft text-white"
             : "text-secondary hover:text-secondary-dark"
         }`}
       >
         Yearly
-        <span className="text-[10px] rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 text-primary">
+        <span
+          className={`
+            text-[10px] rounded-full
+            border border-primary/30
+            px-2 py-0.5
+            font-semibold
+            ${
+              interval === "monthly"
+                ? "text-primary"
+                : "bg-primary-hover text-white"
+            }
+          `}
+        >
           Save
         </span>
       </button>

@@ -3,7 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { BillingInterval } from "@/app/(app)/billing/plans/_lib/types";
-import BillingIntervalToggle from "@/app/(app)/billing/plans/_components/BillingIntervalToggle";
+import BillingIntervalToggle from "./BillingIntervalToggle";
+// import BillingIntervalToggle from "@/app/(app)/billing/plans/_components/BillingIntervalToggle";
 type Plan =
   typeof import("@/app/(app)/billing/plans/_data/plans").PLANS[number];
 

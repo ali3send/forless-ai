@@ -14,7 +14,7 @@ export function SectionHeading({
   subtitle,
 }: SectionHeadingProps) {
   return (
-    <div className="mt-10 text-center ">
+    <div className="mt-16 text-center ">
       {(badge || badgeIcon) && (
         <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary">
           {badgeIcon && (
