@@ -8,6 +8,7 @@ import { UsersToolbar } from "./users/UsersToolbar";
 import { UsersSkeleton } from "./users/UsersSkeleton";
 import { EmptyState } from "./users/EmptyState";
 import { UserCard } from "./users/UserCard";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
 export function UsersTable() {
   const [loading, setLoading] = useState(true);
@@ -34,8 +35,8 @@ export function UsersTable() {
 
       setRows(json.users ?? []);
       toast.success("Users loaded");
-    } catch (e: any) {
-      toast.error(e?.message || "Failed to load users");
+    } catch (e: unknown) {
+      toast.error(getErrorMessage(e, "Failed to load users"));
       setRows([]);
     } finally {
       toast.dismiss(t);
@@ -93,8 +94,8 @@ export function UsersTable() {
       if (!res.ok) throw new Error(json?.error || "Failed");
 
       toast.success("Role updated");
-    } catch (e: any) {
-      toast.error(e?.message || "Role update failed");
+    } catch (e: unknown) {
+      toast.error(getErrorMessage(e, "Failed to update role"));
       if (before) patchRow(userId, before);
     } finally {
       toast.dismiss(t);
@@ -201,9 +202,11 @@ export function UsersTable() {
       toast.success(suspend ? "User suspended" : "User unsuspended", {
         id: loadingId,
       });
-    } catch (e: any) {
+    } catch (e: unknown) {
       if (before) patchRow(userId, before);
-      toast.error(e?.message || "Suspension update failed", { id: loadingId });
+      toast.error(getErrorMessage(e, "Failed to suspend user"), {
+        id: loadingId,
+      });
     }
   }
 
@@ -230,8 +233,8 @@ export function UsersTable() {
             if (!res.ok) throw new Error(json?.error || "Failed");
 
             toast.success("User deleted successfully", { id: t });
-          } catch (e: any) {
-            toast.error(e?.message || "Delete failed", { id: t });
+          } catch (e: unknown) {
+            toast.error(getErrorMessage(e, "Failed to delete user"), { id: t });
             setRows(snapshot);
           }
         },

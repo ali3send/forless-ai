@@ -13,6 +13,7 @@ import PaidPlanCard from "./_components/PaidPlanCard";
 import { PLANS, FREE_FEATURES } from "./_data/plans";
 import type { BillingInterval, PaidPlan, Plan, Profile } from "./_lib/types";
 import { PROFILE_CACHE_KEY } from "./_lib/utils";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
 export default function BillingPlansPage() {
   const router = useRouter();
@@ -82,9 +83,9 @@ export default function BillingPlansPage() {
             JSON.stringify(nextProfile)
           );
         } catch {}
-      } catch (e: any) {
+      } catch (e: unknown) {
         if (!alive) return;
-        toast.error(e?.message ?? "Failed to load billing info");
+        toast.error(getErrorMessage(e, "Failed to load profile"));
       } finally {
         if (alive) setLoading(false);
       }
@@ -144,9 +145,9 @@ export default function BillingPlansPage() {
       toast.dismiss(t);
       toast.success("Opening Stripe checkout…");
       router.push(json.url);
-    } catch (e: any) {
+    } catch (e: unknown) {
       toast.dismiss(t);
-      toast.error(e?.message ?? "Checkout failed");
+      toast.error(getErrorMessage(e, "Could not start checkout"));
     }
   }
 
@@ -169,9 +170,9 @@ export default function BillingPlansPage() {
       toast.dismiss(t);
       toast.success("Redirecting…");
       router.push(json.url);
-    } catch (e: any) {
+    } catch (e: unknown) {
       toast.dismiss(t);
-      toast.error(e?.message ?? "Could not open billing portal");
+      toast.error(getErrorMessage(e, "Could not open billing portal"));
     }
   }
 

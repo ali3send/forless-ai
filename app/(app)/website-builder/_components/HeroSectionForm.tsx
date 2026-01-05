@@ -6,6 +6,7 @@ import { useState } from "react";
 import { WebsiteData } from "@/lib/types/websiteTypes";
 import { StateUpdater } from "@/lib/types/state";
 import { useProjectStore } from "@/store/project.store";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
 export type HeroSectionFormProps = {
   data: WebsiteData;
@@ -43,8 +44,8 @@ export function HeroSectionForm({ data, setData }: HeroSectionFormProps) {
         ...d,
         hero: { ...d.hero, imagePath: json.path, imageUrl: bustedUrl },
       }));
-    } catch (e: any) {
-      setErr(e?.message ?? "Upload failed");
+    } catch (e: unknown) {
+      setErr(getErrorMessage(e, "Upload failed"));
     } finally {
       setUploading(false);
     }
@@ -70,8 +71,8 @@ export function HeroSectionForm({ data, setData }: HeroSectionFormProps) {
 
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json.error || "Remove failed");
-    } catch (e: any) {
-      setErr(e?.message ?? "Failed to remove image");
+    } catch (e: unknown) {
+      setErr(getErrorMessage(e, "Failed to remove image"));
     } finally {
       setRemoving(false);
     }

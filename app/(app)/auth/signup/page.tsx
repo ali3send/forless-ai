@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -42,9 +43,9 @@ export default function SignupPage() {
 
       toast.dismiss(t);
       toast.success("Account created! Please check your email to verify.");
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.dismiss(t);
-      toast.error(err?.message ?? "Signup failed");
+      toast.error(getErrorMessage(err, "Failed to create account"));
     } finally {
       setLoading(false);
     }

@@ -1,13 +1,6 @@
 export default function HomePage() {
   return (
     <main className="relative overflow-hidden text-black">
-      {/* Background */}
-      {/* <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-24 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-primary-soft/60 blur-[110px]" />
-        <div className="absolute -bottom-32 right-[-120px] h-[520px] w-[520px] rounded-full bg-primary-soft/40 blur-[120px]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(1,72,224,0.08),transparent_45%),radial-gradient(circle_at_80%_30%,rgba(254,107,14,0.07),transparent_45%)]" />
-      </div> */}
-
       <section className="relative mx-auto max-w-6xl px-4 py-14 sm:py-16">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1.25fr),minmax(0,1fr)] lg:items-center">
           {/* Left */}
@@ -302,7 +295,7 @@ export default function HomePage() {
                   {/* FIX 8: progress bg-secondary -> bg-secondary-hover */}
                   <div className="pt-2">
                     <div className="h-2 w-full rounded-full bg-secondary-hover">
-                      <div className="h-2 w-[76%] rounded-full bg-gradient-to-r from-primary to-primary-light" />
+                      <div className="h-2 w-[76%] rounded-full bg-linear-to-r from-primary to-primary-light" />
                     </div>
                     <div className="mt-2 flex items-center justify-between text-[11px] text-secondary">
                       <span>Generating clean components</span>

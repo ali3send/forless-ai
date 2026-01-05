@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/providers";
 import { Eye, EyeOff } from "lucide-react";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
@@ -22,8 +23,8 @@ export default function LoginPage() {
     try {
       await login(email, password); // 🔑 provider login
       window.location.href = "/dashboard"; // hard navigation
-    } catch (err: any) {
-      setErrorMsg(err.message || "Failed to login");
+    } catch (e: unknown) {
+      setErrorMsg(getErrorMessage(e, "Failed to log in"));
       setLoading(false);
     }
   };

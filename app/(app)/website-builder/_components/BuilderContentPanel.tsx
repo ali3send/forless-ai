@@ -19,11 +19,6 @@ type Props = {
 export function BuilderContentPanel({ onGenerate, onRestore }: Props) {
   const { data, setData, section, setSection, generating, restoring } =
     useWebsiteStore();
-  // const projectId = useProjectStore((s) => s.projectId);
-
-  // const { handleGenerateWebsite, handleRestoreSection } =
-  //   useWebsiteBuilder(projectId);
-
   const currentIndex = builderSections.findIndex((s) => s.id === section);
   const isFirst = currentIndex <= 0;
   const isLast = currentIndex === builderSections.length - 1;

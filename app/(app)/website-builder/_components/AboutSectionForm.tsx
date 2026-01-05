@@ -5,6 +5,7 @@ import Image from "next/image";
 import { WebsiteData } from "@/lib/types/websiteTypes";
 import { StateUpdater } from "@/lib/types/state";
 import { useProjectStore } from "@/store/project.store";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
 export type AboutSectionFormProps = {
   data: WebsiteData;
@@ -40,8 +41,8 @@ export function AboutSectionForm({ data, setData }: AboutSectionFormProps) {
         ...d,
         about: { ...d.about, imagePath: json.path, imageUrl: bustedUrl },
       }));
-    } catch (e: any) {
-      setErr(e?.message ?? "Upload failed");
+    } catch (e: unknown) {
+      setErr(getErrorMessage(e, "Upload failed"));
     } finally {
       setUploading(false);
     }
@@ -65,8 +66,8 @@ export function AboutSectionForm({ data, setData }: AboutSectionFormProps) {
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json.error || "Remove failed");
-    } catch (e: any) {
-      setErr(e?.message ?? "Failed to remove image");
+    } catch (e: unknown) {
+      setErr(getErrorMessage(e, "Failed to remove image"));
     } finally {
       setRemoving(false);
     }
