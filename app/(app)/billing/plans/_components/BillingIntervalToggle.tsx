@@ -1,7 +1,5 @@
-// app/(app)/billing/plans/_components/BillingIntervalToggle.tsx
 "use client";
 
-import { cx } from "../_lib/utils";
 import type { BillingInterval } from "../_lib/types";
 
 export default function BillingIntervalToggle(props: {
@@ -10,17 +8,26 @@ export default function BillingIntervalToggle(props: {
 }) {
   const { interval, setInterval } = props;
 
+  const baseBtn =
+    "relative px-4 py-1.5 text-sm rounded-lg font-semibold transition-all";
+
   return (
-    <div className="inline-flex rounded-xl border border-secondary-fade bg-secondary-soft p-1">
+    <div
+      className="
+        inline-flex items-center gap-1
+        rounded-xl border border-secondary-fade
+        bg-white/70 backdrop-blur
+        p-1 shadow-sm
+      "
+    >
       <button
         type="button"
         onClick={() => setInterval("monthly")}
-        className={cx(
-          "px-3 py-1.5 text-sm rounded-lg font-semibold transition",
+        className={`${baseBtn} ${
           interval === "monthly"
-            ? "bg-secondary-light text-secondary-dark"
+            ? "bg-secondary-soft text-secondary-dark shadow"
             : "text-secondary hover:text-secondary-dark"
-        )}
+        }`}
       >
         Monthly
       </button>
@@ -28,15 +35,23 @@ export default function BillingIntervalToggle(props: {
       <button
         type="button"
         onClick={() => setInterval("yearly")}
-        className={cx(
-          "px-3 py-1.5 text-sm rounded-lg flex items-center gap-2 font-semibold transition",
+        className={`${baseBtn} flex items-center gap-2 ${
           interval === "yearly"
-            ? "bg-secondary-light text-secondary-dark"
+            ? "bg-secondary-soft text-secondary-dark shadow"
             : "text-secondary hover:text-secondary-dark"
-        )}
+        }`}
       >
         Yearly
-        <span className="text-[10px] rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 text-primary">
+        <span
+          className="
+            text-[10px] rounded-full
+            border border-primary/30
+            bg-primary/10
+            px-2 py-0.5
+            text-primary
+            font-semibold
+          "
+        >
           Save
         </span>
       </button>

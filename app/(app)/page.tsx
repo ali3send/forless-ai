@@ -2,6 +2,7 @@ import LandingSection from "./components/Home/sections/LandingSection";
 import FeaturesSection from "./components/Home/sections/FeaturesSection";
 import { HowItWorksSection } from "./components/Home/sections/StepCardSection";
 import TemplateCategorySection from "./components/Home/sections/TemplateCategorySection";
+import { HomePricingSection } from "./components/Home/sections/PricingSection";
 
 export default function HomePage() {
   return (
@@ -15,6 +16,7 @@ export default function HomePage() {
           <div className="relative">
             <div className="pointer-events-none absolute -inset-6 rounded-3xl bg-linear-to-r from-primary/10 via-transparent to-primary-light/10 blur-2xl" />
             <TemplateCategorySection />
+            <HomePricingSection />
             <HowItWorksSection />
           </div>
         </div>
