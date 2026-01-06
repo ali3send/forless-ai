@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { apiCreateProject } from "@/lib/api/project";
-import { toast } from "sonner";
+import { uiToast } from "@/lib/utils/uiToast";
 
 export default function NewProjectModal() {
   const router = useRouter();
@@ -21,7 +21,7 @@ export default function NewProjectModal() {
     const trimmedIdea = projectIdea.trim();
 
     if (!trimmedName) {
-      toast.error("Please enter a project name.");
+      uiToast.error("Please enter a project name.");
       return;
     }
 
@@ -34,7 +34,7 @@ export default function NewProjectModal() {
         description: trimmedIdea || trimmedName,
       });
 
-      toast.success("Project created!");
+      uiToast.success("Project created!");
 
       // Reset UI
       setModalOpen(false);
@@ -45,7 +45,7 @@ export default function NewProjectModal() {
       router.push(`/dashboard/projects/${result.id}`);
     } catch (err) {
       console.error(err);
-      toast.error(
+      uiToast.error(
         err instanceof Error ? err.message : "Failed to create project"
       );
     } finally {

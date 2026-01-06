@@ -27,9 +27,10 @@ import {
   apiSaveGeneratedBrands,
 } from "@/lib/api/brand-options";
 
-import { toast } from "sonner";
 import { apiGenerateWebsiteWithBrand, apiGetWebsite } from "@/lib/api/website";
 import { BrandData } from "@/lib/types/brandTypes";
+import { uiToast } from "@/lib/utils/uiToast";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
 interface Props {
   projectId: string;
@@ -79,7 +80,7 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
 
   async function handleGenerate() {
     if (!idea.trim()) {
-      toast.warning("Please enter a business idea to generate a brand.");
+      uiToast.warning("Please enter a business idea to generate a brand.");
       return;
     }
 
@@ -111,7 +112,7 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
       await apiSaveGeneratedBrands(projectId, options);
     } catch (err) {
       console.error(err);
-      toast.error("Failed to generate brand. " + (err as Error).message);
+      uiToast.error("Failed to generate brand. " + (err as Error).message);
     } finally {
       setLoading(false);
     }
@@ -150,8 +151,7 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
 
       router.push(`/website-builder/${projectId}`);
     } catch (err) {
-      console.error(err);
-      toast.error("Failed to use brand. " + (err as Error).message);
+      uiToast.error(getErrorMessage(err, "Failed to use brand"));
     }
   }
 

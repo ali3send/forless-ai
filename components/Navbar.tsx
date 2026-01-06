@@ -2,19 +2,14 @@
 "use client";
 
 import Link from "next/link";
-// import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/providers";
-// import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
+import { uiToast } from "@/lib/utils/uiToast";
 
 export function Navbar() {
-  // const router = useRouter();
   const { user, isAdmin, logout } = useAuth();
-  // const [supabase] = useState(() => createBrowserSupabaseClient());
-
   const [billingOpen, setBillingOpen] = useState(false);
   const billingRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -39,27 +34,28 @@ export function Navbar() {
   }, [billingOpen]);
 
   const handleLogout = () => {
-    toast.error("Are you sure you want to logout?", {
-      action: {
-        label: "Logout",
-        onClick: async () => {
-          const t = toast.loading("Logging out...");
-          try {
-            await logout(); // 🔑 provider-controlled logout
-            window.location.href = "/auth/login"; // hard navigation
-          } catch {
-            toast.error("Failed to log out.");
-          } finally {
-            toast.dismiss(t);
-          }
-        },
+    uiToast.confirm({
+      title: "Are you sure you want to logout?",
+      confirmLabel: "Logout",
+      destructive: true,
+
+      onConfirm: async () => {
+        const t = uiToast.loading("Logging out...");
+
+        try {
+          await logout(); // 🔑 provider-controlled logout
+          window.location.href = "/auth/login"; // hard navigation
+        } catch (e: unknown) {
+          uiToast.error(e, "Failed to log out.");
+        } finally {
+          uiToast.dismiss(t);
+        }
       },
-      cancel: "Cancel",
     });
   };
 
   async function openBillingPortal() {
-    const t = toast.loading("Opening billing portal…");
+    const t = uiToast.loading("Opening billing portal…");
     try {
       const res = await fetch("/api/stripe/portal", {
         method: "POST",
@@ -75,12 +71,12 @@ export function Navbar() {
         throw new Error(json?.error || "Failed to open billing portal");
 
       if (!json?.url) throw new Error("Missing portal URL");
-      toast.dismiss(t);
-      toast.success("Redirecting…");
+      uiToast.dismiss(t);
+      uiToast.success("Redirecting…");
       window.location.href = json.url;
     } catch (e: unknown) {
-      toast.dismiss(t);
-      toast.error(getErrorMessage(e, "Could not open billing portal"));
+      uiToast.dismiss(t);
+      uiToast.error(getErrorMessage(e, "Could not open billing portal"));
     }
   }
 

@@ -24,14 +24,11 @@ export default function RootLayout({
           toastOptions={{
             classNames: {
               /* destructive / danger */
-              actionButton:
-                "!bg-primary-active !text-white hover:!bg-primary-dark",
-
+              actionButton: "!bg-red-600 !text-white hover:!bg-red-600/90 ",
               /* cancel / neutral */
-              cancelButton:
-                "!bg-secondary-hover !text-text hover:!bg-secondary-active",
-
-              toast: "!bg-bg-card !border !border-secondary-fade !text-text",
+              cancelButton: "!bg-secondary !text-text hover:!bg-secondary/90",
+              toast:
+                "!bg-secondary-darker/90 !border !border-secondary-fade !text-text",
               title: "!text-text",
               description: "!text-text-muted",
             },

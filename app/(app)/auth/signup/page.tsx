@@ -3,9 +3,8 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
-import { toast } from "sonner";
-
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
+import { uiToast } from "@/lib/utils/uiToast";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -23,12 +22,12 @@ export default function SignupPage() {
     if (loading) return;
 
     if (password !== confirmPassword) {
-      toast.error("Passwords do not match");
+      uiToast.error("Passwords do not match");
       return;
     }
 
     setLoading(true);
-    const t = toast.loading("Creating your account…");
+    const t = uiToast.loading("Creating your account…");
 
     try {
       const { error } = await supabase.auth.signUp({
@@ -41,11 +40,11 @@ export default function SignupPage() {
 
       if (error) throw error;
 
-      toast.dismiss(t);
-      toast.success("Account created! Please check your email to verify.");
+      uiToast.dismiss(t);
+      uiToast.success("Account created! Please check your email to verify.");
     } catch (err: unknown) {
-      toast.dismiss(t);
-      toast.error(getErrorMessage(err, "Failed to create account"));
+      uiToast.dismiss(t);
+      uiToast.error(getErrorMessage(err, "Failed to create account"));
     } finally {
       setLoading(false);
     }

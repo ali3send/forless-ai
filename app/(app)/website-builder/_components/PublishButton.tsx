@@ -2,8 +2,8 @@
 "use client";
 
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
+import { uiToast } from "@/lib/utils/uiToast";
 import { useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
 
 type Props = {
   projectId: string;
@@ -69,11 +69,11 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
   async function preview(open = true) {
     const cleanSlug = slugify(slug);
     if (!cleanSlug) {
-      toast.error("Please enter a subdomain (slug) to preview.");
+      uiToast.error("Please enter a subdomain (slug) to preview.");
       return;
     }
 
-    const t = toast.loading("Preparing preview…");
+    const t = uiToast.loading("Preparing preview…");
     try {
       const res = await fetch(`/api/projects/${projectId}/slug`, {
         method: "POST",
@@ -90,10 +90,12 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
       }`;
       setPreviewUrl(url);
 
-      toast.success("Preview ready", { id: t });
+      uiToast.success("Preview ready");
       if (open) window.open(url, "_blank", "noreferrer");
     } catch (e: unknown) {
-      toast.error(getErrorMessage(e, "Failed to prepare preview"), { id: t });
+      uiToast.error(getErrorMessage(e, "Failed to prepare preview"));
+    } finally {
+      uiToast.dismiss(t);
     }
   }
 
@@ -102,12 +104,12 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
 
     const cleanSlug = slugify(slug);
     if (!cleanSlug) {
-      toast.error("Please enter a subdomain (slug).");
+      uiToast.error("Please enter a subdomain (slug).");
       return;
     }
 
     setLoading(true);
-    const t = toast.loading("Publishing...");
+    const t = uiToast.loading("Publishing...");
 
     try {
       const res = await fetch(`/api/projects/${projectId}/publish`, {
@@ -117,10 +119,10 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
       });
 
       const data = await res.json().catch(() => ({} as unknown));
-      toast.dismiss(t);
+      uiToast.dismiss(t);
 
       if (!res.ok) {
-        toast.error(data?.error || "Publish failed");
+        uiToast.error(data?.error || "Publish failed");
         return;
       }
 
@@ -131,10 +133,10 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
       if (data?.published_url) setPublishedUrl(data.published_url);
       if (data?.slug) setSlug(data.slug);
 
-      toast.success("Published successfully!");
+      uiToast.success("Published successfully!");
     } catch {
-      toast.dismiss(t);
-      toast.error("Publish failed");
+      uiToast.dismiss(t);
+      uiToast.error("Publish failed");
     } finally {
       setLoading(false);
     }

@@ -6,7 +6,7 @@ import { WebsiteData } from "@/lib/types/websiteTypes";
 import { StateUpdater } from "@/lib/types/state";
 import { useProjectStore } from "@/store/project.store";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
-import { toast } from "sonner";
+import { uiToast } from "@/lib/utils/uiToast";
 
 export type AboutSectionFormProps = {
   data: WebsiteData;
@@ -37,7 +37,7 @@ export function AboutSectionForm({ data, setData }: AboutSectionFormProps) {
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) {
-        toast.error(getErrorMessage(json.error, "Upload failed"));
+        uiToast.error(getErrorMessage(json.error, "Upload failed"));
         throw new Error(json.error || "Upload failed");
       }
 

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
 
 import type { UserRow } from "./users/types";
 import { UsersToolbar } from "./users/UsersToolbar";
@@ -9,6 +8,7 @@ import { UsersSkeleton } from "./users/UsersSkeleton";
 import { EmptyState } from "./users/EmptyState";
 import { UserCard } from "./users/UserCard";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
+import { uiToast } from "@/lib/utils/uiToast";
 
 export function UsersTable() {
   const [loading, setLoading] = useState(true);
@@ -21,7 +21,7 @@ export function UsersTable() {
 
   async function fetchUsers() {
     setLoading(true);
-    const t = toast.loading("Loading users…");
+    const t = uiToast.loading("Loading users…");
 
     try {
       const res = await fetch("/api/admin/users", {
@@ -34,12 +34,12 @@ export function UsersTable() {
       if (!res.ok) throw new Error(json?.error || "Failed to load");
 
       setRows(json.users ?? []);
-      toast.success("Users loaded");
+      uiToast.success("Users loaded");
     } catch (e: unknown) {
-      toast.error(getErrorMessage(e, "Failed to load users"));
+      uiToast.error(getErrorMessage(e, "Failed to load users"));
       setRows([]);
     } finally {
-      toast.dismiss(t);
+      uiToast.dismiss(t);
       setLoading(false);
     }
   }
@@ -78,7 +78,7 @@ export function UsersTable() {
   async function setRole(userId: string, role: "user" | "admin") {
     setMenuOpen(null);
 
-    const t = toast.loading("Updating role…");
+    const t = uiToast.loading("Updating role…");
     const before = rows.find((r) => r.id === userId);
 
     patchRow(userId, { role });
@@ -93,12 +93,12 @@ export function UsersTable() {
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json?.error || "Failed");
 
-      toast.success("Role updated");
+      uiToast.success("Role updated");
     } catch (e: unknown) {
-      toast.error(getErrorMessage(e, "Failed to update role"));
+      uiToast.error(getErrorMessage(e, "Failed to update role"));
       if (before) patchRow(userId, before);
     } finally {
-      toast.dismiss(t);
+      uiToast.dismiss(t);
     }
   }
 
@@ -109,80 +109,58 @@ export function UsersTable() {
   ) {
     setMenuOpen(null);
 
-    const title = suspend ? "Suspend this user?" : "Unsuspend this user?";
-    const confirmLabel = suspend ? "Suspend" : "Unsuspend";
-
     if (!suspend) {
-      toast.error(title, {
+      uiToast.confirm({
+        title: "Unsuspend this user?",
         description: `${
           email ?? userId
         }\nThis will restore access immediately.`,
-        action: {
-          label: confirmLabel,
-          onClick: async () => {
-            const t = toast.loading("Unsuspending user...");
-            await performSuspend(userId, false, undefined, t);
-          },
+        confirmLabel: "Unsuspend",
+        onConfirm: async () => {
+          const t = uiToast.loading("Unsuspending user...");
+          try {
+            await performSuspend(userId, false);
+            uiToast.success("User unsuspended");
+          } catch (e: unknown) {
+            uiToast.error(e, "Failed to unsuspend user");
+          } finally {
+            uiToast.dismiss(t);
+          }
         },
-        cancel: "Cancel",
       });
+
       return;
     }
 
-    //  use local variable + state inside render closure
-    let currentReason = "";
+    uiToast.confirmWithInput({
+      title: "Suspend this user?",
+      description: "Add a suspension reason below",
+      confirmLabel: "Suspend",
+      destructive: true,
+      placeholder: "Reason (optional)",
 
-    const id = toast.error(title, {
-      description: (
-        <div className="space-y-2">
-          <p className="text-sm text-muted-foreground">
-            Add a suspension reason below
-          </p>
-
-          <input
-            autoFocus
-            className="w-full rounded-md border px-3 py-2 text-sm outline-none"
-            placeholder="Reason (optional)"
-            onChange={(e) => {
-              currentReason = e.target.value;
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                const reason = currentReason.trim() || undefined;
-                toast.dismiss(id);
-                const t = toast.loading("Suspending user...");
-                performSuspend(userId, true, reason, t);
-              }
-            }}
-          />
-        </div>
-      ),
-      action: {
-        label: confirmLabel,
-        onClick: () => {
-          const reason = currentReason.trim() || undefined;
-          toast.dismiss(id);
-          const t = toast.loading("Suspending user...");
-          performSuspend(userId, true, reason, t);
-        },
+      onConfirm: async (reason?: string) => {
+        const t = uiToast.loading("Suspending user...");
+        try {
+          await performSuspend(userId, true, reason);
+          uiToast.success("User suspended successfully");
+        } catch (e: unknown) {
+          uiToast.error(e, "Failed to suspend user");
+        } finally {
+          uiToast.dismiss(t);
+        }
       },
-      cancel: "Cancel",
-      duration: Infinity,
     });
   }
 
   async function performSuspend(
     userId: string,
     suspend: boolean,
-    reason?: string,
-    loadingToastId?: string | number
+    reason?: string
   ) {
-    const loadingId =
-      loadingToastId ??
-      toast.loading(suspend ? "Suspending user..." : "Unsuspending user...");
-
     const before = rows.find((r) => r.id === userId);
 
+    // optimistic update
     patchRow(userId, {
       is_suspended: suspend,
       suspended_at: suspend ? new Date().toISOString() : null,
@@ -196,54 +174,46 @@ export function UsersTable() {
         body: JSON.stringify({ userId, suspend, reason }),
       });
 
-      const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(json?.error || "Failed");
-
-      toast.success(suspend ? "User suspended" : "User unsuspended", {
-        id: loadingId,
-      });
+      const json: unknown = await res.json().catch(() => ({}));
+      if (!res.ok) throw json;
     } catch (e: unknown) {
+      // rollback
       if (before) patchRow(userId, before);
-      toast.error(getErrorMessage(e, "Failed to suspend user"), {
-        id: loadingId,
-      });
+      throw e; // 👈 let caller decide how to show error
     }
   }
 
   async function deleteUser(userId: string) {
     setMenuOpen(null);
 
-    toast.error("Are you sure you want to delete this user?", {
-      action: {
-        label: "Delete",
-        onClick: async () => {
-          const t = toast.loading("Deleting user...");
+    uiToast.confirm({
+      title: "Are you sure you want to delete this user?",
+      confirmLabel: "Delete",
+      destructive: true,
 
-          const snapshot = rows;
-          setRows((prev) => prev.filter((r) => r.id !== userId));
+      onConfirm: async () => {
+        const t = uiToast.loading("Deleting user...");
 
-          try {
-            const res = await fetch("/api/admin/users/delete", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ userId }),
-            });
+        const snapshot = rows;
+        setRows((prev) => prev.filter((r) => r.id !== userId));
 
-            const json = await res.json().catch(() => ({}));
-            if (!res.ok) throw new Error(json?.error || "Failed");
+        try {
+          const res = await fetch("/api/admin/users/delete", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId }),
+          });
 
-            toast.success("User deleted successfully", { id: t });
-          } catch (e: unknown) {
-            toast.error(getErrorMessage(e, "Failed to delete user"), { id: t });
-            setRows(snapshot);
-          }
-        },
-      },
-      cancel: "Cancel",
-      classNames: {
-        actionButton: "bg-red-600 text-white hover:bg-red-700",
-        cancelButton:
-          "bg-secondary-active text-secondary-fade hover:bg-secondary-hover",
+          const json: unknown = await res.json().catch(() => ({}));
+          if (!res.ok) throw json;
+
+          uiToast.success("User deleted successfully");
+        } catch (e: unknown) {
+          uiToast.error(e, "Failed to delete user");
+          setRows(snapshot);
+        } finally {
+          uiToast.dismiss(t);
+        }
       },
     });
   }

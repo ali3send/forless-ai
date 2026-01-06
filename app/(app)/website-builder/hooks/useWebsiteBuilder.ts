@@ -2,7 +2,6 @@
 "use client";
 
 import { useEffect, useCallback } from "react";
-import { toast } from "sonner";
 
 import { WebsiteData, getDefaultWebsiteData } from "@/lib/types/websiteTypes";
 import {
@@ -24,6 +23,7 @@ import { useBrandStore } from "@/store/brand.store";
 import { useWebsiteStore } from "@/store/website.store";
 import { BrandData } from "@/lib/types/brandTypes";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
+import { uiToast } from "@/lib/utils/uiToast";
 
 export function useWebsiteBuilder(projectId: string | null) {
   /* ------------------ stores ------------------ */
@@ -106,7 +106,7 @@ export function useWebsiteBuilder(projectId: string | null) {
 
   const handleSave = useCallback(async () => {
     if (!projectId) {
-      toast.error("Missing projectId");
+      uiToast.error("Missing projectId");
       return;
     }
 
@@ -117,9 +117,9 @@ export function useWebsiteBuilder(projectId: string | null) {
         await apiPatchProjectBrand(projectId, brand);
       }
       await apiSaveWebsite(projectId, data);
-      toast.success("Website saved");
+      uiToast.success("Website saved");
     } catch (err) {
-      toast.error(getErrorMessage(err, "Failed to save website"));
+      uiToast.error(getErrorMessage(err, "Failed to save website"));
     } finally {
       setSaving(false);
     }
@@ -127,25 +127,24 @@ export function useWebsiteBuilder(projectId: string | null) {
 
   const handleGenerateWebsite = useCallback(async () => {
     if (!projectId) {
-      toast.error("Missing projectId");
+      uiToast.error("Missing projectId");
       return;
     }
 
     if (!brand) {
-      toast.error("Please set brand first");
+      uiToast.error("Please set brand first");
       return;
     }
 
     const dataSection = SECTION_TO_DATA_KEY[section];
-    const t = toast.loading("Regenerating section…");
 
     setGenerating(true);
+    const loadingId = uiToast.loading("Regenerating section…");
 
     try {
       const idea =
         data.brandName?.trim() || brand.name?.trim() || "A modern business";
 
-      // const prevSectionData = (data as any)[dataSection];
       const prevSectionData: WebsiteData[typeof dataSection] =
         data[dataSection];
 
@@ -167,10 +166,11 @@ export function useWebsiteBuilder(projectId: string | null) {
 
       await apiSaveWebsite(projectId, merged);
 
-      toast.success("Section regenerated", { id: t });
-    } catch (err) {
-      toast.error(`Regeneration failed + ${err}`, { id: t });
+      uiToast.success("Section regenerated successfully");
+    } catch (err: unknown) {
+      uiToast.error(err, "Failed to regenerate section");
     } finally {
+      uiToast.dismiss(loadingId);
       setGenerating(false);
     }
   }, [projectId, brand, section, data, setData, setGenerating]);
@@ -179,9 +179,9 @@ export function useWebsiteBuilder(projectId: string | null) {
     if (!projectId) return;
 
     const dataSection = SECTION_TO_DATA_KEY[section];
-    const t = toast.loading("Restoring section…");
 
     setRestoring(true);
+    uiToast.loading("Restoring section…");
 
     try {
       const res = await apiRestoreSection({
@@ -197,9 +197,9 @@ export function useWebsiteBuilder(projectId: string | null) {
       setData(merged);
       await apiSaveWebsite(projectId, merged);
 
-      toast.success("Section restored", { id: t });
+      uiToast.success("Section restored successfully");
     } catch (err) {
-      toast.error(getErrorMessage(err, "Failed to restore section"), { id: t });
+      uiToast.error(getErrorMessage(err, "Failed to restore section"));
     } finally {
       setRestoring(false);
     }

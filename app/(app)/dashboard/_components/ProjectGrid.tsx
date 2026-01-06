@@ -4,8 +4,8 @@ import Link from "next/link";
 import type { ProjectRow } from "../types";
 import Image from "next/image";
 import { Trash2 } from "lucide-react";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { uiToast } from "@/lib/utils/uiToast";
 
 export default function ProjectGrid({
   projects,
@@ -65,33 +65,32 @@ function ProjectCard({ project }: { project: ProjectRow }) {
     e.preventDefault();
     e.stopPropagation();
 
-    toast.error(` Are you sure you want to delete "${name}"?`, {
-      // description: "This action cannot be undone.",
-      action: {
-        label: "Delete",
-        onClick: async () => {
-          const t = toast.loading("Deleting project...");
+    uiToast.confirm({
+      title: `Are you sure you want to delete "${name}"?`,
+      confirmLabel: "Delete",
+      destructive: true,
 
-          try {
-            const res = await fetch(`/api/projects/${project.id}`, {
-              method: "DELETE",
-            });
+      onConfirm: async () => {
+        const t = uiToast.loading("Deleting project...");
 
-            if (!res.ok) {
-              toast.error("Failed to delete project.");
-              return;
-            }
+        try {
+          const res = await fetch(`/api/projects/${project.id}`, {
+            method: "DELETE",
+          });
 
-            toast.success("Project deleted.");
-            router.refresh();
-          } catch {
-            toast.error("Something went wrong.");
-          } finally {
-            toast.dismiss(t);
+          if (!res.ok) {
+            uiToast.error("Failed to delete project.");
+            throw new Error("Failed to delete project.");
           }
-        },
+
+          uiToast.success("Project deleted.");
+          router.refresh();
+        } catch (e: unknown) {
+          uiToast.error(e, "Something went wrong.");
+        } finally {
+          uiToast.dismiss(t);
+        }
       },
-      cancel: "Cancel",
     });
   };
 

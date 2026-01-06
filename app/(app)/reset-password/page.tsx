@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
-import { toast } from "sonner";
+import { uiToast } from "@/lib/utils/uiToast";
 
 export default function ResetPasswordRequestPage() {
   const [email, setEmail] = useState("");
@@ -14,7 +14,7 @@ export default function ResetPasswordRequestPage() {
     if (loading) return;
 
     setLoading(true);
-    const t = toast.loading("Sending reset link...");
+    const t = uiToast.loading("Sending reset link...");
 
     try {
       const redirectTo =
@@ -26,20 +26,20 @@ export default function ResetPasswordRequestPage() {
         redirectTo,
       });
 
-      toast.dismiss(t);
+      uiToast.dismiss(t);
 
       if (error) {
-        toast.error(error.message || "Failed to send reset link.");
+        uiToast.error(error.message || "Failed to send reset link.");
         return;
       }
 
-      toast.success("Reset link sent. Please check your email to continue.");
+      uiToast.success("Reset link sent. Please check your email to continue.");
 
       setEmail("");
     } catch (err) {
       console.error(err);
-      toast.dismiss(t);
-      toast.error("Something went wrong. Please try again.");
+      uiToast.dismiss(t);
+      uiToast.error("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }

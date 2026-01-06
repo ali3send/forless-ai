@@ -1,5 +1,7 @@
 // import type { PaidPlan } from "../_lib/types";
 
+import { PaidPlan } from "@/app/(app)/billing/plans/_lib/types";
+
 export const PLANS: Array<{
   key: PaidPlan;
   name: string;
