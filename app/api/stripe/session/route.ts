@@ -1,6 +1,7 @@
 // app/api/stripe/session/route.ts
 import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe/server";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -26,9 +27,9 @@ export async function GET(req: Request) {
       customer: session.customer ?? null,
       mode: session.mode,
     });
-  } catch (e: any) {
+  } catch (e: unknown) {
     return NextResponse.json(
-      { ok: false, error: e?.message ?? "Failed" },
+      { ok: false, error: getErrorMessage(e, "Failed to retrieve session") },
       { status: 500 }
     );
   }

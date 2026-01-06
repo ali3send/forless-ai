@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
 export const runtime = "nodejs";
 
@@ -27,9 +28,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: error.message }, { status: 400 });
 
     return NextResponse.json({ ok: true });
-  } catch (e: any) {
+  } catch (e: unknown) {
     return NextResponse.json(
-      { error: e?.message ?? "Remove failed" },
+      { error: getErrorMessage(e, "Remove failed") },
       { status: 500 }
     );
   }

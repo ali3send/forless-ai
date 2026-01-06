@@ -10,6 +10,7 @@ import {
   handleSubscriptionEvent,
 } from "./handlers";
 import { serverEnv } from "@/lib/config/env.server";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
 export const runtime = "nodejs";
 
@@ -42,9 +43,9 @@ export async function POST(req: Request) {
   try {
     const raw = await getRawBody(req);
     event = stripe.webhooks.constructEvent(raw, sig, secret);
-  } catch (err: any) {
+  } catch (err: unknown) {
     return NextResponse.json(
-      { error: `Webhook signature verification failed: ${err.message}` },
+      { error: getErrorMessage(err, "Failed to construct event") },
       { status: 400 }
     );
   }
@@ -88,10 +89,10 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ received: true });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("❌ webhook error", err);
     return NextResponse.json(
-      { error: err?.message ?? "Webhook handler failed" },
+      { error: getErrorMessage(err, "Failed to handle event") },
       { status: 500 }
     );
   }

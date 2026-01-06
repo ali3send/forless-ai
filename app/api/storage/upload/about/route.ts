@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
 export const runtime = "nodejs";
 
@@ -70,9 +71,9 @@ export async function POST(req: Request) {
       path,
       publicUrl: pub.publicUrl,
     });
-  } catch (e: any) {
+  } catch (e: unknown) {
     return NextResponse.json(
-      { error: e?.message ?? "Upload failed" },
+      { error: getErrorMessage(e, "Upload failed") },
       { status: 500 }
     );
   }

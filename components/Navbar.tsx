@@ -8,6 +8,7 @@ import { useAuth } from "@/app/providers";
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
 export function Navbar() {
   // const router = useRouter();
@@ -77,9 +78,9 @@ export function Navbar() {
       toast.dismiss(t);
       toast.success("Redirecting…");
       window.location.href = json.url;
-    } catch (e: any) {
+    } catch (e: unknown) {
       toast.dismiss(t);
-      toast.error(e?.message ?? "Could not open billing portal");
+      toast.error(getErrorMessage(e, "Could not open billing portal"));
     }
   }
 

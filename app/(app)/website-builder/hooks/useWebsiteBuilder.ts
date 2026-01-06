@@ -23,6 +23,7 @@ import { SECTION_TO_DATA_KEY } from "../sectionMap";
 import { useBrandStore } from "@/store/brand.store";
 import { useWebsiteStore } from "@/store/website.store";
 import { BrandData } from "@/lib/types/brandTypes";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
 export function useWebsiteBuilder(projectId: string | null) {
   /* ------------------ stores ------------------ */
@@ -118,7 +119,7 @@ export function useWebsiteBuilder(projectId: string | null) {
       await apiSaveWebsite(projectId, data);
       toast.success("Website saved");
     } catch (err) {
-      toast.error("Save failed");
+      toast.error(getErrorMessage(err, "Failed to save website"));
     } finally {
       setSaving(false);
     }
@@ -144,7 +145,9 @@ export function useWebsiteBuilder(projectId: string | null) {
       const idea =
         data.brandName?.trim() || brand.name?.trim() || "A modern business";
 
-      const prevSectionData = (data as any)[dataSection];
+      // const prevSectionData = (data as any)[dataSection];
+      const prevSectionData: WebsiteData[typeof dataSection] =
+        data[dataSection];
 
       await apiSaveSectionHistory({
         projectId,
@@ -196,7 +199,7 @@ export function useWebsiteBuilder(projectId: string | null) {
 
       toast.success("Section restored", { id: t });
     } catch (err) {
-      toast.error("Restore failed", { id: t });
+      toast.error(getErrorMessage(err, "Failed to restore section"), { id: t });
     } finally {
       setRestoring(false);
     }

@@ -6,6 +6,7 @@ import { stripe } from "@/lib/stripe/server";
 import { getOrCreateCustomer } from "@/lib/billing/getOrCreateCustomer";
 import { STRIPE_PRICES } from "@/lib/stripe/price";
 import { urls } from "@/lib/config/urls";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
 export const runtime = "nodejs";
 
@@ -79,9 +80,8 @@ export async function POST(req: Request) {
     );
 
     return NextResponse.json({ url: session.url });
-  } catch (err: any) {
-    const msg =
-      err?.raw?.message || err?.message || "Failed to create checkout session";
+  } catch (err: unknown) {
+    const msg = getErrorMessage(err, "Failed to create checkout session");
     return NextResponse.json({ error: msg }, { status: 400 });
   }
 }

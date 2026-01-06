@@ -28,7 +28,7 @@ export type ProjectWithBrand = {
 };
 
 async function safeJson(res: Response) {
-  return res.json().catch(() => ({} as any));
+  return res.json().catch(() => ({} as unknown));
 }
 
 export async function apiCreateProject(
@@ -127,7 +127,7 @@ export async function apiCreateAndGenerateProject(payload: {
     body: JSON.stringify(payload),
   });
 
-  const json = await res.json().catch(() => ({} as any));
+  const json = await res.json().catch(() => ({} as unknown));
   if (!res.ok) throw new Error(json.error || "Failed to create + generate");
 
   return json;

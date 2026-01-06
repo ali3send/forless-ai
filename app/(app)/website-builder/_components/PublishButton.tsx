@@ -1,6 +1,7 @@
 // app/website-builder/_components/PublishButton.tsx
 "use client";
 
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -39,7 +40,7 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
           headers: { "Cache-Control": "no-store" },
         });
 
-        const data = await res.json().catch(() => ({} as any));
+        const data = await res.json().catch(() => ({} as unknown));
         if (!res.ok) return;
 
         if (!cancelled) {
@@ -81,7 +82,7 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
         cache: "no-store",
       });
 
-      const json = await res.json().catch(() => ({} as any));
+      const json = await res.json().catch(() => ({} as unknown));
       if (!res.ok) throw new Error(json?.error || "Failed to prepare preview");
 
       const url = `${window.location.origin}${
@@ -91,8 +92,8 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
 
       toast.success("Preview ready", { id: t });
       if (open) window.open(url, "_blank", "noreferrer");
-    } catch (e: any) {
-      toast.error(e?.message ?? "Preview failed", { id: t });
+    } catch (e: unknown) {
+      toast.error(getErrorMessage(e, "Failed to prepare preview"), { id: t });
     }
   }
 
@@ -115,7 +116,7 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
         body: JSON.stringify({ slug: cleanSlug }),
       });
 
-      const data = await res.json().catch(() => ({} as any));
+      const data = await res.json().catch(() => ({} as unknown));
       toast.dismiss(t);
 
       if (!res.ok) {

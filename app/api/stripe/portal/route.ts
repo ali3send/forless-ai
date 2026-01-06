@@ -4,6 +4,7 @@ import { stripe } from "@/lib/stripe/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getOrCreateCustomer } from "@/lib/billing/getOrCreateCustomer";
 import { urls } from "@/lib/config/urls";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
 export const runtime = "nodejs";
 
@@ -46,9 +47,9 @@ export async function POST(req: Request) {
         headers: { "Cache-Control": "no-store" },
       }
     );
-  } catch (err: any) {
+  } catch (err: unknown) {
     return NextResponse.json(
-      { error: err?.message ?? "Failed to create billing portal session" },
+      { error: getErrorMessage(err, "Could not open billing portal") },
       {
         status: 400,
         headers: { "Cache-Control": "no-store" },
