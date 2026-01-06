@@ -74,7 +74,7 @@ export function ProductsSectionForm({ data, setData }: OffersSectionFormProps) {
         {data.offers.items.map((offer, index) => (
           <div
             key={index}
-            className="rounded-xl border border-secondary-fade bg-secondary-light p-3 space-y-2"
+            className="rounded-xl border border-secondary-fade bg-secondary-soft p-3 space-y-2"
           >
             <div className="flex items-center justify-between">
               <h4 className="text-xs font-semibold text-secondary-dark">
@@ -98,7 +98,7 @@ export function ProductsSectionForm({ data, setData }: OffersSectionFormProps) {
                 value={offer.name}
                 placeholder="e.g, offer-1,product-1"
                 onChange={(e) => updateOffer(index, "name", e.target.value)}
-                className="input-base"
+                className="input-base border-none ring-1 ring-secondary-light focus:ring-2 focus:ring-primary/50"
               />
             </label>
 
@@ -111,7 +111,7 @@ export function ProductsSectionForm({ data, setData }: OffersSectionFormProps) {
                   updateOffer(index, "description", e.target.value)
                 }
                 rows={2}
-                className="input-base"
+                className="input-base border-none ring-1 ring-secondary-light focus:ring-2 focus:ring-primary/50"
               />
             </label>
 
@@ -123,7 +123,7 @@ export function ProductsSectionForm({ data, setData }: OffersSectionFormProps) {
                   updateOffer(index, "priceLabel", e.target.value)
                 }
                 placeholder="e.g. From $19/mo"
-                className="input-base"
+                className="input-base border-none ring-1 ring-secondary-light focus:ring-2 focus:ring-primary/50"
               />
             </label>
           </div>
@@ -133,7 +133,7 @@ export function ProductsSectionForm({ data, setData }: OffersSectionFormProps) {
       <button
         type="button"
         onClick={addOffer}
-        className="w-full rounded-full bg-primary px-3 py-2 text-xs font-semibold text-white transition hover:bg-primary-hover"
+        className="w-full rounded-full btn-fill text-xs py-1.5"
       >
         + Add Offer
       </button>

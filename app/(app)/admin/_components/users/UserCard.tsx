@@ -25,7 +25,7 @@ export function UserCard(props: {
     <div className="rounded-2xl border border-secondary-fade bg-secondary-soft p-4">
       <div className="flex items-start justify-between gap-4">
         <div className="flex min-w-0 items-start gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-secondary-fade bg-secondary-light text-sm font-semibold text-secondary-dark">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl  bg-secondary-light text-sm font-semibold text-secondary-dark">
             {initials(u.full_name, u.email)}
           </div>
 
@@ -72,7 +72,7 @@ export function UserCard(props: {
         <div className="flex items-center gap-2">
           <button
             onClick={props.onToggleExpanded}
-            className="rounded-md border border-secondary-fade bg-secondary-soft px-3 py-2 text-xs font-semibold text-secondary-dark transition hover:border-primary hover:text-primary"
+            className="rounded-md border border-secondary bg-secondary-soft px-3 py-2 text-xs font-semibold text-secondary-dark transition hover:border-primary hover:text-primary"
           >
             {props.expanded ? "Hide" : "Details"}
           </button>

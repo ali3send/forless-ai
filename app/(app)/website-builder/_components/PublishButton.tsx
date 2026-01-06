@@ -147,7 +147,7 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
 
   const hasLinks = !!previewUrl || !!finalUrl;
   return (
-    <div className="rounded-2xl border border-secondary-fade bg-secondary-light p-4 space-y-4">
+    <div className="rounded-2xl border border-secondary-fade bg-secondary-soft p-4 space-y-4">
       {/* Slug row */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
@@ -158,7 +158,7 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
           value={slug}
           onChange={(e) => setSlug(e.target.value)}
           placeholder="e.g., my-company"
-          className="input-base w-full border-none"
+          className="input-base w-full ring-1 ring-secondary border-none focus:ring-2 focus:ring-primary/60"
         />
       </div>
 

@@ -43,7 +43,7 @@ export default function WebsiteBuilderPage() {
 
   if (!projectId) {
     return (
-      <div className="min-h-screen bg-secondary-soft flex items-center justify-center">
+      <div className="min-h-screen bg-secondary-fade  flex items-center justify-center">
         <p className="text-sm text-secondary">
           Missing <code>?projectId=...</code> in URL
         </p>
@@ -53,14 +53,14 @@ export default function WebsiteBuilderPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-secondary-soft flex items-center justify-center">
+      <div className="min-h-screen bg-secondary-fade flex items-center justify-center">
         <p className="text-sm text-secondary">Loading website...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-secondary-soft">
+    <div className="min-h-screen ">
       <div className="mx-auto flex max-w-full flex-col gap-6 px-0 sm:px-4 sm:py-6 lg:flex-row">
         <BuilderSidebar
           projectId={projectId}

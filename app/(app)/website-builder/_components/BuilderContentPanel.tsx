@@ -35,7 +35,7 @@ export function BuilderContentPanel({ onGenerate, onRestore }: Props) {
         <div className="w-full">
           <div className="flex w-full justify-end gap-2">
             <button
-              className="rounded-full border border-secondary-fade bg-secondary-light px-4 py-1.5 text-[11px] font-semibold text-secondary-dark transition hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
+              className="rounded-full border border-secondary-fade bg-secondary-soft px-4 py-1.5 text-[11px] font-semibold text-secondary-dark transition hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
               type="button"
               onClick={onRestore}
               disabled={restoring || generating}

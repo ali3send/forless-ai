@@ -98,7 +98,7 @@ function ProjectCard({ project }: { project: ProjectRow }) {
   return (
     <Link
       href={`/website-builder/${project.id}`}
-      className="group flex flex-col rounded-lg border border-secondary-light  bg-secondary-soft p-3 text-xs transition hover:border-primary"
+      className="group flex flex-col rounded-lg border border-secondary-soft  bg-secondary-fade p-3 text-xs transition hover:border-primary"
     >
       <div className="relative h-28 overflow-hidden rounded-md bg-secondary-light">
         {project.thumbnail_url ? (

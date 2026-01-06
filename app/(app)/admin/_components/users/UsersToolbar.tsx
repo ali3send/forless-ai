@@ -12,7 +12,7 @@ export function UsersToolbar(props: {
   total: number;
 }) {
   return (
-    <div className="sticky top-0 z-10 rounded-t-2xl border-b border-secondary-fade bg-secondary-soft/95 backdrop-blur p-4">
+    <div className="sticky top-0 z-10 rounded-t-2xl border-b border-secondary-fade p-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="text-sm font-semibold text-secondary-dark">Users</div>

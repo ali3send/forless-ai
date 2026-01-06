@@ -31,13 +31,13 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center">
-      <div className="w-full max-w-md rounded-2xl border border-secondary-fade bg-secondary-soft p-6 shadow-sm">
+      <div className="w-full max-w-md rounded-2xl border border-secondary-fade bg-secondary-fade p-6 shadow-sm">
         {/* Header */}
-        <div className="mb-5">
+        <div className="mb-5 text-secondary-active">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-2">
             ForlessAI
           </p>
-          <h1 className="text-2xl font-bold tracking-tight mb-1 text-secondary-dark">
+          <h1 className="text-2xl font-bold tracking-tight mb-1 ">
             Welcome back
           </h1>
           <p className="text-xs text-secondary">
@@ -55,7 +55,7 @@ export default function LoginPage() {
         {/* Form */}
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-secondary mb-1.5">
+            <label className="block text-xs font-medium text-secondary-active mb-1.5">
               Email
             </label>
             <input
@@ -63,14 +63,14 @@ export default function LoginPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="input-base w-full"
+              className="input-base w-full py-2"
               placeholder="you@example.com"
             />
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-xs font-medium text-secondary">
+              <label className="block text-xs font-medium text-secondary-active">
                 Password
               </label>
               <button
@@ -88,7 +88,7 @@ export default function LoginPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="input-base w-full pr-10"
+                className="input-base w-full pr-10 py-2"
                 placeholder="Your password"
               />
 
@@ -110,7 +110,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="mt-1 w-full inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-hover disabled:opacity-60 disabled:cursor-not-allowed"
+            className="mt-1 w-full px-4 py-2  btn-fill disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {loading ? "Logging in..." : "Log in"}
           </button>

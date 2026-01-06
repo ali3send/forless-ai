@@ -73,7 +73,7 @@ export function FeaturesSectionForm({
         {data.features.items.map((item, index) => (
           <div
             key={index}
-            className="rounded-xl border border-secondary-fade bg-secondary-light p-3 space-y-2"
+            className="rounded-xl border border-secondary-fade bg-secondary-soft p-3 space-y-2"
           >
             <div className="flex justify-between items-center">
               <h4 className="text-xs font-semibold text-secondary-dark">
@@ -97,7 +97,7 @@ export function FeaturesSectionForm({
                 placeholder="e.g., Feature 1, Feature 2, Feature 3"
                 value={item.label}
                 onChange={(e) => updateItem(index, "label", e.target.value)}
-                className="input-base"
+                className="input-base border-none ring-1 ring-secondary-light focus:ring-2 focus:ring-primary/50"
               />
             </label>
 
@@ -109,7 +109,7 @@ export function FeaturesSectionForm({
                   updateItem(index, "description", e.target.value)
                 }
                 rows={2}
-                className="input-base"
+                className="input-base border-none ring-1 ring-secondary-light focus:ring-2 focus:ring-primary/50"
               />
             </label>
           </div>
@@ -119,7 +119,7 @@ export function FeaturesSectionForm({
       {/* Add Feature Button */}
       <button
         onClick={addFeature}
-        className="w-full rounded-full bg-primary px-3 py-2 text-xs font-semibold text-white transition hover:bg-primary-hover"
+        className="w-full rounded-full btn-fill text-xs py-1.5"
       >
         + Add Feature
       </button>

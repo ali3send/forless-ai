@@ -49,7 +49,8 @@ function SearchInput({
         w-full sm:w-64
         rounded-md
          
-        bg-secondary-soft
+        bg-secondary-fade
+        placeholder:text-secondary
         px-3 py-1.5
         text-xs text-secondary-dark
         outline-none

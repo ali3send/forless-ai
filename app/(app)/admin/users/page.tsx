@@ -27,7 +27,7 @@ export default async function AdminUsersPage() {
         </a>
       </div>
 
-      <div className="mt-6 rounded-xl border border-secondary-fade bg-secondary-soft p-4">
+      <div className="mt-6  p-4">
         <UsersTable />
       </div>
     </div>

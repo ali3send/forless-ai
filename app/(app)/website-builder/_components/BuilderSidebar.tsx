@@ -39,7 +39,7 @@ export function BuilderSidebar(props: Props) {
   );
 
   return (
-    <aside className="w-full space-y-4 rounded-2xl border border-secondary-fade bg-secondary-soft p-4 shadow-sm lg:w-80 lg:min-w-80 lg:max-w-80">
+    <aside className="w-full space-y-4 rounded-2xl  bg-secondary-fade p-4 shadow-sm lg:w-80 lg:min-w-80 lg:max-w-80">
       <h1 className="text-lg font-semibold text-secondary-dark">
         Website Builder
       </h1>
@@ -50,7 +50,7 @@ export function BuilderSidebar(props: Props) {
       />
       <TemplateSelector />
 
-      <div className="flex gap-1 rounded-full border border-secondary-fade bg-secondary-light p-1 text-[11px]">
+      <div className="flex gap-1 rounded-full border border-secondary-fade bg-secondary-soft p-1 text-[11px]">
         <button
           type="button"
           onClick={() => setActivePanel("content")}

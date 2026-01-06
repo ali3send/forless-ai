@@ -249,7 +249,7 @@ export function UsersTable() {
   }
 
   return (
-    <div className="rounded-2xl border border-secondary-fade bg-secondary-soft">
+    <div className="rounded-2xl border border-secondary-fade bg-secondary-fade">
       <UsersToolbar
         q={q}
         setQ={setQ}

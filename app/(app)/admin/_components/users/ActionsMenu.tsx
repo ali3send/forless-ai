@@ -20,7 +20,7 @@ export function ActionsMenu(props: {
     <div className="relative">
       <button
         onClick={() => props.setMenuOpen((cur) => (cur === u.id ? null : u.id))}
-        className="rounded-md border border-secondary-fade bg-secondary-soft px-3 py-2 text-xs font-semibold text-secondary-dark transition hover:border-primary hover:text-primary"
+        className="rounded-md border border-primary bg-secondary-soft px-3 py-2 text-xs font-semibold text-primary transition hover:border-primary-dark hover:text-primary-dark"
       >
         Actions ▾
       </button>
@@ -29,7 +29,7 @@ export function ActionsMenu(props: {
         open={props.menuOpen === u.id}
         onClose={() => props.setMenuOpen(null)}
       >
-        <div className="p-2 rounded-xl border border-secondary-fade bg-secondary-soft shadow-sm">
+        <div className="p-2 rounded-xl border border-secondary-light  bg-secondary-soft shadow-lg">
           <button
             onClick={() => props.onToggleSuspend(u.id, !suspended)}
             className="w-full rounded-lg px-3 py-2 text-left text-sm text-secondary-dark transition hover:bg-secondary-light"
@@ -46,7 +46,7 @@ export function ActionsMenu(props: {
             Make {role === "admin" ? "User" : "Admin"}
           </button>
 
-          <div className="my-2 h-px bg-secondary-fade" />
+          <div className="my-2 h-px bg-secondary" />
 
           <button
             onClick={() => props.onDelete(u.id, u.email)}

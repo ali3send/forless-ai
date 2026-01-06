@@ -50,11 +50,12 @@
 @layer components {
 .input-base {
   @apply mt-1 w-full rounded-md
-         border border-secondary-fade
+         
          bg-secondary-soft
          px-2 py-1 text-xs
          text-secondary-dark
          placeholder:text-secondary
+         ring-1 ring-secondary
          focus:outline-none
          
          focus:ring-2 focus:ring-primary/50

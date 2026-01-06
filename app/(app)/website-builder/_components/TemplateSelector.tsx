@@ -39,7 +39,7 @@ export default function TemplateSelector() {
           rounded-md border border-secondary-fade
           bg-secondary-soft px-2.5 py-1.5
           text-[11px] font-medium text-secondary-dark
-          transition hover:bg-secondary-fade
+          transition hover:bg-secondary-soft
         "
       >
         <span className="truncate">{WEBSITE_TEMPLATES[active].name}</span>
@@ -51,8 +51,8 @@ export default function TemplateSelector() {
         <div
           className="
             absolute z-50 mt-1 w-full
-            rounded-md border border-secondary-fade
-            bg-secondary-soft shadow-lg
+            rounded-md 
+            bg-secondary-soft
           "
         >
           <div className="py-1">
@@ -72,7 +72,7 @@ export default function TemplateSelector() {
                     transition
                     ${
                       isActive
-                        ? "bg-primary/30 text-primary-active"
+                        ? "border rounded-md border-primary bg-primary-hover/20"
                         : "text-secondary-dark hover:bg-secondary-light"
                     }
                   `}

@@ -7,6 +7,7 @@ import { WebsiteData } from "@/lib/types/websiteTypes";
 import { StateUpdater } from "@/lib/types/state";
 import { useProjectStore } from "@/store/project.store";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
+import { toast } from "sonner";
 
 export type HeroSectionFormProps = {
   data: WebsiteData;
@@ -36,7 +37,10 @@ export function HeroSectionForm({ data, setData }: HeroSectionFormProps) {
       });
 
       const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(json.error || "Upload failed");
+      if (!res.ok) {
+        toast.error(getErrorMessage(json.error, "Upload failed"));
+        throw new Error(json.error || "Upload failed");
+      }
 
       const bustedUrl = `${json.publicUrl}?v=${Date.now()}`;
 
@@ -146,7 +150,7 @@ export function HeroSectionForm({ data, setData }: HeroSectionFormProps) {
         </div>
 
         {data.hero.imageUrl ? (
-          <div className="rounded-lg border border-secondary-fade bg-secondary-light p-2">
+          <div className="rounded-lg border border-secondary-fade bg-secondary-soft p-2">
             <Image
               src={data.hero.imageUrl}
               alt="hero"
@@ -170,23 +174,39 @@ export function HeroSectionForm({ data, setData }: HeroSectionFormProps) {
             </div>
           </div>
         ) : (
-          <label className="block">
+          <div className="block">
+            <label
+              htmlFor="image-upload"
+              className="
+      inline-flex cursor-pointer items-center gap-2
+      rounded-md border border-secondary-fade
+      bg-secondary-soft px-3 py-2
+      text-xs font-semibold text-secondary-dark
+      hover:border-primary hover:text-primary
+      disabled:opacity-60
+    "
+            >
+              Choose image
+            </label>
             <input
+              id="image-upload"
               type="file"
               accept="image/*"
               disabled={busy}
+              className="hidden"
               onChange={async (e) => {
-                const f = e.target.files?.[0];
+                const file = e.target.files?.[0];
                 e.currentTarget.value = "";
-                if (!f) return;
-                await onUpload(f);
+
+                if (!file) return;
+
+                await onUpload(file);
               }}
-              className="block w-full text-xs text-secondary file:mr-3 file:rounded-md file:border file:border-secondary-fade file:bg-secondary-soft file:px-3 file:py-2 file:text-xs file:font-semibold file:text-secondary-dark hover:file:border-primary hover:file:text-primary disabled:opacity-60"
             />
             <p className="mt-1 text-[11px] text-secondary">
-              JPG/PNG/WEBP/SVG • up to 5MB
+              JPG / PNG / WEBP / SVG • up to 5MB
             </p>
-          </label>
+          </div>
         )}
 
         {err && <p className="text-[11px] text-secondary">{err}</p>}
