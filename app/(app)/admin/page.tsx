@@ -9,6 +9,7 @@ import ModerationSummary from "./components/home/ModerationSummary";
 import AdminDashboardHeader from "./components/AdminDashboardHeader";
 import AdminStatsSwitch from "./components/AdminStatsSwitch";
 import { getAdminStats, getModerationStats } from "./lib/stats";
+import { getUsageData } from "./lib/usage";
 
 export default async function AdminPage() {
   const admin = await requireAdmin();
@@ -20,6 +21,7 @@ export default async function AdminPage() {
     getAdminStats(30),
     getModerationStats(),
   ]);
+  const usageData = await getUsageData(30);
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-10 space-y-10">
@@ -31,7 +33,7 @@ export default async function AdminPage() {
         data={{ "1d": stats1d, "7d": stats7d, "30d": stats30d }}
       />
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <UsagePlaceholder />
+        <UsagePlaceholder data={usageData} />
         <SystemHealth />
       </div>
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
