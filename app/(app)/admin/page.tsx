@@ -7,7 +7,8 @@ import SystemHealth from "./components/home/SystemHealth";
 import ActivityFeed from "./components/home/ActivityFeed";
 import QuickAdminActions from "./components/home/QuickAdminActions";
 import ModerationSummary from "./components/home/ModerationSummary";
-import AdminDashboardHeader from "../dashboard/_components/DashboardHeader";
+import AdminDashboardHeader from "./components/AdminDashboardHeader";
+// import AdminDashboardHeader from "../dashboard/_components/DashboardHeader";
 
 async function getAdminStats() {
   const supabase = await createAdminSupabaseClient();

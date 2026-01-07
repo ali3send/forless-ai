@@ -161,6 +161,14 @@ export async function POST(
       },
       { onConflict: "user_id,project_id,key,period_end" }
     );
+
+    await supabase.from("activity_logs").insert({
+      type: "website_published",
+      message: "Website published",
+      actor_id: user.id,
+      entity_id: projectId,
+      entity_type: "project",
+    });
   }
 
   return NextResponse.json({

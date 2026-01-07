@@ -40,6 +40,14 @@ export async function POST(req: Request) {
     .update(payload)
     .eq("id", userId);
 
+  await admin.supabase.from("activity_logs").insert({
+    type: "admin",
+    message: suspend ? "User suspended" : "User unsuspended",
+    actor_id: admin.user.id,
+    entity_id: userId,
+    entity_type: "user",
+  });
+
   if (error)
     return NextResponse.json({ error: error.message }, { status: 500 });
 

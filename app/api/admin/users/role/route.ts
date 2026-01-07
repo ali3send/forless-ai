@@ -31,5 +31,13 @@ export async function POST(req: Request) {
   if (error)
     return NextResponse.json({ error: error.message }, { status: 500 });
 
+  await supabase.from("activity_logs").insert({
+    type: "user_role_changed",
+    message: "User role changed to " + role,
+    actor_id: admin.user.id,
+    entity_id: userId,
+    entity_type: "user",
+  });
+
   return NextResponse.json({ ok: true });
 }

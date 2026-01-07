@@ -36,6 +36,13 @@ export async function POST(req: Request) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+  await supabase.from("activity_logs").insert({
+    type: "project",
+    message: "Website published",
+    actor_id: admin.user.id,
+    entity_id: projectId,
+    entity_type: "project",
+  });
 
   return NextResponse.json({ ok: true });
 }
