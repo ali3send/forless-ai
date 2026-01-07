@@ -1,4 +1,5 @@
 // app/(app)/admin/page.tsx
+export const dynamic = "force-dynamic";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
 import UsagePlaceholder from "./components/home/UsagePlaceholder";
