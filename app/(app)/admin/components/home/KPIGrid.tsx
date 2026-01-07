@@ -1,72 +1,75 @@
-type DashboardStats = {
-  users: number;
-  projects: number;
-  sites: number;
-  prevUsers?: number;
-  prevProjects?: number;
-  prevSites?: number;
-};
-function calcTrend(current: number, prev?: number) {
-  if (!prev || prev === 0) return null;
-
-  const diff = ((current - prev) / prev) * 100;
-  return diff;
-}
-
-function KpiGrid({ stats }: { stats: DashboardStats }) {
-  const userTrend = calcTrend(stats.users, stats.prevUsers);
-  const projectTrend = calcTrend(stats.projects, stats.prevProjects);
-  const siteTrend = calcTrend(stats.sites, stats.prevSites);
-
-  return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-      <KpiCard label="Total Users" value={stats.users} trend={userTrend} />
-      <KpiCard label="Projects" value={stats.projects} trend={projectTrend} />
-      <KpiCard
-        label="Published Sites"
-        value={stats.sites}
-        trend={siteTrend || null}
-      />
-    </div>
-  );
-}
-
+import { calcDelta, calcTrend } from "../../lib/kpiUtils";
+import { rangeLabel } from "../../lib/ranges";
 function KpiCard({
   label,
   value,
   trend,
+  delta,
+  rangeLabel,
 }: {
   label: string;
-  value: number;
+  value: string | number;
   trend: number | null;
+  delta?: number;
+  rangeLabel?: string;
 }) {
   const isUp = trend !== null && trend > 0;
   const isDown = trend !== null && trend < 0;
-
   return (
     <div className="rounded-xl border border-secondary-fade bg-white p-5">
       <div className="text-xs text-secondary">{label}</div>
 
-      <div className="mt-2 flex items-end justify-between">
-        <span className="text-3xl font-semibold text-secondary-dark">
-          {value}
-        </span>
-
-        {trend !== null && (
-          <span
-            className={[
-              "text-xs font-medium",
-              isUp && "text-green-600",
-              isDown && "text-red-600",
-            ].join(" ")}
-          >
-            {isUp ? "+" : ""}
-            {trend.toFixed(1)}%
-          </span>
-        )}
+      <div className="mt-2 text-3xl font-semibold text-secondary-dark">
+        {value}
       </div>
+      {/* Absolute change */}
+      {delta !== undefined && rangeLabel && (
+        <div className="mt-1 text-xs text-secondary">
+          {delta > 0 ? "+" : ""} {delta} since {rangeLabel}
+        </div>
+      )}
+      {/* Percentage trend (secondary) */}
+      {trend !== null && delta !== 0 && (
+        <div
+          className={[
+            "mt-2 text-xs font-medium",
+            isUp && "text-green-600",
+            isDown && "text-red-600",
+          ].join(" ")}
+        >
+          {isUp ? "+" : ""} {trend.toFixed(1)}%
+        </div>
+      )}
     </div>
   );
 }
 
-export default KpiGrid;
+export default function KpiGrid({ stats, range }) {
+  const label = rangeLabel(range);
+
+  return (
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <KpiCard
+        label="Total Users"
+        value={stats.users}
+        delta={calcDelta(stats.users, stats.prevUsers)}
+        trend={calcTrend(stats.users, stats.prevUsers)}
+        rangeLabel={label}
+      />
+      <KpiCard
+        label="Total Projects"
+        value={stats.projects}
+        delta={calcDelta(stats.projects, stats.prevProjects)}
+        trend={calcTrend(stats.projects, stats.prevProjects)}
+        rangeLabel={label}
+      />
+      <KpiCard
+        label="Published Sites"
+        value={stats.sites}
+        delta={calcDelta(stats.sites, stats.prevSites)}
+        trend={calcTrend(stats.sites, stats.prevSites)}
+        rangeLabel={label}
+      />
+    </div>
+  );
+}
