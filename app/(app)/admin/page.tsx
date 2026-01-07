@@ -1,6 +1,13 @@
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
+import KpiGrid from "./components/home/KPIGrid";
+import UsagePlaceholder from "./components/home/UsagePlaceholder";
+import SystemHealth from "./components/home/SystemHealth";
+import ActivityFeed from "./components/home/ActivityFeed";
+import QuickAdminActions from "./components/home/QuickAdminActions";
+import ModerationSummary from "./components/home/ModerationSummary";
+import AdminDashboardHeader from "../dashboard/_components/DashboardHeader";
 
 async function getAdminStats() {
   const supabase = await createAdminSupabaseClient();
@@ -20,107 +27,62 @@ async function getAdminStats() {
     users: users.count ?? 0,
   };
 }
+async function getModerationStats() {
+  const supabase = await createAdminSupabaseClient();
+
+  const [suspendedUsers, unpublishedSites] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select("id", { count: "exact", head: true })
+      .eq("is_suspended", true),
+
+    supabase
+      .from("projects")
+      .select("id", { count: "exact", head: true })
+      .eq("published", false),
+  ]);
+
+  return {
+    suspendedUsers: suspendedUsers.count ?? 0,
+    unpublishedSites: unpublishedSites.count ?? 0,
+  };
+}
 
 export default async function AdminPage() {
   const admin = await requireAdmin();
   if (!admin.ok) return redirect("/");
 
   const stats = await getAdminStats();
+  const moderation = await getModerationStats();
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-8 text-secondary-dark">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
-            Admin Dashboard
-          </h1>
-          <p className="mt-1 text-sm text-secondary">
-            Signed in as{" "}
-            <span className="text-secondary-dark font-semibold">
-              {admin.user.email}
-            </span>
-            <span className="mx-2 opacity-40">•</span>
-            Role:{" "}
-            <span className="text-primary font-medium">
-              {admin.profile.role}
-            </span>
-          </p>
-        </div>
+    <div className="mx-auto max-w-7xl px-6 py-10 space-y-10">
+      {/* Header */}
+      <AdminDashboardHeader
+        email={admin.user.email || ""}
+        role={admin.profile.role}
+      />
 
-        <a href="/dashboard" className="btn-secondary">
-          ← Back to Dashboard
-        </a>
+      {/* KPIs */}
+      <KpiGrid stats={stats} />
+
+      {/* Charts + Health */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <UsagePlaceholder />
+        <SystemHealth />
       </div>
 
-      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        {[
-          {
-            label: "Projects",
-            value: stats.projects,
-            hint: "Total created projects",
-          },
-          {
-            label: "Published Sites",
-            value: stats.sites,
-            hint: "Live websites",
-          },
-          { label: "Users", value: stats.users, hint: "Registered accounts" },
-        ].map((item) => (
-          <div
-            key={item.label}
-            className="rounded-xl border border-secondary-fade bg-secondary-soft p-4"
-          >
-            <div className="text-xs text-secondary">{item.label}</div>
-            <div className="mt-2 text-2xl font-semibold text-secondary-dark">
-              {item.value}
-            </div>
-            <div className="mt-1 text-xs text-secondary">{item.hint}</div>
-          </div>
-        ))}
+      {/* Activity + Moderation */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <ActivityFeed />
+        <ModerationSummary
+          suspendedUsers={moderation.suspendedUsers}
+          unpublishedSites={moderation.unpublishedSites}
+        />{" "}
       </div>
 
-      <div className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-2">
-        <div className="rounded-xl border border-secondary-fade bg-secondary-soft p-5">
-          <h2 className="text-base font-semibold text-secondary-dark">Users</h2>
-          <p className="mt-1 text-sm text-secondary">
-            Manage users, assign roles, and suspend accounts.
-          </p>
-          <a
-            href="/admin/users"
-            className="btn-fill mt-4 inline-flex px-4 py-2"
-          >
-            Manage Users
-          </a>
-        </div>
-
-        <div className="rounded-xl border border-secondary-fade bg-secondary-soft p-5">
-          <h2 className="text-base font-semibold text-secondary-dark">
-            Projects
-          </h2>
-          <p className="mt-1 text-sm text-secondary">
-            View and inspect all user projects.
-          </p>
-          <a
-            href="/admin/projects"
-            className="btn-fill mt-4 inline-flex px-4 py-2"
-          >
-            View Projects
-          </a>
-        </div>
-
-        <div className="rounded-xl border border-secondary-fade bg-secondary-soft p-5">
-          <h2 className="text-base font-semibold text-secondary-dark">Sites</h2>
-          <p className="mt-1 text-sm text-secondary">
-            Moderate published websites and unpublish content.
-          </p>
-          <a
-            href="/admin/sites"
-            className="btn-fill mt-4 inline-flex px-4 py-2"
-          >
-            Moderate Sites
-          </a>
-        </div>
-      </div>
+      {/* Quick Actions */}
+      <QuickAdminActions />
     </div>
   );
 }

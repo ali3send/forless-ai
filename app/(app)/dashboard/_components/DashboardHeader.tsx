@@ -1,62 +1,25 @@
-"use client";
-import NewProjectModal from "./NewProjectModal";
-
-interface DashboardHeaderProps {
-  search: string;
-  onSearchChange: (value: string) => void;
+interface AdminDashboardHeaderProps {
+  email: string;
+  role: string;
 }
 
-export default function DashboardHeader({
-  search,
-  onSearchChange,
-}: DashboardHeaderProps) {
+export default function AdminDashboardHeader({
+  email,
+  role,
+}: AdminDashboardHeaderProps) {
   return (
-    <header className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <header className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 className="text-xl font-semibold text-secondary-dark">
-          Your Projects
+        <h1 className="text-2xl font-semibold text-secondary-dark">
+          Admin Dashboard
         </h1>
-        <p className="text-xs text-secondary">
-          Describe once. Build brand, website, and marketing from one place.
+        <p className="mt-1 text-sm text-secondary">
+          Logged in as{" "}
+          <span className="font-medium text-secondary-dark">{email}</span>
+          <span className="mx-2 opacity-40">•</span>
+          Role <span className="font-medium text-primary">{role}</span>
         </p>
       </div>
-
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <div className="hidden sm:block">
-          <SearchInput value={search} onChange={onSearchChange} />
-        </div>
-
-        <NewProjectModal />
-      </div>
     </header>
-  );
-}
-
-function SearchInput({
-  value,
-  onChange,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  return (
-    <input
-      type="text"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder="Search projects…"
-      className="
-        w-full sm:w-64
-        rounded-md
-         
-        bg-secondary-fade
-        placeholder:text-secondary
-        px-3 py-1.5
-        text-xs text-secondary-dark
-        outline-none
-        ring-primary/60
-        focus:ring-1
-      "
-    />
   );
 }

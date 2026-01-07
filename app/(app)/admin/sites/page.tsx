@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
-import { UnpublishButton } from "../_components/UnpublishButton";
+import { UnpublishButton } from "../components/UnpublishButton";
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 // import { UnpublishButton } from "./_components/UnpublishButton";
 

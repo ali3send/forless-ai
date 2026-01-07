@@ -1,6 +1,6 @@
 import React from "react";
-import type { UserRow } from "./types";
-import { initials, fmtDate } from "./utils";
+import type { UserRow } from "../utils/types";
+import { initials, fmtDate } from "../utils/utils";
 import { Badge } from "./Badge";
 import { ActionsMenu } from "./ActionsMenu";
 import { UserDetails } from "./UserDetails";
@@ -22,14 +22,40 @@ export function UserCard(props: {
   const role = (u.role || "user") as "user" | "admin";
 
   return (
-    <div className="rounded-2xl border border-secondary-fade bg-secondary-soft p-4">
+    <div
+      className={`
+        rounded-xl
+        border
+        p-4
+        transition
+        ${
+          suspended
+            ? "border-accent/40 bg-accent/5"
+            : "border-secondary-fade bg-white hover:border-primary/40"
+        }
+      `}
+    >
+      {/* Top row */}
       <div className="flex items-start justify-between gap-4">
+        {/* Left: identity */}
         <div className="flex min-w-0 items-start gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl  bg-secondary-light text-sm font-semibold text-secondary-dark">
+          <div
+            className={`
+              flex h-11 w-11 shrink-0 items-center justify-center
+              rounded-lg
+              text-sm font-semibold
+              ${
+                suspended
+                  ? "bg-accent/10 text-accent"
+                  : "bg-secondary-light text-secondary-dark"
+              }
+            `}
+          >
             {initials(u.full_name, u.email)}
           </div>
 
           <div className="min-w-0">
+            {/* Name + badges */}
             <div className="flex flex-wrap items-center gap-2">
               <div className="truncate text-sm font-semibold text-secondary-dark">
                 {u.full_name || "—"}
@@ -48,19 +74,21 @@ export function UserCard(props: {
               )}
             </div>
 
+            {/* Email */}
             <div className="mt-1 truncate text-xs text-secondary">
               {u.email || "—"}
             </div>
 
+            {/* Meta */}
             <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-secondary">
               <span>
-                Last sign-in:{" "}
+                Last sign-in{" "}
                 <span className="text-secondary-dark">
                   {fmtDate(u.last_sign_in_at)}
                 </span>
               </span>
               <span>
-                Created:{" "}
+                Created{" "}
                 <span className="text-secondary-dark">
                   {fmtDate(u.auth_created_at ?? u.created_at)}
                 </span>
@@ -69,10 +97,21 @@ export function UserCard(props: {
           </div>
         </div>
 
+        {/* Right: actions */}
         <div className="flex items-center gap-2">
           <button
             onClick={props.onToggleExpanded}
-            className="rounded-md border border-secondary bg-secondary-soft px-3 py-2 text-xs font-semibold text-secondary-dark transition hover:border-primary hover:text-primary"
+            className="
+              rounded-md
+              border border-secondary-fade
+              bg-white
+              px-3 py-1.5
+              text-xs font-semibold
+              text-secondary-dark
+              transition
+              hover:border-primary
+              hover:text-primary
+            "
           >
             {props.expanded ? "Hide" : "Details"}
           </button>
@@ -88,7 +127,12 @@ export function UserCard(props: {
         </div>
       </div>
 
-      {props.expanded ? <UserDetails u={u} /> : null}
+      {/* Expanded */}
+      {props.expanded ? (
+        <div className="mt-4 border-t border-secondary-fade pt-4">
+          <UserDetails u={u} />
+        </div>
+      ) : null}
     </div>
   );
 }
