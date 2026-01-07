@@ -7,6 +7,7 @@ export type BrandOption = {
   primaryColor: string;
   secondaryColor: string;
   font: string;
+  logoSvg: string;
 };
 
 export type Palette = {
@@ -40,6 +41,31 @@ export const PALETTES: Palette[] = [
     primary: "#f59e0b",
     secondary: "#111827",
   },
+  {
+    id: "red-slate",
+    label: "Alert Red",
+    primary: "#ef4444",
+    secondary: "#0f172a",
+  },
+  //also add light themes
+  {
+    id: "emerald-slate-light",
+    label: "Professional Green Light",
+    primary: "#10b981",
+    secondary: "#f3f4f6",
+  },
+  {
+    id: "blue-slate-light",
+    label: "Corporate Blue Light",
+    primary: "#0ea5e9",
+    secondary: "#f3f4f6",
+  },
+  {
+    id: "amber-slate-light",
+    label: "Warm Business Light",
+    primary: "#f59e0b",
+    secondary: "#f3f4f6",
+  },
 ];
 
 export const FONTS: BrandFont[] = [
@@ -55,52 +81,3 @@ export const FONTS: BrandFont[] = [
     css: "SFMono-Regular, Menlo, Monaco, monospace",
   },
 ];
-
-export function generateBrandOptions(
-  idea: string,
-  primary: string,
-  secondary: string,
-  font: string
-): BrandOption[] {
-  const seed = idea.toLowerCase();
-
-  const coreWord =
-    pickWord(seed, ["tea", "brew", "cup", "leaf", "sip"]) ||
-    pickWord(seed, ["studio", "lab", "hub", "space"]) ||
-    "studio";
-
-  const vibe =
-    pickWord(seed, ["calm", "minimal", "fresh", "bright"]) || "modern";
-
-  const nameBases = [
-    `${capitalize(vibe)} ${capitalize(coreWord)}`,
-    `${capitalize(coreWord)} & Co.`,
-    `${capitalize(vibe)} ${capitalize(coreWord)} House`,
-  ];
-
-  const slogans = [
-    `Where ${vibe} moments begin.`,
-    `Crafting your daily ${coreWord}.`,
-    `Simple ${coreWord}, steady focus.`,
-  ];
-
-  return nameBases.map((name, idx) => ({
-    id: `brand-${idx}`,
-    name,
-    slogan: slogans[idx] ?? slogans[0],
-    primaryColor: primary,
-    secondaryColor: secondary,
-    font,
-  }));
-}
-
-function pickWord(seed: string, candidates: string[]): string | null {
-  for (const c of candidates) {
-    if (seed.includes(c)) return c;
-  }
-  return null;
-}
-
-function capitalize(str: string) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}

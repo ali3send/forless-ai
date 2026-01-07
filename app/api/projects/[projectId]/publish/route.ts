@@ -1,7 +1,7 @@
-// app/api/projects/[projectId]/publish/route.ts
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { PLAN_LIMITS, type PlanKey } from "@/lib/billing/planLimits";
+import { urls } from "@/lib/config/urls";
 
 function slugify(text: string) {
   return text
@@ -46,13 +46,9 @@ export async function POST(
   if (!slug) {
     return NextResponse.json({ error: "Invalid slug" }, { status: 400 });
   }
-  const siteHost = (process.env.NEXT_PUBLIC_BASE_URL || "lvh.me:3000")
-    .replace(/^https?:\/\//, "")
-    .replace(/\/$/, "");
 
-  const publishedUrl = `http://${slug}.${siteHost}`;
+  const publishedUrl = urls.site(slug);
 
-  // Load profile (plan + billing period + suspension)
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("plan, is_suspended, current_period_end")
@@ -74,7 +70,6 @@ export async function POST(
     ? new Date(profile.current_period_end).toISOString()
     : nextMonthStartISO();
 
-  // Publish limit check
   if (limit <= 0) {
     return NextResponse.json(
       { error: "Publishing is not available on your plan. Please upgrade." },
@@ -82,8 +77,6 @@ export async function POST(
     );
   }
 
-  // Count how many sites are already published for this user (DB truth)
-  // This is the best way to enforce "up to X published websites".
   const { count: publishedCount, error: countError } = await supabase
     .from("projects")
     .select("id", { count: "exact", head: true })
@@ -97,7 +90,6 @@ export async function POST(
     );
   }
 
-  // If this project is already published, allow updating slug without consuming quota
   const { data: currentProject, error: currentErr } = await supabase
     .from("projects")
     .select("published")
@@ -111,7 +103,6 @@ export async function POST(
 
   const alreadyPublished = !!currentProject.published;
 
-  // If NOT already published, enforce limit based on published projects count
   if (!alreadyPublished && (publishedCount ?? 0) >= limit) {
     return NextResponse.json(
       {
@@ -122,8 +113,6 @@ export async function POST(
     );
   }
 
-  // Also track in usage_counters per billing period (optional but good for UI/analytics)
-  // We store project_id=null so it's user-wide.
   const { data: counterRow } = await supabase
     .from("usage_counters")
     .select("count")
@@ -135,7 +124,6 @@ export async function POST(
 
   const used = counterRow?.count ?? 0;
 
-  // Slug uniqueness
   const { data: existing } = await supabase
     .from("projects")
     .select("id")
@@ -146,7 +134,6 @@ export async function POST(
     return NextResponse.json({ error: "Slug already taken" }, { status: 409 });
   }
 
-  // Publish / update project
   const { error: updateError } = await supabase
     .from("projects")
     .update({
@@ -162,7 +149,6 @@ export async function POST(
     return NextResponse.json({ error: updateError.message }, { status: 500 });
   }
 
-  // Increment usage counter ONLY if this is a NEW publish (not republish / slug change)
   if (!alreadyPublished) {
     await supabase.from("usage_counters").upsert(
       {
@@ -175,6 +161,14 @@ export async function POST(
       },
       { onConflict: "user_id,project_id,key,period_end" }
     );
+
+    await supabase.from("activity_logs").insert({
+      type: "website_published",
+      message: "Website published",
+      actor_id: user.id,
+      entity_id: projectId,
+      entity_type: "project",
+    });
   }
 
   return NextResponse.json({

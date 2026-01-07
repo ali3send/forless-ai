@@ -1,3 +1,4 @@
+// app/(app)/dashboard/_components/DashboardContent.tsx
 "use client";
 
 import { useMemo, useState } from "react";
@@ -34,7 +35,7 @@ export default function DashboardContent({
 
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8">
-      <DashboardHeader search={search} onSearchChange={setSearch} />
+      <DashboardHeader />
 
       <FilterTabs active={filter} onChange={setFilter} />
 

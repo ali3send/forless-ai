@@ -1,15 +1,14 @@
-// app/website-builder/_components/BuilderDesignPanel.tsx
 "use client";
-
-import type { Dispatch, SetStateAction } from "react";
-import type { BrandData } from "../hooks/useWebsiteBuilder";
 import { PALETTES, FONTS } from "@/app/(app)/brand/brandConfig";
+import { BrandData } from "@/lib/types/brandTypes";
+import { useBrandStore } from "@/store/brand.store";
 
 // normalize BrandData so we always have all fields
 function ensureBrand(prev: BrandData | null): BrandData {
   return {
     name: prev?.name ?? "",
     slogan: prev?.slogan ?? "",
+    logoSvg: prev?.logoSvg ?? null,
     palette: {
       primary: prev?.palette?.primary ?? PALETTES[0]?.primary ?? "#10b981",
       secondary:
@@ -25,26 +24,25 @@ function ensureBrand(prev: BrandData | null): BrandData {
   };
 }
 
-type DesignProps = {
-  brand: BrandData | null;
-  setBrand: Dispatch<SetStateAction<BrandData | null>>;
-};
+export function BuilderDesignPanel() {
+  const brand = useBrandStore((s) => s.brand);
+  const setBrand = useBrandStore((s) => s.setBrand);
 
-export function BuilderDesignPanel({ brand, setBrand }: DesignProps) {
   const current = ensureBrand(brand);
 
   const currentPaletteId =
     PALETTES.find(
       (p) =>
-        p.primary === current.palette.primary &&
-        p.secondary === current.palette.secondary
+        p.primary === current.palette?.primary &&
+        p.secondary === current.palette?.secondary
     )?.id ?? PALETTES[0]?.id;
 
   const currentFontId =
-    FONTS.find((f) => f.css === current.font.css)?.id ?? FONTS[0]?.id;
+    FONTS.find((f) => f.css === current.font?.css)?.id ?? FONTS[0]?.id;
 
   const handlePaletteChange = (paletteId: string) => {
     const p = PALETTES.find((x) => x.id === paletteId) ?? PALETTES[0];
+
     setBrand((prev) => {
       const base = ensureBrand(prev);
       return {
@@ -59,6 +57,7 @@ export function BuilderDesignPanel({ brand, setBrand }: DesignProps) {
 
   const handleFontChange = (fontId: string) => {
     const f = FONTS.find((x) => x.id === fontId) ?? FONTS[0];
+
     setBrand((prev) => {
       const base = ensureBrand(prev);
       return {
@@ -78,7 +77,6 @@ export function BuilderDesignPanel({ brand, setBrand }: DesignProps) {
         instantly.
       </p>
 
-      {/* Palettes */}
       <div>
         <h3 className="text-[11px] font-semibold text-secondary-dark mb-1">
           Color palette
@@ -118,7 +116,6 @@ export function BuilderDesignPanel({ brand, setBrand }: DesignProps) {
         </div>
       </div>
 
-      {/* Fonts */}
       <div>
         <h3 className="text-[11px] font-semibold text-secondary-dark mb-1">
           Font family

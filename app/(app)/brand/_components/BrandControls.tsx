@@ -28,23 +28,37 @@ export default function BrandControls({
     <div className="grid gap-4 md:grid-cols-3">
       {/* Idea input */}
       <div className="md:col-span-2 space-y-2">
-        <label className="block text-[11px] text-secondary-soft">
+        <label className="block text-[11px] font-medium text-secondary-dark">
           Business idea / keywords
         </label>
         <textarea
           value={idea}
           onChange={(e) => onIdeaChange(e.target.value)}
-          className="h-24 w-full rounded-md border border-secondary-active bg-slate-900 px-3 py-2 text-xs outline-none ring-primary/40 focus:ring-1"
+          className="
+          h-24 w-full resize-none
+          rounded-md
+          border border-secondary-fade
+          bg-secondary-soft
+          px-3 py-2
+          text-xs text-secondary-dark
+          placeholder:text-secondary
+          outline-none
+          ring-primary/30
+          focus:border-primary
+          focus:ring-1
+        "
           placeholder="Example: Minimal tea shop for young professionals, calm vibe, affordable."
         />
       </div>
 
       {/* Palette + font */}
       <div className="space-y-4">
+        {/* Palette */}
         <div>
-          <label className="block text-[11px] text-secondary-soft">
+          <label className="block text-[11px] font-medium text-secondary-dark">
             Color palette
           </label>
+
           <div className="mt-1 space-y-1">
             {PALETTES.map((p) => (
               <button
@@ -52,13 +66,14 @@ export default function BrandControls({
                 type="button"
                 onClick={() => onPaletteChange(p.id)}
                 className={[
-                  "flex w-full items-center justify-between rounded-md border px-3 py-1.5 text-[11px]",
+                  "flex w-full items-center justify-between rounded-md border px-3 py-1.5 text-[11px] transition",
                   selectedPaletteId === p.id
-                    ? "border-primary bg-slate-900"
-                    : "border-secondary-active bg-slate-950 hover:bg-slate-900",
+                    ? "border-primary bg-secondary-fade"
+                    : "border-secondary-light bg-secondary-light hover:bg-secondary-fade",
                 ].join(" ")}
               >
-                <span>{p.label}</span>
+                <span className="text-secondary-dark">{p.label}</span>
+
                 <span className="flex gap-1">
                   <span
                     className="h-3 w-3 rounded-full"
@@ -74,14 +89,25 @@ export default function BrandControls({
           </div>
         </div>
 
+        {/* Font */}
         <div>
-          <label className="block text-[11px] text-secondary-soft">
+          <label className="block text-[11px] font-medium text-secondary-dark">
             Font style
           </label>
+
           <select
             value={selectedFontId}
             onChange={(e) => onFontChange(e.target.value)}
-            className="mt-1 w-full rounded-md border border-secondary-active bg-slate-900 px-3 py-1.5 text-[11px] outline-none"
+            className="
+            mt-1 w-full
+            rounded-md
+            border border-secondary-fade
+            bg-secondary-soft
+            px-3 py-1.5
+            text-[11px] text-secondary-dark
+            outline-none
+            focus:border-primary
+          "
           >
             {FONTS.map((f) => (
               <option key={f.id} value={f.id}>
@@ -91,11 +117,20 @@ export default function BrandControls({
           </select>
         </div>
 
+        {/* Generate button */}
         <button
           type="button"
           onClick={onGenerate}
           disabled={loading}
-          className="mt-2 w-full rounded-md bg-primary px-3 py-1.5 text-[11px] font-medium text-slate-950 disabled:opacity-60"
+          className="
+          mt-2 w-full
+          rounded-md
+          bg-primary
+          px-3 py-1.5
+          text-[11px] font-medium text-white
+          hover:bg-primary-hover
+          disabled:opacity-60
+        "
         >
           {loading ? "Generating…" : "Generate brands"}
         </button>

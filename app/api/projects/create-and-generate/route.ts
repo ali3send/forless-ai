@@ -49,6 +49,7 @@ function toWebsiteData(ai: AiOut, websiteType: string): WebsiteData {
 
   return {
     type: websiteType,
+    template: "template1",
     brandName,
     hero: {
       headline: slogan,

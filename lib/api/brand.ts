@@ -1,14 +1,7 @@
 // lib/api/brand.ts
 // import type { WebsiteData } from "@/lib/websiteTypes";
-
 import { BrandData } from "../types/brandTypes";
-
-export type BrandPayload = {
-  name: string;
-  slogan: string;
-  palette: { primary: string; secondary: string };
-  font: { id: string; css: string };
-};
+import { getErrorMessage } from "../utils/getErrorMessage";
 
 export type GeneratedBrandFromApi = {
   name?: string;
@@ -50,6 +43,26 @@ export async function apiSaveProjectBrand(
   const json = await res.json().catch(() => ({} as any));
 
   if (!res.ok) {
-    throw new Error((json as any).error || "Failed to save brand");
+    const err = getErrorMessage(json, "Failed to save brand");
+    throw new Error(err);
   }
+}
+
+export async function apiGenerateLogo(payload: {
+  name: string;
+  idea?: string;
+}): Promise<string> {
+  const res = await fetch("/api/brand/generate-logo", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  const json = await res.json().catch(() => ({} as unknown));
+
+  if (!res.ok || !json.svg) {
+    throw new Error(json.error || "Failed to generate logo");
+  }
+
+  return json.svg as string;
 }

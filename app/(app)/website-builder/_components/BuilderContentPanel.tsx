@@ -1,9 +1,9 @@
-// app/website-builder/_components/BuilderContentPanel.tsx
 "use client";
+// import { useWebsiteBuilder } from "../hooks/useWebsiteBuilder";
+// import { useProjectStore } from "@/store/project.store";
 
-import type { Dispatch, SetStateAction } from "react";
-import type { WebsiteData } from "@/lib/types/websiteTypes";
-import type { BuilderSection } from "../builderSections";
+import { builderSections } from "../builderSections";
+import { useWebsiteStore } from "@/store/website.store";
 
 import { HeroSectionForm } from "./HeroSectionForm";
 import { AboutSectionForm } from "./AboutSectionForm";
@@ -11,64 +11,38 @@ import { FeaturesSectionForm } from "./FeatureSectionForm";
 import { ProductsSectionForm } from "./ProductsSectionForm";
 import { ContactSectionForm } from "./ContactSectionForm";
 
-type ContentProps = {
-  projectId: string;
-  section: BuilderSection;
-  setSection: Dispatch<SetStateAction<BuilderSection>>;
-  builderSections: ReadonlyArray<{ id: BuilderSection; label: string }>;
-  currentIndex: number;
-  isFirst: boolean;
-  isLast: boolean;
-
-  data: WebsiteData;
-  setData: Dispatch<SetStateAction<WebsiteData>>;
-
-  restoring: boolean;
-  handleRestoreSection: () => void;
-  generating: boolean;
+type Props = {
   onGenerate: () => void;
+  onRestore: () => void;
 };
 
-export function BuilderContentPanel({
-  section,
-  setSection,
-  builderSections,
-  currentIndex,
-  isFirst,
-  isLast,
-  data,
-  setData,
-  generating,
-  onGenerate,
-  restoring,
-  handleRestoreSection,
-  projectId,
-}: ContentProps) {
+export function BuilderContentPanel({ onGenerate, onRestore }: Props) {
+  const { data, setData, section, setSection, generating, restoring } =
+    useWebsiteStore();
+  const currentIndex = builderSections.findIndex((s) => s.id === section);
+  const isFirst = currentIndex <= 0;
+  const isLast = currentIndex === builderSections.length - 1;
+
   return (
     <>
-      {/* Header: Step row + Actions row (separate, mobile-safe) */}
       <div className="mb-3 w-full space-y-2">
-        {/* Row 1: Step info */}
         <div className="w-full">
           <span className="block text-xs text-secondary">
             Step {currentIndex + 1} of {builderSections.length}
           </span>
         </div>
 
-        {/* Row 2: Actions */}
         <div className="w-full">
           <div className="flex w-full justify-end gap-2">
-            {/* Restore */}
             <button
+              className="rounded-full border border-secondary-fade bg-secondary-soft px-4 py-1.5 text-[11px] font-semibold text-secondary-dark transition hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
               type="button"
-              onClick={handleRestoreSection}
+              onClick={onRestore}
               disabled={restoring || generating}
-              className="rounded-full border border-secondary-fade bg-secondary-light px-4 py-1.5 text-[11px] font-semibold text-secondary-dark transition hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
             >
               {restoring ? "Restoring..." : "Restore Previous"}
             </button>
 
-            {/* Re-generate */}
             <button
               type="button"
               onClick={onGenerate}
@@ -81,19 +55,17 @@ export function BuilderContentPanel({
         </div>
       </div>
 
-      {section === "hero" && (
-        <HeroSectionForm data={data} setData={setData} projectId={projectId} />
-      )}
+      {section === "hero" && <HeroSectionForm data={data} setData={setData} />}
 
       {section === "about" && (
-        <AboutSectionForm data={data} setData={setData} projectId={projectId} />
+        <AboutSectionForm data={data} setData={setData} />
       )}
 
       {section === "features" && (
         <FeaturesSectionForm data={data} setData={setData} />
       )}
 
-      {section === "products" && (
+      {section === "offers" && (
         <ProductsSectionForm data={data} setData={setData} />
       )}
 

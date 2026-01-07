@@ -7,6 +7,6 @@ export const SECTION_TO_DATA_KEY: Record<BuilderSection, DataSection> = {
   hero: "hero",
   about: "about",
   features: "features",
-  products: "offers", // 🔥 IMPORTANT
+  offers: "offers",
   contact: "contact",
 };

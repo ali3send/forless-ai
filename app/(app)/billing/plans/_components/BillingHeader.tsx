@@ -47,16 +47,22 @@ export default function BillingHeader(props: {
           ) : loading && !profile ? (
             <span className="text-xs text-secondary">Loading…</span>
           ) : profile ? (
-            <div className="rounded-lg border border-secondary-fade bg-secondary-soft px-3 py-2 shadow-sm">
-              <div className="text-[11px] text-secondary">Current plan</div>
-              <div className="text-sm font-semibold capitalize text-secondary-dark">
+            <div className="inline-flex items-center gap-2 rounded-full border border-secondary-fade bg-secondary-fade px-3 py-1.5">
+              <span className="text-[11px] text-secondary-active">
+                Current plan
+              </span>
+
+              <span className="h-3 w-px bg-secondary" />
+
+              <span className="text-[11px] font-semibold capitalize text-secondary-dark">
                 {currentPlan}
-                {statusText ? (
-                  <span className="ml-2 text-[11px] font-normal text-secondary">
-                    • {statusText}
-                  </span>
-                ) : null}
-              </div>
+              </span>
+
+              {statusText && (
+                <span className="text-[11px] text-secondary-active">
+                  • {statusText}
+                </span>
+              )}
             </div>
           ) : (
             <div className="rounded-lg border border-secondary-fade bg-secondary-soft px-3 py-2 shadow-sm">
@@ -68,7 +74,7 @@ export default function BillingHeader(props: {
           )}
 
           {hydrated && isPaidPlan && (
-            <button onClick={onManage} className="btn-secondary">
+            <button onClick={onManage} className="btn-fill">
               Manage
             </button>
           )}

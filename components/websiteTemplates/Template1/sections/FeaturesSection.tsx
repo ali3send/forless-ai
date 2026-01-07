@@ -1,38 +1,34 @@
-// components/website/sections/FeaturesSection.tsx
-import { withAlpha } from "../theme";
+import { FeaturesData } from "../../template.types";
 
-type FeatureItem = {
-  label: string;
-  description: string;
-};
-
-type FeaturesData = {
-  title: string;
-  items: FeatureItem[];
-};
-
-type Props = {
-  features: FeaturesData;
-  primary: string;
-};
-
-export function FeaturesSection({ features, primary }: Props) {
+export function FeaturesSection({ title, features }: FeaturesData) {
   return (
-    <section className="border-t border-secondary-dark">
+    <section
+      className="border-t"
+      style={{
+        borderColor:
+          "color-mix(in srgb, var(--color-primary) 18%, transparent)",
+      }}
+    >
       <div className="mx-auto max-w-5xl px-4 py-12">
-        <h2 className="text-xl font-semibold">{features.title}</h2>
+        <h2 className="text-xl font-semibold text-text">{title}</h2>
+
         <div className="mt-6 grid gap-6 md:grid-cols-3">
-          {features.items.map((item, i) => (
+          {features.map((feature, i) => (
             <div
               key={i}
-              className="rounded-2xl border border-secondary-dark bg-slate-900/50 p-4"
+              className="rounded-2xl border p-4"
               style={{
-                borderColor: withAlpha(primary, 0.22),
+                backgroundColor: "var(--color-surface)",
+                borderColor:
+                  "color-mix(in srgb, var(--color-primary) 22%, transparent)",
               }}
             >
-              <div className="text-sm font-medium">{item.label}</div>
-              <p className="mt-2 text-xs text-secondary-soft">
-                {item.description}
+              <div className="text-sm font-medium text-text">
+                {feature.label}
+              </div>
+
+              <p className="mt-2 text-xs text-(--color-muted)">
+                {feature.description}
               </p>
             </div>
           ))}

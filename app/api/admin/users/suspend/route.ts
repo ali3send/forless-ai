@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
+import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 
 const Schema = z.object({
   userId: z.string().min(1),
@@ -13,7 +14,7 @@ export async function POST(req: Request) {
   if (!admin.ok) {
     return NextResponse.json({ error: admin.error }, { status: admin.status });
   }
-
+  const supabase = createAdminSupabaseClient();
   const body = await req.json().catch(() => null);
   const parsed = Schema.safeParse(body);
   if (!parsed.success) {
@@ -34,10 +35,18 @@ export async function POST(req: Request) {
         suspended_reason: null,
       };
 
-  const { error } = await admin.supabase
+  const { error } = await supabase
     .from("profiles")
     .update(payload)
     .eq("id", userId);
+
+  await admin.supabase.from("activity_logs").insert({
+    type: "admin",
+    message: suspend ? "User suspended" : "User unsuspended",
+    actor_id: admin.user.id,
+    entity_id: userId,
+    entity_type: "user",
+  });
 
   if (error)
     return NextResponse.json({ error: error.message }, { status: 500 });

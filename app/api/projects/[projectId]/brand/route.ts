@@ -1,20 +1,16 @@
 // app/api/projects/[projectId]/brand/route.ts
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-
-type BrandData = {
-  name: string;
-  slogan: string;
-  palette: { primary: string; secondary: string } | null;
-  font: { id: string; css: string } | null;
-};
+import { BrandData } from "@/lib/types/brandTypes";
 
 function parseIncoming(body: any): Partial<BrandData> {
   const incoming: Partial<BrandData> = {};
 
   if (typeof body?.name === "string") incoming.name = body.name;
   if (typeof body?.slogan === "string") incoming.slogan = body.slogan;
-
+  if (typeof body?.logoSvg === "string" && body.logoSvg.startsWith("<svg")) {
+    incoming.logoSvg = body.logoSvg;
+  }
   if (
     body?.palette &&
     typeof body.palette.primary === "string" &&
@@ -40,14 +36,14 @@ function parseIncoming(body: any): Partial<BrandData> {
 function mergeBrand(
   existing: Partial<BrandData>,
   incoming: Partial<BrandData>
-) {
-  const merged: BrandData = {
+): BrandData {
+  return {
     name: incoming.name ?? existing.name ?? "",
     slogan: incoming.slogan ?? existing.slogan ?? "",
+    logoSvg: incoming.logoSvg ?? existing.logoSvg ?? null,
     palette: incoming.palette ?? existing.palette ?? null,
     font: incoming.font ?? existing.font ?? null,
   };
-  return merged;
 }
 
 async function getAuthedSupabaseAndProject(

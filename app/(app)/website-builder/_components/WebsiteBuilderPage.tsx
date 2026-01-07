@@ -1,39 +1,49 @@
-// app/website-builder/page.tsx
+// app/website-builder/_components/WebsiteBuilderPage.tsx
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import { WebsiteTemplateBasic } from "@/components/websiteTemplates/Template1/WebsiteTemplateBasic";
-import { useWebsiteBuilder } from "../hooks/useWebsiteBuilder";
+import { useParams } from "next/navigation";
+
+// import { WebsiteTemplateBasic } from "@/components/websiteTemplates/Template1/WebsiteTemplateBasic";
 import { BuilderSidebar } from "./BuilderSidebar";
+import { useWebsiteBuilder } from "../hooks/useWebsiteBuilder";
+
+import { useBrandStore } from "@/store/brand.store";
+import { useWebsiteStore } from "@/store/website.store";
+import { ThemeProvider } from "@/components/websiteTheme/ThemeProvider";
+import {
+  WEBSITE_TEMPLATES,
+  type TemplateKey,
+} from "@/components/websiteTemplates/templates";
+import { useProjectStore } from "@/store/project.store";
+import { useEffect } from "react";
 
 export default function WebsiteBuilderPage() {
-  const searchParams = useSearchParams();
-  const projectId = searchParams.get("projectId");
+  const { projectId } = useParams<{ projectId: string }>();
+  const setProjectId = useProjectStore((s) => s.setProjectId);
 
+  useEffect(() => {
+    if (projectId) {
+      setProjectId(projectId);
+    }
+  }, [projectId, setProjectId]);
+
+  const brand = useBrandStore((state) => state.brand);
+  const { data, loading, saving, generating, restoring } = useWebsiteStore();
+  const templateKey = (data.template ?? "template1") as TemplateKey;
+  const ActiveTemplate = WEBSITE_TEMPLATES[templateKey];
   const {
-    brand,
-    setBrand,
-    data,
-    setData,
-    section,
-    setSection,
-    loading,
-    saving,
-    saveMessage,
-    generating,
-    restoring, // ✅
     builderSections,
     currentIndex,
     isFirst,
     isLast,
     handleSave,
     handleGenerateWebsite,
-    handleRestoreSection, // ✅
+    handleRestoreSection,
   } = useWebsiteBuilder(projectId);
 
   if (!projectId) {
     return (
-      <div className="min-h-screen bg-secondary-soft flex items-center justify-center">
+      <div className="min-h-screen bg-secondary-fade  flex items-center justify-center">
         <p className="text-sm text-secondary">
           Missing <code>?projectId=...</code> in URL
         </p>
@@ -43,45 +53,42 @@ export default function WebsiteBuilderPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-secondary-soft flex items-center justify-center">
+      <div className="min-h-screen bg-secondary-fade flex items-center justify-center">
         <p className="text-sm text-secondary">Loading website...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-secondary-soft">
+    <div className="min-h-screen ">
       <div className="mx-auto flex max-w-full flex-col gap-6 px-0 sm:px-4 sm:py-6 lg:flex-row">
         <BuilderSidebar
           projectId={projectId}
-          section={section}
-          setSection={setSection}
           builderSections={builderSections}
           currentIndex={currentIndex}
           isFirst={isFirst}
           isLast={isLast}
-          data={data}
-          setData={setData}
-          brand={brand}
-          setBrand={setBrand}
           generating={generating}
-          restoring={restoring} // ✅
-          handleRestoreSection={handleRestoreSection} // ✅
+          restoring={restoring}
+          handleRestoreSection={handleRestoreSection}
           saving={saving}
-          saveMessage={saveMessage}
           onGenerate={handleGenerateWebsite}
           onSave={handleSave}
         />
 
         <main className="w-full overflow-hidden rounded-2xl border border-secondary-fade bg-secondary-light shadow-sm">
-          <WebsiteTemplateBasic
-            data={data}
-            theme={{
+          <ThemeProvider
+            value={{
               primary: brand?.palette?.primary,
               secondary: brand?.palette?.secondary,
               fontFamily: brand?.font?.css,
             }}
-          />
+          >
+            <ActiveTemplate data={data} brand={brand} />
+            {/* <WebsiteTemplateBasic data={data} brand={brand} /> */}
+            {/* <WebsiteTemplateAlt data={data} brand={brand} /> */}
+            {/* <WebsiteTemplateImmersive data={data} brand={brand} /> */}
+          </ThemeProvider>
         </main>
       </div>
     </div>

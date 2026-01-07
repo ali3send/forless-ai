@@ -2,7 +2,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
@@ -13,6 +12,8 @@ import PaidPlanCard from "./_components/PaidPlanCard";
 import { PLANS, FREE_FEATURES } from "./_data/plans";
 import type { BillingInterval, PaidPlan, Plan, Profile } from "./_lib/types";
 import { PROFILE_CACHE_KEY } from "./_lib/utils";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
+import { uiToast } from "@/lib/utils/uiToast";
 
 export default function BillingPlansPage() {
   const router = useRouter();
@@ -82,9 +83,9 @@ export default function BillingPlansPage() {
             JSON.stringify(nextProfile)
           );
         } catch {}
-      } catch (e: any) {
+      } catch (e: unknown) {
         if (!alive) return;
-        toast.error(e?.message ?? "Failed to load billing info");
+        uiToast.error(getErrorMessage(e, "Failed to load profile"));
       } finally {
         if (alive) setLoading(false);
       }
@@ -118,7 +119,7 @@ export default function BillingPlansPage() {
     plan: PaidPlan,
     billingInterval: BillingInterval
   ) {
-    const t = toast.loading("Redirecting to checkout…");
+    const t = uiToast.loading("Redirecting to checkout…");
     try {
       const res = await fetch("/api/stripe/checkout", {
         method: "POST",
@@ -141,17 +142,17 @@ export default function BillingPlansPage() {
       if (!res.ok) throw new Error(json?.error || "Failed to start checkout");
       if (!json?.url) throw new Error("Missing checkout URL");
 
-      toast.dismiss(t);
-      toast.success("Opening Stripe checkout…");
-      window.location.href = json.url;
-    } catch (e: any) {
-      toast.dismiss(t);
-      toast.error(e?.message ?? "Checkout failed");
+      uiToast.dismiss(t);
+      uiToast.success("Opening Stripe checkout…");
+      router.push(json.url);
+    } catch (e: unknown) {
+      uiToast.dismiss(t);
+      uiToast.error(getErrorMessage(e, "Could not start checkout"));
     }
   }
 
   async function openPortal() {
-    const t = toast.loading("Opening billing portal…");
+    const t = uiToast.loading("Opening billing portal…");
     try {
       const res = await fetch("/api/stripe/portal", {
         method: "POST",
@@ -166,12 +167,12 @@ export default function BillingPlansPage() {
       if (!res.ok) throw new Error(json?.error || "Failed to open portal");
       if (!json?.url) throw new Error("Missing portal URL");
 
-      toast.dismiss(t);
-      toast.success("Redirecting…");
-      window.location.href = json.url;
-    } catch (e: any) {
-      toast.dismiss(t);
-      toast.error(e?.message ?? "Could not open billing portal");
+      uiToast.dismiss(t);
+      uiToast.success("Redirecting…");
+      router.push(json.url);
+    } catch (e: unknown) {
+      uiToast.dismiss(t);
+      uiToast.error(getErrorMessage(e, "Could not open billing portal"));
     }
   }
 
@@ -214,7 +215,7 @@ export default function BillingPlansPage() {
         ))}
       </div>
 
-      <div className="mt-8 rounded-2xl border border-secondary-fade bg-secondary-soft p-5 shadow-sm">
+      <div className="mt-8 rounded-2xl border border-secondary-fade bg-secondary-fade p-5 shadow-sm">
         <div className="text-sm font-semibold text-secondary-dark">FAQ</div>
 
         <div className="mt-2 grid gap-3 text-sm text-secondary">

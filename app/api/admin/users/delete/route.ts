@@ -13,6 +13,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: admin.error }, { status: admin.status });
   }
 
+  const supabaseAdmin = createAdminSupabaseClient();
+
   const body = await req.json().catch(() => null);
   const parsed = Schema.safeParse(body);
   if (!parsed.success) {
@@ -21,25 +23,30 @@ export async function POST(req: Request) {
 
   const { userId } = parsed.data;
 
-  // 1) Delete from Auth (this is the real "user delete")
-  const supabaseAdmin = createAdminSupabaseClient();
+  // 1) Delete from Auth
+
   const { error: authErr } = await supabaseAdmin.auth.admin.deleteUser(userId);
   if (authErr) {
     return NextResponse.json({ error: authErr.message }, { status: 500 });
   }
 
   // 2) Clean up profile row
-  const { error: profileErr } = await admin.supabase
+  const { error: profileErr } = await supabaseAdmin
     .from("profiles")
     .delete()
     .eq("id", userId);
 
-  // If RLS blocks delete we can use the admin client to force delete
-  // await supabaseAdmin.from("profiles").delete().eq("id", userId);
-
   if (profileErr) {
     return NextResponse.json({ error: profileErr.message }, { status: 500 });
   }
+
+  await supabaseAdmin.from("activity_logs").insert({
+    type: "delete_user",
+    message: "Deleted user",
+    actor_id: admin.user.id,
+    entity_id: userId,
+    entity_type: "user",
+  });
 
   return NextResponse.json({ ok: true });
 }

@@ -1,23 +1,36 @@
 // app/brand/_components/BrandGenerator.tsx
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+
+import { useProjectStore } from "@/store/project.store";
+import { useBrandStore } from "@/store/brand.store";
+
 import {
   PALETTES,
   FONTS,
-  generateBrandOptions,
   type BrandOption,
 } from "@/app/(app)/brand/brandConfig";
+
 import BrandControls from "./BrandControls";
 import BrandOptionsList from "./BrandOptionsList";
+
 import {
   apiGenerateBrand,
+  apiGenerateLogo,
   apiSaveProjectBrand,
-  type BrandPayload,
 } from "@/lib/api/brand";
-import { apiGenerateWebsite, apiSaveWebsite } from "@/lib/api/website";
-import { toast } from "sonner";
+
+import {
+  apiGetGeneratedBrands,
+  apiSaveGeneratedBrands,
+} from "@/lib/api/brand-options";
+
+import { apiGenerateWebsiteWithBrand, apiGetWebsite } from "@/lib/api/website";
+import { BrandData } from "@/lib/types/brandTypes";
+import { uiToast } from "@/lib/utils/uiToast";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
 interface Props {
   projectId: string;
@@ -26,6 +39,14 @@ interface Props {
 
 export default function BrandGenerator({ projectId, projectIdea }: Props) {
   const router = useRouter();
+
+  const { setProjectId } = useProjectStore();
+  const { setBrand } = useBrandStore();
+
+  useEffect(() => {
+    setProjectId(projectId);
+  }, [projectId, setProjectId]);
+
   const [idea, setIdea] = useState(projectIdea || "");
   const [selectedPaletteId, setSelectedPaletteId] = useState("emerald-slate");
   const [selectedFontId, setSelectedFontId] = useState("sans");
@@ -42,40 +63,67 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
     [selectedFontId]
   );
 
+  useEffect(() => {
+    async function loadSavedBrands() {
+      try {
+        const saved = await apiGetGeneratedBrands(projectId);
+        if (saved && saved.length > 0) {
+          setGenerated(saved);
+        }
+      } catch (err) {
+        console.error("Failed to load saved brands", err);
+      }
+    }
+
+    loadSavedBrands();
+  }, [projectId]);
+
   async function handleGenerate() {
     if (!idea.trim()) {
-      toast.warning("Please enter a business idea to generate a brand.");
+      uiToast.warning("Please enter a business idea to generate a brand.");
       return;
     }
 
     setLoading(true);
     try {
       const rawBrands = await apiGenerateBrand(idea);
+      const options: BrandOption[] = [];
 
-      const options: BrandOption[] = rawBrands.slice(0, 3).map((b, idx) => ({
-        id: `brand-${idx}`,
-        name: String(b.name ?? "Untitled"),
-        slogan: String(b.slogan ?? ""),
-        primaryColor: selectedPalette.primary,
-        secondaryColor: selectedPalette.secondary,
-        font: selectedFont.css,
-      }));
+      for (let i = 0; i < rawBrands.slice(0, 3).length; i++) {
+        const b = rawBrands[i];
+
+        const logoSvg = await apiGenerateLogo({
+          name: b.name ?? "Brand",
+          idea,
+        });
+
+        options.push({
+          id: `brand-${i}`,
+          name: String(b.name ?? "Untitled"),
+          slogan: String(b.slogan ?? ""),
+          primaryColor: selectedPalette.primary,
+          secondaryColor: selectedPalette.secondary,
+          font: selectedFont.css,
+          logoSvg,
+        });
+      }
 
       setGenerated(options);
+      await apiSaveGeneratedBrands(projectId, options);
     } catch (err) {
       console.error(err);
-      toast.error("Failed to generate brand. " + (err as Error).message);
+      uiToast.error("Failed to generate brand. " + (err as Error).message);
     } finally {
       setLoading(false);
     }
   }
 
-  async function handleUse(option: BrandOption) {
+  async function handleBrandUse(option: BrandOption) {
     try {
-      // 1) Save brand_data
-      const brandPayload: BrandPayload = {
+      const brandPayload: BrandData = {
         name: option.name,
         slogan: option.slogan,
+        logoSvg: option.logoSvg,
         palette: {
           primary: option.primaryColor,
           secondary: option.secondaryColor,
@@ -85,23 +133,25 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
 
       await apiSaveProjectBrand(projectId, brandPayload);
 
-      // 2) Generate website JSON
-      const businessIdea =
-        idea.trim() || `${brandPayload.name} - ${brandPayload.slogan}`;
+      setBrand(brandPayload);
 
-      // const websiteData = await apiGenerateWebsite({
-      //   idea: businessIdea,
-      //   brand: brandPayload,
-      //   // websiteType: "product", // keep for future if needed
-      // });
+      const existingWebsite = await apiGetWebsite(projectId);
 
-      // 3) Save generated website to DB
-      // await apiSaveWebsite(projectId, websiteData);
+      if (!existingWebsite) {
+        const ideaText =
+          idea.trim() || `${brandPayload.name} - ${brandPayload.slogan}`;
 
-      // 4) Go to builder
-      router.push(`/website-builder?projectId=${projectId}`);
+        await apiGenerateWebsiteWithBrand({
+          projectId,
+          idea: ideaText,
+          brand: brandPayload,
+          websiteType: "product",
+        });
+      }
+
+      router.push(`/website-builder/${projectId}`);
     } catch (err) {
-      toast.error("Failed to use brand option. " + (err as Error).message);
+      uiToast.error(getErrorMessage(err, "Failed to use brand"));
     }
   }
 
@@ -109,7 +159,7 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
     <div className="space-y-6 text-xs">
       <div>
         <h1 className="text-xl font-semibold">Brand Generator</h1>
-        <p className="mt-1 text-secondary-light">
+        <p className="mt-1 text-secondary">
           Configure a color palette and font, then generate name, slogan and a
           simple SVG logo.
         </p>
@@ -126,7 +176,7 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
         onGenerate={handleGenerate}
       />
 
-      <BrandOptionsList options={generated} onUse={handleUse} />
+      <BrandOptionsList options={generated} onBrandUse={handleBrandUse} />
     </div>
   );
 }

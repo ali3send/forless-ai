@@ -1,83 +1,68 @@
-// components/website/sections/HeroSection.tsx
 import Link from "next/link";
 import Image from "next/image";
-import { withAlpha } from "../theme";
-import { useUnsplashImage } from "../hooks/useUnsplashImage";
-
-type HeroData = {
-  headline: string;
-  subheadline: string;
-  primaryCta: string;
-  primaryCtaLink?: string;
-  secondaryCta?: string;
-  secondaryCtaLink?: string;
-  imageUrl?: string;
-  imageQuery: string;
-};
+import { useUnsplashImage } from "../../hooks/useUnsplashImage";
+import { HeroData } from "../../template.types";
 
 type Props = {
   brandName: string;
   tagline: string;
   hero: HeroData;
-  primary: string;
-  primaryHover: string;
 };
 
-export function HeroSection({
-  brandName,
-  tagline,
-  hero,
-  primary,
-  primaryHover,
-}: Props) {
+export function HeroSection({ brandName, tagline, hero }: Props) {
   const heroImage = useUnsplashImage(hero.imageQuery);
   const imageSrc =
     hero.imageUrl && hero.imageUrl.trim() !== "" ? hero.imageUrl : heroImage;
-  // console.log("hero: ", hero);
 
   return (
     <section className="mx-auto grid max-w-5xl gap-8 px-4 py-12 md:grid-cols-2">
+      {/* Text */}
       <div>
         <p
           className="text-xs uppercase tracking-[0.2em]"
-          style={{ color: primaryHover }}
+          style={{ color: "var(--color-muted)" }}
         >
           {tagline}
         </p>
 
-        <h1 className="mt-3 text-3xl font-bold md:text-4xl">{hero.headline}</h1>
+        <h1 className="mt-3 text-3xl font-bold md:text-4xl text-text">
+          {hero.headline}
+        </h1>
 
-        <p
-          className="mt-4 text-sm text-secondary-soft"
-          style={{ color: primaryHover }}
-        >
-          {hero.subheadline}
-        </p>
+        <p className="mt-4 text-sm text-(--color-muted)">{hero.subheadline}</p>
 
         <div className="mt-6 flex flex-wrap gap-3">
+          {/* Primary CTA */}
           <Link
             href={hero.primaryCtaLink || "#"}
-            className="rounded-full cursor-pointer px-5 py-2 text-sm font-medium text-slate-950 transition"
-            style={{ backgroundColor: primary }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.backgroundColor =
-                String(primaryHover);
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.backgroundColor =
-                String(primary);
-            }}
+            className="
+              rounded-full
+              px-5 py-2
+              text-sm font-medium
+              transition
+              bg-primary
+              text-slate-950
+              hover:opacity-90
+            "
           >
             {hero.primaryCta}
           </Link>
+
+          {/* Secondary CTA */}
           {hero.secondaryCta && hero.secondaryCtaLink && (
             <Link
-              href={hero.secondaryCtaLink || "#"}
-              className="rounded-full border border-secondary-hover px-5 py-2 text-sm font-medium transition"
-              style={{
-                backgroundColor: withAlpha(primary, 0.08),
-                borderColor: withAlpha(primary, 0.35),
-              }}
+              href={hero.secondaryCtaLink}
+              className="
+                rounded-full
+                px-5 py-2
+                text-sm font-medium
+                transition
+                border
+                text-[text
+                bg-[color-mix(in_srgb,var(--color-primary)_8%,transparent)]
+                border-[color-mix(in_srgb,var(--color-primary)_35%,transparent)]
+                hover:bg-[color-mix(in_srgb,var(--color-primary)_14%,transparent)]
+              "
             >
               {hero.secondaryCta}
             </Link>
@@ -85,17 +70,25 @@ export function HeroSection({
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-secondary-dark bg-slate-900">
-        {heroImage ? (
+      {/* Image */}
+      <div
+        className="overflow-hidden rounded-2xl border"
+        style={{
+          backgroundColor: "var(--color-surface)",
+          borderColor:
+            "color-mix(in srgb, var(--color-primary) 20%, transparent)",
+        }}
+      >
+        {imageSrc ? (
           <Image
             src={imageSrc}
             alt={brandName}
             width={500}
             height={800}
-            className="object-cover"
+            className="h-full w-full object-cover"
           />
         ) : (
-          <div className="h-full w-full bg-secondary-dark animate-pulse" />
+          <div className="h-full w-full animate-pulse bg-(--color-surface)" />
         )}
       </div>
     </section>

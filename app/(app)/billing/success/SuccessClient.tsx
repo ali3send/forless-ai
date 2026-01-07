@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { toast } from "sonner";
+import { uiToast } from "@/lib/utils/uiToast";
 
 export default function SuccessClient() {
   const router = useRouter();
@@ -57,7 +57,7 @@ export default function SuccessClient() {
 
   useEffect(() => {
     if (seconds !== 0) return;
-    toast.success("Redirecting to dashboard…");
+    uiToast.success("Redirecting to dashboard…");
     router.push("/dashboard");
   }, [seconds, router]);
 

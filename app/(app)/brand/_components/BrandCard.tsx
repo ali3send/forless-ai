@@ -1,35 +1,36 @@
+// app/brand/_components/BrandCard.tsx
 "use client";
 
 import { useState } from "react";
 import type { BrandOption } from "@/app/(app)/brand/brandConfig";
-import LogoSvg from "./LogoSvg";
+import BrandLogo from "./BrandLogo";
 
 interface BrandCardProps {
   option: BrandOption;
-  onUse: (option: BrandOption) => Promise<void>;
+  onBrandUse: (option: BrandOption) => Promise<void>;
 }
 
-export default function BrandCard({ option, onUse }: BrandCardProps) {
+export default function BrandCard({ option, onBrandUse }: BrandCardProps) {
   const [loading, setLoading] = useState(false);
 
   async function handleClick() {
     if (loading) return;
     try {
       setLoading(true);
-      await onUse(option);
+      await onBrandUse(option);
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="flex h-full flex-col justify-between rounded-lg border border-secondary-dark bg-slate-900/60 p-3 text-xs">
+    <div className="flex h-full flex-col justify-between rounded-lg border border-secondary-light bg-secondary-soft p-3 text-xs">
       <div className="space-y-2">
         <div className="flex items-center gap-2">
-          <LogoSvg
-            name={option.name}
-            primaryColor={option.primaryColor}
-            secondaryColor={option.secondaryColor}
+          <BrandLogo
+            svg={option.logoSvg}
+            primary={option.primaryColor}
+            secondary={option.secondaryColor}
           />
           <div>
             <div
@@ -38,13 +39,11 @@ export default function BrandCard({ option, onUse }: BrandCardProps) {
             >
               {option.name}
             </div>
-            <div className="text-[11px] text-secondary-light">
-              {option.slogan}
-            </div>
+            <div className="text-[11px] text-secondary">{option.slogan}</div>
           </div>
         </div>
 
-        <div className="mt-2 flex items-center justify-between text-[10px] text-secondary">
+        <div className="mt-2 flex items-center justify-between text-[10px] text-secondary-active">
           <span>Palette</span>
           <span className="flex gap-1">
             <span
@@ -63,7 +62,7 @@ export default function BrandCard({ option, onUse }: BrandCardProps) {
         type="button"
         onClick={handleClick}
         disabled={loading}
-        className="mt-3 w-full rounded-md bg-primary px-3 py-1.5 text-[11px] font-medium text-slate-950 disabled:opacity-60"
+        className="mt-3 w-full rounded-md btn-fill px-3 py-1.5 text-[11px] font-medium disabled:opacity-60"
       >
         {loading ? "Creating website..." : "Use this brand"}
       </button>

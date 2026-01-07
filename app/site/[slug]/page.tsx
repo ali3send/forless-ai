@@ -2,54 +2,59 @@
 import { notFound } from "next/navigation";
 import { createPublicSupabaseClient } from "@/lib/supabase/public";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { WebsiteTemplateBasic } from "@/components/websiteTemplates/Template1/WebsiteTemplateBasic";
+import { ThemeProvider } from "@/components/websiteTheme/ThemeProvider";
+import {
+  WEBSITE_TEMPLATES,
+  type TemplateKey,
+} from "@/components/websiteTemplates/templates";
 
 export default async function SitePage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }) {
   const { slug } = await params;
-
   const publicSupabase = await createPublicSupabaseClient();
 
-  // 1) PUBLIC PATH: only published projects should be readable by anon (RLS-friendly)
-  const { data: publicProject, error: pubErr } = await publicSupabase
+  // ─────────────────────────────
+  // 1) PUBLIC PATH
+  // ─────────────────────────────
+  const { data: publicProject } = await publicSupabase
     .from("projects")
-    .select("id, published, brand_data, slug")
+    .select("id, published, brand_data")
     .eq("slug", slug)
     .eq("published", true)
     .maybeSingle();
 
-  if (pubErr) console.error("PUBLIC SITE: public project query error:", pubErr);
-
-  // If it's published, render publicly
   if (publicProject?.id) {
-    const { data: website, error: websiteErr } = await publicSupabase
+    const { data: website } = await publicSupabase
       .from("websites")
       .select("data")
       .eq("project_id", publicProject.id)
       .maybeSingle();
 
-    if (websiteErr)
-      console.error("PUBLIC SITE: website query error:", websiteErr);
-
     if (!website?.data) return notFound();
 
-    const theme =
-      (publicProject as any).brand_data?.theme ??
-      ((publicProject as any).brand_data
-        ? {
-            primary: (publicProject as any).brand_data.palette?.primary,
-            secondary: (publicProject as any).brand_data.palette?.secondary,
-            fontFamily: (publicProject as any).brand_data.font?.css,
-          }
-        : undefined);
+    const brand = publicProject.brand_data;
+    const templateKey = (website.data.template ?? "template1") as TemplateKey;
+    const ActiveTemplate = WEBSITE_TEMPLATES[templateKey];
 
-    return <WebsiteTemplateBasic data={website.data} theme={theme} />;
+    return (
+      <ThemeProvider
+        value={{
+          primary: brand?.palette?.primary,
+          secondary: brand?.palette?.secondary,
+          fontFamily: brand?.font?.css,
+        }}
+      >
+        <ActiveTemplate data={website.data} brand={brand} />;
+      </ThemeProvider>
+    );
   }
 
-  // 2) OWNER PREVIEW PATH: project is either unpublished OR public policy hid it
+  // ─────────────────────────────
+  // 2) OWNER PREVIEW PATH
+  // ─────────────────────────────
   const supabase = await createServerSupabaseClient();
   const {
     data: { user },
@@ -57,38 +62,35 @@ export default async function SitePage({
 
   if (!user) return notFound();
 
-  const { data: ownerProject, error: ownerErr } = await supabase
+  const { data: ownerProject } = await supabase
     .from("projects")
-    .select("id, published, brand_data, slug, user_id")
+    .select("id, brand_data")
     .eq("slug", slug)
-    .eq("user_id", user.id) // ✅ only owner's project
+    .eq("user_id", user.id)
     .maybeSingle();
-
-  if (ownerErr)
-    console.error("PUBLIC SITE: owner project query error:", ownerErr);
 
   if (!ownerProject) return notFound();
 
-  const { data: website, error: websiteErr } = await supabase
+  const { data: website } = await supabase
     .from("websites")
     .select("data")
     .eq("project_id", ownerProject.id)
     .maybeSingle();
 
-  if (websiteErr)
-    console.error("PUBLIC SITE: owner website query error:", websiteErr);
-
   if (!website?.data) return notFound();
 
-  const theme =
-    (ownerProject as any).brand_data?.theme ??
-    ((ownerProject as any).brand_data
-      ? {
-          primary: (ownerProject as any).brand_data.palette?.primary,
-          secondary: (ownerProject as any).brand_data.palette?.secondary,
-          fontFamily: (ownerProject as any).brand_data.font?.css,
-        }
-      : undefined);
-
-  return <WebsiteTemplateBasic data={website.data} theme={theme} />;
+  const brand = ownerProject.brand_data;
+  const templateKey = (website.data.template ?? "template1") as TemplateKey;
+  const ActiveTemplate = WEBSITE_TEMPLATES[templateKey];
+  return (
+    <ThemeProvider
+      value={{
+        primary: brand?.palette?.primary,
+        secondary: brand?.palette?.secondary,
+        fontFamily: brand?.font?.css,
+      }}
+    >
+      <ActiveTemplate data={website.data} brand={brand} />;
+    </ThemeProvider>
+  );
 }

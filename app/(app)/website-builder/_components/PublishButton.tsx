@@ -1,8 +1,9 @@
 // app/website-builder/_components/PublishButton.tsx
 "use client";
 
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
+import { uiToast } from "@/lib/utils/uiToast";
 import { useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
 
 type Props = {
   projectId: string;
@@ -39,7 +40,7 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
           headers: { "Cache-Control": "no-store" },
         });
 
-        const data = await res.json().catch(() => ({} as any));
+        const data = await res.json().catch(() => ({} as unknown));
         if (!res.ok) return;
 
         if (!cancelled) {
@@ -68,11 +69,11 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
   async function preview(open = true) {
     const cleanSlug = slugify(slug);
     if (!cleanSlug) {
-      toast.error("Please enter a subdomain (slug) to preview.");
+      uiToast.error("Please enter a subdomain (slug) to preview.");
       return;
     }
 
-    const t = toast.loading("Preparing preview…");
+    const t = uiToast.loading("Preparing preview…");
     try {
       const res = await fetch(`/api/projects/${projectId}/slug`, {
         method: "POST",
@@ -81,7 +82,7 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
         cache: "no-store",
       });
 
-      const json = await res.json().catch(() => ({} as any));
+      const json = await res.json().catch(() => ({} as unknown));
       if (!res.ok) throw new Error(json?.error || "Failed to prepare preview");
 
       const url = `${window.location.origin}${
@@ -89,10 +90,12 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
       }`;
       setPreviewUrl(url);
 
-      toast.success("Preview ready", { id: t });
+      uiToast.success("Preview ready");
       if (open) window.open(url, "_blank", "noreferrer");
-    } catch (e: any) {
-      toast.error(e?.message ?? "Preview failed", { id: t });
+    } catch (e: unknown) {
+      uiToast.error(getErrorMessage(e, "Failed to prepare preview"));
+    } finally {
+      uiToast.dismiss(t);
     }
   }
 
@@ -101,12 +104,12 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
 
     const cleanSlug = slugify(slug);
     if (!cleanSlug) {
-      toast.error("Please enter a subdomain (slug).");
+      uiToast.error("Please enter a subdomain (slug).");
       return;
     }
 
     setLoading(true);
-    const t = toast.loading("Publishing...");
+    const t = uiToast.loading("Publishing...");
 
     try {
       const res = await fetch(`/api/projects/${projectId}/publish`, {
@@ -115,11 +118,11 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
         body: JSON.stringify({ slug: cleanSlug }),
       });
 
-      const data = await res.json().catch(() => ({} as any));
-      toast.dismiss(t);
+      const data = await res.json().catch(() => ({} as unknown));
+      uiToast.dismiss(t);
 
       if (!res.ok) {
-        toast.error(data?.error || "Publish failed");
+        uiToast.error(data?.error || "Publish failed");
         return;
       }
 
@@ -130,10 +133,10 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
       if (data?.published_url) setPublishedUrl(data.published_url);
       if (data?.slug) setSlug(data.slug);
 
-      toast.success("Published successfully!");
+      uiToast.success("Published successfully!");
     } catch {
-      toast.dismiss(t);
-      toast.error("Publish failed");
+      uiToast.dismiss(t);
+      uiToast.error("Publish failed");
     } finally {
       setLoading(false);
     }
@@ -146,7 +149,7 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
 
   const hasLinks = !!previewUrl || !!finalUrl;
   return (
-    <div className="rounded-2xl border border-secondary-fade bg-secondary-light p-4 space-y-4">
+    <div className="rounded-2xl border border-secondary-fade bg-secondary-soft p-4 space-y-4">
       {/* Slug row */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
@@ -157,7 +160,7 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
           value={slug}
           onChange={(e) => setSlug(e.target.value)}
           placeholder="e.g., my-company"
-          className="input-base w-full border-none"
+          className="input-base w-full ring-1 ring-secondary border-none focus:ring-2 focus:ring-primary/60"
         />
       </div>
 

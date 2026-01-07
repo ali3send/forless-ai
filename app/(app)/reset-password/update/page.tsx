@@ -3,7 +3,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
-import { toast } from "sonner";
+import { uiToast } from "@/lib/utils/uiToast";
 
 export default function ResetPasswordUpdatePage() {
   const [supabase] = useState(() => createBrowserSupabaseClient());
@@ -27,7 +27,7 @@ export default function ResetPasswordUpdatePage() {
         setInfo(
           "This reset link is invalid or expired. Please request a new reset email."
         );
-        toast.error("Reset link invalid or expired.");
+        uiToast.error("Reset link invalid or expired.");
       }
     };
 
@@ -40,39 +40,39 @@ export default function ResetPasswordUpdatePage() {
     if (loading) return;
 
     if (newPassword.length < 6) {
-      toast.error("Password must be at least 6 characters.");
+      uiToast.error("Password must be at least 6 characters.");
       return;
     }
 
     if (newPassword !== confirm) {
-      toast.error("Passwords do not match.");
+      uiToast.error("Passwords do not match.");
       return;
     }
 
     setLoading(true);
-    const t = toast.loading("Updating password...");
+    const t = uiToast.loading("Updating password...");
 
     try {
       const { error } = await supabase.auth.updateUser({
         password: newPassword,
       });
 
-      toast.dismiss(t);
+      uiToast.dismiss(t);
 
       if (error) {
-        toast.error(error.message || "Failed to update password.");
+        uiToast.error(error.message || "Failed to update password.");
         return;
       }
 
-      toast.success("Password updated. Redirecting to login...");
+      uiToast.success("Password updated. Redirecting to login...");
 
       setTimeout(() => {
         router.push("/auth/login");
       }, 1200);
     } catch (err) {
       console.error(err);
-      toast.dismiss(t);
-      toast.error("Something went wrong. Please try again.");
+      uiToast.dismiss(t);
+      uiToast.error("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }

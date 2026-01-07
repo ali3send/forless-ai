@@ -3,7 +3,7 @@ import { z } from "zod";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 const schema = z.object({
-  projectId: z.string().uuid(),
+  projectId: z.uuid(),
   section: z.enum(["hero", "about", "features", "offers", "contact"]),
 });
 

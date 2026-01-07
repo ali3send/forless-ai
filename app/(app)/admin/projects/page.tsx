@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
+import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 
 type ProjectRow = {
   id: string;
@@ -12,9 +13,10 @@ type ProjectRow = {
 
 export default async function AdminProjectsPage() {
   const admin = await requireAdmin();
-  if (!admin.ok) redirect("/dashboard");
+  if (!admin.ok) redirect("/");
+  const supabase = createAdminSupabaseClient();
 
-  const { data, error } = await admin.supabase
+  const { data, error } = await supabase
     .from("projects")
     .select("id, name, slug, user_id, created_at, updated_at")
     .order("created_at", { ascending: false })
@@ -37,10 +39,6 @@ export default async function AdminProjectsPage() {
       {error ? (
         <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-700">
           Error loading projects: {error.message}
-          <div className="mt-2 text-secondary">
-            If this is an RLS issue, we’ll fix it in the next step without
-            breaking users.
-          </div>
         </div>
       ) : (
         <>

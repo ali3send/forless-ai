@@ -19,7 +19,7 @@ export async function PATCH(req: Request, context: RouteContext) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const body = await req.json().catch(() => ({} as any));
+  const body = await req.json().catch(() => ({} as unknown));
 
   const updates: { name?: string; status?: string } = {};
   if (typeof body.name === "string") updates.name = body.name;

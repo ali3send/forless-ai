@@ -3,11 +3,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  apiCreateAndGenerateProject,
-  apiCreateProject,
-} from "@/lib/api/project";
-import { toast } from "sonner";
+import { apiCreateProject } from "@/lib/api/project";
+import { uiToast } from "@/lib/utils/uiToast";
 
 export default function NewProjectModal() {
   const router = useRouter();
@@ -17,38 +14,39 @@ export default function NewProjectModal() {
   const [projectName, setProjectName] = useState("");
 
   //for create and generate direct from dashboard
-  async function handleCreateAndGenerate() {
+  async function handleCreateProject() {
     if (loading) return;
 
     const trimmedName = projectName.trim();
     const trimmedIdea = projectIdea.trim();
 
     if (!trimmedName) {
-      toast.error("Please enter a project name.");
+      uiToast.error("Please enter a project name.");
       return;
     }
 
     try {
       setLoading(true);
 
-      const result = await apiCreateAndGenerateProject({
+      // ✅ CREATE ONLY (no generation)
+      const result = await apiCreateProject({
         name: trimmedName,
-        idea: trimmedIdea || trimmedName,
+        description: trimmedIdea || trimmedName,
       });
-      toast.success("Project created and website generated!");
-      // Close modal
+
+      uiToast.success("Project created!");
+
+      // Reset UI
       setModalOpen(false);
       setProjectIdea("");
       setProjectName("");
 
-      // Go straight to builder
-      router.push(`/website-builder?projectId=${result.project.id}`);
+      // ✅ Redirect to project page
+      router.push(`/dashboard/projects/${result.id}`);
     } catch (err) {
       console.error(err);
-      toast.error(
-        err instanceof Error
-          ? err.message
-          : "Failed to create and generate project"
+      uiToast.error(
+        err instanceof Error ? err.message : "Failed to create project"
       );
     } finally {
       setLoading(false);
@@ -146,13 +144,10 @@ export default function NewProjectModal() {
                 onClick={() => setModalOpen(false)}
                 disabled={loading}
                 className="
-                rounded-lg
-                border border-secondary-fade
-                bg-secondary-light
                 px-4 py-2
-                text-xs font-semibold text-secondary-dark
-                hover:bg-secondary-hover
+                text-xs font-semibold
                 disabled:opacity-60
+                btn-secondary
               "
               >
                 Cancel
@@ -160,14 +155,14 @@ export default function NewProjectModal() {
 
               <button
                 type="button"
-                onClick={handleCreateAndGenerate}
+                onClick={handleCreateProject}
                 disabled={loading}
                 className="
                 rounded-lg
-                bg-primary
+                btn-fill
                 px-4 py-2
-                text-xs font-semibold text-white
-                hover:bg-primary-hover
+                text-xs font-semibold 
+              
                 disabled:opacity-60
               "
               >

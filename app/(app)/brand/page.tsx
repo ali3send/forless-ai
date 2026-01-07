@@ -37,7 +37,7 @@ export default async function BrandPage({ searchParams }: PageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-secondary-text">
+    <div className="min-h-screen bg-white ">
       <div className="mx-auto max-w-5xl px-4 py-8">
         <BrandGenerator
           projectId={projectId}

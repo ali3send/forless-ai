@@ -2,21 +2,16 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/providers";
-import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
+import { uiToast } from "@/lib/utils/uiToast";
 
 export function Navbar() {
-  const router = useRouter();
-  const { user, isAdmin } = useAuth();
-  const [supabase] = useState(() => createBrowserSupabaseClient());
-
+  const { user, isAdmin, logout } = useAuth();
   const [billingOpen, setBillingOpen] = useState(false);
   const billingRef = useRef<HTMLDivElement | null>(null);
-
   useEffect(() => {
     function onDocMouseDown(e: MouseEvent) {
       if (!billingOpen) return;
@@ -38,29 +33,29 @@ export function Navbar() {
     };
   }, [billingOpen]);
 
-  const handleLogout = async () => {
-    toast.error("are you sure you want to logout?", {
-      action: {
-        label: "Logout",
-        onClick: async () => {
-          const t = toast.loading("Logging out...");
-          try {
-            await supabase.auth.signOut();
-            router.push("/auth/login");
-            toast.success("Logged out successfully!");
-          } catch {
-            toast.error("Failed to log out.");
-          } finally {
-            toast.dismiss(t);
-          }
-        },
+  const handleLogout = () => {
+    uiToast.confirm({
+      title: "Are you sure you want to logout?",
+      confirmLabel: "Logout",
+      destructive: true,
+
+      onConfirm: async () => {
+        const t = uiToast.loading("Logging out...");
+
+        try {
+          await logout(); // 🔑 provider-controlled logout
+          window.location.href = "/auth/login"; // hard navigation
+        } catch (e: unknown) {
+          uiToast.error(e, "Failed to log out.");
+        } finally {
+          uiToast.dismiss(t);
+        }
       },
-      cancel: "Cancel",
     });
   };
 
   async function openBillingPortal() {
-    const t = toast.loading("Opening billing portal…");
+    const t = uiToast.loading("Opening billing portal…");
     try {
       const res = await fetch("/api/stripe/portal", {
         method: "POST",
@@ -76,12 +71,12 @@ export function Navbar() {
         throw new Error(json?.error || "Failed to open billing portal");
 
       if (!json?.url) throw new Error("Missing portal URL");
-      toast.dismiss(t);
-      toast.success("Redirecting…");
+      uiToast.dismiss(t);
+      uiToast.success("Redirecting…");
       window.location.href = json.url;
-    } catch (e: any) {
-      toast.dismiss(t);
-      toast.error(e?.message ?? "Could not open billing portal");
+    } catch (e: unknown) {
+      uiToast.dismiss(t);
+      uiToast.error(getErrorMessage(e, "Could not open billing portal"));
     }
   }
 
@@ -91,7 +86,7 @@ export function Navbar() {
   }, [user?.email]);
 
   return (
-    <header className="border-b border-secondary-fade bg-secondary-soft/90 backdrop-blur z-50">
+    <header className="border-b border-secondary-fade bg-secondary-fade backdrop-blur z-50">
       <nav className=" mx-auto flex items-center justify-between px-5  py-3">
         <Link href="/" className="">
           <div className=" overflow-hidden rounded-md">
@@ -151,7 +146,7 @@ export function Navbar() {
                       setBillingOpen(false);
                       openBillingPortal();
                     }}
-                    className="w-full text-left px-3 py-2 text-sm text-secondary-dark hover:bg-secondary-light"
+                    className="cursor-pointer block w-full text-left px-3 py-2 text-sm text-secondary-dark hover:bg-secondary-light"
                     role="menuitem"
                   >
                     <div className="font-semibold">Manage Subscription</div>
@@ -180,8 +175,8 @@ export function Navbar() {
                 Logout
               </button>
 
-              <button className="flex items-center gap-2 rounded-full border border-secondary-fade bg-secondary-light px-3 py-1.5 text-xs text-secondary-dark">
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-secondary-soft text-[10px] text-secondary-dark border border-secondary-fade">
+              <button className="flex items-center gap-2 rounded-full border border-secondary-fade bg-secondary-soft px-3 py-1.5 text-xs text-secondary-dark">
+                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-secondary-light text-[10px] text-secondary-dark ">
                   {userInitial}
                 </span>
                 <span className="hidden sm:inline text-secondary-darker">

@@ -1,12 +1,13 @@
 // lib/api/website.ts
 import type { WebsiteData } from "@/lib/types/websiteTypes";
-import type { BrandPayload } from "./brand";
+import { BrandData } from "../types/brandTypes";
+import { getErrorMessage } from "../utils/getErrorMessage";
 
 type SectionKey = "hero" | "about" | "features" | "offers" | "contact";
 
 type GenerateSectionPayload = {
   idea: string;
-  brand: BrandPayload;
+  brand: BrandData;
   section: SectionKey;
 };
 
@@ -19,11 +20,32 @@ export async function apiGenerateWebsite(
     body: JSON.stringify(payload),
   });
 
-  const json = await res.json().catch(() => ({} as any));
+  const json = await res.json().catch(() => ({} as unknown));
   if (!res.ok || !json.data)
     throw new Error(json.error || "Failed to generate section");
 
   return json.data as Pick<WebsiteData, SectionKey>;
+}
+
+export async function apiGenerateWebsiteWithBrand(payload: {
+  projectId: string;
+  idea: string;
+  brand: BrandData;
+  websiteType?: "product" | "service" | "business" | "personal";
+}): Promise<WebsiteData> {
+  const res = await fetch("/api/website/generate-with-brand", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  const json = await res.json().catch(() => ({} as unknown));
+
+  if (!res.ok || !json.success) {
+    throw new Error(json.error || "Failed to generate website");
+  }
+
+  return json.website as WebsiteData;
 }
 
 export async function apiSaveWebsite(
@@ -36,10 +58,11 @@ export async function apiSaveWebsite(
     body: JSON.stringify({ projectId, data }),
   });
 
-  const json = await res.json().catch(() => ({} as any));
+  const json = await res.json().catch(() => ({} as unknown));
 
   if (!res.ok) {
-    throw new Error((json as any).error || "Failed to save website");
+    const err = getErrorMessage(json, "Failed to save website");
+    throw new Error(err);
   }
 }
 
@@ -52,10 +75,9 @@ export async function apiGetWebsite(
     `/api/website?projectId=${encodeURIComponent(projectId)}`
   );
 
-  const json = await res.json().catch(() => ({} as any));
+  const json = await res.json().catch(() => ({} as unknown));
 
   if (!res.ok) {
-    // no website yet is not a hard error for the builder – just return null
     return null;
   }
 
@@ -65,8 +87,8 @@ export async function apiGetWebsite(
 }
 export async function apiSaveSectionHistory(payload: {
   projectId: string;
-  section: "hero" | "about" | "features" | "offers" | "contact";
-  prevSectionData: any; // section object only
+  section: SectionKey;
+  prevSectionData: unknown; // section object only
   maxSlots?: number; // default 2
 }): Promise<void> {
   const res = await fetch("/api/website/section-history", {
@@ -75,20 +97,20 @@ export async function apiSaveSectionHistory(payload: {
     body: JSON.stringify(payload),
   });
 
-  const json = await res.json().catch(() => ({} as any));
+  const json = await res.json().catch(() => ({} as unknown));
   if (!res.ok) throw new Error(json.error || "Failed to save section history");
 }
 export async function apiRestoreSection(payload: {
   projectId: string;
   section: "hero" | "about" | "features" | "offers" | "contact";
-}): Promise<{ sectionData: any }> {
+}): Promise<{ sectionData: unknown }> {
   const res = await fetch("/api/website/section-restore", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
 
-  const json = await res.json().catch(() => ({} as any));
+  const json = await res.json().catch(() => ({} as unknown));
   if (!res.ok) {
     throw new Error(json.error || "Failed to restore section");
   }

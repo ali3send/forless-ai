@@ -93,7 +93,7 @@ export function ContactSectionForm({ data, setData }: ContactSectionFormProps) {
       </label>
 
       {/* FINAL CTA CARD */}
-      <div className="rounded-xl border border-secondary-fade bg-secondary-light p-3 space-y-3 mt-6">
+      <div className="rounded-xl border border-secondary-fade bg-secondary-soft p-3 space-y-3 mt-6">
         <h4 className="text-xs font-semibold text-secondary-dark">
           Final CTA Box
         </h4>
@@ -110,7 +110,7 @@ export function ContactSectionForm({ data, setData }: ContactSectionFormProps) {
               }))
             }
             placeholder="Ready to get started?"
-            className="input-base"
+            className="input-base border-none ring-1 ring-secondary-light focus:ring-2 focus:ring-primary/50"
           />
         </label>
 
@@ -127,7 +127,7 @@ export function ContactSectionForm({ data, setData }: ContactSectionFormProps) {
             }
             rows={2}
             placeholder="We're here to help you move forward."
-            className="input-base"
+            className="input-base border-none ring-1 ring-secondary-light focus:ring-2 focus:ring-primary/50"
           />
         </label>
 
@@ -143,7 +143,7 @@ export function ContactSectionForm({ data, setData }: ContactSectionFormProps) {
               }))
             }
             placeholder="Contact Us"
-            className="input-base"
+            className="input-base border-none ring-1 ring-secondary-light focus:ring-2 focus:ring-primary/50"
           />
         </label>
       </div>

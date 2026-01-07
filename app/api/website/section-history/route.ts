@@ -6,7 +6,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 export const runtime = "nodejs";
 
 const schema = z.object({
-  projectId: z.string().uuid(),
+  projectId: z.uuid(),
   section: z.enum(["hero", "about", "features", "offers", "contact"]),
   prevSectionData: z.any(),
   maxSlots: z.number().int().min(1).max(10).optional().default(2),

@@ -1,3 +1,4 @@
+// app/api/website/generate/route.ts
 import { NextResponse } from "next/server";
 import { openai } from "@/lib/openai";
 import { createServerSupabaseClient } from "@/lib/supabase/server";

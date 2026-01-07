@@ -40,15 +40,22 @@
   --color-text-muted: #94a3b8;
 
   --font-sans: Arial, Helvetica, sans-serif;
+
+
+    --color-accent: #ff6b10;          /* base accent */
+  --color-accent-hover: #ff812e;    /* lighter for hover */
+  --color-accent-active: #e85d00;   /* pressed / active */
+  --color-accent-soft: #ff6b10cc;   /* soft / translucent use */
 }
 @layer components {
 .input-base {
   @apply mt-1 w-full rounded-md
-         border border-secondary-fade
+         
          bg-secondary-soft
          px-2 py-1 text-xs
          text-secondary-dark
          placeholder:text-secondary
+         ring-1 ring-secondary
          focus:outline-none
          
          focus:ring-2 focus:ring-primary/50
@@ -56,10 +63,10 @@
 }
 
   .btn-fill{
-    @apply   rounded-md bg-primary  py-1 px-4  text-sm  text-secondary-fade shadow-sm font-semibold hover:bg-primary-active cursor-pointer
+    @apply   rounded-md bg-primary  py-1 px-4  text-sm  text-white shadow-sm font-semibold hover:bg-primary-active cursor-pointer
   }
   .btn-secondary{
-    @apply  rounded-md  bg-secondary px-4 py-1 text-sm text-secondary-fade font-semibold hover:bg-secondary-hover transition cursor-pointer
+    @apply  rounded-md  bg-secondary px-4 py-1 text-sm text-white font-semibold hover:bg-secondary-hover transition cursor-pointer
   }
 }
 

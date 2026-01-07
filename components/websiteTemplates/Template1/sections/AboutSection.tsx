@@ -1,49 +1,49 @@
-// components/website/sections/AboutSection.tsx
 import Image from "next/image";
-import { useUnsplashImage } from "../hooks/useUnsplashImage";
+import { useUnsplashImage } from "../../hooks/useUnsplashImage";
+import { AboutData } from "../../template.types";
 
-type AboutData = {
-  title: string;
-  body: string;
-  imageQuery: string;
-  imageUrl?: string;
-};
-
-type Props = {
-  about: AboutData;
-};
-
-export function AboutSection({ about }: Props) {
-  // Unsplash fallback
-  const unsplashImage = useUnsplashImage(about.imageQuery);
+export function AboutSection({ title, body, imageQuery, imageUrl }: AboutData) {
+  const unsplashImage = useUnsplashImage(imageQuery);
 
   const imageSrc =
-    about.imageUrl && about.imageUrl.trim() !== ""
-      ? about.imageUrl
-      : unsplashImage;
+    imageUrl && imageUrl.trim() !== "" ? imageUrl : unsplashImage;
 
   return (
     <section
       id="about"
-      className="border-t border-secondary-dark bg-slate-900/40"
+      className="border-t"
+      style={{
+        backgroundColor: "color-mix(in srgb, var(--color-bg) 92%, black)",
+        borderColor:
+          "color-mix(in srgb, var(--color-primary) 18%, transparent)",
+      }}
     >
       <div className="mx-auto grid max-w-5xl gap-8 px-4 py-12 md:grid-cols-2">
+        {/* Text */}
         <div>
-          <h2 className="text-xl font-semibold">{about.title}</h2>
-          <p className="mt-4 text-sm text-secondary-soft">{about.body}</p>
+          <h2 className="text-xl font-semibold text-text">{title}</h2>
+          <p className="mt-4 text-sm text-(--color-muted)">{body}</p>
         </div>
 
-        <div className="overflow-hidden rounded-2xl border border-secondary-dark">
+        {/* Image */}
+        <div
+          className="overflow-hidden rounded-2xl border"
+          style={{
+            backgroundColor: "var(--color-surface)",
+            borderColor:
+              "color-mix(in srgb, var(--color-primary) 22%, transparent)",
+          }}
+        >
           {imageSrc ? (
             <Image
               src={imageSrc}
-              alt={about.title}
+              alt={title}
               width={500}
               height={800}
               className="h-full w-full object-cover"
             />
           ) : (
-            <div className="h-full w-full animate-pulse bg-secondary-dark" />
+            <div className="h-full w-full animate-pulse bg-(--color-surface)" />
           )}
         </div>
       </div>

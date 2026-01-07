@@ -1,10 +1,7 @@
 // components/website/WebsiteTemplateBasic.tsx
 "use client";
 
-import type React from "react";
-import { WebsiteData } from "@/lib/types/websiteTypes";
-import type { Theme } from "./theme";
-import { resolveTheme } from "./theme";
+import type { WebsiteData } from "@/lib/types/websiteTypes";
 
 import { Navbar } from "./sections/Navbar";
 import { HeroSection } from "./sections/HeroSection";
@@ -13,46 +10,44 @@ import { FeaturesSection } from "./sections/FeaturesSection";
 import { OffersSection } from "./sections/OffersSection";
 import { ContactSection } from "./sections/ContactSection";
 import { Footer } from "./sections/Footer";
+import { BrandData } from "@/lib/types/brandTypes";
 
 type Props = {
   data: WebsiteData;
-  theme?: Theme;
+  brand: BrandData | null;
 };
 
-export function WebsiteTemplateBasic({ data, theme }: Props) {
-  // console.log("from template data: ", data);
-  const { style, primary, primaryHover, secondary } = resolveTheme(theme);
+export function WebsiteTemplateBasic({ data, brand }: Props) {
   return (
-    <div
-      className="min-h-screen bg-slate-950 text-white"
-      style={style as React.CSSProperties}
-    >
-      <Navbar brandName={data.brandName} offersTitle={data.offers.title} />
+    <div className="min-h-screen bg-(--color-bg) text-text">
+      <Navbar
+        brandName={data.brandName}
+        primary={brand?.palette?.primary ?? "#10b981"}
+        offersTitle={data.offers.title}
+        logoSvg={brand?.logoSvg ?? null}
+      />
 
       <HeroSection
         brandName={data.brandName}
         tagline={data.tagline}
         hero={data.hero}
-        primary={primary}
-        primaryHover={primaryHover}
       />
 
-      <AboutSection about={data.about} />
-
-      <FeaturesSection features={data.features} primary={primary} />
-
-      <OffersSection
-        offers={data.offers}
-        primary={primary}
-        primaryHover={primaryHover}
+      <AboutSection
+        title={data.about.title}
+        body={data.about.body}
+        imageQuery={data.about.imageQuery}
+        imageUrl={data.about.imageUrl}
       />
 
-      <ContactSection
-        contact={data.contact}
-        finalCta={data.finalCta}
-        primary={primary}
-        primaryHover={primaryHover}
+      <FeaturesSection
+        title={data.features.title}
+        features={data.features.items}
       />
+
+      <OffersSection title={data.offers.title} offers={data.offers.items} />
+
+      <ContactSection contact={data.contact} finalCta={data.finalCta} />
 
       <Footer brandName={data.brandName} />
     </div>
