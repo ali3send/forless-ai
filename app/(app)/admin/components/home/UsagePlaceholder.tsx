@@ -5,7 +5,7 @@ import { ResponsiveContainer, AreaChart, Area, XAxis, Tooltip } from "recharts";
 type UsagePoint = {
   date: string;
   projects: number;
-  // users: number;
+  users: number;
   sites: number;
 };
 
@@ -25,10 +25,10 @@ export default function UsagePlaceholder({ data }: { data: UsagePoint[] }) {
                 <stop offset="100%" stopColor="#2563eb" stopOpacity={0} />
               </linearGradient>
 
-              {/* <linearGradient id="users" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="users" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#16a34a" stopOpacity={0.35} />
                 <stop offset="100%" stopColor="#16a34a" stopOpacity={0} />
-              </linearGradient> */}
+              </linearGradient>
 
               <linearGradient id="sites" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#f97316" stopOpacity={0.35} />

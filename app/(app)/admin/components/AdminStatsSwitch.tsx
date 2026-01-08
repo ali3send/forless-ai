@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import KpiGrid from "./home/KPIGrid";
+// import KpiGrid from "./home/KPIGrid";
 
 export default function AdminStatsSwitch({
   data,

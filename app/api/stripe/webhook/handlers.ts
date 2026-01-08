@@ -11,19 +11,6 @@ import {
 } from "./utils";
 
 const supabase = createAdminSupabaseClient();
-async function logActivity(input: {
-  userId: string;
-  type: "billing" | "subscription";
-  message: string;
-  meta?: Record<string, any>;
-}) {
-  await supabase.from("activity_logs").insert({
-    user_id: input.userId,
-    type: input.type,
-    message: input.message,
-    meta: input.meta ?? null,
-  });
-}
 
 async function updateByUserId(userId: string, patch: Record<string, any>) {
   const { data, error } = await supabase

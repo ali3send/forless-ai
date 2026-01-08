@@ -44,7 +44,7 @@ function KpiCard({
   );
 }
 
-export default function KpiGrid({ stats, range }) {
+export default function KpiGrid({ stats, range }: any) {
   const label = rangeLabel(range);
 
   return (
