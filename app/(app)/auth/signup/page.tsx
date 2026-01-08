@@ -40,6 +40,12 @@ export default function SignupPage() {
 
       if (error) throw error;
 
+      await supabase.from("activity_logs").insert({
+        type: "new_user_created",
+        message: "New user Signed up",
+        entity_type: "user",
+      });
+
       uiToast.dismiss(t);
       uiToast.success("Account created! Please check your email to verify.");
     } catch (err: unknown) {

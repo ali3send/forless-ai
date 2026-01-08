@@ -38,7 +38,7 @@ export async function POST(req: Request) {
   }
   await supabase.from("activity_logs").insert({
     type: "project",
-    message: "Website published",
+    message: "Website unpublished",
     actor_id: admin.user.id,
     entity_id: projectId,
     entity_type: "project",
