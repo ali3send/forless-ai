@@ -9,7 +9,7 @@ export const PLAN_LIMITS: Record<PlanKey, Record<string, number>> = {
   },
   gowebsite: {
     website_generate: 1,
-    website_regen: 1,
+    website_regen: 10,
     websites_published: 1,
     projects: 1,
   },
