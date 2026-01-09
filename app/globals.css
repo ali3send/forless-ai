@@ -72,6 +72,13 @@
 
 
 
+.scrollbar-hide {
+  scrollbar-width: none; /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
 
 /* dark mode */
 .dark {

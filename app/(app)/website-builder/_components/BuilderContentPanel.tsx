@@ -47,60 +47,88 @@ export function BuilderContentPanel({ onGenerate, onRestore }: Props) {
   return (
     <>
       {/* ───────────────── Header ───────────────── */}
-      <div className="mb-3 w-full space-y-2">
-        <div className="w-full">
-          <span className="block text-xs text-secondary">
-            Step {currentIndex + 1} of {builderSections.length}
-          </span>
-        </div>
-
-        <div className="w-full">
-          <div className="flex w-full justify-end gap-2">
-            {/* Restore */}
-            <button
-              type="button"
-              onClick={onRestore}
-              disabled={restoring || generating}
-              className="rounded-full border border-secondary-fade bg-secondary-soft px-4 py-1.5 text-[11px] font-semibold text-secondary-dark transition
-                hover:border-primary hover:text-primary
-                disabled:opacity-50 disabled:cursor-not-allowed
-                active:scale-[0.98]"
-            >
-              {restoring ? "Restoring..." : "Restore Previous"}
-            </button>
-
-            {/* Regenerate */}
-            <button
-              type="button"
-              onClick={handleGenerate}
-              disabled={regenDisabled}
-              className="rounded-full bg-primary px-4 py-1.5 text-[11px] font-semibold text-white transition
-                hover:bg-primary-hover
-                disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {generating
-                ? "Generating..."
-                : regenRemaining <= 0
-                ? "Upgrade to regenerate"
-                : "Regenerate"}
-            </button>
+      <div className="mb-4 w-full space-y-3">
+        {/* Step header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-sm font-semibold text-secondary-dark">
+            <span>Section</span>
+            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-primary">
+              {currentIndex + 1}/{builderSections.length}
+            </span>
           </div>
 
-          {/* Quota indicator */}
-          {!regenLoading && regenUsage && (
-            <div
-              className={`mt-0.5 text-right text-[11px] ${
-                regenRemaining === 0
-                  ? "text-red-600"
-                  : regenRemaining <= 1
-                  ? "text-yellow-600"
-                  : "text-secondary"
-              }`}
-            >
-              {regenRemaining}/{regenUsage.limit} regenerations left
-            </div>
-          )}
+          <div className="text-xs font-medium text-secondary capitalize">
+            {builderSections[currentIndex]?.label}
+          </div>
         </div>
+
+        {/* Actions */}
+        <div className="flex items-center justify-end gap-2">
+          <button
+            type="button"
+            onClick={onRestore}
+            disabled={restoring || generating}
+            className="rounded-full border border-secondary-fade bg-secondary-soft px-4 py-1.5 text-[11px] font-semibold text-secondary-dark transition
+        hover:border-primary hover:text-primary
+        disabled:opacity-50 disabled:cursor-not-allowed
+        active:scale-[0.97]"
+          >
+            {restoring ? "Restoring..." : "Restore"}
+          </button>
+
+          <button
+            type="button"
+            onClick={handleGenerate}
+            disabled={regenDisabled}
+            className="rounded-full bg-primary px-4 py-1.5 text-[11px] font-semibold text-white transition
+        hover:bg-primary-hover
+        disabled:bg-primary/60 disabled:cursor-not-allowed"
+          >
+            {generating
+              ? "Generating..."
+              : regenRemaining <= 0
+              ? "Upgrade to regenerate"
+              : "Regenerate"}
+          </button>
+        </div>
+
+        {/* Quota */}
+        {!regenLoading && regenUsage && (
+          <div
+            className={`text-right text-[11px] -mt-2 ${
+              regenRemaining === 0
+                ? "text-red-600"
+                : regenRemaining <= 1
+                ? "text-yellow-600"
+                : "text-secondary"
+            }`}
+          >
+            {regenRemaining}/{regenUsage.limit} regenerations left
+          </div>
+        )}
+      </div>
+
+      <div className="flex rounded-lg bg-secondary-soft p-1">
+        {builderSections.map((s) => {
+          const active = s.id === section;
+
+          return (
+            <button
+              key={s.id}
+              onClick={() => setSection(s.id)}
+              className={`
+          flex-1 rounded-md px-2 py-1.5 text-xs font-semibold transition
+          ${
+            active
+              ? "text-white bg-primary shadow-sm"
+              : "text-secondary hover:text-secondary-dark"
+          }
+        `}
+            >
+              {s.label}
+            </button>
+          );
+        })}
       </div>
 
       {/* ───────────────── Section Forms ───────────────── */}
