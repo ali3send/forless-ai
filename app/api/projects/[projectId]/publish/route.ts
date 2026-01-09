@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { PLAN_LIMITS, type PlanKey } from "@/lib/billing/planLimits";
 import { urls } from "@/lib/config/urls";
+import { checkUsage } from "@/lib/usage/checkUsage";
+import { commitUsage } from "@/lib/usage/commitUsage";
 
 function slugify(text: string) {
   return text
@@ -11,19 +12,6 @@ function slugify(text: string) {
     .replace(/^-+|-+$/g, "");
 }
 
-function normalizePlan(plan: string | null): PlanKey {
-  if (plan === "gowebsite" || plan === "creator" || plan === "pro") return plan;
-  return "free";
-}
-
-function nextMonthStartISO() {
-  const now = new Date();
-  const next = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1)
-  );
-  return next.toISOString();
-}
-
 export async function POST(
   req: Request,
   context: { params: Promise<{ projectId: string }> }
@@ -31,6 +19,8 @@ export async function POST(
   const { projectId } = await context.params;
 
   const supabase = await createServerSupabaseClient();
+
+  // ── Auth
   const {
     data: { user },
     error: userError,
@@ -40,6 +30,7 @@ export async function POST(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  // ── Body
   const body = await req.json().catch(() => ({}));
   const slug = slugify(body.slug || "");
 
@@ -49,6 +40,7 @@ export async function POST(
 
   const publishedUrl = urls.site(slug);
 
+  // ── Profile
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("plan, is_suspended, current_period_end")
@@ -63,67 +55,42 @@ export async function POST(
     return NextResponse.json({ error: "Account suspended" }, { status: 403 });
   }
 
-  const plan = normalizePlan(profile.plan);
-  const limit = PLAN_LIMITS[plan]?.websites_published ?? 0;
-
-  const periodEndISO = profile.current_period_end
-    ? new Date(profile.current_period_end).toISOString()
-    : nextMonthStartISO();
-
-  if (limit <= 0) {
-    return NextResponse.json(
-      { error: "Publishing is not available on your plan. Please upgrade." },
-      { status: 403 }
-    );
-  }
-
-  const { count: publishedCount, error: countError } = await supabase
+  // ── Load project
+  const { data: project, error: projectError } = await supabase
     .from("projects")
-    .select("id", { count: "exact", head: true })
-    .eq("user_id", user.id)
-    .eq("published", true);
-
-  if (countError) {
-    return NextResponse.json(
-      { error: "Failed to check publish usage" },
-      { status: 500 }
-    );
-  }
-
-  const { data: currentProject, error: currentErr } = await supabase
-    .from("projects")
-    .select("published")
+    .select("id, published")
     .eq("id", projectId)
     .eq("user_id", user.id)
     .single();
 
-  if (currentErr || !currentProject) {
+  if (projectError || !project) {
     return NextResponse.json({ error: "Project not found" }, { status: 404 });
   }
 
-  const alreadyPublished = !!currentProject.published;
+  const alreadyPublished = !!project.published;
 
-  if (!alreadyPublished && (publishedCount ?? 0) >= limit) {
-    return NextResponse.json(
-      {
-        error:
-          "Publish limit reached for your plan. Upgrade to publish more sites.",
-      },
-      { status: 403 }
-    );
+  // ── CHECK usage (only on first publish)
+  if (!alreadyPublished) {
+    const usage = await checkUsage({
+      userId: user.id,
+      projectId: null,
+      key: "websites_published",
+      plan: profile.plan ?? "free",
+      currentPeriodEnd: profile.current_period_end,
+    });
+
+    if (!usage.ok) {
+      return NextResponse.json(
+        {
+          error:
+            "Publish limit reached for your plan. Upgrade to publish more sites.",
+        },
+        { status: 403 }
+      );
+    }
   }
 
-  const { data: counterRow } = await supabase
-    .from("usage_counters")
-    .select("count")
-    .eq("user_id", user.id)
-    .eq("project_id", null)
-    .eq("key", "websites_published")
-    .eq("period_end", periodEndISO)
-    .maybeSingle();
-
-  const used = counterRow?.count ?? 0;
-
+  // ── Slug uniqueness
   const { data: existing } = await supabase
     .from("projects")
     .select("id")
@@ -131,9 +98,13 @@ export async function POST(
     .maybeSingle();
 
   if (existing && existing.id !== projectId) {
-    return NextResponse.json({ error: "Slug already taken" }, { status: 409 });
+    return NextResponse.json(
+      { error: "Subdomain already taken. Please choose another" },
+      { status: 409 }
+    );
   }
 
+  // ── Publish project
   const { error: updateError } = await supabase
     .from("projects")
     .update({
@@ -149,18 +120,14 @@ export async function POST(
     return NextResponse.json({ error: updateError.message }, { status: 500 });
   }
 
+  // ── COMMIT usage + activity (only first publish)
   if (!alreadyPublished) {
-    await supabase.from("usage_counters").upsert(
-      {
-        user_id: user.id,
-        project_id: null,
-        key: "websites_published",
-        period_end: periodEndISO,
-        count: used + 1,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "user_id,project_id,key,period_end" }
-    );
+    await commitUsage({
+      userId: user.id,
+      projectId: null,
+      key: "websites_published",
+      currentPeriodEnd: profile.current_period_end,
+    });
 
     await supabase.from("activity_logs").insert({
       type: "website_published",
