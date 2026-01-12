@@ -1,6 +1,6 @@
 // import type { PaidPlan } from "../_lib/types";
 
-import { PaidPlan } from "@/app/(app)/billing/plans/_lib/types";
+import { PaidPlan } from "@/lib/billing/types/types";
 function calculateYearlySavings(monthly: number, yearly: number) {
   const fullYear = monthly * 12;
   const savePercent = Math.round(((fullYear - yearly) / fullYear) * 100);

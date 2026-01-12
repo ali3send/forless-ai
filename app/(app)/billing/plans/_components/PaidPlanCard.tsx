@@ -2,9 +2,15 @@
 "use client";
 
 import { useState } from "react";
-import type { BillingInterval, PaidPlan, Plan, Profile } from "../_lib/types";
+
 import { cx } from "../_lib/utils";
 import BillingIntervalToggle from "@/app/(app)/components/BillingIntervalToggle";
+import {
+  BillingInterval,
+  PaidPlan,
+  Plan,
+  Profile,
+} from "@/lib/billing/types/types";
 
 export default function PaidPlanCard(props: {
   plan: {
@@ -96,7 +102,6 @@ export default function PaidPlanCard(props: {
               </span>
             ) : null}
           </div>
-
           <div className="mt-1 text-sm text-secondary">{p.tagline}</div>
         </div>
       </div>
