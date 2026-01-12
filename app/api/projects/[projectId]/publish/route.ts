@@ -4,6 +4,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { urls } from "@/lib/config/urls";
 import { checkUsage } from "@/lib/usage/checkUsage";
 import { commitUsage } from "@/lib/usage/commitUsage";
+import { revalidatePath } from "next/cache";
 
 function slugify(text: string) {
   return text
@@ -125,6 +126,8 @@ export async function POST(
   if (updateError) {
     return NextResponse.json({ error: updateError.message }, { status: 500 });
   }
+  revalidatePath(`/site/${slug}`);
+  revalidatePath(`/preview/${slug}`);
 
   /* ───────── USAGE COMMIT ───────── */
   if (!alreadyPublished) {

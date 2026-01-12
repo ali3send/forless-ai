@@ -3,6 +3,7 @@ export const dynamic = "force-static";
 export const revalidate = false;
 
 import { notFound } from "next/navigation";
+import { unstable_cache } from "next/cache";
 import { createPublicSupabaseClient } from "@/lib/supabase/public";
 import { ThemeProvider } from "@/components/websiteTheme/ThemeProvider";
 import {
@@ -12,11 +13,33 @@ import {
 import { WebsiteData } from "@/lib/types/websiteTypes";
 import { BrandData } from "@/lib/types/brandTypes";
 
+function getPublishedSite(slug: string) {
+  return unstable_cache(
+    async () => {
+      const supabase = createPublicSupabaseClient();
+
+      const { data } = await supabase
+        .from("projects")
+        .select("published_website_data, brand_data")
+        .eq("slug", slug)
+        .eq("published", true)
+        .single();
+
+      return data;
+    },
+    ["published-site", slug],
+    {
+      tags: [`site:${slug}`],
+    }
+  )();
+}
+
 function renderSite(data: WebsiteData, brand: BrandData | null) {
   const templateKey = (data.template ?? "template1") as TemplateKey;
   const ActiveTemplate =
     WEBSITE_TEMPLATES[templateKey]?.component ??
     WEBSITE_TEMPLATES.template1.component;
+
   return (
     <ThemeProvider
       value={{
@@ -36,22 +59,15 @@ export default async function SitePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const publicSupabase = await createPublicSupabaseClient();
 
-  const { data: project } = await publicSupabase
-    .from("projects")
-    .select("published_website_data, brand_data")
-    .eq("slug", slug)
-    .eq("published", true)
-    .single();
+  const project = await getPublishedSite(slug);
 
   if (!project?.published_website_data) return notFound();
-  console.log(
-    "🔥 PUBLISHED PAGE RENDERED",
-    new Date().toISOString(),
-    "slug:",
-    slug
-  );
+
+  console.log("🔥 [STATIC SITE RENDER]", {
+    slug,
+    renderedAt: new Date().toISOString(),
+  });
 
   return renderSite(project.published_website_data, project.brand_data);
 }
