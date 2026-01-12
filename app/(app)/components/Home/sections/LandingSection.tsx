@@ -2,27 +2,43 @@ export default function LandingSection() {
   return (
     <div>
       <div className="inline-flex items-center gap-2 rounded-full border border-secondary-fade bg-secondary-soft px-3 py-1 text-xs text-secondary">
-        <span className="h-2 w-2 rounded-full bg-primary" />
+        <span className="h-2 w-2 animate-pulse rounded-full bg-primary" />
         <span className="font-semibold tracking-wide">
           ForlessAI Website Builder
         </span>
         <span className="text-secondary">•</span>
-        <span className="text-secondary">Next.js + Supabase</span>
+        <span className="text-secondary">
+          v1 · New features every week · No extra cost
+        </span>
       </div>
 
-      <h1 className="mt-5 text-4xl font-bold tracking-tight sm:text-5xl">
-        Launch{" "}
+      <h1 className="mt-5 text-5xl font-bold w-full tracking-tight sm:text-5xl">
+        Your website, live in{" "}
         <span className="bg-linear-to-r from-primary to-primary-light bg-clip-text text-transparent">
-          modern websites
-        </span>{" "}
-        in minutes — not weeks.
+          60 seconds
+        </span>
+        . For less than $1.
       </h1>
 
       <p className="mt-4 max-w-xl text-sm leading-6 text-secondary sm:text-base">
-        Describe your business in a few lines. ForlessAI generates clean,
-        editable Next.js pages, sections, and components — backed by a secure
-        Supabase setup. Publish to your subdomain instantly.
+        Describe it. Generate it. Publish it.
+        <br />
+        No code. No designers. No delays.
+        <br />
+        Describe your idea.{" "}
+        <span className="font-semibold text-primary">
+          FOR<span className="text-accent">LESS</span>
+        </span>{" "}
+        generates. Publish in seconds.
       </p>
+      <div className="mt-4 inline-flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 text-xs text-secondary-dark">
+        <span className="font-semibold text-primary">Version 1</span>
+        <span className="opacity-60">—</span>
+        <span>
+          We’re shipping improvements weekly. Early users get everything at no
+          extra cost.
+        </span>
+      </div>
 
       {/* CTA */}
       <div className="mt-7 flex flex-wrap items-center gap-3">
