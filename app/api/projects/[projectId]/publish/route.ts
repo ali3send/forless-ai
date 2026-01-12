@@ -18,20 +18,18 @@ export async function POST(
   context: { params: Promise<{ projectId: string }> }
 ) {
   const { projectId } = await context.params;
-
   const supabase = await createServerSupabaseClient();
 
-  // ── Auth
+  /* ───────── AUTH ───────── */
   const {
     data: { user },
-    error: userError,
   } = await supabase.auth.getUser();
 
-  if (userError || !user) {
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // ── Body
+  /* ───────── BODY ───────── */
   const body = await req.json().catch(() => ({}));
   const slug = slugify(body.slug || "");
 
@@ -41,36 +39,32 @@ export async function POST(
 
   const publishedUrl = urls.site(slug);
 
-  // ── Profile
-  const { data: profile, error: profileError } = await supabase
+  /* ───────── PROFILE ───────── */
+  const { data: profile } = await supabase
     .from("profiles")
     .select("plan, is_suspended, current_period_end")
     .eq("id", user.id)
     .single();
 
-  if (profileError || !profile) {
-    return NextResponse.json({ error: "Profile not found" }, { status: 404 });
-  }
-
-  if (profile.is_suspended) {
+  if (!profile || profile.is_suspended) {
     return NextResponse.json({ error: "Account suspended" }, { status: 403 });
   }
 
-  // ── Load project
-  const { data: project, error: projectError } = await supabase
+  /* ───────── PROJECT ───────── */
+  const { data: project } = await supabase
     .from("projects")
     .select("id, published")
     .eq("id", projectId)
     .eq("user_id", user.id)
     .single();
 
-  if (projectError || !project) {
+  if (!project) {
     return NextResponse.json({ error: "Project not found" }, { status: 404 });
   }
 
   const alreadyPublished = !!project.published;
 
-  // ── CHECK usage (only on first publish)
+  /* ───────── USAGE (first publish only) ───────── */
   if (!alreadyPublished) {
     const usage = await checkUsage({
       userId: user.id,
@@ -82,16 +76,13 @@ export async function POST(
 
     if (!usage.ok) {
       return NextResponse.json(
-        {
-          error:
-            "Publish limit reached for your plan. Upgrade to publish more sites.",
-        },
+        { error: "Publish limit reached. Upgrade your plan." },
         { status: 403 }
       );
     }
   }
 
-  // ── Slug uniqueness
+  /* ───────── SLUG UNIQUENESS ───────── */
   const { data: existing } = await supabase
     .from("projects")
     .select("id")
@@ -100,19 +91,33 @@ export async function POST(
 
   if (existing && existing.id !== projectId) {
     return NextResponse.json(
-      { error: "Subdomain already taken. Please choose another" },
+      { error: "Subdomain already taken" },
       { status: 409 }
     );
   }
 
-  // ── Publish project
+  /* ───────── SNAPSHOT WEBSITE DATA ───────── */
+  const { data: website } = await supabase
+    .from("websites")
+    .select("data")
+    .eq("project_id", projectId)
+    .single();
+
+  if (!website?.data) {
+    return NextResponse.json(
+      { error: "Website data not found. Save your site first." },
+      { status: 400 }
+    );
+  }
+
+  /* ───────── PUBLISH ───────── */
   const { error: updateError } = await supabase
     .from("projects")
     .update({
       slug,
       published: true,
-      published_url: publishedUrl,
       published_at: alreadyPublished ? undefined : new Date().toISOString(),
+      published_website_data: website.data, // ✅ SNAPSHOT
     })
     .eq("id", projectId)
     .eq("user_id", user.id);
@@ -121,7 +126,7 @@ export async function POST(
     return NextResponse.json({ error: updateError.message }, { status: 500 });
   }
 
-  // ── COMMIT usage + activity (only first publish)
+  /* ───────── USAGE COMMIT ───────── */
   if (!alreadyPublished) {
     await commitUsage({
       userId: user.id,
@@ -129,20 +134,12 @@ export async function POST(
       key: "websites_published",
       currentPeriodEnd: profile.current_period_end,
     });
-
-    await supabase.from("activity_logs").insert({
-      type: "website_published",
-      message: "Website published",
-      actor_id: user.id,
-      entity_id: projectId,
-      entity_type: "project",
-    });
   }
 
   return NextResponse.json({
     success: true,
     slug,
-    previewUrl: urls.preview(slug),
     published_url: publishedUrl,
+    previewUrl: urls.preview(slug),
   });
 }

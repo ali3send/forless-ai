@@ -1,8 +1,10 @@
 // app/website-builder/_components/PublishButton.tsx
 "use client";
 
+import { urls } from "@/lib/config/urls.client";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 type Props = {
@@ -20,35 +22,39 @@ function slugify(text: string) {
 
 export function PublishButton({ projectId, defaultSlug }: Props) {
   const [slug, setSlug] = useState(defaultSlug ?? "");
-  const [loading, setLoading] = useState(false);
+  const [isPublished, setIsPublished] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [publishedUrl, setPublishedUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  // Load existing published_url / slug
+  // Load project state (slug + published)
   useEffect(() => {
     if (!projectId) return;
+
     let cancelled = false;
 
     (async () => {
       try {
         const res = await fetch(`/api/projects/${projectId}`, {
-          method: "GET",
           cache: "no-store",
-          headers: { "Cache-Control": "no-store" },
         });
 
-        const data = await res.json().catch(() => ({} as unknown));
         if (!res.ok) return;
 
-        if (!cancelled) {
-          const url =
-            data?.project?.published_url ?? data?.published_url ?? null;
-          setPublishedUrl(url);
+        const data = await res.json();
+        if (cancelled) return;
 
-          const dbSlug = data?.project?.slug ?? data?.slug ?? null;
-          if (dbSlug && !slug) setSlug(dbSlug);
+        const project = data.project ?? data;
+
+        if (typeof project?.published === "boolean") {
+          setIsPublished(project.published);
         }
-      } catch {}
+
+        if (project?.slug && !slug) {
+          setSlug(project.slug);
+        }
+      } catch (e) {
+        console.error(e);
+      }
     })();
 
     return () => {
@@ -56,6 +62,12 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId]);
+
+  // Derived permanent URL
+  const finalUrl = useMemo(() => {
+    if (!isPublished || !slug) return null;
+    return urls.site(slug);
+  }, [isPublished, slug]);
 
   async function preview(open = true) {
     const cleanSlug = slugify(slug);
@@ -106,7 +118,7 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
         body: JSON.stringify({ slug: cleanSlug }),
       });
 
-      const data = await res.json().catch(() => ({} as unknown));
+      const data = await res.json();
       uiToast.dismiss(t);
 
       if (!res.ok) {
@@ -114,9 +126,9 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
         return;
       }
 
-      setPreviewUrl(data.previewUrl);
-      if (data?.published_url) setPublishedUrl(data.published_url);
-      if (data?.slug) setSlug(data.slug);
+      setIsPublished(true);
+      setSlug(data.slug ?? cleanSlug);
+      setPreviewUrl(null); // preview no longer needed
 
       uiToast.success("Published successfully!");
     } catch {
@@ -127,12 +139,12 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
     }
   }
 
-  const finalUrl = useMemo(() => publishedUrl, [publishedUrl]);
-  const hasLinks = !!previewUrl || !!finalUrl;
+  const hasPreview = Boolean(previewUrl);
+  const hasPublished = Boolean(finalUrl);
 
   return (
     <div className="rounded-2xl border border-secondary-fade bg-secondary-soft p-4 space-y-4">
-      {/* Slug row */}
+      {/* Slug */}
       <div className="space-y-2">
         <p className="text-xs font-medium text-secondary-dark">Subdomain</p>
 
@@ -140,8 +152,15 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
           value={slug}
           onChange={(e) => setSlug(e.target.value)}
           placeholder="e.g., my-company"
-          className="input-base w-full ring-1 ring-secondary border-none focus:ring-2 focus:ring-primary/60"
+          disabled={isPublished}
+          className="input-base w-full ring-1 ring-secondary border-none focus:ring-2 focus:ring-primary/60 disabled:opacity-60"
         />
+
+        {isPublished && (
+          <p className="text-[11px] text-green-600 font-medium">
+            ✔ Site is live
+          </p>
+        )}
       </div>
 
       {/* Actions */}
@@ -155,21 +174,16 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
           Preview
         </button>
 
-        <button
-          type="button"
-          onClick={publish}
-          disabled={loading || !projectId}
-          className="btn-fill flex-1"
-        >
+        <button type="button" onClick={publish} className="btn-fill flex-1">
           {loading ? "Publishing..." : "Publish"}
         </button>
       </div>
 
       {/* Links */}
-      {hasLinks && (
+      {(hasPreview || hasPublished) && (
         <div className="space-y-2">
-          {previewUrl && <LinkCard label="Preview" url={previewUrl} />}
-          {finalUrl && <LinkCard label="Published" url={finalUrl} />}
+          {hasPreview && <LinkCard label="Preview" url={previewUrl!} />}
+          {hasPublished && <LinkCard label="Published" url={finalUrl!} />}
         </div>
       )}
     </div>
@@ -185,14 +199,14 @@ function LinkCard({ label, url }: { label: string; url: string }) {
           <p className="truncate text-xs text-secondary-dark">{url}</p>
         </div>
 
-        <a
+        <Link
           href={url}
           target="_blank"
           rel="noreferrer"
           className="rounded-md bg-primary px-2 py-1 text-[11px] font-semibold text-white hover:bg-primary-hover"
         >
           Open
-        </a>
+        </Link>
       </div>
     </div>
   );

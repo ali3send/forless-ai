@@ -1,6 +1,6 @@
 export const runtime = "edge";
-export const revalidate = 600;
 export const dynamic = "force-static";
+export const revalidate = false;
 
 import { notFound } from "next/navigation";
 import { createPublicSupabaseClient } from "@/lib/supabase/public";
@@ -40,20 +40,18 @@ export default async function SitePage({
 
   const { data: project } = await publicSupabase
     .from("projects")
-    .select("id, brand_data")
+    .select("published_website_data, brand_data")
     .eq("slug", slug)
     .eq("published", true)
-    .maybeSingle();
+    .single();
 
-  if (!project) return notFound();
+  if (!project?.published_website_data) return notFound();
+  console.log(
+    "🔥 PUBLISHED PAGE RENDERED",
+    new Date().toISOString(),
+    "slug:",
+    slug
+  );
 
-  const { data: website } = await publicSupabase
-    .from("websites")
-    .select("data")
-    .eq("project_id", project.id)
-    .maybeSingle();
-
-  if (!website?.data) return notFound();
-
-  return renderSite(website.data, project.brand_data);
+  return renderSite(project.published_website_data, project.brand_data);
 }
