@@ -1,6 +1,11 @@
 // import type { PaidPlan } from "../_lib/types";
 
 import { PaidPlan } from "@/app/(app)/billing/plans/_lib/types";
+function calculateYearlySavings(monthly: number, yearly: number) {
+  const fullYear = monthly * 12;
+  const savePercent = Math.round(((fullYear - yearly) / fullYear) * 100);
+  return savePercent;
+}
 
 export const PLANS: Array<{
   key: PaidPlan;
@@ -26,7 +31,10 @@ export const PLANS: Array<{
     ],
     pricing: {
       monthly: { label: "$0.99 / month" },
-      yearly: { label: "$5.99 / year" },
+      yearly: {
+        label: "$5.99 / year",
+        note: `save ${calculateYearlySavings(0.99, 5.99)}%`,
+      },
     },
   },
   {
@@ -43,7 +51,10 @@ export const PLANS: Array<{
     highlight: true,
     pricing: {
       monthly: { label: "$2.49 / month" },
-      yearly: { label: "$19 / year", note: "Save" },
+      yearly: {
+        label: "$19 / year",
+        note: `save ${calculateYearlySavings(2.49, 19)}%`,
+      },
     },
   },
   {
@@ -59,7 +70,10 @@ export const PLANS: Array<{
     ],
     pricing: {
       monthly: { label: "$4.99 / month" },
-      yearly: { label: "$39 / year", note: "Save" },
+      yearly: {
+        label: "$39 / year",
+        note: `save ${calculateYearlySavings(4.99, 39)}%`,
+      },
     },
   },
 ];

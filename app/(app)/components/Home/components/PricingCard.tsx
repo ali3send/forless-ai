@@ -45,19 +45,29 @@ export function HomePricingCard({ plan }: { plan: Plan }) {
       {/* Price */}
       <div className="mt-4 text-2xl font-bold text-secondary-dark">
         {price}
-        {interval === "yearly" && plan.pricing.yearly.note && (
-          <span className="ml-2 text-xs font-normal text-primary">
-            • {plan.pricing.yearly.note}
-          </span>
+
+        {interval === "yearly" && (
+          <>
+            <span className="ml-2 text-xs font-normal text-secondary">
+              (${(Number(price.replace(/[^0-9.]/g, "")) / 12).toFixed(2)}{" "}
+              /month)
+            </span>
+
+            {plan.pricing.yearly.note && (
+              <span className="ml-2 text-xs font-normal text-primary">
+                • {plan.pricing.yearly.note}
+              </span>
+            )}
+          </>
         )}
       </div>
 
       {/* Features */}
       <ul className="mt-5 space-y-2 text-sm">
-        {plan.features.map((f) => (
-          <li key={f} className="flex gap-2">
+        {plan.features.map((feature) => (
+          <li key={feature} className="flex gap-2">
             <span className="text-primary">✓</span>
-            <span className="text-secondary-dark">{f}</span>
+            <span className="text-secondary-dark">{feature}</span>
           </li>
         ))}
       </ul>
