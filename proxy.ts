@@ -1,9 +1,10 @@
+//  proxy.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { publicEnv } from "@/lib/config/env.public";
 
 export const config = {
-  matcher: ["/((?!_next|api|favicon.ico).*)"],
+  matcher: ["/((?!_next|api|favicon.ico|preview|admin).*)"],
 };
 
 function getHostname(req: NextRequest) {
@@ -13,19 +14,25 @@ function getHostname(req: NextRequest) {
 }
 
 export default function proxy(req: NextRequest) {
-  const hostname = getHostname(req);
-
-  if (hostname === "localhost") return NextResponse.next();
-
-  const baseHost = publicEnv.NEXT_PUBLIC_ROOT_DOMAIN.toLowerCase();
-
-  if (!hostname.endsWith(baseHost)) return NextResponse.next();
-
-  if (hostname === baseHost || hostname === `www.${baseHost}`) {
+  if (req.nextUrl.pathname.startsWith("/preview")) {
     return NextResponse.next();
   }
 
-  const subdomain = hostname.slice(0, -(baseHost.length + 1));
+  const hostname = getHostname(req);
+  if (hostname === "localhost") return NextResponse.next();
+
+  const isDev = process.env.NODE_ENV === "development";
+  const baseHost = publicEnv.NEXT_PUBLIC_ROOT_DOMAIN.toLowerCase();
+
+  const root = hostname.endsWith("lvh.me") && isDev ? "lvh.me" : baseHost;
+
+  if (!hostname.endsWith(root)) return NextResponse.next();
+
+  if (hostname === root || hostname === `www.${root}`) {
+    return NextResponse.next();
+  }
+
+  const subdomain = hostname.slice(0, -(root.length + 1));
   if (!subdomain) return NextResponse.next();
 
   if (["app", "api", "www", "admin"].includes(subdomain)) {

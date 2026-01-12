@@ -7,11 +7,22 @@ type Props = {
 export function Footer({ brandName }: Props) {
   return (
     <footer className="border-t border-secondary-dark">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 text-xs text-(--color-muted)">
+      <div className="mx-auto max-w-5xl px-4 py-4 text-xs text-secondary-soft flex items-center justify-between">
         <span>
-          © {new Date().getFullYear()} {brandName}
+          © {new Date().getFullYear()} {brandName}. All rights reserved.
         </span>
-        <span>Made with ❤️ by ForlessAI</span>
+
+        <nav className="flex gap-4 text-text">
+          <a href="#about" className=" transition">
+            About
+          </a>
+          <a href="#contact" className="">
+            Contact
+          </a>
+          <a href="#" className=" transition">
+            Privacy
+          </a>
+        </nav>
       </div>
     </footer>
   );

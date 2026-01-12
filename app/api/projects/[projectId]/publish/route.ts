@@ -1,3 +1,4 @@
+// app/api/projects/[projectId]/publish/route.ts
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { urls } from "@/lib/config/urls";
@@ -141,8 +142,7 @@ export async function POST(
   return NextResponse.json({
     success: true,
     slug,
-    previewUrl: `/site/${slug}`,
+    previewUrl: urls.preview(slug),
     published_url: publishedUrl,
-    localSubdomainUrl: publishedUrl,
   });
 }

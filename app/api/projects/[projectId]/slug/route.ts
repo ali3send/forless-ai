@@ -1,6 +1,7 @@
 // app/api/projects/[projectId]/slug/route.ts
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { urls } from "@/lib/config/urls";
 
 function slugify(text: string) {
   return text
@@ -53,6 +54,6 @@ export async function POST(
   return NextResponse.json({
     success: true,
     slug,
-    previewUrl: `/site/${slug}`,
+    previewUrl: urls.preview(slug),
   });
 }

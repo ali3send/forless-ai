@@ -1,9 +1,8 @@
-export const runtime = "edge";
-export const revalidate = 600;
-export const dynamic = "force-static";
+export const runtime = "nodejs";
 
 import { notFound } from "next/navigation";
-import { createPublicSupabaseClient } from "@/lib/supabase/public";
+import { unstable_noStore as noStore } from "next/cache";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { ThemeProvider } from "@/components/websiteTheme/ThemeProvider";
 import {
   WEBSITE_TEMPLATES,
@@ -27,24 +26,32 @@ function renderSite(data: any, brand: any) {
   );
 }
 
-export default async function SitePage({
+export default async function PreviewPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const publicSupabase = await createPublicSupabaseClient();
 
-  const { data: project } = await publicSupabase
+  noStore();
+
+  const supabase = await createServerSupabaseClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return notFound();
+
+  const { data: project } = await supabase
     .from("projects")
     .select("id, brand_data")
     .eq("slug", slug)
-    .eq("published", true)
+    .eq("user_id", user.id)
     .maybeSingle();
 
   if (!project) return notFound();
 
-  const { data: website } = await publicSupabase
+  const { data: website } = await supabase
     .from("websites")
     .select("data")
     .eq("project_id", project.id)

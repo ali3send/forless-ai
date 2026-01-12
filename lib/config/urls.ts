@@ -9,6 +9,11 @@ export const urls = {
       ? `http://${slug}.lvh.me:3000`
       : `https://${slug}.${publicEnv.NEXT_PUBLIC_ROOT_DOMAIN}`,
 
+  preview: (slug: string) =>
+    IS_DEV
+      ? `http://localhost:3000/preview/${slug}`
+      : `https://${publicEnv.NEXT_PUBLIC_ROOT_DOMAIN}/preview/${slug}`,
+
   app: (path = "") =>
     IS_DEV
       ? `http://localhost:3000${path}`
