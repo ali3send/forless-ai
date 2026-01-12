@@ -66,7 +66,7 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
 
     const t = uiToast.loading("Preparing preview…");
     try {
-      const res = await fetch(`/api/projects/${projectId}/slug`, {
+      const res = await fetch(`/api/projects/${projectId}/preview`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ slug: cleanSlug }),

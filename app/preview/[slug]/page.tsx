@@ -8,8 +8,10 @@ import {
   WEBSITE_TEMPLATES,
   type TemplateKey,
 } from "@/components/websiteTemplates/templates";
+import { WebsiteData } from "@/lib/types/websiteTypes";
+import { BrandData } from "@/lib/types/brandTypes";
 
-function renderSite(data: any, brand: any) {
+function renderSite(data: WebsiteData, brand: BrandData | null) {
   const templateKey = (data.template ?? "template1") as TemplateKey;
   const ActiveTemplate =
     WEBSITE_TEMPLATES[templateKey]?.component ??

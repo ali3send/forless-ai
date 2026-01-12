@@ -1,6 +1,6 @@
 "use client";
 
-import type { Plan, Profile } from "../../../../../lib/billing/types/types";
+import { Plan, Profile } from "@/lib/billing/types/types";
 
 export default function FreePlanCard(props: {
   currentPlan: Plan;

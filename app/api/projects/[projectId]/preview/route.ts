@@ -1,4 +1,4 @@
-// app/api/projects/[projectId]/slug/route.ts
+// app/api/projects/[projectId]/preview/route.ts
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { urls } from "@/lib/config/urls";
