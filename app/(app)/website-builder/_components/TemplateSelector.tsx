@@ -9,7 +9,10 @@ import { useWebsiteStore } from "@/store/website.store";
 
 export default function TemplateSelector() {
   const { data, setData } = useWebsiteStore();
-  const active = data.template ?? "template1";
+  const active: TemplateKey =
+    data.template && data.template in WEBSITE_TEMPLATES
+      ? (data.template as TemplateKey)
+      : "template1";
 
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);

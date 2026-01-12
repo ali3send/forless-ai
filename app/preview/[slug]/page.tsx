@@ -11,7 +11,9 @@ import {
 
 function renderSite(data: any, brand: any) {
   const templateKey = (data.template ?? "template1") as TemplateKey;
-  const ActiveTemplate = WEBSITE_TEMPLATES[templateKey];
+  const ActiveTemplate =
+    WEBSITE_TEMPLATES[templateKey]?.component ??
+    WEBSITE_TEMPLATES.template1.component;
 
   return (
     <ThemeProvider
