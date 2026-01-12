@@ -4,7 +4,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { urls } from "@/lib/config/urls";
 import { checkUsage } from "@/lib/usage/checkUsage";
 import { commitUsage } from "@/lib/usage/commitUsage";
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 
 function slugify(text: string) {
   return text
@@ -62,7 +62,7 @@ export async function POST(
   if (!project) {
     return NextResponse.json({ error: "Project not found" }, { status: 404 });
   }
-
+  console.log("project", project);
   const alreadyPublished = !!project.published;
 
   /* ───────── USAGE (first publish only) ───────── */
@@ -118,7 +118,7 @@ export async function POST(
       slug,
       published: true,
       published_at: alreadyPublished ? undefined : new Date().toISOString(),
-      published_website_data: website.data, // ✅ SNAPSHOT
+      published_website_data: website.data,
     })
     .eq("id", projectId)
     .eq("user_id", user.id);
@@ -126,8 +126,8 @@ export async function POST(
   if (updateError) {
     return NextResponse.json({ error: updateError.message }, { status: 500 });
   }
-  revalidatePath(`/site/${slug}`);
-  revalidatePath(`/preview/${slug}`);
+  console.log("♻️ REVALIDATING TAG", `site:${slug}`);
+  revalidateTag(`site:${slug}`, "default");
 
   /* ───────── USAGE COMMIT ───────── */
   if (!alreadyPublished) {

@@ -64,6 +64,7 @@ export default async function SitePage({
   if (!project?.published_website_data) return notFound();
 
   console.log("🔥 [STATIC SITE RENDER]", {
+    // data: project.published_website_data,
     slug,
     renderedAt: new Date().toISOString(),
   });
