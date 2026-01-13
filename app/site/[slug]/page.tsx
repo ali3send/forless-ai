@@ -19,7 +19,7 @@ function getPublishedSite(slug: string) {
 
       const { data } = await supabase
         .from("projects")
-        .select("published_website_data, brand_data")
+        .select("id,published_website_data, brand_data")
         .eq("slug", slug)
         .eq("published", true)
         .single();
@@ -33,7 +33,11 @@ function getPublishedSite(slug: string) {
   )();
 }
 
-function renderSite(data: WebsiteData, brand: BrandData | null) {
+function renderSite(
+  data: WebsiteData,
+  brand: BrandData | null,
+  projectId: string
+) {
   const templateKey = (data.template ?? "template1") as TemplateKey;
   const ActiveTemplate =
     WEBSITE_TEMPLATES[templateKey]?.component ??
@@ -47,7 +51,7 @@ function renderSite(data: WebsiteData, brand: BrandData | null) {
         fontFamily: brand?.font?.css,
       }}
     >
-      <ActiveTemplate data={data} brand={brand} />
+      <ActiveTemplate data={data} brand={brand} projectId={projectId} />
     </ThemeProvider>
   );
 }
@@ -69,5 +73,9 @@ export default async function SitePage({
     renderedAt: new Date().toISOString(),
   });
 
-  return renderSite(project.published_website_data, project.brand_data);
+  return renderSite(
+    project.published_website_data,
+    project.brand_data,
+    project.id
+  );
 }

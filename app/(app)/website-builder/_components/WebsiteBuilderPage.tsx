@@ -90,7 +90,7 @@ export default function WebsiteBuilderPage() {
               fontFamily: brand?.font?.css,
             }}
           >
-            <ActiveTemplate data={data} brand={brand} />
+            <ActiveTemplate data={data} brand={brand} projectId={projectId} />
             {/* <WebsiteTemplateBasic data={data} brand={brand} /> */}
             {/* <WebsiteTemplateAlt data={data} brand={brand} /> */}
             {/* <WebsiteTemplateImmersive data={data} brand={brand} /> */}

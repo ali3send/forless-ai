@@ -1,3 +1,4 @@
+import { useContactForm } from "../../hooks/useContacForm";
 import { ContactData, FinalCtaData } from "../../template.types";
 import { ContactRow } from "../../ui/ContactRow";
 import { TextInput } from "../../ui/TextInput";
@@ -5,9 +6,12 @@ import { TextInput } from "../../ui/TextInput";
 type Props = {
   contact: ContactData;
   finalCta: FinalCtaData;
+  projectId: string;
 };
 
-export function ContactSection({ contact, finalCta }: Props) {
+export function ContactSection({ contact, finalCta, projectId }: Props) {
+  const { submit } = useContactForm(projectId);
+
   return (
     <section
       id="contact"
@@ -43,7 +47,13 @@ export function ContactSection({ contact, finalCta }: Props) {
         >
           <div className="grid gap-10 md:grid-cols-2">
             {/* Left: form */}
-            <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                submit(e.currentTarget);
+              }}
+              className="space-y-4"
+            >
               <h3 className="text-lg font-semibold text-text">
                 {finalCta.headline}
               </h3>
@@ -53,11 +63,16 @@ export function ContactSection({ contact, finalCta }: Props) {
               </p>
 
               <div className="grid gap-3 sm:grid-cols-2">
-                <TextInput label="Your name" placeholder="Enter your name" />
+                <TextInput
+                  name="name"
+                  label="name"
+                  placeholder="Enter your name"
+                />
                 <TextInput
                   label="Email"
                   placeholder="you@example.com"
                   type="email"
+                  name="email"
                 />
               </div>
 
@@ -71,6 +86,7 @@ export function ContactSection({ contact, finalCta }: Props) {
                     bg-(--color-bg)
                     text-text
                   "
+                  name="message"
                   style={{
                     borderColor:
                       "color-mix(in srgb, var(--color-primary) 22%, transparent)",

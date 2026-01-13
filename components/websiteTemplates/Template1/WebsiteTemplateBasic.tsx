@@ -15,9 +15,10 @@ import { BrandData } from "@/lib/types/brandTypes";
 type Props = {
   data: WebsiteData;
   brand: BrandData | null;
+  projectId: string;
 };
 
-export function WebsiteTemplateBasic({ data, brand }: Props) {
+export function WebsiteTemplateBasic({ data, brand, projectId }: Props) {
   return (
     <div className="min-h-screen bg-(--color-bg) text-text">
       <Navbar
@@ -47,7 +48,11 @@ export function WebsiteTemplateBasic({ data, brand }: Props) {
 
       <OffersSection title={data.offers.title} offers={data.offers.items} />
 
-      <ContactSection contact={data.contact} finalCta={data.finalCta} />
+      <ContactSection
+        contact={data.contact}
+        finalCta={data.finalCta}
+        projectId={projectId}
+      />
 
       <Footer brandName={data.brandName} />
     </div>

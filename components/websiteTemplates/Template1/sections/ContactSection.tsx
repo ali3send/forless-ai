@@ -1,3 +1,4 @@
+import { useContactForm } from "../../hooks/useContacForm";
 import { ContactData, FinalCtaData } from "../../template.types";
 import { ContactRow } from "../../ui/ContactRow";
 import { TextInput } from "../../ui/TextInput";
@@ -5,9 +6,11 @@ import { TextInput } from "../../ui/TextInput";
 type Props = {
   contact: ContactData;
   finalCta: FinalCtaData;
+  projectId: string;
 };
 
-export function ContactSection({ contact, finalCta }: Props) {
+export function ContactSection({ contact, finalCta, projectId }: Props) {
+  const { submit, loading, success, error } = useContactForm(projectId);
   return (
     <section
       id="contact"
@@ -73,7 +76,10 @@ export function ContactSection({ contact, finalCta }: Props) {
               boxShadow:
                 "0 20px 40px color-mix(in srgb, var(--color-bg) 60%, transparent)",
             }}
-            onSubmit={(e) => e.preventDefault()}
+            onSubmit={(e) => {
+              e.preventDefault();
+              submit(e.currentTarget);
+            }}
           >
             <h3 className="text-lg font-semibold text-text">
               {finalCta.headline}
@@ -83,9 +89,14 @@ export function ContactSection({ contact, finalCta }: Props) {
             </p>
 
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              <TextInput label="Your name" placeholder="Enter your name" />
               <TextInput
-                label="Email"
+                label="name"
+                name="name"
+                placeholder="Enter your name"
+              />
+              <TextInput
+                name="email"
+                label="email"
                 placeholder="you@example.com"
                 type="email"
               />
@@ -94,6 +105,7 @@ export function ContactSection({ contact, finalCta }: Props) {
             <label className="mt-3 block text-xs text-(--color-muted)">
               Message
               <textarea
+                name="message"
                 rows={4}
                 className="
                   mt-1 w-full rounded-md border px-2 py-1.5
@@ -111,16 +123,26 @@ export function ContactSection({ contact, finalCta }: Props) {
 
             <button
               type="submit"
+              disabled={loading || success || error !== null}
               className="
-                mt-4 rounded-full px-5 py-2
-                text-sm font-medium transition
-                bg-primary
-                text-slate-950
-                hover:opacity-90
-              "
+            mt-4 rounded-full px-5 py-2
+         text-sm font-medium transition
+               bg-primary
+          text-slate-950
+          hover:opacity-90
+         disabled:opacity-60
+       disabled:cursor-not-allowed
+  "
             >
-              {finalCta.buttonLabel}
+              {loading ? "Sending…" : success ? "Sent!" : finalCta.buttonLabel}
             </button>
+            {success && (
+              <p className="mt-3 text-xs text-green-600">
+                Thanks! Your message has been sent.
+              </p>
+            )}
+
+            {error && <p className="mt-3 text-xs text-red-600">{error}</p>}
           </form>
         </div>
       </div>

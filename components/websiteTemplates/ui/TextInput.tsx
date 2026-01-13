@@ -2,9 +2,10 @@ type Props = {
   label: string;
   placeholder: string;
   type?: string;
+  name?: string;
 };
 
-export function TextInput({ label, placeholder, type = "text" }: Props) {
+export function TextInput({ label, placeholder, type, name = "text" }: Props) {
   return (
     <label className="text-xs text-(--color-muted)">
       {label}
@@ -18,6 +19,7 @@ export function TextInput({ label, placeholder, type = "text" }: Props) {
           t
           transition
         "
+        name={name}
         style={{
           borderColor:
             "color-mix(in srgb, var(--color-primary) 25%, transparent)",

@@ -14,9 +14,11 @@ import { AboutSection } from "./sections/AboutSection";
 export function WebsiteTemplateAlt({
   data,
   brand,
+  projectId,
 }: {
   data: WebsiteData;
   brand: BrandData | null;
+  projectId: string;
 }) {
   return (
     <div className="min-h-screen bg-(--color-bg) text-text">
@@ -46,7 +48,11 @@ export function WebsiteTemplateAlt({
       />
       <OffersSection title={data.offers.title} offers={data.offers.items} />
 
-      <ContactSection contact={data.contact} finalCta={data.finalCta} />
+      <ContactSection
+        contact={data.contact}
+        finalCta={data.finalCta}
+        projectId={projectId}
+      />
 
       <Footer brandName={data.brandName} />
     </div>

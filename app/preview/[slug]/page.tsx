@@ -11,7 +11,11 @@ import {
 import { WebsiteData } from "@/lib/types/websiteTypes";
 import { BrandData } from "@/lib/types/brandTypes";
 
-function renderSite(data: WebsiteData, brand: BrandData | null) {
+function renderSite(
+  data: WebsiteData,
+  brand: BrandData | null,
+  projectId: string
+) {
   const templateKey = (data.template ?? "template1") as TemplateKey;
   const ActiveTemplate =
     WEBSITE_TEMPLATES[templateKey]?.component ??
@@ -25,7 +29,7 @@ function renderSite(data: WebsiteData, brand: BrandData | null) {
         fontFamily: brand?.font?.css,
       }}
     >
-      <ActiveTemplate data={data} brand={brand} />
+      <ActiveTemplate data={data} brand={brand} projectId={projectId} />
     </ThemeProvider>
   );
 }
@@ -63,5 +67,5 @@ export default async function PreviewPage({
 
   if (!website?.data) return notFound();
 
-  return renderSite(website.data, project.brand_data);
+  return renderSite(website.data, project.brand_data, project.id);
 }

@@ -15,9 +15,10 @@ import { Footer } from "./sections/Footer";
 type Props = {
   data: WebsiteData;
   brand: BrandData | null;
+  projectId: string;
 };
 
-export function WebsiteTemplateImmersive({ data, brand }: Props) {
+export function WebsiteTemplateImmersive({ data, brand, projectId }: Props) {
   return (
     <div className="relative min-h-screen bg-(--color-bg) text-text overflow-x-hidden">
       {/* Top navigation */}
@@ -67,7 +68,11 @@ export function WebsiteTemplateImmersive({ data, brand }: Props) {
 
       {/* Act 4: Conversion */}
       <section className="relative">
-        <ContactSection contact={data.contact} finalCta={data.finalCta} />
+        <ContactSection
+          contact={data.contact}
+          finalCta={data.finalCta}
+          projectId={projectId}
+        />
       </section>
 
       {/* Footer */}

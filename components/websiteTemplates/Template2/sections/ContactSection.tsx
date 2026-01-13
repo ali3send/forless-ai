@@ -1,3 +1,4 @@
+import { useContactForm } from "../../hooks/useContacForm";
 import { ContactData, FinalCtaData } from "../../template.types";
 import { ContactRow } from "../../ui/ContactRow";
 import { TextInput } from "../../ui/TextInput";
@@ -5,9 +6,12 @@ import { TextInput } from "../../ui/TextInput";
 type Props = {
   contact: ContactData;
   finalCta: FinalCtaData;
+  projectId: string;
 };
 
-export function ContactSection({ contact, finalCta }: Props) {
+export function ContactSection({ contact, finalCta, projectId }: Props) {
+  const { submit } = useContactForm(projectId);
+
   return (
     <section
       id="contact"
@@ -81,7 +85,10 @@ export function ContactSection({ contact, finalCta }: Props) {
               boxShadow:
                 "0 30px 60px color-mix(in srgb, var(--color-bg) 65%, transparent)",
             }}
-            onSubmit={(e) => e.preventDefault()}
+            onSubmit={(e) => {
+              e.preventDefault();
+              submit(e.currentTarget);
+            }}
           >
             <h3 className="text-lg font-semibold text-text">
               {finalCta.headline}
@@ -91,11 +98,16 @@ export function ContactSection({ contact, finalCta }: Props) {
             </p>
 
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
-              <TextInput label="Your name" placeholder="Enter your name" />
+              <TextInput
+                name="name"
+                label="name"
+                placeholder="Enter your name"
+              />
               <TextInput
                 label="Email"
                 placeholder="you@example.com"
                 type="email"
+                name="email"
               />
             </div>
 
@@ -110,6 +122,7 @@ export function ContactSection({ contact, finalCta }: Props) {
                   text-text
                   transition
                 "
+                name="message"
                 style={{
                   borderColor:
                     "color-mix(in srgb, var(--color-primary) 25%, transparent)",
