@@ -9,9 +9,9 @@ export default function AdminStatsSwitch({
   data,
 }: {
   data: {
-    "1d": string;
-    "7d": string;
-    "30d": string;
+    "1d": any;
+    "7d": any;
+    "30d": any;
   };
 }) {
   const [range, setRange] = useState<"1d" | "7d" | "30d">("7d");

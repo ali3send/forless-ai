@@ -50,7 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [supabase]
   );
   const login = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -58,8 +58,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (error) {
       throw error;
     }
-
-    return data;
   };
 
   const logout = async () => {
