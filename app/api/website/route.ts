@@ -50,7 +50,9 @@ export async function GET(req: Request) {
     );
   }
 
-  return NextResponse.json({ data: (data as any)?.data ?? null });
+  return NextResponse.json({
+    data: (data as { data: WebsiteData })?.data ?? null,
+  });
 }
 
 // POST /api/website
@@ -92,7 +94,6 @@ export async function POST(req: Request) {
     .select()
     .single();
 
-  // ✅ Always check error before using results
   if (error) {
     console.error("Supabase upsert error:", error);
     return NextResponse.json(
@@ -101,18 +102,18 @@ export async function POST(req: Request) {
     );
   }
 
-  // ✅ Safe hero query
-  const heroQuery =
-    typeof data?.hero?.imageQuery === "string" ? data.hero.imageQuery : "";
-
   // Update thumbnail (non-blocking style: best effort)
   try {
-    const heroUrl = heroQuery ? await fetchUnsplashImage(heroQuery) : null;
+    const thumbnail_url = data?.hero?.imageUrl
+      ? data?.hero?.imageUrl
+      : typeof data?.hero?.imageQuery === "string"
+      ? await fetchUnsplashImage(data?.hero?.imageQuery)
+      : null;
 
-    if (heroUrl) {
+    if (thumbnail_url) {
       await supabase
         .from("projects")
-        .update({ thumbnail_url: heroUrl })
+        .update({ thumbnail_url: thumbnail_url })
         .eq("id", projectId)
         .eq("user_id", user.id);
     }

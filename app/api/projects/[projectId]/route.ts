@@ -48,7 +48,6 @@ export async function PATCH(req: Request, context: RouteContext) {
     );
   }
 
-  // IMPORTANT: match your frontend expectation: { project: ... }
   return NextResponse.json({ project: data });
 }
 
