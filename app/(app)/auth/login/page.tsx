@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/providers";
 import { Eye, EyeOff } from "lucide-react";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
+import { uiToast } from "@/lib/utils/uiToast";
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
@@ -21,10 +22,11 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      await login(email, password); // 🔑 provider login
-      window.location.href = "/dashboard"; // hard navigation
-    } catch (e: unknown) {
-      setErrorMsg(getErrorMessage(e, "Failed to log in"));
+      await login(email, password);
+      router.replace("/dashboard");
+    } catch (e) {
+      setErrorMsg(getErrorMessage(e));
+      uiToast.error(getErrorMessage(e, "Failed to log in"));
       setLoading(false);
     }
   };
