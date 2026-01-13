@@ -9,11 +9,11 @@ import { useWebsiteBuilder } from "../hooks/useWebsiteBuilder";
 
 import { useBrandStore } from "@/store/brand.store";
 import { useWebsiteStore } from "@/store/website.store";
-import { ThemeProvider } from "@/components/websiteTheme/ThemeProvider";
+import { ThemeProvider } from "@/Templates/websiteTheme/ThemeProvider";
 import {
   WEBSITE_TEMPLATES,
   type TemplateKey,
-} from "@/components/websiteTemplates/templates";
+} from "@/Templates/websiteTemplates/templates";
 import { useProjectStore } from "@/store/project.store";
 import { useEffect } from "react";
 

@@ -4,11 +4,11 @@ export const revalidate = false;
 import { notFound } from "next/navigation";
 import { unstable_cache } from "next/cache";
 import { createPublicSupabaseClient } from "@/lib/supabase/public";
-import { ThemeProvider } from "@/components/websiteTheme/ThemeProvider";
+import { ThemeProvider } from "@/Templates/websiteTheme/ThemeProvider";
 import {
   WEBSITE_TEMPLATES,
   type TemplateKey,
-} from "@/components/websiteTemplates/templates";
+} from "@/Templates/websiteTemplates/templates";
 import { WebsiteData } from "@/lib/types/websiteTypes";
 import { BrandData } from "@/lib/types/brandTypes";
 

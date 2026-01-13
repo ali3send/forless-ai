@@ -10,7 +10,7 @@ type Props = {
 };
 
 export function ContactSection({ contact, finalCta, projectId }: Props) {
-  const { submit } = useContactForm(projectId);
+  const { submit, loading, success, error } = useContactForm(projectId);
 
   return (
     <section
@@ -139,6 +139,7 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
             </label>
 
             <button
+              disabled={loading || success}
               type="submit"
               className="
                 mt-6 inline-flex items-center justify-center
@@ -149,8 +150,15 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
                 hover:opacity-90
               "
             >
-              {finalCta.buttonLabel}
+              {loading ? "Sending…" : success ? "Sent!" : finalCta.buttonLabel}
             </button>
+            {success && (
+              <p className="mt-3 text-xs text-green-600">
+                Thanks! Your message has been sent.
+              </p>
+            )}
+
+            {error && <p className="mt-3 text-xs text-red-600">{error}</p>}
           </form>
         </div>
       </div>

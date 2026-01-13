@@ -3,11 +3,11 @@ export const runtime = "nodejs";
 import { notFound } from "next/navigation";
 import { unstable_noStore as noStore } from "next/cache";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { ThemeProvider } from "@/components/websiteTheme/ThemeProvider";
+import { ThemeProvider } from "@/Templates/websiteTheme/ThemeProvider";
 import {
   WEBSITE_TEMPLATES,
   type TemplateKey,
-} from "@/components/websiteTemplates/templates";
+} from "@/Templates/websiteTemplates/templates";
 import { WebsiteData } from "@/lib/types/websiteTypes";
 import { BrandData } from "@/lib/types/brandTypes";
 

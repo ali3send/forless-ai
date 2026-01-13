@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import {
   TemplateKey,
   WEBSITE_TEMPLATES,
-} from "@/components/websiteTemplates/templates";
+} from "@/Templates/websiteTemplates/templates";
 import { useWebsiteStore } from "@/store/website.store";
 
 export default function TemplateSelector() {

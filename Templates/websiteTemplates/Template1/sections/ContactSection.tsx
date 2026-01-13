@@ -123,7 +123,7 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
 
             <button
               type="submit"
-              disabled={loading || success || error !== null}
+              disabled={loading || success}
               className="
             mt-4 rounded-full px-5 py-2
          text-sm font-medium transition
