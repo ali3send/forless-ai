@@ -1,23 +1,15 @@
-// app/api/website/route.ts
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { fetchUnsplashImage } from "@/lib/unsplash";
 import type { WebsiteData } from "@/lib/types/websiteTypes";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { saveWebsite } from "../lib/saveWebsite";
-
-const websiteDataSchema = z.looseObject({
-  hero: z.looseObject({
-    imageQuery: z.string().optional(),
-  }),
-});
 
 const postSchema = z.object({
   projectId: z.uuid(),
-  data: websiteDataSchema, // ✅ real validation (not z.custom)
+  data: z.unknown(),
 });
 
-// GET /api/website?projectId=...
 export async function GET(req: Request) {
   const supabase = await createServerSupabaseClient();
 
@@ -80,21 +72,20 @@ export async function POST(req: Request) {
   }
 
   const { projectId, data } = parsed.data;
+  const websiteData = data as WebsiteData;
 
   try {
     const website = await saveWebsite({
       supabase,
       userId: user.id,
       projectId,
-      data,
+      data: websiteData,
     });
 
     return NextResponse.json({ data: website });
-  } catch (err: any) {
-    console.error("Save website failed:", err);
-    return NextResponse.json(
-      { error: err.message ?? "Failed to save website" },
-      { status: 500 }
-    );
+  } catch (err: unknown) {
+    const errMsg = getErrorMessage(err, "Failed to save website");
+    console.error("Save website failed:", errMsg);
+    return NextResponse.json({ error: errMsg }, { status: 500 });
   }
 }

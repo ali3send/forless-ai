@@ -19,14 +19,14 @@ export function UsersTable() {
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
 
   const [filters, setFilters] = useState<UserFilters>({
-    q: "",
+    query: "",
     status: "all",
     role: "all",
     sort: "created_desc",
     onlySuspended: false,
   });
 
-  const debouncedQuery = useDebounced(filters.q);
+  const debouncedQuery = useDebounced(filters.query);
 
   /* ============================
      Data fetching
@@ -63,7 +63,7 @@ export function UsersTable() {
     fetchUsers();
   }, [fetchUsers]);
 
-  const filtered = useMemo(
+  const filteredUsers = useMemo(
     () => selectUsers(rows, filters, debouncedQuery),
     [rows, filters, debouncedQuery]
   );
@@ -78,7 +78,7 @@ export function UsersTable() {
 
   const clearFilters = useCallback(() => {
     setFilters({
-      q: "",
+      query: "",
       status: "all",
       role: "all",
       sort: "created_desc",
@@ -240,30 +240,30 @@ export function UsersTable() {
   return (
     <div className="flex flex-col rounded-2xl border border-secondary-fade bg-white shadow-sm">
       <UsersToolbar
-        q={filters.q}
-        setQ={(v) => updateFilters({ q: v })}
+        query={filters.query}
+        setQuery={(value) => updateFilters({ query: value })}
         status={filters.status}
-        setStatus={(v) => updateFilters({ status: v })}
+        setStatus={(value) => updateFilters({ status: value })}
         roleFilter={filters.role}
-        setRoleFilter={(v) => updateFilters({ role: v })}
+        setRoleFilter={(value) => updateFilters({ role: value })}
         sort={filters.sort}
-        setSort={(v) => updateFilters({ sort: v })}
+        setSort={(value) => updateFilters({ sort: value })}
         onlySuspended={filters.onlySuspended}
-        setOnlySuspended={(v) => updateFilters({ onlySuspended: v })}
+        setOnlySuspended={(value) => updateFilters({ onlySuspended: value })}
         onClearFilters={clearFilters}
         onRefresh={fetchUsers}
-        showing={filtered.length}
+        showing={filteredUsers.length}
         total={rows.length}
       />
 
       <div className="max-h-[calc(100vh-260px)] overflow-y-auto p-4">
         {loading ? (
           <UsersSkeleton />
-        ) : filtered.length === 0 ? (
+        ) : filteredUsers.length === 0 ? (
           <EmptyState />
         ) : (
           <div className="space-y-3">
-            {filtered.map((u) => (
+            {filteredUsers.map((u) => (
               <UserCard
                 key={u.id}
                 u={u}
@@ -288,7 +288,7 @@ export function UsersTable() {
       <div className="border-t border-secondary-fade px-4 py-2 text-xs text-secondary">
         Showing{" "}
         <span className="font-semibold text-secondary-dark">
-          {filtered.length}
+          {filteredUsers.length}
         </span>{" "}
         of{" "}
         <span className="font-semibold text-secondary-dark">{rows.length}</span>{" "}

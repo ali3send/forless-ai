@@ -98,7 +98,7 @@ export default function WebsiteBuilderPage() {
             focus === "split" && "flex-1"
           )}
         >
-          <div className="m-2 rounded-2xl border border-secondary-fade overflow-hidden">
+          <div className=" rounded-2xl border border-secondary-fade overflow-hidden">
             <ThemeProvider
               value={{
                 primary: brand?.palette?.primary,
