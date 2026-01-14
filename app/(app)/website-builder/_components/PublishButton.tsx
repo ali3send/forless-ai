@@ -2,6 +2,7 @@
 "use client";
 
 import { urls } from "@/lib/config/urls.client";
+import { WebsiteData } from "@/lib/types/websiteTypes";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
 import Link from "next/link";
@@ -10,6 +11,7 @@ import { useEffect, useMemo, useState } from "react";
 type Props = {
   projectId: string;
   defaultSlug?: string;
+  websiteData: WebsiteData;
 };
 
 function slugify(text: string) {
@@ -20,7 +22,7 @@ function slugify(text: string) {
     .replace(/^-+|-+$/g, "");
 }
 
-export function PublishButton({ projectId, defaultSlug }: Props) {
+export function PublishButton({ projectId, defaultSlug, websiteData }: Props) {
   const [slug, setSlug] = useState(defaultSlug ?? "");
   const [isPublished, setIsPublished] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -108,34 +110,40 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
       return;
     }
 
+    if (!websiteData) {
+      uiToast.error("Website data missing.");
+      return;
+    }
+
     setLoading(true);
-    const t = uiToast.loading("Publishing...");
+    const t = uiToast.loading("Publishing…");
 
     try {
-      // save data first in db
-
       const res = await fetch(`/api/projects/${projectId}/publish`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug: cleanSlug }),
+        body: JSON.stringify({
+          slug: cleanSlug,
+          data: websiteData,
+        }),
       });
 
-      const data = await res.json();
+      const json = await res.json();
       uiToast.dismiss(t);
 
       if (!res.ok) {
-        uiToast.error(data?.error || "Publish failed");
+        uiToast.error(json?.error || "Publish failed");
         return;
       }
 
       setIsPublished(true);
-      setSlug(data.slug ?? cleanSlug);
-      setPreviewUrl(null); // preview no longer needed
+      setSlug(json.slug ?? cleanSlug);
+      setPreviewUrl(null);
 
       uiToast.success("Published successfully!");
-    } catch {
+    } catch (e) {
       uiToast.dismiss(t);
-      uiToast.error("Publish failed");
+      uiToast.error(getErrorMessage(e, "Publish failed"));
     } finally {
       setLoading(false);
     }
@@ -176,7 +184,12 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
           Preview
         </button>
 
-        <button type="button" onClick={publish} className="btn-fill flex-1">
+        <button
+          type="button"
+          onClick={publish}
+          disabled={loading}
+          className="btn-fill flex-1"
+        >
           {loading ? "Publishing..." : "Publish"}
         </button>
       </div>

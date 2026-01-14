@@ -47,6 +47,7 @@ export function BuilderSidebar(props: Props) {
       <PublishButton
         projectId={projectId}
         defaultSlug={data?.brandName?.toLowerCase().replace(/\s+/g, "-")}
+        websiteData={data}
       />
       <TemplateSelector />
 

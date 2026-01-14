@@ -92,13 +92,13 @@ export default function WebsiteBuilderPage() {
         {/* Preview */}
         <main
           className={clsx(
-            "h-full overflow-y-auto bg-secondary-light transition-all duration-300",
+            "h-full overflow-y-auto  transition-all duration-300",
             focus === "editor" && "w-0",
             focus === "preview" && "flex-1",
             focus === "split" && "flex-1"
           )}
         >
-          <div className="m-2 rounded-2xl border border-secondary-fade shadow-sm">
+          <div className="m-2 rounded-2xl border border-secondary-fade overflow-hidden">
             <ThemeProvider
               value={{
                 primary: brand?.palette?.primary,

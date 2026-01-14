@@ -1,10 +1,11 @@
 // app/api/projects/[projectId]/publish/route.ts
 import { NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { urls } from "@/lib/config/urls";
 import { checkUsage } from "@/lib/usage/checkUsage";
 import { commitUsage } from "@/lib/usage/commitUsage";
-import { revalidateTag } from "next/cache";
+import { saveWebsite } from "@/app/api/lib/saveWebsite";
 
 function slugify(text: string) {
   return text
@@ -33,12 +34,26 @@ export async function POST(
   /* ───────── BODY ───────── */
   const body = await req.json().catch(() => ({}));
   const slug = slugify(body.slug || "");
+  const websiteData = body.data;
 
   if (!slug) {
     return NextResponse.json({ error: "Invalid slug" }, { status: 400 });
   }
 
+  if (!websiteData) {
+    return NextResponse.json(
+      { error: "Missing website data" },
+      { status: 400 }
+    );
+  }
+
   const publishedUrl = urls.site(slug);
+
+  console.log("📦 PUBLISH BODY", {
+    slug,
+    hasWebsiteData: !!websiteData,
+    websiteKeys: websiteData ? Object.keys(websiteData) : null,
+  });
 
   /* ───────── PROFILE ───────── */
   const { data: profile } = await supabase
@@ -54,7 +69,7 @@ export async function POST(
   /* ───────── PROJECT ───────── */
   const { data: project } = await supabase
     .from("projects")
-    .select("id, published")
+    .select("id, published, slug")
     .eq("id", projectId)
     .eq("user_id", user.id)
     .single();
@@ -62,10 +77,32 @@ export async function POST(
   if (!project) {
     return NextResponse.json({ error: "Project not found" }, { status: 404 });
   }
-  console.log("project", project);
+  console.log("project in publish:", project);
+
   const alreadyPublished = !!project.published;
 
-  /* ───────── USAGE (first publish only) ───────── */
+  /* ───────── SAVE WEBSITE (CRITICAL) ───────── */
+  try {
+    console.log("💾 Saving website", {
+      projectId,
+      userId: user.id,
+    });
+
+    await saveWebsite({
+      supabase,
+      userId: user.id,
+      projectId,
+      data: websiteData,
+    });
+  } catch (err) {
+    console.error("Publish save failed:", err);
+    return NextResponse.json(
+      { error: "Failed to save website before publish" },
+      { status: 500 }
+    );
+  }
+
+  /* ───────── USAGE CHECK (first publish only) ───────── */
   if (!alreadyPublished) {
     const usage = await checkUsage({
       userId: user.id,
@@ -106,8 +143,8 @@ export async function POST(
 
   if (!website?.data) {
     return NextResponse.json(
-      { error: "Website data not found. Save your site first." },
-      { status: 400 }
+      { error: "Website data missing after save" },
+      { status: 500 }
     );
   }
 
@@ -126,7 +163,7 @@ export async function POST(
   if (updateError) {
     return NextResponse.json({ error: updateError.message }, { status: 500 });
   }
-  console.log("♻️ REVALIDATING TAG", `site:${slug}`);
+
   revalidateTag(`site:${slug}`, "default");
 
   /* ───────── USAGE COMMIT ───────── */

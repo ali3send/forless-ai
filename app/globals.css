@@ -75,13 +75,15 @@ button {
   cursor: pointer;
 
 }
+/* scrollbehavior */
+html {
+  scroll-behavior: smooth;
+}
 
 .scrollbar-hide {
   scrollbar-width: none; /* Firefox */
 }
-.scrollbar-hide::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
-}
+
 
 
 /* dark mode */
