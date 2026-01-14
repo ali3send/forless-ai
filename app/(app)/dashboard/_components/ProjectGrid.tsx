@@ -133,10 +133,6 @@ function ProjectCard({ project }: { project: ProjectRow }) {
             Status: {status}
           </div>
         </div>
-
-        <span className="rounded-full border border-secondary-fade bg-secondary-light px-2 py-0.5 text-[10px] font-semibold text-secondary-dark">
-          Open
-        </span>
       </div>
 
       <div className="mt-2 text-[10px] text-secondary">

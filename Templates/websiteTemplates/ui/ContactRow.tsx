@@ -41,7 +41,7 @@ export function ContactRow({ type, value }: Props) {
     >
       <Icon className="h-4 w-4 text-primary shrink-0" />
 
-      <span className="text-secondary-dark">{label}:</span>
+      <span className="text-(--color-muted)">{label}:</span>
 
       <span className="font-medium truncate group-hover:underline">
         {value}
