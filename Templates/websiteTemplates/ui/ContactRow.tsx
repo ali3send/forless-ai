@@ -1,13 +1,51 @@
+import { Mail, Phone, MessageCircle } from "lucide-react";
+
 type Props = {
-  label: string;
+  type: "email" | "whatsapp" | "phone";
   value: string;
 };
 
-export function ContactRow({ label, value }: Props) {
+const CONFIG = {
+  email: {
+    label: "Email",
+    Icon: Mail,
+    href: (v: string) => `mailto:${v}`,
+  },
+  phone: {
+    label: "Phone",
+    Icon: Phone,
+    href: (v: string) => `tel:${v.replace(/\s+/g, "")}`,
+  },
+  whatsapp: {
+    label: "WhatsApp",
+    Icon: MessageCircle,
+    href: (v: string) => `https://wa.me/${v.replace(/\D/g, "")}`,
+  },
+};
+
+export function ContactRow({ type, value }: Props) {
+  const { label, Icon, href } = CONFIG[type];
+  const link = href(value);
+
   return (
-    <div className="flex items-center gap-2">
-      <span className="text-xs text-(--color-muted)">{label}</span>
-      <span className="text-xs font-medium text-text">{value}</span>
-    </div>
+    <a
+      href={link}
+      className="
+        group flex items-center gap-3
+        text-sm text-text
+        transition
+        hover:text-primary
+      "
+      target={type === "whatsapp" ? "_blank" : undefined}
+      rel={type === "whatsapp" ? "noopener noreferrer" : undefined}
+    >
+      <Icon className="h-4 w-4 text-primary shrink-0" />
+
+      <span className="text-secondary-dark">{label}:</span>
+
+      <span className="font-medium truncate group-hover:underline">
+        {value}
+      </span>
+    </a>
   );
 }

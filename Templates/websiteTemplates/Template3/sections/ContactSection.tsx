@@ -21,9 +21,9 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
           "linear-gradient(180deg, color-mix(in srgb, var(--color-bg) 85%, black), var(--color-bg))",
       }}
     >
-      <div className="mx-auto max-w-4xl px-4 py-28">
+      <div className="mx-auto max-w-6xl px-4 py-20">
         {/* Intro */}
-        <div className="mx-auto mb-16 max-w-2xl text-center">
+        <div className="mb-12 max-w-xl">
           <h2 className="text-3xl font-semibold tracking-tight text-text">
             {contact.title}
           </h2>
@@ -36,7 +36,7 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
         {/* CTA band */}
         <div
           className="
-            mx-auto max-w-3xl
+
             rounded-3xl px-8 py-10
           "
           style={{
@@ -45,7 +45,7 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
               "1px solid color-mix(in srgb, var(--color-primary) 14%, transparent)",
           }}
         >
-          <div className="grid gap-10 md:grid-cols-2">
+          <div className="grid items-stretch gap-14 md:grid-cols-2">
             {/* Left: form */}
             <form
               onSubmit={(e) => {
@@ -131,15 +131,15 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
             </form>
 
             {/* Right: contact options */}
-            <div className="space-y-4 text-sm">
-              <ContactRow label="Email" value={contact.email} />
+            <div className="space-y-4 text-sm pt-[42px]">
+              <ContactRow type="email" value={contact.email} />
 
               {contact.whatsapp && (
-                <ContactRow label="WhatsApp" value={contact.whatsapp} />
+                <ContactRow type="whatsapp" value={contact.whatsapp} />
               )}
 
               {contact.phone && (
-                <ContactRow label="Phone" value={contact.phone} />
+                <ContactRow type="phone" value={contact.phone} />
               )}
 
               <p className="pt-4 text-xs text-(--color-muted)">

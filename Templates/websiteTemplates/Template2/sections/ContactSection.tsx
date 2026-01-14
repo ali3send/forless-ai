@@ -41,9 +41,9 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
           </p>
         </div>
 
-        <div className="mt-12 grid gap-10 md:grid-cols-2">
-          {/* Contact details */}
-          <div className="space-y-6">
+        <div className="mt-12 grid items-start gap-10 md:grid-cols-2">
+          {/* LEFT: Contact details */}
+          <div className="space-y-6 pt-2">
             <div
               className="rounded-2xl border p-6"
               style={{
@@ -60,12 +60,14 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
               </p>
 
               <div className="mt-5 space-y-3">
-                <ContactRow label="Email" value={contact.email} />
+                <ContactRow type="email" value={contact.email} />
+
                 {contact.whatsapp && (
-                  <ContactRow label="WhatsApp" value={contact.whatsapp} />
+                  <ContactRow type="whatsapp" value={contact.whatsapp} />
                 )}
+
                 {contact.phone && (
-                  <ContactRow label="Phone" value={contact.phone} />
+                  <ContactRow type="phone" value={contact.phone} />
                 )}
               </div>
             </div>
@@ -75,7 +77,7 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
             </p>
           </div>
 
-          {/* Contact form */}
+          {/* RIGHT: Contact form */}
           <form
             className="relative rounded-2xl border p-8"
             style={{
@@ -100,7 +102,7 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
               <TextInput
                 name="name"
-                label="name"
+                label="Name"
                 placeholder="Enter your name"
               />
               <TextInput
@@ -115,6 +117,7 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
               Message
               <textarea
                 rows={4}
+                name="message"
                 className="
                   mt-1 w-full rounded-md border px-3 py-2
                   text-xs outline-none
@@ -122,7 +125,6 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
                   text-text
                   transition
                 "
-                name="message"
                 style={{
                   borderColor:
                     "color-mix(in srgb, var(--color-primary) 25%, transparent)",
@@ -148,10 +150,12 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
                 bg-primary
                 text-white
                 hover:opacity-90
+                disabled:opacity-60
               "
             >
               {loading ? "Sending…" : success ? "Sent!" : finalCta.buttonLabel}
             </button>
+
             {success && (
               <p className="mt-3 text-xs text-green-600">
                 Thanks! Your message has been sent.
