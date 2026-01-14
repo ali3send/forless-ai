@@ -7,6 +7,7 @@ import { StateUpdater } from "@/lib/types/state";
 import { useProjectStore } from "@/store/project.store";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
+import { TextField } from "../../components/ui/TextField";
 
 export type AboutSectionFormProps = {
   data: WebsiteData;
@@ -82,37 +83,36 @@ export function AboutSectionForm({ data, setData }: AboutSectionFormProps) {
 
   return (
     <div className="space-y-2">
-      <label className="block text-xs text-secondary">
-        About section title
-        <input
-          type="text"
-          placeholder="e.g., About Us, Our Story, Our Mission"
-          value={data.about.title}
-          onChange={(e) =>
-            setData((d) => ({
-              ...d,
-              about: { ...d.about, title: e.target.value },
-            }))
-          }
-          className="input-base"
-        />
-      </label>
+      <TextField
+        label="About section title"
+        placeholder="e.g., About Us, Our Story, Our Mission"
+        value={data.about.title}
+        onChange={(v) =>
+          setData((d) => ({
+            ...d,
+            about: { ...d.about, title: v },
+          }))
+        }
+        limit="aboutTitle"
+        showLimit
+      />
 
-      <label className="block text-xs text-secondary">
-        About text
-        <textarea
-          placeholder="describe your company, mission, or story"
-          value={data.about.body}
-          onChange={(e) =>
-            setData((d) => ({
-              ...d,
-              about: { ...d.about, body: e.target.value },
-            }))
-          }
-          rows={4}
-          className="input-base"
-        />
-      </label>
+      <TextField
+        as="textarea"
+        rows={6}
+        maxHeight={160}
+        label="About text"
+        placeholder="describe your company, mission, or story"
+        value={data.about.body}
+        onChange={(v) =>
+          setData((d) => ({
+            ...d,
+            about: { ...d.about, body: v },
+          }))
+        }
+        limit="aboutBody"
+        showLimit
+      />
 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
@@ -189,20 +189,19 @@ export function AboutSectionForm({ data, setData }: AboutSectionFormProps) {
         {err && <p className="text-[11px] text-secondary">{err}</p>}
       </div>
 
-      <label className="block text-xs text-secondary">
-        About image keyword (Unsplash fallback)
-        <input
-          placeholder="e.g., technology, solar panels, office"
-          value={data.about.imageQuery}
-          onChange={(e) =>
-            setData((d) => ({
-              ...d,
-              about: { ...d.about, imageQuery: e.target.value },
-            }))
-          }
-          className="input-base"
-        />
-      </label>
+      <TextField
+        label="About image keyword"
+        placeholder="e.g., technology, solar panels, office"
+        value={data.about.imageQuery}
+        onChange={(v) =>
+          setData((d) => ({
+            ...d,
+            about: { ...d.about, imageQuery: v },
+          }))
+        }
+        limit="aboutImageQuery"
+        showLimit
+      />
     </div>
   );
 }

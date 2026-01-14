@@ -1,6 +1,7 @@
 "use client";
 
 import { WebsiteData } from "@/lib/types/websiteTypes";
+import { TextField } from "../../components/ui/TextField";
 
 type OffersSectionFormProps = {
   data: WebsiteData;
@@ -54,20 +55,19 @@ export function ProductsSectionForm({ data, setData }: OffersSectionFormProps) {
   return (
     <div className="space-y-4">
       {/* Offers section title */}
-      <label className="block text-xs text-secondary">
-        Offers Section Title
-        <input
-          placeholder="e.g Our offers, our products"
-          value={data.offers.title}
-          onChange={(e) =>
-            setData((prev) => ({
-              ...prev,
-              offers: { ...prev.offers, title: e.target.value },
-            }))
-          }
-          className="input-base"
-        />
-      </label>
+      <TextField
+        label="Offers Section Title"
+        placeholder="e.g Our offers, our products"
+        value={data.offers.title}
+        onChange={(v) =>
+          setData((prev) => ({
+            ...prev,
+            offers: { ...prev.offers, title: v },
+          }))
+        }
+        limit="offersTitle"
+        showLimit
+      />
 
       {/* Offers list */}
       <div className="space-y-4">
@@ -92,40 +92,37 @@ export function ProductsSectionForm({ data, setData }: OffersSectionFormProps) {
               )}
             </div>
 
-            <label className="block text-xs text-secondary">
-              Name
-              <input
-                value={offer.name}
-                placeholder="e.g, offer-1,product-1"
-                onChange={(e) => updateOffer(index, "name", e.target.value)}
-                className="input-base border-none ring-1 ring-secondary-light focus:ring-2 focus:ring-primary/50"
-              />
-            </label>
+            <TextField
+              label="Name"
+              placeholder="e.g, offer-1, product-1"
+              value={offer.name}
+              onChange={(v) => updateOffer(index, "name", v)}
+              limit="offerName"
+              showLimit
+              className="border-none ring-1 ring-secondary-light focus:ring-2 focus:ring-primary/50"
+            />
 
-            <label className="block text-xs text-secondary">
-              Description
-              <textarea
-                placeholder="Describe this offer/product..."
-                value={offer.description}
-                onChange={(e) =>
-                  updateOffer(index, "description", e.target.value)
-                }
-                rows={2}
-                className="input-base border-none ring-1 ring-secondary-light focus:ring-2 focus:ring-primary/50"
-              />
-            </label>
+            <TextField
+              as="textarea"
+              rows={3}
+              label="Description"
+              placeholder="Describe this offer/product..."
+              value={offer.description}
+              onChange={(v) => updateOffer(index, "description", v)}
+              limit="offerDescription"
+              showLimit
+              maxHeight={80}
+              className="border-none ring-1 ring-secondary-light focus:ring-2 focus:ring-primary/50"
+            />
 
-            <label className="block text-xs text-secondary">
-              Price label (optional)
-              <input
-                value={offer.priceLabel ?? ""}
-                onChange={(e) =>
-                  updateOffer(index, "priceLabel", e.target.value)
-                }
-                placeholder="e.g. From $19/mo"
-                className="input-base border-none ring-1 ring-secondary-light focus:ring-2 focus:ring-primary/50"
-              />
-            </label>
+            <TextField
+              label="Price label (optional)"
+              placeholder="e.g. From $19/mo"
+              value={offer.priceLabel ?? ""}
+              onChange={(v) => updateOffer(index, "priceLabel", v)}
+              limit="offerPriceLabel"
+              className="border-none ring-1 ring-secondary-light focus:ring-2 focus:ring-primary/50"
+            />
           </div>
         ))}
       </div>

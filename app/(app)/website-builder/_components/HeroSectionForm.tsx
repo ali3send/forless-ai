@@ -8,6 +8,7 @@ import { StateUpdater } from "@/lib/types/state";
 import { useProjectStore } from "@/store/project.store";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
+import { TextField } from "../../components/ui/TextField";
 export type HeroSectionFormProps = {
   data: WebsiteData;
   setData: StateUpdater<WebsiteData>;
@@ -85,57 +86,50 @@ export function HeroSectionForm({ data, setData }: HeroSectionFormProps) {
 
   return (
     <div className="space-y-2">
-      <label className="block text-xs text-secondary">
-        Brand name
-        <input
-          placeholder="Enter Brand name"
-          value={data.brandName}
-          onChange={(e) =>
-            setData((d) => ({ ...d, brandName: e.target.value }))
-          }
-          className="input-base"
-        />
-      </label>
+      <TextField
+        label="Brand name"
+        placeholder="Enter Brand name"
+        value={data.brandName}
+        onChange={(v) => setData((d) => ({ ...d, brandName: v }))}
+        limit="brandName"
+      />
 
-      <label className="block text-xs text-secondary">
-        Tagline
-        <input
-          placeholder="Enter tagline for website"
-          value={data.tagline ?? ""}
-          onChange={(e) => setData((d) => ({ ...d, tagline: e.target.value }))}
-          className="input-base"
-        />
-      </label>
+      <TextField
+        label="Tagline"
+        placeholder="Enter tagline for website"
+        value={data.tagline ?? ""}
+        onChange={(v) => setData((d) => ({ ...d, tagline: v }))}
+        limit="tagline"
+        showLimit
+      />
 
-      <label className="block text-xs text-secondary">
-        Hero headline
-        <input
-          placeholder="Enter headline"
-          value={data.hero.headline}
-          onChange={(e) =>
-            setData((d) => ({
-              ...d,
-              hero: { ...d.hero, headline: e.target.value },
-            }))
-          }
-          className="input-base"
-        />
-      </label>
+      <TextField
+        label="Hero headline"
+        placeholder="Enter headline"
+        value={data.hero.headline}
+        onChange={(v) =>
+          setData((d) => ({
+            ...d,
+            hero: { ...d.hero, headline: v },
+          }))
+        }
+        limit="heroHeadline"
+        showLimit
+      />
 
-      <label className="block text-xs text-secondary">
-        Sub headline
-        <input
-          placeholder="Enter subheadline"
-          value={data.hero.subheadline}
-          onChange={(e) =>
-            setData((d) => ({
-              ...d,
-              hero: { ...d.hero, subheadline: e.target.value },
-            }))
-          }
-          className="input-base"
-        />
-      </label>
+      <TextField
+        label="Sub headline"
+        placeholder="Enter subheadline"
+        value={data.hero.subheadline}
+        onChange={(v) =>
+          setData((d) => ({
+            ...d,
+            hero: { ...d.hero, subheadline: v },
+          }))
+        }
+        limit="heroSubheadline"
+        showLimit
+      />
 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
@@ -211,80 +205,73 @@ export function HeroSectionForm({ data, setData }: HeroSectionFormProps) {
         {err && <p className="text-[11px] text-secondary">{err}</p>}
       </div>
 
-      <label className="block text-xs text-secondary">
-        Hero image keyword
-        <input
-          placeholder="e.g., technology, solar panels, office"
-          value={data.hero.imageQuery}
-          onChange={(e) =>
-            setData((d) => ({
-              ...d,
-              hero: { ...d.hero, imageQuery: e.target.value },
-            }))
-          }
-          className="input-base"
-        />
-      </label>
+      <TextField
+        label="Hero image keyword"
+        placeholder="e.g., technology, solar panels, office"
+        value={data.hero.imageQuery}
+        onChange={(v) =>
+          setData((d) => ({
+            ...d,
+            hero: { ...d.hero, imageQuery: v },
+          }))
+        }
+        limit="heroImageQuery"
+        showLimit
+      />
 
-      <label className="block text-xs text-secondary">
-        Primary CTA
-        <input
-          value={data.hero.primaryCta}
-          placeholder="e.g., Get Started, Order Now"
-          onChange={(e) =>
-            setData((d) => ({
-              ...d,
-              hero: { ...d.hero, primaryCta: e.target.value },
-            }))
-          }
-          className="input-base"
-        />
-      </label>
+      <TextField
+        label="Primary CTA"
+        placeholder="e.g., Get Started, Order Now"
+        value={data.hero.primaryCta}
+        onChange={(v) =>
+          setData((d) => ({
+            ...d,
+            hero: { ...d.hero, primaryCta: v },
+          }))
+        }
+        limit="primaryCta"
+        showLimit
+      />
 
-      <label className="block text-xs text-secondary">
-        Primary CTA Link
-        <input
-          placeholder="e.g., https://yourwebsite.com/signup or #contact"
-          value={data.hero.primaryCtaLink}
-          onChange={(e) =>
-            setData((d) => ({
-              ...d,
-              hero: { ...d.hero, primaryCtaLink: e.target.value },
-            }))
-          }
-          className="input-base"
-        />
-      </label>
+      <TextField
+        label="Primary CTA Link"
+        placeholder="e.g., https://yourwebsite.com/signup or #contact"
+        value={data.hero.primaryCtaLink ?? "Order Now"}
+        onChange={(v) =>
+          setData((d) => ({
+            ...d,
+            hero: { ...d.hero, primaryCtaLink: v },
+          }))
+        }
+        limit="primaryCtaLink"
+      />
 
-      <label className="block text-xs text-secondary">
-        Secondary CTA
-        <input
-          placeholder="e.g., Learn More"
-          value={data.hero.secondaryCta ?? ""}
-          onChange={(e) =>
-            setData((d) => ({
-              ...d,
-              hero: { ...d.hero, secondaryCta: e.target.value },
-            }))
-          }
-          className="input-base"
-        />
-      </label>
+      <TextField
+        label="Secondary CTA"
+        placeholder="e.g., Learn More"
+        value={data.hero.secondaryCta ?? ""}
+        onChange={(v) =>
+          setData((d) => ({
+            ...d,
+            hero: { ...d.hero, secondaryCta: v },
+          }))
+        }
+        limit="secondaryCta"
+        showLimit
+      />
 
-      <label className="block text-xs text-secondary">
-        Secondary CTA Link
-        <input
-          placeholder="e.g., https://yourwebsite.com/learn-more or #about"
-          value={data.hero.secondaryCtaLink ?? ""}
-          onChange={(e) =>
-            setData((d) => ({
-              ...d,
-              hero: { ...d.hero, secondaryCtaLink: e.target.value },
-            }))
-          }
-          className="input-base"
-        />
-      </label>
+      <TextField
+        label="Secondary CTA Link"
+        placeholder="e.g., https://yourwebsite.com/learn-more or #about"
+        value={data.hero.secondaryCtaLink ?? ""}
+        onChange={(v) =>
+          setData((d) => ({
+            ...d,
+            hero: { ...d.hero, secondaryCtaLink: v },
+          }))
+        }
+        limit="secondaryCtaLink"
+      />
     </div>
   );
 }

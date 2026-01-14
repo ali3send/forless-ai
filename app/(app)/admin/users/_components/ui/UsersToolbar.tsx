@@ -1,8 +1,8 @@
 import React from "react";
 
 export function UsersToolbar(props: {
-  q: string;
-  setQ: (v: string) => void;
+  query: string;
+  setQuery: (v: string) => void;
   status: "all" | "active" | "suspended";
   setStatus: (v: "all" | "active" | "suspended") => void;
   roleFilter: "all" | "user" | "admin";
@@ -30,8 +30,8 @@ export function UsersToolbar(props: {
         {/* Search (primary) */}
         <div className="flex-1 min-w-[220px]">
           <input
-            value={props.q}
-            onChange={(e) => props.setQ(e.target.value)}
+            value={props.query}
+            onChange={(e) => props.setQuery(e.target.value)}
             placeholder="Search users by name, email, or ID"
             className="
               input-base

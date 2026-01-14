@@ -40,10 +40,10 @@ export function HeroSection({ brandName, tagline, hero }: Props) {
 
         {/* Content */}
         <div className="absolute inset-0 flex items-center">
-          <div className="max-w-xl px-8">
+          <div className="max-w-3xl px-8">
             <p
-              className="text-xs uppercase tracking-[0.25em]"
-              style={{ color: "var(--color-muted)" }}
+              className="text-xs uppercase tracking-[0.25em] text-white/60 bg-black/30 px-3 py-1 rounded-full "
+              // style={{ color: "var(--color-muted)" }}
             >
               {tagline}
             </p>

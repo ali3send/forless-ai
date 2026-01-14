@@ -1,6 +1,7 @@
 "use client";
 
 import { WebsiteData } from "@/lib/types/websiteTypes";
+import { TextField } from "../../components/ui/TextField";
 
 type FeaturesSectionFormProps = {
   data: WebsiteData;
@@ -53,20 +54,19 @@ export function FeaturesSectionForm({
   return (
     <div className="space-y-4">
       {/* Features Title */}
-      <label className="block text-xs text-secondary">
-        Features Section Title
-        <input
-          value={data.features.title}
-          placeholder="e.g., Features, Our Services, Benefits"
-          onChange={(e) =>
-            setData((prev) => ({
-              ...prev,
-              features: { ...prev.features, title: e.target.value },
-            }))
-          }
-          className="input-base"
-        />
-      </label>
+      <TextField
+        label="Features Section Title"
+        placeholder="e.g., Features, Our Services, Benefits"
+        value={data.features.title}
+        onChange={(v) =>
+          setData((prev) => ({
+            ...prev,
+            features: { ...prev.features, title: v },
+          }))
+        }
+        limit="featuresTitle"
+        showLimit
+      />
 
       {/* Feature Items */}
       <div className="space-y-4">
@@ -90,28 +90,27 @@ export function FeaturesSectionForm({
               )}
             </div>
 
-            <label className="block text-xs text-secondary">
-              Label
-              <input
-                type="text"
-                placeholder="e.g., Feature 1, Feature 2, Feature 3"
-                value={item.label}
-                onChange={(e) => updateItem(index, "label", e.target.value)}
-                className="input-base border-none ring-1 ring-secondary-light focus:ring-2 focus:ring-primary/50"
-              />
-            </label>
+            <TextField
+              label="Label"
+              placeholder="e.g., Feature 1, Feature 2, Feature 3"
+              value={item.label}
+              onChange={(v) => updateItem(index, "label", v)}
+              limit="featureLabel"
+              showLimit
+              className="border-none ring-1 ring-secondary-light focus:ring-2 focus:ring-primary/50"
+            />
 
-            <label className="block text-xs text-secondary">
-              Description
-              <textarea
-                value={item.description}
-                onChange={(e) =>
-                  updateItem(index, "description", e.target.value)
-                }
-                rows={2}
-                className="input-base border-none ring-1 ring-secondary-light focus:ring-2 focus:ring-primary/50"
-              />
-            </label>
+            <TextField
+              as="textarea"
+              rows={4}
+              label="Description"
+              value={item.description}
+              onChange={(v) => updateItem(index, "description", v)}
+              limit="featureDescription"
+              showLimit
+              maxHeight={80}
+              className="border-none ring-1 ring-secondary-light focus:ring-2 focus:ring-primary/50"
+            />
           </div>
         ))}
       </div>

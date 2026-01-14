@@ -112,6 +112,8 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
     const t = uiToast.loading("Publishing...");
 
     try {
+      // save data first in db
+
       const res = await fetch(`/api/projects/${projectId}/publish`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

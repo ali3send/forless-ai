@@ -71,6 +71,10 @@
 }
 
 
+button {
+  cursor: pointer;
+
+}
 
 .scrollbar-hide {
   scrollbar-width: none; /* Firefox */

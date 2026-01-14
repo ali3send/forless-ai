@@ -79,17 +79,25 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
               <label className="block text-xs text-(--color-muted)">
                 Message
                 <textarea
-                  rows={3}
+                  rows={8}
+                  maxLength={400}
                   className="
-                    mt-1 w-full rounded-md border px-3 py-2
+                    mt-1 w-full rounded-md border px-3 py-2 resize-none
                     text-xs outline-none
                     bg-(--color-bg)
                     text-text
                   "
                   name="message"
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = "var(--color-primary)";
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor =
+                      "color-mix(in srgb, var(--color-primary) 22%, transparent) ";
+                  }}
                   style={{
                     borderColor:
-                      "color-mix(in srgb, var(--color-primary) 22%, transparent)",
+                      "color-mix(in srgb, var(--color-primary) 22%, transparent) ",
                   }}
                   placeholder="Tell us briefly what you’re looking for…"
                 />

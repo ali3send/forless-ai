@@ -43,7 +43,7 @@ export function Navbar() {
         const t = uiToast.loading("Logging out...");
 
         try {
-          await logout(); // 🔑 provider-controlled logout
+          await logout();
           window.location.href = "/auth/login"; // hard navigation
         } catch (e: unknown) {
           uiToast.error(e, "Failed to log out.");
@@ -106,9 +106,14 @@ export function Navbar() {
           </Link>
 
           {user && (
-            <Link href="/dashboard" className="hover:underline">
-              Dashboard
-            </Link>
+            <>
+              <Link href="/dashboard" className="hover:underline">
+                Dashboard
+              </Link>
+              <Link href="/dashboard/messages" className="hover:underline">
+                Messages
+              </Link>
+            </>
           )}
 
           {user && (
@@ -125,7 +130,7 @@ export function Navbar() {
 
               {billingOpen && (
                 <div
-                  className="absolute right-0 mt-2 w-56 rounded-lg border border-secondary-fade bg-secondary-soft shadow-lg overflow-hidden z-50"
+                  className="absolute right-0 mt-2 w-56 rounded-lg border border-secondary-fade bg-secondary-soft/80 shadow-lg overflow-hidden z-50"
                   role="menu"
                 >
                   <Link
