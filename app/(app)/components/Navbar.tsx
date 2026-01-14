@@ -12,6 +12,8 @@ export function Navbar() {
   const { user, isAdmin, logout } = useAuth();
   const [billingOpen, setBillingOpen] = useState(false);
   const billingRef = useRef<HTMLDivElement | null>(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   useEffect(() => {
     function onDocMouseDown(e: MouseEvent) {
       if (!billingOpen) return;
@@ -86,21 +88,21 @@ export function Navbar() {
   }, [user?.email]);
 
   return (
-    <header className="border-b border-secondary-fade bg-secondary-fade backdrop-blur z-50">
-      <nav className=" mx-auto flex items-center justify-between px-5  py-3">
-        <Link href="/" className="">
-          <div className=" overflow-hidden rounded-md">
-            <Image
-              src="/img.png"
-              alt="ForlessAI Logo"
-              width={100}
-              height={100}
-              className="object-cover mt-1.5"
-            />
-          </div>
+    <header className="sm:relative border-b border-secondary-fade bg-secondary-fade backdrop-blur  sticky top-0 z-50">
+      <nav className="mx-auto flex items-center justify-between px-4 py-3 ">
+        {/* Logo */}
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/img.png"
+            alt="ForlessAI Logo"
+            width={90}
+            height={40}
+            className="object-contain"
+          />
         </Link>
 
-        <div className="flex items-center gap-4 text-xs sm:text-sm text-secondary-dark font-semibold">
+        {/* Desktop Nav */}
+        <div className="hidden md:flex items-center gap-4 text-xs sm:text-sm text-secondary-dark font-semibold">
           <Link href="/" className="hover:underline">
             Home
           </Link>
@@ -121,46 +123,29 @@ export function Navbar() {
               <button
                 type="button"
                 onClick={() => setBillingOpen((v) => !v)}
-                className="inline-flex items-center gap-1 "
-                aria-haspopup="menu"
-                aria-expanded={billingOpen}
+                className="inline-flex items-center gap-1"
               >
                 Packages <span className="text-[10px]">▾</span>
               </button>
 
               {billingOpen && (
-                <div
-                  className="absolute right-0 mt-2 w-56 rounded-lg border border-secondary-fade bg-secondary-soft/80 shadow-lg overflow-hidden z-50"
-                  role="menu"
-                >
+                <div className="absolute right-0 mt-2 w-56 rounded-lg border bg-secondary-soft shadow-lg z-50">
                   <Link
                     href="/billing/plans"
                     onClick={() => setBillingOpen(false)}
-                    className="block px-3 py-2 text-sm text-secondary-dark hover:bg-secondary-light"
-                    role="menuitem"
+                    className="block px-3 py-2 hover:bg-secondary-light"
                   >
-                    <div className="font-semibold">View Plans</div>
-                    <div className="text-[11px] text-secondary">
-                      Upgrade or compare packages
-                    </div>
+                    View Plans
                   </Link>
-
                   <button
-                    type="button"
                     onClick={() => {
                       setBillingOpen(false);
                       openBillingPortal();
                     }}
-                    className="cursor-pointer block w-full text-left px-3 py-2 text-sm text-secondary-dark hover:bg-secondary-light"
-                    role="menuitem"
+                    className="block w-full text-left px-3 py-2 hover:bg-secondary-light"
                   >
-                    <div className="font-semibold">Manage Subscription</div>
-                    <div className="text-[11px] text-secondary">
-                      Cancel, invoices, payment method
-                    </div>
+                    Manage Subscription
                   </button>
-
-                  <div className="h-px bg-secondary-fade" />
                 </div>
               )}
             </div>
@@ -172,7 +157,7 @@ export function Navbar() {
             </Link>
           )}
 
-          <div className="h-4 w-px bg-secondary-fade hidden sm:block" />
+          <div className="h-4 w-px bg-secondary-fade" />
 
           {user ? (
             <>
@@ -180,35 +165,113 @@ export function Navbar() {
                 Logout
               </button>
 
-              <button className="flex items-center gap-2 rounded-full border border-secondary-fade bg-secondary-soft px-3 py-1.5 text-xs text-secondary-dark">
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-secondary-light text-[10px] text-secondary-dark ">
+              <div className="flex items-center gap-2 rounded-full border bg-secondary-soft px-3 py-1.5">
+                <span className="h-6 w-6 rounded-full bg-secondary-light flex items-center justify-center text-[10px]">
                   {userInitial}
                 </span>
-                <span className="hidden sm:inline text-secondary-darker">
-                  {user.email}
-                </span>
-                <span className="text-[10px] text-secondary-dark">▾</span>
-              </button>
+                <span className="hidden sm:inline">{user.email}</span>
+              </div>
             </>
           ) : (
             <>
-              <Link
-                href="/auth/login"
-                className="text-secondary hover:underline"
-              >
-                Login
-              </Link>
-
+              <Link href="/auth/login">Login</Link>
               <Link
                 href="/auth/signup"
-                className="rounded-md bg-primary px-3 py-1 text-white font-semibold hover:bg-primary-hover transition text-xs sm:text-sm"
+                className="rounded-md bg-primary px-3 py-1 text-white"
               >
                 Sign up
               </Link>
             </>
           )}
         </div>
+
+        {/* Mobile Hamburger */}
+        <button
+          onClick={() => setMobileOpen((v) => !v)}
+          className="md:hidden text-xl font-bold"
+          aria-label="Toggle menu"
+        >
+          ☰
+        </button>
       </nav>
+      {mobileOpen && (
+        <div className="absolute left-0 right-0 top-full md:hidden z-50">
+          <div className="mx-2 mt-2 rounded-xl border border-secondary-fade bg-secondary-soft shadow-xl">
+            <div className="flex flex-col divide-y divide-secondary-fade text-sm font-medium">
+              <Link
+                href="/"
+                onClick={() => setMobileOpen(false)}
+                className="px-4 py-3 hover:bg-secondary-light"
+              >
+                Home
+              </Link>
+
+              {user && (
+                <>
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setMobileOpen(false)}
+                    className="px-4 py-3 hover:bg-secondary-light"
+                  >
+                    Dashboard
+                  </Link>
+
+                  <Link
+                    href="/dashboard/messages"
+                    onClick={() => setMobileOpen(false)}
+                    className="px-4 py-3 hover:bg-secondary-light"
+                  >
+                    Messages
+                  </Link>
+
+                  <Link
+                    href="/billing/plans"
+                    onClick={() => setMobileOpen(false)}
+                    className="px-4 py-3 hover:bg-secondary-light"
+                  >
+                    Plans
+                  </Link>
+                </>
+              )}
+
+              {isAdmin && (
+                <Link
+                  href="/admin"
+                  onClick={() => setMobileOpen(false)}
+                  className="px-4 py-3 hover:bg-secondary-light"
+                >
+                  Admin Panel
+                </Link>
+              )}
+
+              {user ? (
+                <button
+                  onClick={handleLogout}
+                  className="text-left px-4 py-3 text-red-600 hover:bg-red-500/10"
+                >
+                  Logout
+                </button>
+              ) : (
+                <>
+                  <Link
+                    href="/auth/login"
+                    className="px-4 py-3 hover:bg-secondary-light"
+                  >
+                    Login
+                  </Link>
+
+                  <Link
+                    href="/auth/signup"
+                    className="m-3 rounded-md bg-primary px-4 py-2 text-center text-white"
+                  >
+                    Sign up
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

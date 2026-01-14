@@ -118,7 +118,7 @@ export default function WebsiteBuilderPage() {
           {["editor", "split", "preview"].map((mode) => (
             <button
               key={mode}
-              onClick={() => setFocus(mode as any)}
+              onClick={() => setFocus(mode as typeof focus)}
               className={clsx(
                 "px-3 py-1 text-xs font-medium rounded-full",
                 focus === mode ? "bg-primary text-white" : "text-secondary"
