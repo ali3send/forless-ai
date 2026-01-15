@@ -7,7 +7,6 @@ type ProjectRow = {
   id: string;
   name: string | null;
   status: string | null;
-  published: boolean | null;
   thumbnail_url: string | null;
   updated_at: string | null;
 };
@@ -25,7 +24,7 @@ export default async function DashboardPage() {
 
   const { data: projects, error } = await supabase
     .from("projects")
-    .select("id, name, status, published, thumbnail_url, updated_at")
+    .select("id, name, status, thumbnail_url, updated_at")
     .eq("user_id", user.id)
     .order("updated_at", { ascending: false });
 
@@ -37,7 +36,7 @@ export default async function DashboardPage() {
 
   const stats = {
     totalProjects: safeProjects.length,
-    publishedSites: safeProjects.filter((p) => p.published === true).length,
+    publishedSites: safeProjects.filter((p) => p.status === "published").length,
     campaignsCreated: 0,
   };
 

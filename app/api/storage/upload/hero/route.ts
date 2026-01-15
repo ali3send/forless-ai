@@ -65,11 +65,6 @@ export async function POST(req: Request) {
     }
 
     const { data: pub } = supabase.storage.from(BUCKET).getPublicUrl(path);
-    // //update tuhumbnail now
-    // await supabase
-    //   .from("projects")
-    //   .update({ thumbnail_url: pub.publicUrl })
-    //   .eq("id", projectId);
 
     return NextResponse.json({
       path,

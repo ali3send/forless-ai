@@ -17,7 +17,7 @@ async function getProjects(page: number) {
 
   const { data, count } = await supabase
     .from("projects")
-    .select("id, name, slug, user_id, published, published_at, created_at", {
+    .select("id, name, slug, user_id, status, published_at, created_at", {
       count: "exact",
     })
     .order("created_at", { ascending: false })

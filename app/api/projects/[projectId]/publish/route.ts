@@ -69,7 +69,7 @@ export async function POST(
   /* ───────── PROJECT ───────── */
   const { data: project } = await supabase
     .from("projects")
-    .select("id, published, slug")
+    .select("id, status, slug")
     .eq("id", projectId)
     .eq("user_id", user.id)
     .single();
@@ -79,7 +79,20 @@ export async function POST(
   }
   console.log("project in publish:", project);
 
-  const alreadyPublished = !!project.published;
+  if (project.status === "deleted") {
+    return NextResponse.json(
+      { error: "Project is deleted and cannot be published" },
+      { status: 400 }
+    );
+  }
+
+  if (project.status === "unpublished") {
+    return NextResponse.json(
+      { error: "Project was unpublished by admin and cannot be republished" },
+      { status: 403 }
+    );
+  }
+  const alreadyPublished = project.status === "published";
 
   /* ───────── SAVE WEBSITE (CRITICAL) ───────── */
   try {
@@ -153,7 +166,7 @@ export async function POST(
     .from("projects")
     .update({
       slug,
-      published: true,
+      status: "published",
       published_at: alreadyPublished ? undefined : new Date().toISOString(),
       published_website_data: website.data,
     })

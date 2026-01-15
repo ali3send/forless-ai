@@ -21,7 +21,7 @@ function getPublishedSite(slug: string) {
         .from("projects")
         .select("id,published_website_data, brand_data")
         .eq("slug", slug)
-        .eq("published", true)
+        .eq("status", "published")
         .single();
 
       return data;

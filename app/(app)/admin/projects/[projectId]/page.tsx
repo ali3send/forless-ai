@@ -20,7 +20,7 @@ async function getProjectDetails(projectId: string) {
         id,
         name,
         slug,
-        published,
+        status,
         created_at,
         updated_at,
         user_id
@@ -161,7 +161,7 @@ export default async function AdminProjectDetailsPage({
           <span>
             Status{" "}
             <span className="ml-1 font-medium text-secondary-dark">
-              {project.published ? "Published" : "Draft"}
+              {project.status}
             </span>
           </span>
 
@@ -270,7 +270,7 @@ export default async function AdminProjectDetailsPage({
             >
               website Details →
             </Link>
-            {project.published && (
+            {project.status === "published" && (
               <Link
                 href={urls.site(project.slug)}
                 className="inline-block pt-2 text-xs font-medium text-primary hover:underline"

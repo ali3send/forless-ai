@@ -67,7 +67,7 @@ export async function GET(req: Request, context: RouteContext) {
   const { data, error } = await supabase
     .from("projects")
     .select(
-      "id, name, status, description, brand_data, thumbnail_url, updated_at, slug, published, published_at"
+      "id, name, status, description, brand_data, thumbnail_url, updated_at, slug, published_at"
     )
     .eq("id", projectId)
     .eq("user_id", user.id)
@@ -79,10 +79,7 @@ export async function GET(req: Request, context: RouteContext) {
 
   return NextResponse.json({ project: data });
 }
-export async function DELETE(
-  _req: Request,
-  context: { params: Promise<{ projectId: string }> }
-) {
+export async function DELETE(_req: Request, context: RouteContext) {
   const { projectId } = await context.params;
 
   if (!projectId) {
@@ -99,14 +96,21 @@ export async function DELETE(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  /* ───────── SOFT DELETE ───────── */
   const { error } = await supabase
     .from("projects")
-    .delete()
+    .update({
+      status: "deleted",
+      deleted_at: new Date().toISOString(),
+      slug: null,
+      published_at: null,
+    })
     .eq("id", projectId)
-    .eq("user_id", user.id);
+    .eq("user_id", user.id)
+    .neq("status", "deleted");
 
   if (error) {
-    console.error("DELETE projects error:", error);
+    console.error("SOFT DELETE projects error:", error);
     return NextResponse.json(
       { error: error.message, code: error.code },
       { status: 500 }

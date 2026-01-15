@@ -3,7 +3,7 @@ export type AdminProject = {
   name: string | null;
   slug: string | null;
   user_id: string | null;
-  published: boolean;
+  status: string | null;
   published_at: string | null;
   created_at: string;
 };

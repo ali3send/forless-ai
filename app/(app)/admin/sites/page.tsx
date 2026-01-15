@@ -1,8 +1,6 @@
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
 import { UnpublishButton } from "../components/UnpublishButton";
-import { createAdminSupabaseClient } from "@/lib/supabase/admin";
-// import { UnpublishButton } from "./_components/UnpublishButton";
 
 type SiteRow = {
   id: string;
@@ -15,16 +13,21 @@ type SiteRow = {
 export default async function AdminSitesPage() {
   const admin = await requireAdmin();
   if (!admin.ok) redirect("/");
-
-  const supabase = createAdminSupabaseClient();
-
-  // IMPORTANT: adjust this filter to match your real "published" logic.
-  const { data } = await supabase
+  const { supabase } = admin;
+  const { data, error } = await supabase
     .from("projects")
     .select("id, name, slug, user_id, updated_at")
-    .not("slug", "is", null)
+    .eq("status", "published")
     .order("updated_at", { ascending: false })
     .limit(200);
+
+  if (error) {
+    return (
+      <div className="p-6 text-red-600">
+        Failed to load sites: {error.message}
+      </div>
+    );
+  }
 
   const sites = (data ?? []) as SiteRow[];
 
@@ -49,9 +52,9 @@ export default async function AdminSitesPage() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <div className="font-medium text-secondary-dark">
-                  {s.name ?? "(no name)"}{" "}
+                  Project name: {s.name ?? "(no name)"}{" "}
                   {s.slug ? (
-                    <span className="text-secondary">· {s.slug}</span>
+                    <div className="text-secondary"> Slug: {s.slug}</div>
                   ) : null}
                 </div>
                 <div className="mt-1 text-xs text-secondary">
