@@ -6,6 +6,7 @@ export type ProjectRow = {
   status: string | null;
   thumbnail_url: string | null;
   updated_at: string | null;
+  unpublished_at?: string | null;
 };
 
 export type DashboardStats = {
