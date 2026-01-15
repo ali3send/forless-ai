@@ -1,8 +1,8 @@
-// app/api/website/generate/route.ts
 import { NextResponse } from "next/server";
 import { openai } from "@/lib/openai";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { PLAN_LIMITS, type PlanKey } from "@/lib/billing/planLimits";
+import { checkUsage } from "@/lib/usage/checkUsage";
+import { commitUsage } from "@/lib/usage/commitUsage";
 
 type BrandData = {
   name?: string;
@@ -12,19 +12,6 @@ type BrandData = {
 };
 
 type SectionKey = "hero" | "about" | "features" | "offers" | "contact";
-
-function normalizePlan(plan: string | null): PlanKey {
-  if (plan === "gowebsite" || plan === "creator" || plan === "pro") return plan;
-  return "free";
-}
-
-function nextMonthStartISO() {
-  const now = new Date();
-  const next = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1)
-  );
-  return next.toISOString();
-}
 
 export async function POST(req: Request) {
   const supabase = await createServerSupabaseClient();
@@ -42,48 +29,18 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { data: profile } = await supabase
+    const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select("plan, is_suspended, current_period_end")
       .eq("id", user.id)
       .single();
 
-    if (!profile || profile.is_suspended) {
+    if (profileError || !profile) {
+      return NextResponse.json({ error: "Profile not found" }, { status: 404 });
+    }
+
+    if (profile.is_suspended) {
       return NextResponse.json({ error: "Account suspended" }, { status: 403 });
-    }
-
-    const plan = normalizePlan(profile.plan);
-    const limit = PLAN_LIMITS[plan]?.website_regen ?? 0;
-
-    const periodEndISO = profile.current_period_end
-      ? new Date(profile.current_period_end).toISOString()
-      : nextMonthStartISO();
-
-    /* ──────────────────────────────
-       USAGE CHECK (website_regen)
-    ────────────────────────────── */
-    if (limit <= 0) {
-      return NextResponse.json(
-        { error: "Regeneration limit reached. Upgrade your plan." },
-        { status: 403 }
-      );
-    }
-
-    const { data: counter } = await supabase
-      .from("usage_counters")
-      .select("count")
-      .eq("user_id", user.id)
-      .eq("key", "website_regen")
-      .eq("period_end", periodEndISO)
-      .maybeSingle();
-
-    const used = counter?.count ?? 0;
-
-    if (used >= limit) {
-      return NextResponse.json(
-        { error: "Regeneration limit reached. Upgrade your plan." },
-        { status: 403 }
-      );
     }
 
     /* ──────────────────────────────
@@ -111,6 +68,24 @@ export async function POST(req: Request) {
     ];
     if (!allowed.includes(section)) {
       return NextResponse.json({ error: "Invalid section" }, { status: 400 });
+    }
+
+    /* ──────────────────────────────
+       USAGE CHECK (website_regen)
+    ────────────────────────────── */
+    const usage = await checkUsage({
+      userId: user.id,
+      projectId: null, // regen is user-wide
+      key: "website_regen",
+      plan: profile.plan ?? "free",
+      currentPeriodEnd: profile.current_period_end,
+    });
+
+    if (!usage.ok) {
+      return NextResponse.json(
+        { error: "Regeneration limit reached. Upgrade your plan." },
+        { status: 403 }
+      );
     }
 
     /* ──────────────────────────────
@@ -194,18 +169,14 @@ Email/phone/whatsapp: use placeholders if unknown.
     }
 
     /* ──────────────────────────────
-       INCREMENT USAGE (AFTER SUCCESS)
+       COMMIT USAGE (AFTER SUCCESS)
     ────────────────────────────── */
-    await supabase.from("usage_counters").upsert(
-      {
-        user_id: user.id,
-        key: "website_regen",
-        period_end: periodEndISO,
-        count: used + 1,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "user_id,key,period_end" }
-    );
+    await commitUsage({
+      userId: user.id,
+      projectId: null,
+      key: "website_regen",
+      currentPeriodEnd: profile.current_period_end,
+    });
 
     return NextResponse.json({ data: parsed });
   } catch (err) {

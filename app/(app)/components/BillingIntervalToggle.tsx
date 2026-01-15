@@ -2,7 +2,7 @@
 "use client";
 
 // import { cx } from "../_lib/utils";
-import type { BillingInterval } from "../billing/plans/_lib/types";
+import type { BillingInterval } from "../../../lib/billing/types/types";
 
 export default function BillingIntervalToggle(props: {
   interval: BillingInterval;

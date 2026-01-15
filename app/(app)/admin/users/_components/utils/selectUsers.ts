@@ -1,7 +1,7 @@
 import type { UserRow } from "./types";
 
 export type UserFilters = {
-  q: string;
+  query: string;
   status: "all" | "active" | "suspended";
   role: "all" | "user" | "admin";
   sort: "created_desc" | "created_asc" | "last_signin";

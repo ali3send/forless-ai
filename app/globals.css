@@ -71,6 +71,19 @@
 }
 
 
+button {
+  cursor: pointer;
+
+}
+/* scrollbehavior */
+html {
+  scroll-behavior: smooth;
+}
+
+.scrollbar-hide {
+  scrollbar-width: none; /* Firefox */
+}
+
 
 
 /* dark mode */

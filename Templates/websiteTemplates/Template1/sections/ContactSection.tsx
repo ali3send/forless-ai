@@ -1,0 +1,141 @@
+import { useContactForm } from "../../hooks/useContacForm";
+import { ContactData, FinalCtaData } from "../../template.types";
+import { ContactRow } from "../../ui/ContactRow";
+import { TextInput } from "../../ui/TextInput";
+
+type Props = {
+  contact: ContactData;
+  finalCta: FinalCtaData;
+  projectId: string;
+};
+
+export function ContactSection({ contact, finalCta, projectId }: Props) {
+  const { submit, loading, success, error } = useContactForm(projectId);
+
+  return (
+    <section
+      id="contact"
+      className="border-t"
+      style={{
+        background:
+          "linear-gradient(to bottom, var(--color-bg), color-mix(in srgb, var(--color-bg) 85%, black))",
+        borderColor:
+          "color-mix(in srgb, var(--color-primary) 18%, transparent)",
+      }}
+    >
+      <div className="mx-auto max-w-5xl px-4 py-12">
+        {/* Heading */}
+        <div className="max-w-xl">
+          <h2 className="text-xl font-semibold text-text">{contact.title}</h2>
+          <p className="mt-3 text-sm text-(--color-muted)">
+            {contact.description}
+          </p>
+        </div>
+
+        <div className="mt-8 grid items-start gap-8 md:grid-cols-2">
+          {/* LEFT: Contact details (NEW ROW STYLE) */}
+          <div className="space-y-5 text-sm pt-1 mt-4">
+            <h3 className="text-sm font-semibold text-text">Contact details</h3>
+
+            <div className="space-y-3">
+              <ContactRow type="email" value={contact.email} />
+
+              {contact.whatsapp && (
+                <ContactRow type="whatsapp" value={contact.whatsapp} />
+              )}
+
+              {contact.phone && (
+                <ContactRow type="phone" value={contact.phone} />
+              )}
+            </div>
+
+            <p className="pt-3 text-xs text-(--color-muted)">
+              We usually reply within 24 hours on business days.
+            </p>
+          </div>
+
+          {/* RIGHT: Contact form */}
+          <form
+            className="rounded-2xl border p-6 shadow-lg"
+            style={{
+              backgroundColor: "var(--color-surface)",
+              borderColor:
+                "color-mix(in srgb, var(--color-primary) 22%, transparent)",
+              boxShadow:
+                "0 20px 40px color-mix(in srgb, var(--color-bg) 60%, transparent)",
+            }}
+            onSubmit={(e) => {
+              e.preventDefault();
+              submit(e.currentTarget);
+            }}
+          >
+            <h3 className="text-lg font-semibold text-text">
+              {finalCta.headline}
+            </h3>
+
+            <p className="mt-2 text-sm text-(--color-muted)">
+              {finalCta.subheadline}
+            </p>
+
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <TextInput
+                label="Name"
+                name="name"
+                placeholder="Enter your name"
+              />
+              <TextInput
+                label="Email"
+                name="email"
+                type="email"
+                placeholder="you@example.com"
+              />
+            </div>
+
+            <label className="mt-3 block text-xs text-(--color-muted)">
+              Message
+              <textarea
+                name="message"
+                rows={4}
+                className="
+                  mt-1 w-full rounded-md border px-2 py-1.5
+                  text-xs outline-none
+                  bg-(--color-bg)
+                  text-text
+                "
+                style={{
+                  borderColor:
+                    "color-mix(in srgb, var(--color-primary) 25%, transparent)",
+                }}
+                placeholder="Tell us a bit about what you need help with..."
+              />
+            </label>
+
+            <button
+              type="submit"
+              disabled={loading || success}
+              className="
+                mt-4 rounded-full px-5 py-2
+                text-sm font-medium transition
+                bg-primary
+                text-slate-950
+                hover:opacity-90
+                disabled:opacity-60
+                disabled:cursor-not-allowed
+              "
+            >
+              {loading ? "Sending…" : success ? "Sent!" : finalCta.buttonLabel}
+            </button>
+
+            {success && (
+              <p className="mt-3 text-xs text-green-600">
+                Thanks! Your message has been sent.
+              </p>
+            )}
+
+            {error && <p className="mt-3 text-xs text-red-600">{error}</p>}
+          </form>
+        </div>
+      </div>
+    </section>
+  );
+}

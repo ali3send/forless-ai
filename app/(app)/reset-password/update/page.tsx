@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { uiToast } from "@/lib/utils/uiToast";
+import { TextField } from "../../components/ui/TextField";
 
 export default function ResetPasswordUpdatePage() {
   const [supabase] = useState(() => createBrowserSupabaseClient());
@@ -92,36 +93,27 @@ export default function ResetPasswordUpdatePage() {
         </div>
 
         <form onSubmit={handleUpdatePassword} className="space-y-4">
-          <div>
-            <label className="block text-xs font-medium text-secondary mb-1.5">
-              New password
-            </label>
-            <input
-              type="password"
-              required
-              minLength={6}
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              disabled={loading || linkInvalid}
-              className="input-base w-full disabled:opacity-60"
-              placeholder="Minimum 6 characters"
-            />
-          </div>
+          <TextField
+            label="New password"
+            type="password"
+            placeholder="Minimum 6 characters"
+            value={newPassword}
+            onChange={setNewPassword}
+            limit="password"
+            className="w-full disabled:opacity-60"
+            disabled={loading || linkInvalid}
+          />
 
-          <div>
-            <label className="block text-xs font-medium text-secondary mb-1.5">
-              Confirm new password
-            </label>
-            <input
-              type="password"
-              required
-              value={confirm}
-              onChange={(e) => setConfirm(e.target.value)}
-              disabled={loading || linkInvalid}
-              className="input-base w-full disabled:opacity-60"
-              placeholder="Repeat new password"
-            />
-          </div>
+          <TextField
+            label="Confirm new password"
+            type="password"
+            placeholder="Repeat new password"
+            value={confirm}
+            onChange={setConfirm}
+            limit="password"
+            className="w-full disabled:opacity-60"
+            disabled={loading || linkInvalid}
+          />
 
           <button
             type="submit"

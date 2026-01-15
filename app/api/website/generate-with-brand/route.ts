@@ -4,7 +4,9 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { openai } from "@/lib/openai";
 import { fetchUnsplashImage } from "@/lib/unsplash";
 import type { WebsiteData } from "@/lib/types/websiteTypes";
-import { PLAN_LIMITS, type PlanKey } from "@/lib/billing/planLimits";
+import { type PlanKey } from "@/lib/billing/planLimits";
+import { checkUsage } from "@/lib/usage/checkUsage";
+import { commitUsage } from "@/lib/usage/commitUsage";
 
 const Schema = z.object({
   projectId: z.uuid(),
@@ -46,13 +48,6 @@ function normalizePlan(plan: string | null): PlanKey {
   return "free";
 }
 
-function nextMonthStartISO() {
-  const now = new Date();
-  return new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1)
-  ).toISOString();
-}
-
 export async function POST(req: Request) {
   const supabase = await createServerSupabaseClient();
 
@@ -86,28 +81,19 @@ export async function POST(req: Request) {
   }
 
   const plan = normalizePlan(profile.plan);
-  const periodEndISO = profile.current_period_end
-    ? new Date(profile.current_period_end).toISOString()
-    : nextMonthStartISO();
 
-  // ── Usage limit (website_generate)
-  const limit = PLAN_LIMITS[plan]?.website_generate ?? 0;
-  if (limit <= 0) {
-    return NextResponse.json({ error: "Upgrade required" }, { status: 403 });
-  }
-
-  const { data: counter } = await supabase
-    .from("usage_counters")
-    .select("count")
-    .eq("user_id", user.id)
-    .eq("project_id", null)
-    .eq("key", "website_generate")
-    .eq("period_end", periodEndISO)
-    .maybeSingle();
-
-  if ((counter?.count ?? 0) >= limit) {
+  // 1️⃣ CHECK ONLY (no increment)
+  const usage = await checkUsage({
+    userId: user.id,
+    projectId: null, // user-wide
+    key: "website_generate",
+    plan,
+    currentPeriodEnd: profile.current_period_end,
+  });
+  console.log(" usage", usage);
+  if (!usage.ok) {
     return NextResponse.json(
-      { error: "Generation limit reached" },
+      { error: "Generation limit reached. Upgrade your plan." },
       { status: 403 }
     );
   }
@@ -199,18 +185,13 @@ Rules:
     }
   } catch {}
 
-  // Increment usage AFTER success
-  await supabase.from("usage_counters").upsert(
-    {
-      user_id: user.id,
-      project_id: null,
-      key: "website_generate",
-      period_end: periodEndISO,
-      count: (counter?.count ?? 0) + 1,
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: "user_id,project_id,key,period_end" }
-  );
+  // 3️⃣ COMMIT USAGE (AFTER SUCCESS)
+  await commitUsage({
+    userId: user.id,
+    projectId: null,
+    key: "website_generate",
+    currentPeriodEnd: profile.current_period_end,
+  });
 
   return NextResponse.json({ success: true, website });
 }

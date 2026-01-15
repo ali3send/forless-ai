@@ -1,22 +1,15 @@
-// app/api/website/route.ts
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { fetchUnsplashImage } from "@/lib/unsplash";
 import type { WebsiteData } from "@/lib/types/websiteTypes";
-
-const websiteDataSchema = z.looseObject({
-  hero: z.looseObject({
-    imageQuery: z.string().optional(),
-  }),
-});
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
+import { saveWebsite } from "../lib/saveWebsite";
 
 const postSchema = z.object({
   projectId: z.uuid(),
-  data: websiteDataSchema, // ✅ real validation (not z.custom)
+  data: z.unknown(),
 });
 
-// GET /api/website?projectId=...
 export async function GET(req: Request) {
   const supabase = await createServerSupabaseClient();
 
@@ -50,9 +43,12 @@ export async function GET(req: Request) {
     );
   }
 
-  return NextResponse.json({ data: (data as any)?.data ?? null });
+  return NextResponse.json({
+    data: (data as { data: WebsiteData })?.data ?? null,
+  });
 }
 
+// save website route
 // POST /api/website
 export async function POST(req: Request) {
   const supabase = await createServerSupabaseClient();
@@ -75,50 +71,21 @@ export async function POST(req: Request) {
     );
   }
 
-  const { projectId } = parsed.data;
-  const data = parsed.data.data as WebsiteData; // safe enough for our usage
+  const { projectId, data } = parsed.data;
+  const websiteData = data as WebsiteData;
 
-  // ✅ Upsert first
-  const { data: upserted, error } = await supabase
-    .from("websites")
-    .upsert(
-      {
-        project_id: projectId,
-        user_id: user.id,
-        data,
-      },
-      { onConflict: "project_id" }
-    )
-    .select()
-    .single();
-
-  // ✅ Always check error before using results
-  if (error) {
-    console.error("Supabase upsert error:", error);
-    return NextResponse.json(
-      { error: error.message, details: error },
-      { status: 500 }
-    );
-  }
-
-  // ✅ Safe hero query
-  const heroQuery =
-    typeof data?.hero?.imageQuery === "string" ? data.hero.imageQuery : "";
-
-  // Update thumbnail (non-blocking style: best effort)
   try {
-    const heroUrl = heroQuery ? await fetchUnsplashImage(heroQuery) : null;
+    const website = await saveWebsite({
+      supabase,
+      userId: user.id,
+      projectId,
+      data: websiteData,
+    });
 
-    if (heroUrl) {
-      await supabase
-        .from("projects")
-        .update({ thumbnail_url: heroUrl })
-        .eq("id", projectId)
-        .eq("user_id", user.id);
-    }
-  } catch (e) {
-    console.warn("Thumbnail update failed:", e);
+    return NextResponse.json({ data: website });
+  } catch (err: unknown) {
+    const errMsg = getErrorMessage(err, "Failed to save website");
+    console.error("Save website failed:", errMsg);
+    return NextResponse.json({ error: errMsg }, { status: 500 });
   }
-
-  return NextResponse.json({ data: upserted });
 }

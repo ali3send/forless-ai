@@ -72,11 +72,6 @@ export function BuilderDesignPanel() {
 
   return (
     <div className="mt-3 space-y-4 text-[11px] text-secondary">
-      <p className="text-[11px] text-secondary">
-        Choose a color palette and font family. The preview on the right updates
-        instantly.
-      </p>
-
       <div>
         <h3 className="text-[11px] font-semibold text-secondary-dark mb-1">
           Color palette

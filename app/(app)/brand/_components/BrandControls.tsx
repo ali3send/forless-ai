@@ -2,6 +2,7 @@
 "use client";
 
 import { PALETTES, FONTS } from "@/app/(app)/brand/brandConfig";
+import { TextField } from "../../components/ui/TextField";
 
 interface BrandControlsProps {
   idea: string;
@@ -28,26 +29,18 @@ export default function BrandControls({
     <div className="grid gap-4 md:grid-cols-3">
       {/* Idea input */}
       <div className="md:col-span-2 space-y-2">
-        <label className="block text-[11px] font-medium text-secondary-dark">
-          Business idea / keywords
-        </label>
-        <textarea
-          value={idea}
-          onChange={(e) => onIdeaChange(e.target.value)}
-          className="
-          h-24 w-full resize-none
-          rounded-md
-          border border-secondary-fade
-          bg-secondary-soft
-          px-3 py-2
-          text-xs text-secondary-dark
-          placeholder:text-secondary
-          outline-none
-          ring-primary/30
-          focus:border-primary
-          focus:ring-1
-        "
+        <TextField
+          as="textarea"
+          label="Business idea / keywords"
           placeholder="Example: Minimal tea shop for young professionals, calm vibe, affordable."
+          value={idea}
+          onChange={onIdeaChange}
+          limit="projectIdea"
+          showLimit
+          className="
+    h-24 w-full resize-none
+
+  "
         />
       </div>
 
@@ -66,10 +59,10 @@ export default function BrandControls({
                 type="button"
                 onClick={() => onPaletteChange(p.id)}
                 className={[
-                  "flex w-full items-center justify-between rounded-md border px-3 py-1.5 text-[11px] transition",
+                  "flex w-full items-center justify-between rounded-md px-3 py-1.5 text-[11px] transition",
                   selectedPaletteId === p.id
-                    ? "border-primary bg-secondary-fade"
-                    : "border-secondary-light bg-secondary-light hover:bg-secondary-fade",
+                    ? " outline-1 outline-primary bg-primary/15"
+                    : "bg-secondary-soft hover:bg-secondary-light/80",
                 ].join(" ")}
               >
                 <span className="text-secondary-dark">{p.label}</span>

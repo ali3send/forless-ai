@@ -1,7 +1,11 @@
+// app/api/projects/[projectId]/publish/route.ts
 import { NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { PLAN_LIMITS, type PlanKey } from "@/lib/billing/planLimits";
 import { urls } from "@/lib/config/urls";
+import { checkUsage } from "@/lib/usage/checkUsage";
+import { commitUsage } from "@/lib/usage/commitUsage";
+import { saveWebsite } from "@/app/api/lib/saveWebsite";
 
 function slugify(text: string) {
   return text
@@ -11,119 +15,112 @@ function slugify(text: string) {
     .replace(/^-+|-+$/g, "");
 }
 
-function normalizePlan(plan: string | null): PlanKey {
-  if (plan === "gowebsite" || plan === "creator" || plan === "pro") return plan;
-  return "free";
-}
-
-function nextMonthStartISO() {
-  const now = new Date();
-  const next = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1)
-  );
-  return next.toISOString();
-}
-
 export async function POST(
   req: Request,
   context: { params: Promise<{ projectId: string }> }
 ) {
   const { projectId } = await context.params;
-
   const supabase = await createServerSupabaseClient();
+
+  /* ───────── AUTH ───────── */
   const {
     data: { user },
-    error: userError,
   } = await supabase.auth.getUser();
 
-  if (userError || !user) {
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  /* ───────── BODY ───────── */
   const body = await req.json().catch(() => ({}));
   const slug = slugify(body.slug || "");
+  const websiteData = body.data;
 
   if (!slug) {
     return NextResponse.json({ error: "Invalid slug" }, { status: 400 });
   }
 
+  if (!websiteData) {
+    return NextResponse.json(
+      { error: "Missing website data" },
+      { status: 400 }
+    );
+  }
+
   const publishedUrl = urls.site(slug);
 
-  const { data: profile, error: profileError } = await supabase
+  console.log("📦 PUBLISH BODY", {
+    slug,
+    hasWebsiteData: !!websiteData,
+    websiteKeys: websiteData ? Object.keys(websiteData) : null,
+  });
+
+  /* ───────── PROFILE ───────── */
+  const { data: profile } = await supabase
     .from("profiles")
     .select("plan, is_suspended, current_period_end")
     .eq("id", user.id)
     .single();
 
-  if (profileError || !profile) {
-    return NextResponse.json({ error: "Profile not found" }, { status: 404 });
-  }
-
-  if (profile.is_suspended) {
+  if (!profile || profile.is_suspended) {
     return NextResponse.json({ error: "Account suspended" }, { status: 403 });
   }
 
-  const plan = normalizePlan(profile.plan);
-  const limit = PLAN_LIMITS[plan]?.websites_published ?? 0;
-
-  const periodEndISO = profile.current_period_end
-    ? new Date(profile.current_period_end).toISOString()
-    : nextMonthStartISO();
-
-  if (limit <= 0) {
-    return NextResponse.json(
-      { error: "Publishing is not available on your plan. Please upgrade." },
-      { status: 403 }
-    );
-  }
-
-  const { count: publishedCount, error: countError } = await supabase
+  /* ───────── PROJECT ───────── */
+  const { data: project } = await supabase
     .from("projects")
-    .select("id", { count: "exact", head: true })
-    .eq("user_id", user.id)
-    .eq("published", true);
-
-  if (countError) {
-    return NextResponse.json(
-      { error: "Failed to check publish usage" },
-      { status: 500 }
-    );
-  }
-
-  const { data: currentProject, error: currentErr } = await supabase
-    .from("projects")
-    .select("published")
+    .select("id, published, slug")
     .eq("id", projectId)
     .eq("user_id", user.id)
     .single();
 
-  if (currentErr || !currentProject) {
+  if (!project) {
     return NextResponse.json({ error: "Project not found" }, { status: 404 });
   }
+  console.log("project in publish:", project);
 
-  const alreadyPublished = !!currentProject.published;
+  const alreadyPublished = !!project.published;
 
-  if (!alreadyPublished && (publishedCount ?? 0) >= limit) {
+  /* ───────── SAVE WEBSITE (CRITICAL) ───────── */
+  try {
+    console.log("💾 Saving website", {
+      projectId,
+      userId: user.id,
+    });
+
+    await saveWebsite({
+      supabase,
+      userId: user.id,
+      projectId,
+      data: websiteData,
+    });
+  } catch (err) {
+    console.error("Publish save failed:", err);
     return NextResponse.json(
-      {
-        error:
-          "Publish limit reached for your plan. Upgrade to publish more sites.",
-      },
-      { status: 403 }
+      { error: "Failed to save website before publish" },
+      { status: 500 }
     );
   }
 
-  const { data: counterRow } = await supabase
-    .from("usage_counters")
-    .select("count")
-    .eq("user_id", user.id)
-    .eq("project_id", null)
-    .eq("key", "websites_published")
-    .eq("period_end", periodEndISO)
-    .maybeSingle();
+  /* ───────── USAGE CHECK (first publish only) ───────── */
+  if (!alreadyPublished) {
+    const usage = await checkUsage({
+      userId: user.id,
+      projectId: null,
+      key: "websites_published",
+      plan: profile.plan ?? "free",
+      currentPeriodEnd: profile.current_period_end,
+    });
 
-  const used = counterRow?.count ?? 0;
+    if (!usage.ok) {
+      return NextResponse.json(
+        { error: "Publish limit reached. Upgrade your plan." },
+        { status: 403 }
+      );
+    }
+  }
 
+  /* ───────── SLUG UNIQUENESS ───────── */
   const { data: existing } = await supabase
     .from("projects")
     .select("id")
@@ -131,16 +128,34 @@ export async function POST(
     .maybeSingle();
 
   if (existing && existing.id !== projectId) {
-    return NextResponse.json({ error: "Slug already taken" }, { status: 409 });
+    return NextResponse.json(
+      { error: "Subdomain already taken" },
+      { status: 409 }
+    );
   }
 
+  /* ───────── SNAPSHOT WEBSITE DATA ───────── */
+  const { data: website } = await supabase
+    .from("websites")
+    .select("data")
+    .eq("project_id", projectId)
+    .single();
+
+  if (!website?.data) {
+    return NextResponse.json(
+      { error: "Website data missing after save" },
+      { status: 500 }
+    );
+  }
+
+  /* ───────── PUBLISH ───────── */
   const { error: updateError } = await supabase
     .from("projects")
     .update({
       slug,
       published: true,
-      published_url: publishedUrl,
       published_at: alreadyPublished ? undefined : new Date().toISOString(),
+      published_website_data: website.data,
     })
     .eq("id", projectId)
     .eq("user_id", user.id);
@@ -149,33 +164,22 @@ export async function POST(
     return NextResponse.json({ error: updateError.message }, { status: 500 });
   }
 
-  if (!alreadyPublished) {
-    await supabase.from("usage_counters").upsert(
-      {
-        user_id: user.id,
-        project_id: null,
-        key: "websites_published",
-        period_end: periodEndISO,
-        count: used + 1,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "user_id,project_id,key,period_end" }
-    );
+  revalidateTag(`site:${slug}`, "default");
 
-    await supabase.from("activity_logs").insert({
-      type: "website_published",
-      message: "Website published",
-      actor_id: user.id,
-      entity_id: projectId,
-      entity_type: "project",
+  /* ───────── USAGE COMMIT ───────── */
+  if (!alreadyPublished) {
+    await commitUsage({
+      userId: user.id,
+      projectId: null,
+      key: "websites_published",
+      currentPeriodEnd: profile.current_period_end,
     });
   }
 
   return NextResponse.json({
     success: true,
     slug,
-    previewUrl: `/site/${slug}`,
     published_url: publishedUrl,
-    localSubdomainUrl: publishedUrl,
+    previewUrl: urls.preview(slug),
   });
 }

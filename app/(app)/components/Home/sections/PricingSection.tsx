@@ -5,7 +5,7 @@
 import { Sparkles } from "lucide-react";
 import { HomePricingCard } from "../components/PricingCard";
 import { SectionHeading } from "../components/SectionHeading";
-import { PLANS } from "../data/PricingData";
+import { PLANS } from "@/lib/billing/data/plans";
 
 export function HomePricingSection() {
   return (

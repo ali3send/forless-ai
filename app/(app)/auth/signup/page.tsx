@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
+import { TextField } from "../../components/ui/TextField";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -55,7 +56,7 @@ export default function SignupPage() {
       setLoading(false);
     }
   };
-  const inputClasses = "input-base w-full  py-2";
+  const inputClasses = "py-2";
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center">
@@ -72,66 +73,44 @@ export default function SignupPage() {
           </p>
         </div>
         <form onSubmit={handleSignup} className="space-y-4">
-          <div>
-            <label className="block text-xs font-medium text-secondary-dark">
-              Full Name
-            </label>
-            <input
-              type="text"
-              required
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              className={inputClasses}
-              placeholder="John Doe"
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-secondary-dark">
-              Email
-            </label>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className={inputClasses}
-              placeholder="you@example.com"
-            />
-          </div>
+          <TextField
+            label="Full Name"
+            placeholder="John Doe"
+            value={fullName}
+            onChange={setFullName}
+            limit="fullName"
+            className={inputClasses}
+          />
 
-          <div>
-            <label className="block text-xs font-medium text-secondary-dark">
-              Password
-            </label>
+          <TextField
+            label="Email"
+            type="email"
+            placeholder="you@example.com"
+            value={email}
+            onChange={setEmail}
+            limit="email"
+            className={inputClasses}
+          />
 
-            <div className="relative">
-              <input
-                type="text"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={inputClasses}
-                placeholder="Minimum 6 characters"
-              />
-            </div>
-          </div>
+          <TextField
+            label="Password"
+            type="password"
+            placeholder="Minimum 6 characters"
+            value={password}
+            onChange={setPassword}
+            limit="password"
+            className={inputClasses}
+          />
 
-          <div>
-            <label className="block text-xs font-medium text-secondary-dark">
-              Confirm Password
-            </label>
-
-            <div className="relative">
-              <input
-                type="text"
-                required
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className={inputClasses}
-                placeholder="Minimum 6 characters"
-              />
-            </div>
-          </div>
+          <TextField
+            label="Confirm Password"
+            type="password"
+            placeholder="Minimum 6 characters"
+            value={confirmPassword}
+            onChange={setConfirmPassword}
+            limit="password"
+            className={inputClasses}
+          />
 
           <button
             type="submit"

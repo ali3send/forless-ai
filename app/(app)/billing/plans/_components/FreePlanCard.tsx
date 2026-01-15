@@ -1,15 +1,14 @@
 "use client";
 
-import type { Plan, Profile } from "../_lib/types";
+import { Plan, Profile } from "@/lib/billing/types/types";
 
 export default function FreePlanCard(props: {
   currentPlan: Plan;
   profile: Profile | null;
   freeFeatures: string[];
   onLogin: () => void;
-  onManage: () => void;
 }) {
-  const { currentPlan, profile, freeFeatures, onLogin, onManage } = props;
+  const { currentPlan, profile, freeFeatures, onLogin } = props;
 
   return (
     <div className="mt-6 rounded-2xl border border-secondary-fade bg-secondary-fade p-5 shadow-sm">
@@ -42,10 +41,10 @@ export default function FreePlanCard(props: {
       </div>
 
       <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-        {freeFeatures.map((f) => (
-          <li key={f} className="flex gap-2">
+        {freeFeatures.map((feature) => (
+          <li key={feature} className="flex gap-2">
             <span className="text-primary mt-0.5">✓</span>
-            <span className="text-secondary-dark">{f}</span>
+            <span className="text-secondary-dark">{feature}</span>
           </li>
         ))}
       </ul>

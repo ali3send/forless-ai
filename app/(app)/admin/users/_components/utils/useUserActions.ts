@@ -1,5 +1,6 @@
 "use client";
 
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import type { UserRow } from "./types";
 import { uiToast } from "@/lib/utils/uiToast";
 
@@ -30,8 +31,8 @@ export function createUsersActions(args: {
 
       setRows(json.users ?? []);
       uiToast.success("Users loaded");
-    } catch (e: any) {
-      uiToast.error(e?.message || "Failed to load users");
+    } catch (e: unknown) {
+      uiToast.error(getErrorMessage(e, "Failed to load users"));
       setRows([]);
     } finally {
       uiToast.dismiss(t);
@@ -58,8 +59,8 @@ export function createUsersActions(args: {
       if (!res.ok) throw new Error(json?.error || "Failed");
 
       uiToast.success("Role updated");
-    } catch (e: any) {
-      uiToast.error(e?.message || "Role update failed");
+    } catch (e: unknown) {
+      uiToast.error(getErrorMessage(e, "Failed to update role"));
       if (before) patchRow(userId, before);
     } finally {
       uiToast.dismiss(t);

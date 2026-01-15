@@ -1,4 +1,4 @@
-import { Navbar } from "@/components/Navbar";
+import { Navbar } from "@/app/(app)/components/Navbar";
 import Link from "next/link";
 // import { Link } from "lucide-react";
 
@@ -8,7 +8,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <Navbar />
 
       <main className="flex-1">
-        <div className="mx-auto px-4 py-8 sm:py-10">{children}</div>
+        <div className="mx-auto px-4 py-4 sm:py-4">{children}</div>
       </main>
 
       <footer className="mt-8 border-t border-secondary-fade bg-secondary-soft">

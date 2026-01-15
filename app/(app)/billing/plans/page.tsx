@@ -8,12 +8,16 @@ import { useRouter } from "next/navigation";
 import BillingHeader from "./_components/BillingHeader";
 import FreePlanCard from "./_components/FreePlanCard";
 import PaidPlanCard from "./_components/PaidPlanCard";
-
-import { PLANS, FREE_FEATURES } from "./_data/plans";
-import type { BillingInterval, PaidPlan, Plan, Profile } from "./_lib/types";
+import type {
+  BillingInterval,
+  PaidPlan,
+  Plan,
+  Profile,
+} from "../../../../lib/billing/types/types";
 import { PROFILE_CACHE_KEY } from "./_lib/utils";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
+import { FREE_FEATURES, PLANS } from "@/lib/billing/data/plans";
 
 export default function BillingPlansPage() {
   const router = useRouter();
@@ -195,7 +199,6 @@ export default function BillingPlansPage() {
         profile={profile}
         freeFeatures={FREE_FEATURES}
         onLogin={() => router.push("/auth/login")}
-        onManage={openPortal}
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">

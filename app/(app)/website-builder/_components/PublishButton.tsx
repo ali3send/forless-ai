@@ -1,13 +1,17 @@
 // app/website-builder/_components/PublishButton.tsx
 "use client";
 
+import { urls } from "@/lib/config/urls.client";
+import { WebsiteData } from "@/lib/types/websiteTypes";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 type Props = {
   projectId: string;
   defaultSlug?: string;
+  websiteData: WebsiteData;
 };
 
 function slugify(text: string) {
@@ -18,40 +22,41 @@ function slugify(text: string) {
     .replace(/^-+|-+$/g, "");
 }
 
-export function PublishButton({ projectId, defaultSlug }: Props) {
+export function PublishButton({ projectId, defaultSlug, websiteData }: Props) {
   const [slug, setSlug] = useState(defaultSlug ?? "");
-  const [loading, setLoading] = useState(false);
+  const [isPublished, setIsPublished] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [localSubdomainUrl, setLocalSubdomainUrl] = useState<string | null>(
-    null
-  );
-  const [publishedUrl, setPublishedUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  // Load existing published_url / slug
+  // Load project state (slug + published)
   useEffect(() => {
     if (!projectId) return;
+
     let cancelled = false;
 
     (async () => {
       try {
         const res = await fetch(`/api/projects/${projectId}`, {
-          method: "GET",
           cache: "no-store",
-          headers: { "Cache-Control": "no-store" },
         });
 
-        const data = await res.json().catch(() => ({} as unknown));
         if (!res.ok) return;
 
-        if (!cancelled) {
-          const url =
-            data?.project?.published_url ?? data?.published_url ?? null;
-          setPublishedUrl(url);
+        const data = await res.json();
+        if (cancelled) return;
 
-          const dbSlug = data?.project?.slug ?? data?.slug ?? null;
-          if (dbSlug && !slug) setSlug(dbSlug);
+        const project = data.project ?? data;
+
+        if (typeof project?.published === "boolean") {
+          setIsPublished(project.published);
         }
-      } catch {}
+
+        if (project?.slug && !slug) {
+          setSlug(project.slug);
+        }
+      } catch (e) {
+        console.error(e);
+      }
     })();
 
     return () => {
@@ -60,11 +65,11 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId]);
 
-  function buildPreviewUrl(cleanSlug: string) {
-    // absolute URL so it works reliably in new tab
-    const origin = typeof window !== "undefined" ? window.location.origin : "";
-    return `${origin}/site/${cleanSlug}`;
-  }
+  // Derived permanent URL
+  const finalUrl = useMemo(() => {
+    if (!isPublished || !slug) return null;
+    return urls.site(slug);
+  }, [isPublished, slug]);
 
   async function preview(open = true) {
     const cleanSlug = slugify(slug);
@@ -75,24 +80,21 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
 
     const t = uiToast.loading("Preparing preview…");
     try {
-      const res = await fetch(`/api/projects/${projectId}/slug`, {
+      const res = await fetch(`/api/projects/${projectId}/preview`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ slug: cleanSlug }),
         cache: "no-store",
       });
 
-      const json = await res.json().catch(() => ({} as unknown));
+      const json = await res.json();
       if (!res.ok) throw new Error(json?.error || "Failed to prepare preview");
 
-      const url = `${window.location.origin}${
-        json.previewUrl || `/site/${cleanSlug}`
-      }`;
-      setPreviewUrl(url);
-
+      setPreviewUrl(json.previewUrl);
       uiToast.success("Preview ready");
-      if (open) window.open(url, "_blank", "noreferrer");
-    } catch (e: unknown) {
+
+      if (open) window.open(json.previewUrl, "_blank", "noreferrer");
+    } catch (e) {
       uiToast.error(getErrorMessage(e, "Failed to prepare preview"));
     } finally {
       uiToast.dismiss(t);
@@ -108,63 +110,70 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
       return;
     }
 
+    if (!websiteData) {
+      uiToast.error("Website data missing.");
+      return;
+    }
+
     setLoading(true);
-    const t = uiToast.loading("Publishing...");
+    const t = uiToast.loading("Publishing…");
 
     try {
       const res = await fetch(`/api/projects/${projectId}/publish`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug: cleanSlug }),
+        body: JSON.stringify({
+          slug: cleanSlug,
+          data: websiteData,
+        }),
       });
 
-      const data = await res.json().catch(() => ({} as unknown));
+      const json = await res.json();
       uiToast.dismiss(t);
 
       if (!res.ok) {
-        uiToast.error(data?.error || "Publish failed");
+        uiToast.error(json?.error || "Publish failed");
         return;
       }
 
-      // keep preview available too
-      setPreviewUrl(buildPreviewUrl(cleanSlug));
-
-      setLocalSubdomainUrl(data.localSubdomainUrl || null);
-      if (data?.published_url) setPublishedUrl(data.published_url);
-      if (data?.slug) setSlug(data.slug);
+      setIsPublished(true);
+      setSlug(json.slug ?? cleanSlug);
+      setPreviewUrl(null);
 
       uiToast.success("Published successfully!");
-    } catch {
+    } catch (e) {
       uiToast.dismiss(t);
-      uiToast.error("Publish failed");
+      uiToast.error(getErrorMessage(e, "Publish failed"));
     } finally {
       setLoading(false);
     }
   }
 
-  const finalUrl = useMemo(
-    () => publishedUrl || localSubdomainUrl,
-    [publishedUrl, localSubdomainUrl]
-  );
+  const hasPreview = Boolean(previewUrl);
+  const hasPublished = Boolean(finalUrl);
 
-  const hasLinks = !!previewUrl || !!finalUrl;
   return (
     <div className="rounded-2xl border border-secondary-fade bg-secondary-soft p-4 space-y-4">
-      {/* Slug row */}
+      {/* Slug */}
       <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <p className="text-xs font-medium text-secondary-dark">Subdomain</p>
-        </div>
+        <p className="text-xs font-medium text-secondary-dark">Subdomain</p>
 
         <input
           value={slug}
           onChange={(e) => setSlug(e.target.value)}
           placeholder="e.g., my-company"
-          className="input-base w-full ring-1 ring-secondary border-none focus:ring-2 focus:ring-primary/60"
+          disabled={isPublished}
+          className="input-base w-full ring-1 ring-secondary border-none focus:ring-2 focus:ring-primary/60 disabled:opacity-60"
         />
+
+        {isPublished && (
+          <p className="text-[11px] text-green-600 font-medium">
+            ✔ Site is live
+          </p>
+        )}
       </div>
 
-      {/* Actions row */}
+      {/* Actions */}
       <div className="flex items-center gap-2">
         <button
           type="button"
@@ -176,63 +185,44 @@ export function PublishButton({ projectId, defaultSlug }: Props) {
         </button>
 
         <button
-          onClick={publish}
-          disabled={loading || !projectId}
-          className="btn-fill flex-1"
           type="button"
+          onClick={publish}
+          disabled={loading}
+          className="btn-fill flex-1"
         >
           {loading ? "Publishing..." : "Publish"}
         </button>
       </div>
 
       {/* Links */}
-      {hasLinks && (
+      {(hasPreview || hasPublished) && (
         <div className="space-y-2">
-          {previewUrl && (
-            <div className="rounded-xl border border-secondary-fade bg-secondary-soft p-3">
-              <div className="flex items-center justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="text-[11px] text-secondary">Preview</p>
-                  <p className="truncate text-xs text-secondary-dark">
-                    {previewUrl}
-                  </p>
-                </div>
-
-                <a
-                  className="rounded-md bg-primary px-2 py-1 text-[11px] font-semibold text-white transition hover:bg-primary-hover"
-                  href={previewUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Open
-                </a>
-              </div>
-            </div>
-          )}
-
-          {finalUrl && (
-            <div className="rounded-xl border border-secondary-fade bg-secondary-soft p-3">
-              <div className="flex items-center justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="text-[11px] text-secondary">Published</p>
-                  <p className="truncate text-xs text-secondary-dark">
-                    {finalUrl}
-                  </p>
-                </div>
-
-                <a
-                  className="rounded-md bg-primary px-2 py-1 text-[11px] font-semibold text-white transition hover:bg-primary-hover"
-                  href={finalUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Open
-                </a>
-              </div>
-            </div>
-          )}
+          {hasPreview && <LinkCard label="Preview" url={previewUrl!} />}
+          {hasPublished && <LinkCard label="Published" url={finalUrl!} />}
         </div>
       )}
+    </div>
+  );
+}
+
+function LinkCard({ label, url }: { label: string; url: string }) {
+  return (
+    <div className="rounded-xl border border-secondary-fade bg-secondary-soft p-3">
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-[11px] text-secondary">{label}</p>
+          <p className="truncate text-xs text-secondary-dark">{url}</p>
+        </div>
+
+        <Link
+          href={url}
+          target="_blank"
+          rel="noreferrer"
+          className="rounded-md bg-primary px-2 py-1 text-[11px] font-semibold text-white hover:bg-primary-hover"
+        >
+          Open
+        </Link>
+      </div>
     </div>
   );
 }

@@ -48,7 +48,6 @@ export async function PATCH(req: Request, context: RouteContext) {
     );
   }
 
-  // IMPORTANT: match your frontend expectation: { project: ... }
   return NextResponse.json({ project: data });
 }
 
@@ -68,7 +67,7 @@ export async function GET(req: Request, context: RouteContext) {
   const { data, error } = await supabase
     .from("projects")
     .select(
-      "id, name, status, description, brand_data, thumbnail_url, updated_at, slug, published, published_url, published_at"
+      "id, name, status, description, brand_data, thumbnail_url, updated_at, slug, published, published_at"
     )
     .eq("id", projectId)
     .eq("user_id", user.id)

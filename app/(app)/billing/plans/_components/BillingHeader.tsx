@@ -1,7 +1,7 @@
 "use client";
 
 // import BillingIntervalToggle from "./BillingIntervalToggle";
-import type { Plan, Profile } from "../_lib/types";
+import type { Plan, Profile } from "../../../../../lib/billing/types/types";
 
 export default function BillingHeader(props: {
   hydrated: boolean;

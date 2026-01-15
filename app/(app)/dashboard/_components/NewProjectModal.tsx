@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { apiCreateProject } from "@/lib/api/project";
 import { uiToast } from "@/lib/utils/uiToast";
+import { TextField } from "../../components/ui/TextField";
 
 export default function NewProjectModal() {
   const router = useRouter();
@@ -64,8 +65,8 @@ export default function NewProjectModal() {
       </button>
 
       {modalOpen && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/35 p-4">
-          <div className="w-full max-w-md rounded-2xl border border-secondary-fade bg-secondary-soft p-5 text-xs">
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/55 p-4">
+          <div className="w-full max-w-md rounded-2xl  bg-secondary-fade p-5 text-xs">
             {/* Header */}
             <div className="flex items-start justify-between gap-3">
               <div>
@@ -82,7 +83,7 @@ export default function NewProjectModal() {
                 type="button"
                 onClick={() => setModalOpen(false)}
                 disabled={loading}
-                className="rounded-md border border-secondary-fade bg-secondary-light px-2 py-1 text-[11px] text-secondary-dark hover:bg-secondary-hover"
+                className="rounded-md  bg-secondary-light px-2 py-1 text-[11px] text-secondary-dark hover:bg-secondary"
                 aria-label="Close"
                 title="Close"
               >
@@ -92,49 +93,32 @@ export default function NewProjectModal() {
 
             {/* Form */}
             <div className="mt-4 space-y-3">
-              <label className="block text-[11px] font-medium text-secondary-dark">
-                Business Idea
-                <textarea
-                  className="
-                  mt-1 h-24 w-full resize-none
-                  rounded-lg
-                  border border-secondary-fade
-                  bg-secondary-light
-                  px-3 py-2
-                  text-[13px] text-secondary-dark
-                  placeholder:text-secondary
-                  outline-none
-                  ring-primary/30
-                  focus:border-primary
-                  focus:ring-2
-                "
-                  placeholder="Example: I'm starting a small tea shop for young professionals..."
-                  value={projectIdea}
-                  onChange={(e) => setProjectIdea(e.target.value)}
-                />
-              </label>
+              <TextField
+                as="textarea"
+                label="Business Idea"
+                placeholder="Example: I'm starting a small tea shop for young professionals..."
+                value={projectIdea}
+                onChange={setProjectIdea}
+                limit="projectIdea"
+                showLimit
+                className="
+                    h-24 resize-none
+                      px-3 py-2
+                      text-[13px]
+                    "
+              />
 
-              <label className="block text-[11px] font-medium text-secondary-dark">
-                Project name
-                <input
-                  className="
-                  mt-1 w-full
-                  rounded-lg
-                  border border-secondary-fade
-                  bg-secondary-light
+              <TextField
+                label="Project name"
+                placeholder="Tea Shop Website"
+                value={projectName}
+                onChange={setProjectName}
+                limit="projectName"
+                className="                   
                   px-3 py-2
-                  text-[13px] text-secondary-dark
-                  placeholder:text-secondary
-                  outline-none
-                  ring-primary/30
-                  focus:border-primary
-                  focus:ring-2
-                "
-                  placeholder="Tea Shop Website"
-                  value={projectName}
-                  onChange={(e) => setProjectName(e.target.value)}
-                />
-              </label>
+                  text-[13px]
+                    "
+              />
             </div>
 
             {/* Actions */}

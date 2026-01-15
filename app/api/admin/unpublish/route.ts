@@ -28,7 +28,6 @@ export async function POST(req: Request) {
     .update({
       published: false,
       slug: null,
-      published_url: null,
       published_at: null,
     })
     .eq("id", projectId);

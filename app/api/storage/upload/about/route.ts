@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
 export const runtime = "nodejs";
@@ -42,18 +41,16 @@ export async function POST(req: Request) {
     // ✅ Stable path (no extension issues)
     const path = `${auth.user.id}/${projectId}/about`;
 
-    const admin = createAdminSupabaseClient();
-
     // Convert File -> Buffer
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
     // Best practice: remove old then upload fresh (no upsert/update weirdness)
-    await admin.storage
+    await supabase.storage
       .from(BUCKET)
       .remove([path])
       .catch(() => {});
-    const { error: uploadErr } = await admin.storage
+    const { error: uploadErr } = await supabase.storage
       .from(BUCKET)
       .upload(path, buffer, {
         contentType: file.type,
@@ -65,7 +62,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: uploadErr.message }, { status: 400 });
     }
 
-    const { data: pub } = admin.storage.from(BUCKET).getPublicUrl(path);
+    const { data: pub } = supabase.storage.from(BUCKET).getPublicUrl(path);
 
     return NextResponse.json({
       path,

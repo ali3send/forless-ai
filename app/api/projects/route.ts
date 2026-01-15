@@ -2,6 +2,9 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import type { PlanKey } from "@/lib/billing/planLimits";
+import { checkUsage } from "@/lib/usage/checkUsage";
+import { commitUsage } from "@/lib/usage/commitUsage";
 
 const CreateProjectSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -60,7 +63,41 @@ export async function POST(req: Request) {
 
   const { name, description } = parsed.data;
 
-  const { data, error } = await supabase
+  // ── load profile (plan + billing period)
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("plan, is_suspended, current_period_end")
+    .eq("id", user.id)
+    .single();
+
+  if (profileError || !profile) {
+    return NextResponse.json({ error: "Profile not found" }, { status: 404 });
+  }
+
+  if (profile.is_suspended) {
+    return NextResponse.json({ error: "Account suspended" }, { status: 403 });
+  }
+
+  const plan = (profile.plan ?? "free") as PlanKey;
+
+  // Check current usage
+  const usage = await checkUsage({
+    userId: user.id,
+    key: "projects",
+    plan,
+    currentPeriodEnd: profile.current_period_end,
+  });
+  console.log("usage", usage);
+
+  if (!usage.ok) {
+    return NextResponse.json(
+      { error: "Project limit reached" },
+      { status: 403 }
+    );
+  }
+
+  // porject creation
+  const { data: project, error } = await supabase
     .from("projects")
     .insert({
       user_id: user.id,
@@ -72,12 +109,18 @@ export async function POST(req: Request) {
     .single();
 
   if (error) {
-    console.error("Projects POST error:", error);
     return NextResponse.json(
       { error: "Failed to create project" },
       { status: 500 }
     );
   }
 
-  return NextResponse.json({ project: data });
+  // 3️⃣ COMMIT USAGE (AFTER SUCCESS)
+  await commitUsage({
+    userId: user.id,
+    key: "projects",
+    currentPeriodEnd: profile.current_period_end,
+  });
+
+  return NextResponse.json({ project });
 }

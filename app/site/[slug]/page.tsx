@@ -1,87 +1,48 @@
-// app/site/[slug]/page.tsx
+export const dynamic = "force-static";
+export const revalidate = false;
+
 import { notFound } from "next/navigation";
+import { unstable_cache } from "next/cache";
 import { createPublicSupabaseClient } from "@/lib/supabase/public";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { ThemeProvider } from "@/components/websiteTheme/ThemeProvider";
+import { ThemeProvider } from "@/Templates/websiteTheme/ThemeProvider";
 import {
   WEBSITE_TEMPLATES,
   type TemplateKey,
-} from "@/components/websiteTemplates/templates";
+} from "@/Templates/websiteTemplates/templates";
+import { WebsiteData } from "@/lib/types/websiteTypes";
+import { BrandData } from "@/lib/types/brandTypes";
 
-export default async function SitePage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const { slug } = await params;
-  const publicSupabase = await createPublicSupabaseClient();
+function getPublishedSite(slug: string) {
+  return unstable_cache(
+    async () => {
+      const supabase = createPublicSupabaseClient();
 
-  // ─────────────────────────────
-  // 1) PUBLIC PATH
-  // ─────────────────────────────
-  const { data: publicProject } = await publicSupabase
-    .from("projects")
-    .select("id, published, brand_data")
-    .eq("slug", slug)
-    .eq("published", true)
-    .maybeSingle();
+      const { data } = await supabase
+        .from("projects")
+        .select("id,published_website_data, brand_data")
+        .eq("slug", slug)
+        .eq("published", true)
+        .single();
 
-  if (publicProject?.id) {
-    const { data: website } = await publicSupabase
-      .from("websites")
-      .select("data")
-      .eq("project_id", publicProject.id)
-      .maybeSingle();
+      return data;
+    },
+    ["published-site", slug],
+    {
+      tags: [`site:${slug}`],
+    }
+  )();
+}
 
-    if (!website?.data) return notFound();
+function renderSite(
+  data: WebsiteData,
+  brand: BrandData | null,
+  projectId: string
+) {
+  const templateKey = (data.template ?? "template1") as TemplateKey;
+  const ActiveTemplate =
+    WEBSITE_TEMPLATES[templateKey]?.component ??
+    WEBSITE_TEMPLATES.template1.component;
 
-    const brand = publicProject.brand_data;
-    const templateKey = (website.data.template ?? "template1") as TemplateKey;
-    const ActiveTemplate = WEBSITE_TEMPLATES[templateKey];
-
-    return (
-      <ThemeProvider
-        value={{
-          primary: brand?.palette?.primary,
-          secondary: brand?.palette?.secondary,
-          fontFamily: brand?.font?.css,
-        }}
-      >
-        <ActiveTemplate data={website.data} brand={brand} />;
-      </ThemeProvider>
-    );
-  }
-
-  // ─────────────────────────────
-  // 2) OWNER PREVIEW PATH
-  // ─────────────────────────────
-  const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) return notFound();
-
-  const { data: ownerProject } = await supabase
-    .from("projects")
-    .select("id, brand_data")
-    .eq("slug", slug)
-    .eq("user_id", user.id)
-    .maybeSingle();
-
-  if (!ownerProject) return notFound();
-
-  const { data: website } = await supabase
-    .from("websites")
-    .select("data")
-    .eq("project_id", ownerProject.id)
-    .maybeSingle();
-
-  if (!website?.data) return notFound();
-
-  const brand = ownerProject.brand_data;
-  const templateKey = (website.data.template ?? "template1") as TemplateKey;
-  const ActiveTemplate = WEBSITE_TEMPLATES[templateKey];
   return (
     <ThemeProvider
       value={{
@@ -90,7 +51,31 @@ export default async function SitePage({
         fontFamily: brand?.font?.css,
       }}
     >
-      <ActiveTemplate data={website.data} brand={brand} />;
+      <ActiveTemplate data={data} brand={brand} projectId={projectId} />
     </ThemeProvider>
+  );
+}
+
+export default async function SitePage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+
+  const project = await getPublishedSite(slug);
+
+  if (!project?.published_website_data) return notFound();
+
+  console.log("🔥 [STATIC SITE RENDER]", {
+    // data: project.published_website_data,
+    slug,
+    renderedAt: new Date().toISOString(),
+  });
+
+  return renderSite(
+    project.published_website_data,
+    project.brand_data,
+    project.id
   );
 }

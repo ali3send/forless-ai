@@ -1,0 +1,41 @@
+export const INPUT_LIMITS = {
+  brandName: 40,
+  slogan: 80,
+  tagline: 60,
+  heroHeadline: 30,
+  heroSubheadline: 140,
+  heroImageQuery: 40,
+  primaryCta: 30,
+  primaryCtaLink: 150,
+  secondaryCta: 30,
+  secondaryCtaLink: 150,
+  aboutTitle: 25,
+  aboutBody: 600,
+  aboutImageQuery: 40,
+  featuresTitle: 25,
+  featureLabel: 40,
+  featureDescription: 120,
+  offersTitle: 25,
+  offerName: 50,
+  offerDescription: 160,
+  offerPriceLabel: 20,
+  contactTitle: 25,
+  contactEmail: 100,
+  contactPhone: 20,
+  contactDescription: 150,
+  contactMessage: 400,
+  contactCtaHeader: 30,
+  contactCtaSubHeader: 40,
+  contactCta: 30,
+  //More
+
+  search: 50,
+  fullName: 100,
+  email: 100,
+  password: 999,
+
+  projectName: 150,
+  projectIdea: 200,
+} as const;
+
+export type InputLimitsKey = keyof typeof INPUT_LIMITS;

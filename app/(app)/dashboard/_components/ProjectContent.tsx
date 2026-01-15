@@ -36,7 +36,6 @@ export default function ProjectContent({ project }: { project: ProjectRow }) {
         </Link>
       </div>
 
-      {/* Editable header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div className="space-y-2">
           <input

@@ -181,7 +181,7 @@ export function useWebsiteBuilder(projectId: string | null) {
     const dataSection = SECTION_TO_DATA_KEY[section];
 
     setRestoring(true);
-    uiToast.loading("Restoring section…");
+    const toastId = uiToast.loading("Restoring section…");
 
     try {
       const res = await apiRestoreSection({
@@ -201,6 +201,7 @@ export function useWebsiteBuilder(projectId: string | null) {
     } catch (err) {
       uiToast.error(getErrorMessage(err, "Failed to restore section"));
     } finally {
+      uiToast.dismiss(toastId); // ✅ THIS FIXES IT
       setRestoring(false);
     }
   }, [projectId, section, data, setData, setRestoring]);
