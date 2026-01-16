@@ -3,6 +3,7 @@ import FeaturesSection from "./components/Home/sections/FeaturesSection";
 import { HowItWorksSection } from "./components/Home/sections/StepCardSection";
 import TemplateCategorySection from "./components/Home/sections/TemplateCategorySection";
 import { HomePricingSection } from "./components/Home/sections/PricingSection";
+import CreateProjectHero from "./components/Home/components/CreateProject";
 
 export default function HomePage() {
   return (
@@ -10,6 +11,7 @@ export default function HomePage() {
       <section className="relative mx-auto max-w-6xl px-4 py-14 sm:py-16">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1.25fr),minmax(0,1fr)] lg:items-center">
           <LandingSection />
+          <CreateProjectHero />
 
           <FeaturesSection />
 

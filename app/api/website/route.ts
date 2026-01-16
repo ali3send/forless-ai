@@ -1,23 +1,27 @@
+// app/api/website/route.ts
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import type { WebsiteData } from "@/lib/types/websiteTypes";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { saveWebsite } from "../lib/saveWebsite";
+import { getOwner } from "@/lib/auth/getOwner";
 
 const postSchema = z.object({
   projectId: z.uuid(),
   data: z.unknown(),
 });
 
+/* ──────────────────────────────
+   GET website (user OR guest)
+────────────────────────────── */
 export async function GET(req: Request) {
   const supabase = await createServerSupabaseClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
+  let owner;
+  try {
+    owner = await getOwner(req, supabase);
+  } catch {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -28,12 +32,18 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Missing projectId" }, { status: 400 });
   }
 
-  const { data, error } = await supabase
+  const query = supabase
     .from("websites")
     .select("data")
-    .eq("project_id", projectId)
-    .eq("user_id", user.id)
-    .single();
+    .eq("project_id", projectId);
+
+  if (owner.type === "user") {
+    query.eq("user_id", owner.id);
+  } else {
+    query.eq("guest_id", owner.id);
+  }
+
+  const { data, error } = await query.single();
 
   if (error && error.code !== "PGRST116") {
     console.error("Failed to load website:", error);
@@ -48,16 +58,16 @@ export async function GET(req: Request) {
   });
 }
 
-// save website route
-// POST /api/website
+/* ──────────────────────────────
+   POST save website (user OR guest)
+────────────────────────────── */
 export async function POST(req: Request) {
   const supabase = await createServerSupabaseClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
+  let owner;
+  try {
+    owner = await getOwner(req, supabase);
+  } catch {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -72,14 +82,14 @@ export async function POST(req: Request) {
   }
 
   const { projectId, data } = parsed.data;
-  const websiteData = data as WebsiteData;
 
   try {
     const website = await saveWebsite({
       supabase,
-      userId: user.id,
       projectId,
-      data: websiteData,
+      data: data as WebsiteData,
+      userId: owner.type === "user" ? owner.id : null,
+      guestId: owner.type === "guest" ? owner.id : null,
     });
 
     return NextResponse.json({ data: website });

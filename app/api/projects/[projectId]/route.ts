@@ -1,43 +1,48 @@
-// app/api/projects/[projectId]/route.ts
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { getOwner } from "@/lib/auth/getOwner";
 
 interface RouteContext {
   params: Promise<{ projectId: string }>;
 }
 
+/* ──────────────────────────────
+   PATCH project
+────────────────────────────── */
 export async function PATCH(req: Request, context: RouteContext) {
   const { projectId } = await context.params;
-
   const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
 
-  if (userError || !user) {
+  let owner;
+  try {
+    owner = await getOwner(req, supabase);
+  } catch {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const body = await req.json().catch(() => ({} as unknown));
+  const body = await req.json().catch(() => ({}));
 
   const updates: { name?: string; status?: string } = {};
   if (typeof body.name === "string") updates.name = body.name;
   if (typeof body.status === "string") updates.status = body.status;
 
-  if (Object.keys(updates).length === 0) {
+  if (!Object.keys(updates).length) {
     return NextResponse.json(
       { error: "No valid fields to update" },
       { status: 400 }
     );
   }
 
-  const { data, error } = await supabase
-    .from("projects")
-    .update(updates)
-    .eq("id", projectId)
-    .eq("user_id", user.id)
-    .select("id, name, status, thumbnail_url, updated_at")
+  const query = supabase.from("projects").update(updates).eq("id", projectId);
+
+  if (owner.type === "user") {
+    query.eq("user_id", owner.id);
+  } else {
+    query.eq("guest_id", owner.id);
+  }
+
+  const { data, error } = await query
+    .select("id, name, status, updated_at")
     .single();
 
   if (error) {
@@ -51,27 +56,34 @@ export async function PATCH(req: Request, context: RouteContext) {
   return NextResponse.json({ project: data });
 }
 
+/* ──────────────────────────────
+   GET project
+────────────────────────────── */
 export async function GET(req: Request, context: RouteContext) {
   const { projectId } = await context.params;
-
   const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
 
-  if (userError || !user) {
+  let owner;
+  try {
+    owner = await getOwner(req, supabase);
+  } catch {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { data, error } = await supabase
+  const query = supabase
     .from("projects")
     .select(
       "id, name, status, description, brand_data, thumbnail_url, updated_at, slug, published_at"
     )
-    .eq("id", projectId)
-    .eq("user_id", user.id)
-    .single();
+    .eq("id", projectId);
+
+  if (owner.type === "user") {
+    query.eq("user_id", owner.id);
+  } else {
+    query.eq("guest_id", owner.id);
+  }
+
+  const { data, error } = await query.single();
 
   if (error || !data) {
     return NextResponse.json({ error: "Project not found" }, { status: 404 });
@@ -79,25 +91,22 @@ export async function GET(req: Request, context: RouteContext) {
 
   return NextResponse.json({ project: data });
 }
-export async function DELETE(_req: Request, context: RouteContext) {
+
+/* ──────────────────────────────
+   DELETE project (soft delete)
+────────────────────────────── */
+export async function DELETE(req: Request, context: RouteContext) {
   const { projectId } = await context.params;
-
-  if (!projectId) {
-    return NextResponse.json({ error: "Missing project id" }, { status: 400 });
-  }
-
   const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
 
-  if (userError || !user) {
+  let owner;
+  try {
+    owner = await getOwner(req, supabase);
+  } catch {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  /* ───────── SOFT DELETE ───────── */
-  const { error } = await supabase
+  const query = supabase
     .from("projects")
     .update({
       status: "deleted",
@@ -106,15 +115,19 @@ export async function DELETE(_req: Request, context: RouteContext) {
       published_at: null,
     })
     .eq("id", projectId)
-    .eq("user_id", user.id)
     .neq("status", "deleted");
 
+  if (owner.type === "user") {
+    query.eq("user_id", owner.id);
+  } else {
+    query.eq("guest_id", owner.id);
+  }
+
+  const { error } = await query;
+
   if (error) {
-    console.error("SOFT DELETE projects error:", error);
-    return NextResponse.json(
-      { error: error.message, code: error.code },
-      { status: 500 }
-    );
+    console.error("Soft delete project error:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
   return NextResponse.json({ success: true });

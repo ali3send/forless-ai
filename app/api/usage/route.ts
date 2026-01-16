@@ -2,30 +2,52 @@ import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { checkUsage } from "@/lib/usage/checkUsage";
 import { UsageKey } from "@/lib/usage/types";
+import { getOwner } from "@/lib/auth/getOwner";
 
+/* ──────────────────────────────
+   GET /api/usage
+   Supports user + guest
+────────────────────────────── */
 export async function GET(req: Request) {
   const supabase = await createServerSupabaseClient();
 
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-
-  if (userError || !user) {
+  let owner;
+  try {
+    owner = await getOwner(req, supabase);
+  } catch {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const { searchParams } = new URL(req.url);
-  const key = searchParams.get("key");
+  const key = searchParams.get("key") as UsageKey | null;
 
   if (!key) {
     return NextResponse.json({ error: "Missing key" }, { status: 400 });
   }
 
+  /* ──────────────────────────────
+     GUEST USAGE (free / limited)
+  ────────────────────────────── */
+  if (owner.type === "guest") {
+    const usage = await checkUsage({
+      userId: null,
+      guestId: owner.id,
+      projectId: null,
+      key,
+      plan: "free",
+      currentPeriodEnd: null,
+    });
+
+    return NextResponse.json(usage);
+  }
+
+  /* ──────────────────────────────
+     USER USAGE (plan-based)
+  ────────────────────────────── */
   const { data: profile } = await supabase
     .from("profiles")
     .select("plan, current_period_end")
-    .eq("id", user.id)
+    .eq("id", owner.id)
     .single();
 
   if (!profile) {
@@ -33,9 +55,10 @@ export async function GET(req: Request) {
   }
 
   const usage = await checkUsage({
-    userId: user.id,
+    userId: owner.id,
+    guestId: null,
     projectId: null,
-    key: key as UsageKey,
+    key,
     plan: profile.plan ?? "free",
     currentPeriodEnd: profile.current_period_end,
   });
