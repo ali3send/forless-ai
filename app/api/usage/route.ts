@@ -31,7 +31,7 @@ export async function GET(req: Request) {
   if (owner.type === "guest") {
     const usage = await checkUsage({
       userId: null,
-      guestId: owner.id,
+      guestId: owner.guestId,
       projectId: null,
       key,
       plan: "free",
@@ -47,7 +47,7 @@ export async function GET(req: Request) {
   const { data: profile } = await supabase
     .from("profiles")
     .select("plan, current_period_end")
-    .eq("id", owner.id)
+    .eq("id", owner.userId)
     .single();
 
   if (!profile) {
@@ -55,7 +55,7 @@ export async function GET(req: Request) {
   }
 
   const usage = await checkUsage({
-    userId: owner.id,
+    userId: owner.userId,
     guestId: null,
     projectId: null,
     key,

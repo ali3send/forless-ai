@@ -1,3 +1,4 @@
+// app/(app)/components/Home/components/CreateProject.tsx
 "use client";
 
 import { useState } from "react";
@@ -13,10 +14,10 @@ export default function CreateProjectHero() {
   const [error, setError] = useState<string | null>(null);
 
   async function handleCreate() {
-    if (!name.trim()) {
-      setError("Please enter a website name");
-      return;
-    }
+    // if (!name.trim()) {
+    //   setError("Please enter a website name");
+    //   return;
+    // }
 
     setLoading(true);
     setError(null);

@@ -38,9 +38,9 @@ export async function GET(req: Request) {
     .eq("project_id", projectId);
 
   if (owner.type === "user") {
-    query.eq("user_id", owner.id);
+    query.eq("user_id", owner.userId);
   } else {
-    query.eq("guest_id", owner.id);
+    query.eq("guest_id", owner.guestId);
   }
 
   const { data, error } = await query.single();
@@ -88,8 +88,8 @@ export async function POST(req: Request) {
       supabase,
       projectId,
       data: data as WebsiteData,
-      userId: owner.type === "user" ? owner.id : null,
-      guestId: owner.type === "guest" ? owner.id : null,
+      userId: owner.type === "user" ? owner.userId : null,
+      guestId: owner.type === "guest" ? owner.guestId : null,
     });
 
     return NextResponse.json({ data: website });

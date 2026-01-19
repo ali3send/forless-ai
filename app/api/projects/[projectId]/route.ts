@@ -36,9 +36,9 @@ export async function PATCH(req: Request, context: RouteContext) {
   const query = supabase.from("projects").update(updates).eq("id", projectId);
 
   if (owner.type === "user") {
-    query.eq("user_id", owner.id);
+    query.eq("user_id", owner.userId);
   } else {
-    query.eq("guest_id", owner.id);
+    query.eq("guest_id", owner.guestId);
   }
 
   const { data, error } = await query
@@ -78,9 +78,9 @@ export async function GET(req: Request, context: RouteContext) {
     .eq("id", projectId);
 
   if (owner.type === "user") {
-    query.eq("user_id", owner.id);
+    query.eq("user_id", owner.userId);
   } else {
-    query.eq("guest_id", owner.id);
+    query.eq("guest_id", owner.guestId);
   }
 
   const { data, error } = await query.single();
@@ -118,9 +118,9 @@ export async function DELETE(req: Request, context: RouteContext) {
     .neq("status", "deleted");
 
   if (owner.type === "user") {
-    query.eq("user_id", owner.id);
+    query.eq("user_id", owner.userId);
   } else {
-    query.eq("guest_id", owner.id);
+    query.eq("guest_id", owner.guestId);
   }
 
   const { error } = await query;

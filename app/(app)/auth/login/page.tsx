@@ -7,7 +7,6 @@ import { Eye, EyeOff } from "lucide-react";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
 import { TextField } from "../../components/ui/TextField";
-import { claimGuestProjects } from "@/lib/auth/claimGuest";
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
@@ -25,7 +24,6 @@ export default function LoginPage() {
     try {
       await login(email, password);
 
-      // ⬇️ IMPORTANT: wait one tick so cookies are ready
       await fetch("/api/claim-guest-project", {
         method: "POST",
         headers: {
@@ -39,6 +37,7 @@ export default function LoginPage() {
 
       router.replace("/dashboard");
     } catch (e) {
+      setErrorMsg(getErrorMessage(e, "Failed to log in"));
       uiToast.error(getErrorMessage(e, "Failed to log in"));
       setLoading(false);
     }
