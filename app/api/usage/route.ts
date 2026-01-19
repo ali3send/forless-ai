@@ -4,10 +4,6 @@ import { checkUsage } from "@/lib/usage/checkUsage";
 import { UsageKey } from "@/lib/usage/types";
 import { getOwner } from "@/lib/auth/getOwner";
 
-/* ──────────────────────────────
-   GET /api/usage
-   Supports user + guest
-────────────────────────────── */
 export async function GET(req: Request) {
   const supabase = await createServerSupabaseClient();
 
@@ -24,10 +20,6 @@ export async function GET(req: Request) {
   if (!key) {
     return NextResponse.json({ error: "Missing key" }, { status: 400 });
   }
-
-  /* ──────────────────────────────
-     GUEST USAGE (free / limited)
-  ────────────────────────────── */
   if (owner.type === "guest") {
     const usage = await checkUsage({
       userId: null,

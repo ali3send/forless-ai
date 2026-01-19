@@ -7,7 +7,12 @@ export const runtime = "nodejs";
 
 const Schema = z.object({
   projectId: z.uuid().optional(),
-  key: z.enum(["website_generate", "website_regen", "websites_published"]),
+  key: z.enum([
+    "website_generate",
+    "website_regen",
+    "websites_published",
+    "projects",
+  ]),
   increment: z.boolean().default(false),
 });
 

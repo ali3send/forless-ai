@@ -32,7 +32,6 @@ export function useUsage(key: string) {
       const json = await res.json();
       setData(json);
     } catch {
-      // silently fail – usage is non-blocking UI
       setData(null);
     } finally {
       setLoading(false);

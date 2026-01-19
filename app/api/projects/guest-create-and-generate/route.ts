@@ -5,6 +5,8 @@ import { getOwner } from "@/lib/auth/getOwner";
 import { openai } from "@/lib/openai";
 import { checkUsage } from "@/lib/usage/checkUsage";
 import type { PlanKey } from "@/lib/billing/planLimits";
+import { WebsiteData } from "@/lib/types/websiteTypes";
+import { commitUsage } from "@/lib/usage/commitUsage";
 
 const Schema = z.object({
   name: z.string().optional(),
@@ -115,6 +117,13 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   }
+  await commitUsage({
+    userId: owner.type === "user" ? owner.userId : null,
+    guestId: owner.type === "guest" ? owner.guestId : null,
+    projectId: null,
+    key: "projects",
+    currentPeriodEnd: currentPeriodEnd,
+  });
 
   /* ──────────────────────────────
      2️⃣ AI WEBSITE GENERATION
@@ -196,7 +205,7 @@ Rules:
     ],
   });
 
-  let websiteData: any;
+  let websiteData: WebsiteData;
   try {
     websiteData = JSON.parse(resp.output_text || "");
   } catch {
@@ -236,7 +245,13 @@ Rules:
   if (websiteErr) {
     return NextResponse.json({ error: websiteErr.message }, { status: 500 });
   }
-
+  await commitUsage({
+    userId: owner.type === "user" ? owner.userId : null,
+    guestId: owner.type === "guest" ? owner.guestId : null,
+    projectId: null,
+    key: "website_generate",
+    currentPeriodEnd: currentPeriodEnd,
+  });
   /* ──────────────────────────────
      5️⃣ DONE
   ────────────────────────────── */
