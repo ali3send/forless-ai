@@ -69,7 +69,6 @@ async function getProjectDetails(projectId: string) {
       `
         id,
         full_name,
-        avatar_url,
         role
       `
     )

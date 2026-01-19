@@ -96,11 +96,6 @@ export async function POST(
 
   /* ───────── SAVE WEBSITE (CRITICAL) ───────── */
   try {
-    console.log("💾 Saving website", {
-      projectId,
-      userId: user.id,
-    });
-
     await saveWebsite({
       supabase,
       userId: user.id,

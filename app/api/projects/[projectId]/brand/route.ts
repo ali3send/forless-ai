@@ -97,7 +97,7 @@ async function getAuthedSupabaseAndProject(
   };
 }
 
-// POST = strict finalize (requires palette + font)
+//
 export async function POST(
   req: Request,
   context: { params: Promise<{ projectId: string }> }

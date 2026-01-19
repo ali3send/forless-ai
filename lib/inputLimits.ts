@@ -2,7 +2,7 @@ export const INPUT_LIMITS = {
   brandName: 40,
   slogan: 80,
   tagline: 60,
-  heroHeadline: 30,
+  heroHeadline: 40,
   heroSubheadline: 140,
   heroImageQuery: 40,
   primaryCta: 30,
@@ -27,7 +27,7 @@ export const INPUT_LIMITS = {
   contactCtaHeader: 30,
   contactCtaSubHeader: 40,
   contactCta: 30,
-  //More
+  //others
 
   search: 50,
   fullName: 100,

@@ -7,6 +7,7 @@ import { checkUsage } from "@/lib/usage/checkUsage";
 import type { PlanKey } from "@/lib/billing/planLimits";
 import { WebsiteData } from "@/lib/types/websiteTypes";
 import { commitUsage } from "@/lib/usage/commitUsage";
+import { saveWebsite } from "../../lib/saveWebsite";
 
 const Schema = z.object({
   name: z.string().optional(),
@@ -215,9 +216,6 @@ Rules:
     );
   }
 
-  /* ──────────────────────────────
-     3️⃣ BASIC SAFETY CHECK
-  ────────────────────────────── */
   if (
     !websiteData?.hero ||
     !websiteData?.about ||
@@ -235,15 +233,19 @@ Rules:
   /* ──────────────────────────────
      4️⃣ SAVE WEBSITE
   ────────────────────────────── */
-  const { error: websiteErr } = await supabase.from("websites").insert({
-    project_id: project.id,
-    user_id: owner.type === "user" ? owner.userId : null,
-    guest_id: owner.type === "guest" ? owner.guestId : null,
-    data: websiteData,
-  });
-
-  if (websiteErr) {
-    return NextResponse.json({ error: websiteErr.message }, { status: 500 });
+  try {
+    await saveWebsite({
+      supabase,
+      userId: owner.type === "user" ? owner.userId : null,
+      guestId: owner.type === "guest" ? owner.guestId : null,
+      projectId: project.id,
+      data: websiteData,
+    });
+  } catch (err) {
+    return NextResponse.json(
+      { error: "Failed to save website", err },
+      { status: 500 }
+    );
   }
   await commitUsage({
     userId: owner.type === "user" ? owner.userId : null,
@@ -252,9 +254,7 @@ Rules:
     key: "website_generate",
     currentPeriodEnd: currentPeriodEnd,
   });
-  /* ──────────────────────────────
-     5️⃣ DONE
-  ────────────────────────────── */
+
   return NextResponse.json({
     success: true,
     projectId: project.id,

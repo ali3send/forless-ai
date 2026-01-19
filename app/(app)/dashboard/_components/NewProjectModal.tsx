@@ -3,9 +3,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { apiCreateProject } from "@/lib/api/project";
+import { apiCreateAndGenerateProject } from "@/lib/api/project";
 import { uiToast } from "@/lib/utils/uiToast";
 import { TextField } from "../../components/ui/TextField";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
 export default function NewProjectModal() {
   const router = useRouter();
@@ -18,37 +19,39 @@ export default function NewProjectModal() {
   async function handleCreateProject() {
     if (loading) return;
 
-    const trimmedName = projectName.trim();
-    const trimmedIdea = projectIdea.trim();
+    // setError(null);
 
-    if (!trimmedName) {
-      uiToast.error("Please enter a project name.");
+    const name = projectName;
+    const description = projectIdea;
+
+    if (!name) {
+      uiToast.error("Please enter a name");
+      return;
+    }
+    if (!description) {
+      uiToast.error("Please enter a description");
       return;
     }
 
     try {
       setLoading(true);
-
-      // ✅ CREATE ONLY (no generation)
-      const result = await apiCreateProject({
-        name: trimmedName,
-        description: trimmedIdea || trimmedName,
+      const res = await apiCreateAndGenerateProject({
+        name: name.trim(),
+        description: description.trim() || name.trim(),
       });
 
+      if (!res.success) {
+        throw new Error("Failed to create website");
+      }
       uiToast.success("Project created!");
-
-      // Reset UI
+      const projectId = res.projectId;
       setModalOpen(false);
       setProjectIdea("");
       setProjectName("");
 
-      // ✅ Redirect to project page
-      router.push(`/dashboard/projects/${result.id}`);
+      router.push(`/website-builder/${projectId}`);
     } catch (err) {
-      console.error(err);
-      uiToast.error(
-        err instanceof Error ? err.message : "Failed to create project"
-      );
+      uiToast.error(getErrorMessage(err, "Failed to create project"));
     } finally {
       setLoading(false);
     }

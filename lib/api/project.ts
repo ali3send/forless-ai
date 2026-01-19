@@ -48,22 +48,22 @@ export type ProjectWithBrand = {
    API calls
 ────────────────────────────── */
 
-export async function apiCreateProject(
-  payload: CreateProjectPayload
-): Promise<Project> {
-  const res = await fetch("/api/projects", {
-    method: "POST",
-    headers: withGuestHeaders({
-      "Content-Type": "application/json",
-    }),
-    body: JSON.stringify(payload),
-  });
+// export async function apiCreateProject(
+//   payload: CreateProjectPayload
+// ): Promise<Project> {
+//   const res = await fetch("/api/projects", {
+//     method: "POST",
+//     headers: withGuestHeaders({
+//       "Content-Type": "application/json",
+//     }),
+//     body: JSON.stringify(payload),
+//   });
 
-  const json = await safeJson(res);
-  if (!res.ok) throw new Error(json.error || "Failed to create project");
+//   const json = await safeJson(res);
+//   if (!res.ok) throw new Error(json.error || "Failed to create project");
 
-  return json.project as Project;
-}
+//   return json.project as Project;
+// }
 
 export async function apiUpdateProject(
   projectId: string,
@@ -96,9 +96,6 @@ export async function apiGetProjectWithBrand(
   return json.project as ProjectWithBrand;
 }
 
-/**
- * PATCH = partial save (builder-safe)
- */
 export async function apiPatchProjectBrand(
   projectId: string,
   brand: Partial<BrandData>
@@ -120,9 +117,6 @@ export async function apiPatchProjectBrand(
   return json as { success: true; brand_data: BrandData };
 }
 
-/**
- * POST = strict/final save
- */
 export async function apiSaveProjectBrand(
   projectId: string,
   brand: BrandData
@@ -145,10 +139,10 @@ export async function apiSaveProjectBrand(
 }
 
 export async function apiCreateAndGenerateProject(payload: {
-  name: string;
-  idea: string;
-}): Promise<{ success: true; project: { id: string } }> {
-  const res = await fetch("/api/projects/create-and-generate", {
+  name?: string;
+  description: string;
+}): Promise<{ success: true; projectId: string }> {
+  const res = await fetch("/api/projects/guest-create-and-generate", {
     method: "POST",
     headers: withGuestHeaders({
       "Content-Type": "application/json",
@@ -159,5 +153,5 @@ export async function apiCreateAndGenerateProject(payload: {
   const json = await safeJson(res);
   if (!res.ok) throw new Error(json.error || "Failed to create + generate");
 
-  return json as { success: true; project: { id: string } };
+  return json as { success: true; projectId: string };
 }
