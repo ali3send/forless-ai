@@ -5,14 +5,8 @@ type BrandStore = {
   brandId: string | null;
   brand: BrandDataNew | null;
 
-  setBrand: (
-    brandId: string,
-    value:
-      | BrandDataNew
-      | null
-      | ((prev: BrandDataNew | null) => BrandDataNew | null)
-  ) => void;
-
+  setBrand: (brandId: string, brand: BrandDataNew | null) => void;
+  updateBrand: (fn: (prev: BrandDataNew | null) => BrandDataNew | null) => void;
   clearBrand: () => void;
 };
 
@@ -20,10 +14,11 @@ export const useBrandStore = create<BrandStore>((set) => ({
   brandId: null,
   brand: null,
 
-  setBrand: (brandId, value) =>
+  setBrand: (brandId, brand) => set({ brandId, brand }),
+
+  updateBrand: (fn) =>
     set((state) => ({
-      brandId,
-      brand: typeof value === "function" ? value(state.brand) : value,
+      brand: fn(state.brand),
     })),
 
   clearBrand: () => set({ brandId: null, brand: null }),

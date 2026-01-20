@@ -1,3 +1,5 @@
+// app/(app)/website-builder/hooks/useLoadWebsiteBuilder.ts
+"use client";
 import { useEffect } from "react";
 import { apiGetWebsite } from "@/lib/api/website";
 import { useWebsiteStore } from "@/store/website.store";

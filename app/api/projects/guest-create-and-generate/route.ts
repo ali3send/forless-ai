@@ -227,13 +227,57 @@ Business description:
 ${finalDescription}
 
 Return EXACTLY this JSON shape:
-${JSON.stringify(
-  {
-    /* omitted for brevity, SAME AS YOUR ORIGINAL */
+
+{
+  "type": "product" | "service" | "business" | "personal",
+  "brandName": string,
+  "tagline": string,
+
+  "hero": {
+    "headline": string,
+    "subheadline": string,
+    "primaryCta": string,
+    "secondaryCta": string,
+    "primaryCtaLink": "#",
+    "secondaryCtaLink": "#",
+    "imageQuery": string
   },
-  null,
-  2
-)}
+
+  "about": {
+    "title": string,
+    "body": string,
+    "imageQuery": string
+  },
+
+  "features": {
+    "title": string,
+    "items": [
+      { "label": string, "description": string }
+    ]
+  },
+
+  "offers": {
+    "title": string,
+    "items": [
+      { "name": string, "description": string, "priceLabel": string }
+    ]
+  },
+
+  "contact": {
+    "title": string,
+    "description": string,
+    "email": string,
+    "phone": string,
+    "whatsapp": string
+  },
+
+  "finalCta": {
+    "headline": string,
+    "subheadline": string,
+    "buttonLabel": string
+  }
+}
+
         `.trim(),
       },
     ],

@@ -34,7 +34,8 @@ export default function WebsiteBuilderPage() {
   const { data, loading, saving, generating, restoring } = useWebsiteStore();
   const [focus, setFocus] = useState<"editor" | "split" | "preview">("split");
 
-  // 🔒 ALWAYS call hooks
+  console.log("WebsiteBuilderPage render:", { data, websiteId });
+
   useLoadWebsiteBuilder(projectId, websiteId ?? "");
 
   const {
