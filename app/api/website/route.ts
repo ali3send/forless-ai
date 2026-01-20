@@ -4,12 +4,12 @@ import { z } from "zod";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import type { WebsiteData } from "@/lib/types/websiteTypes";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
-import { saveWebsite } from "../lib/saveWebsite";
+// import { saveWebsite } from "../../../lib/server/saveWebsite";
 import { getOwner } from "@/lib/auth/getOwner";
 
 const postSchema = z.object({
-  projectId: z.uuid(),
-  data: z.unknown(),
+  websiteId: z.uuid(),
+  data: z.any(),
 });
 
 /* ──────────────────────────────
@@ -81,18 +81,26 @@ export async function POST(req: Request) {
     );
   }
 
-  const { projectId, data } = parsed.data;
+  const { websiteId, data } = parsed.data;
 
   try {
-    const website = await saveWebsite({
-      supabase,
-      projectId,
-      data: data as WebsiteData,
-      userId: owner.type === "user" ? owner.userId : null,
-      guestId: owner.type === "guest" ? owner.guestId : null,
-    });
+    const { error } = await supabase
+      .from("websites")
+      .update({
+        draft_data: data as WebsiteData,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", websiteId)
+      .eq(
+        owner.type === "user" ? "user_id" : "guest_id",
+        owner.type === "user" ? owner.userId : owner.guestId
+      );
 
-    return NextResponse.json({ data: website });
+    if (error) {
+      throw error;
+    }
+
+    return NextResponse.json({ success: true });
   } catch (err: unknown) {
     const errMsg = getErrorMessage(err, "Failed to save website");
     console.error("Save website failed:", errMsg);

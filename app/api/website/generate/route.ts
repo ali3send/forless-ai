@@ -3,13 +3,7 @@ import { openai } from "@/lib/openai";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { checkUsage } from "@/lib/usage/checkUsage";
 import { commitUsage } from "@/lib/usage/commitUsage";
-
-type BrandData = {
-  name?: string;
-  slogan?: string;
-  palette?: { primary: string; secondary: string };
-  font?: { id: string; css: string };
-};
+import { BrandDataNew } from "@/lib/types/brandTypes";
 
 type SectionKey = "hero" | "about" | "features" | "offers" | "contact";
 
@@ -49,7 +43,7 @@ export async function POST(req: Request) {
     const body = await req.json().catch(() => ({}));
 
     const idea = typeof body.idea === "string" ? body.idea.trim() : "";
-    const brand = (body.brand ?? null) as BrandData | null;
+    const brand = (body.brand ?? null) as BrandDataNew | null;
     const section = (
       typeof body.section === "string" ? body.section : ""
     ) as SectionKey;

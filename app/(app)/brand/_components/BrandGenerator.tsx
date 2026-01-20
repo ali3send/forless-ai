@@ -19,7 +19,7 @@ import BrandOptionsList from "./BrandOptionsList";
 import {
   apiGenerateBrand,
   apiGenerateLogo,
-  apiSaveProjectBrand,
+  apiSaveBrand,
 } from "@/lib/api/brand";
 
 import {
@@ -27,8 +27,8 @@ import {
   apiSaveGeneratedBrands,
 } from "@/lib/api/brand-options";
 
-import { apiGenerateWebsiteWithBrand, apiGetWebsite } from "@/lib/api/website";
-import { BrandData } from "@/lib/types/brandTypes";
+import { apiGenerateWebsiteWithBrand } from "@/lib/api/website";
+import { BrandDataNew } from "@/lib/types/brandTypes";
 import { uiToast } from "@/lib/utils/uiToast";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 
@@ -120,7 +120,7 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
 
   async function handleBrandUse(option: BrandOption) {
     try {
-      const brandPayload: BrandData = {
+      const brandPayload: BrandDataNew = {
         name: option.name,
         slogan: option.slogan,
         logoSvg: option.logoSvg,
@@ -131,25 +131,24 @@ export default function BrandGenerator({ projectId, projectIdea }: Props) {
         font: { id: selectedFontId, css: option.font },
       };
 
-      await apiSaveProjectBrand(projectId, brandPayload);
+      // 1️⃣ create brand
+      const { brandId } = await apiSaveBrand(projectId, brandPayload);
 
       setBrand(brandPayload);
 
-      const existingWebsite = await apiGetWebsite(projectId);
+      // 2️⃣ create website using this brand
+      const ideaText =
+        idea.trim() || `${brandPayload.name} - ${brandPayload.slogan}`;
 
-      if (!existingWebsite) {
-        const ideaText =
-          idea.trim() || `${brandPayload.name} - ${brandPayload.slogan}`;
+      const { websiteId } = await apiGenerateWebsiteWithBrand({
+        projectId,
+        brandId,
+        idea: ideaText,
+        websiteType: "product",
+      });
 
-        await apiGenerateWebsiteWithBrand({
-          projectId,
-          idea: ideaText,
-          brand: brandPayload,
-          websiteType: "product",
-        });
-      }
-
-      router.push(`/website-builder/${projectId}`);
+      // 3️⃣ go to builder
+      router.push(`/website-builder/${projectId}/${websiteId}`);
     } catch (err) {
       uiToast.error(getErrorMessage(err, "Failed to use brand"));
     }

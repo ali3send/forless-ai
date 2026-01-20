@@ -2,7 +2,7 @@
 "use client";
 
 import type { WebsiteData } from "@/lib/types/websiteTypes";
-import { BrandData } from "@/lib/types/brandTypes";
+import { BrandDataNew } from "@/lib/types/brandTypes";
 
 import { Navbar } from "./sections/Navbar";
 import { HeroSection } from "./sections/HeroSection";
@@ -14,7 +14,7 @@ import { Footer } from "./sections/Footer";
 
 type Props = {
   data: WebsiteData;
-  brand: BrandData | null;
+  brand: BrandDataNew | null;
   projectId: string;
 };
 

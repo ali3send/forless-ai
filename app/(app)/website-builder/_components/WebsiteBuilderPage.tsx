@@ -1,38 +1,41 @@
+// app/website-builder/_components/WebsiteBuilderPage.tsx
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import clsx from "clsx";
 
 import { BuilderSidebar } from "./BuilderSidebar";
 import { useWebsiteBuilder } from "../hooks/useWebsiteBuilder";
+import { useLoadWebsiteBuilder } from "../hooks/useLoadWebsiteBuilder";
 
 import { useBrandStore } from "@/store/brand.store";
 import { useWebsiteStore } from "@/store/website.store";
+import { useProjectStore } from "@/store/project.store";
+
 import { ThemeProvider } from "@/Templates/websiteTheme/ThemeProvider";
 import {
   WEBSITE_TEMPLATES,
   type TemplateKey,
 } from "@/Templates/websiteTemplates/templates";
-import { useProjectStore } from "@/store/project.store";
 
 export default function WebsiteBuilderPage() {
-  const { projectId } = useParams<{ projectId: string }>();
+  const router = useRouter();
+
+  const { projectId, websiteId } = useParams<{
+    projectId: string;
+    websiteId?: string;
+  }>();
+
   const setProjectId = useProjectStore((s) => s.setProjectId);
+  const brand = useBrandStore((s) => s.brand);
+  const brandId = useBrandStore((s) => s.brandId);
 
-  useEffect(() => {
-    if (projectId) setProjectId(projectId);
-  }, [projectId, setProjectId]);
-
-  const brand = useBrandStore((state) => state.brand);
   const { data, loading, saving, generating, restoring } = useWebsiteStore();
+  const [focus, setFocus] = useState<"editor" | "split" | "preview">("split");
 
-  const templateKey =
-    data.template && data.template in WEBSITE_TEMPLATES
-      ? (data.template as TemplateKey)
-      : "template1";
-
-  const ActiveTemplate = WEBSITE_TEMPLATES[templateKey].component;
+  // 🔒 ALWAYS call hooks
+  useLoadWebsiteBuilder(projectId, websiteId ?? "");
 
   const {
     builderSections,
@@ -42,25 +45,65 @@ export default function WebsiteBuilderPage() {
     handleSave,
     handleGenerateWebsite,
     handleRestoreSection,
-  } = useWebsiteBuilder(projectId);
+  } = useWebsiteBuilder(websiteId ?? null, brandId);
 
-  const [focus, setFocus] = useState<"editor" | "split" | "preview">("split");
+  // ──────────────────────────────
+  // ensure projectId in store
+  // ──────────────────────────────
+  useEffect(() => {
+    if (projectId) setProjectId(projectId);
+  }, [projectId, setProjectId]);
 
-  if (!projectId) {
+  // ──────────────────────────────
+  // if websiteId missing → resolve it
+  // ──────────────────────────────
+  useEffect(() => {
+    if (!projectId || websiteId) return;
+
+    async function resolveWebsite() {
+      try {
+        const res = await fetch(`/api/projects/${projectId}`, {
+          method: "POST",
+        });
+
+        const json = await res.json();
+
+        if (json?.websiteId) {
+          router.replace(`/website-builder/${projectId}/${json.websiteId}`);
+        }
+      } catch (err) {
+        console.error("Failed to resolve website", err);
+      }
+    }
+
+    resolveWebsite();
+  }, [projectId, websiteId, router]);
+
+  // ──────────────────────────────
+  // EARLY UI RETURNS (after hooks)
+  // ──────────────────────────────
+  if (!websiteId) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        Missing projectId
+        Preparing website…
       </div>
     );
   }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        Loading website…
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center">
+  //       Loading website… {websiteId}
+  //     </div>
+  //   );
+  // }
+
+  const templateKey =
+    data.template && data.template in WEBSITE_TEMPLATES
+      ? (data.template as TemplateKey)
+      : "template1";
+
+  const ActiveTemplate = WEBSITE_TEMPLATES[templateKey].component;
 
   return (
     <div className="h-screen overflow-hidden">
@@ -92,13 +135,13 @@ export default function WebsiteBuilderPage() {
         {/* Preview */}
         <main
           className={clsx(
-            "h-full overflow-y-auto  transition-all duration-300",
+            "h-full overflow-y-auto transition-all duration-300",
             focus === "editor" && "w-0",
             focus === "preview" && "flex-1",
             focus === "split" && "flex-1"
           )}
         >
-          <div className=" rounded-2xl border border-secondary-fade overflow-hidden">
+          <div className="rounded-2xl border border-secondary-fade overflow-hidden">
             <ThemeProvider
               value={{
                 primary: brand?.palette?.primary,

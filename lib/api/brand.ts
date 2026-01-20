@@ -1,7 +1,8 @@
 // lib/api/brand.ts
 // import type { WebsiteData } from "@/lib/websiteTypes";
-import { BrandData } from "../types/brandTypes";
+import { BrandDataNew } from "../types/brandTypes";
 import { getErrorMessage } from "../utils/getErrorMessage";
+import { withGuestHeaders } from "./project";
 
 export type GeneratedBrandFromApi = {
   name?: string;
@@ -32,7 +33,7 @@ export async function apiGenerateBrand(
 
 export async function apiSaveProjectBrand(
   projectId: string,
-  brand: BrandData | null
+  brand: BrandDataNew | null
 ): Promise<void> {
   const res = await fetch(`/api/projects/${projectId}/brand`, {
     method: "POST",
@@ -65,4 +66,56 @@ export async function apiGenerateLogo(payload: {
   }
 
   return json.svg as string;
+}
+
+//new apis
+// lib/api/brand.ts
+export async function apiListBrands(projectId: string) {
+  const res = await fetch(`/api/projects/${projectId}/brands`);
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error);
+  return json.brands;
+}
+
+export async function apiCreateBrand(projectId: string, brand: any) {
+  const res = await fetch(`/api/projects/${projectId}/brands`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(brand),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error);
+  return json.brand;
+}
+
+export async function apiGenerateBrands(projectId: string, idea: string) {
+  const res = await fetch(`/api/projects/${projectId}/brands/generate`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ idea }),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error);
+  return json.brand;
+}
+
+export async function apiSaveBrand(
+  projectId: string,
+  brand: BrandDataNew
+): Promise<{ brandId: string }> {
+  const res = await fetch("/api/brands", {
+    method: "POST",
+    headers: withGuestHeaders({
+      "Content-Type": "application/json",
+    }),
+    body: JSON.stringify({ projectId, brand }),
+  });
+
+  const json = await res.json().catch(() => ({}));
+
+  if (!res.ok || !json.brandId) {
+    throw new Error(json.error || "Failed to save brand");
+  }
+
+  return { brandId: json.brandId };
 }

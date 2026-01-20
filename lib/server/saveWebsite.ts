@@ -7,16 +7,19 @@ export async function saveWebsite({
   userId,
   guestId,
   projectId,
+  brandId,
   data,
 }: {
   supabase: SupabaseClient;
   projectId: string;
+  brandId: string;
   data: WebsiteData;
   userId?: string | null;
   guestId?: string | null;
 }) {
   console.log("🟢 saveWebsite called", {
     projectId,
+    brandId,
     userId,
     guestId,
     dataKeys: Object.keys(data ?? {}),
@@ -26,27 +29,33 @@ export async function saveWebsite({
     throw new Error("Missing userId or guestId");
   }
 
-  /* ───────── UPSERT WEBSITE ───────── */
+  if (!brandId) {
+    throw new Error("Missing brandId for website");
+  }
+
+  /* ───────── CREATE WEBSITE (NO UPSERT) ───────── */
 
   const payload = {
     project_id: projectId,
+    brand_id: brandId,
     user_id: userId ?? null,
     guest_id: guestId ?? null,
-    data,
+    draft_data: data,
+    is_published: false,
   };
 
   const { data: website, error } = await supabase
     .from("websites")
-    .upsert(payload, { onConflict: "project_id" })
-    .select()
+    .insert(payload)
+    .select("id")
     .single();
 
   if (error) {
-    console.error("❌ saveWebsite upsert error", error);
+    console.error("❌ saveWebsite insert error", error);
     throw error;
   }
 
-  console.log("✅ saveWebsite upserted", website.id);
+  console.log("✅ saveWebsite created website", website.id);
 
   /* ───────── UPDATE PROJECT THUMBNAIL ───────── */
 

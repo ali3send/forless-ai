@@ -1,14 +1,14 @@
 "use client";
+
 import { PALETTES, FONTS } from "@/app/(app)/brand/brandConfig";
-import { BrandData } from "@/lib/types/brandTypes";
+import { BrandDataNew } from "@/lib/types/brandTypes";
 import { useBrandStore } from "@/store/brand.store";
 
-// normalize BrandData so we always have all fields
-function ensureBrand(prev: BrandData | null): BrandData {
+function ensureBrand(prev: BrandDataNew | null): BrandDataNew {
   return {
     name: prev?.name ?? "",
     slogan: prev?.slogan ?? "",
-    logoSvg: prev?.logoSvg ?? null,
+    logoSvg: prev?.logoSvg ?? undefined,
     palette: {
       primary: prev?.palette?.primary ?? PALETTES[0]?.primary ?? "#10b981",
       secondary:
@@ -33,12 +33,12 @@ export function BuilderDesignPanel() {
   const currentPaletteId =
     PALETTES.find(
       (p) =>
-        p.primary === current.palette?.primary &&
-        p.secondary === current.palette?.secondary
+        p.primary === current.palette.primary &&
+        p.secondary === current.palette.secondary
     )?.id ?? PALETTES[0]?.id;
 
   const currentFontId =
-    FONTS.find((f) => f.css === current.font?.css)?.id ?? FONTS[0]?.id;
+    FONTS.find((f) => f.css === current.font.css)?.id ?? FONTS[0]?.id;
 
   const handlePaletteChange = (paletteId: string) => {
     const p = PALETTES.find((x) => x.id === paletteId) ?? PALETTES[0];

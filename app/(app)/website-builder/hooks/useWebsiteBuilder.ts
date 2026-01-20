@@ -1,35 +1,32 @@
 // app/website-builder/hooks/useWebsiteBuilder.ts
 "use client";
 
-import { useEffect, useCallback } from "react";
+import { useCallback } from "react";
 
-import { WebsiteData, getDefaultWebsiteData } from "@/lib/types/websiteTypes";
+import { WebsiteData } from "@/lib/types/websiteTypes";
 import {
-  apiGetProjectWithBrand,
-  apiPatchProjectBrand,
-} from "@/lib/api/project";
-import {
-  apiGetWebsite,
   apiSaveWebsite,
   apiSaveSectionHistory,
   apiGenerateWebsite,
   apiRestoreSection,
 } from "@/lib/api/website";
+import { apiSaveBrand } from "@/lib/api/brand";
 
 import { builderSections } from "../builderSections";
 import { SECTION_TO_DATA_KEY } from "../sectionMap";
 
 import { useBrandStore } from "@/store/brand.store";
 import { useWebsiteStore } from "@/store/website.store";
-import { BrandData } from "@/lib/types/brandTypes";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
 
-export function useWebsiteBuilder(projectId: string | null) {
+export function useWebsiteBuilder(
+  websiteId: string | null,
+  brandId: string | null
+) {
   /* ------------------ stores ------------------ */
 
   const brand = useBrandStore((s) => s.brand);
-  const setBrand = useBrandStore((s) => s.setBrand);
 
   const {
     data,
@@ -40,7 +37,6 @@ export function useWebsiteBuilder(projectId: string | null) {
     saving,
     generating,
     restoring,
-    setLoading,
     setSaving,
     setGenerating,
     setRestoring,
@@ -52,82 +48,36 @@ export function useWebsiteBuilder(projectId: string | null) {
   const isFirst = currentIndex <= 0;
   const isLast = currentIndex === builderSections.length - 1;
 
-  /* ------------------ initial load ------------------ */
-
-  useEffect(() => {
-    if (!projectId) return;
-
-    let cancelled = false;
-
-    async function load() {
-      try {
-        setLoading(true);
-
-        const [website, project] = await Promise.all([
-          apiGetWebsite(projectId || ""),
-          apiGetProjectWithBrand(projectId || ""),
-        ]);
-
-        if (cancelled) return;
-
-        const brandData = (project?.brand_data as BrandData) ?? null;
-        if (brandData) setBrand(brandData);
-
-        const base = website ?? getDefaultWebsiteData("product");
-
-        const merged: WebsiteData = brandData
-          ? {
-              ...base,
-              hero: {
-                ...base.hero,
-                headline: brandData.name || base.hero.headline,
-              },
-              brandName: brandData.name || base.brandName,
-              tagline: brandData.slogan || base.tagline,
-            }
-          : base;
-
-        setData(merged);
-      } catch (err) {
-        console.error("Failed to load website/project", err);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-
-    load();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [projectId, setBrand, setData, setLoading]);
-
   /* ------------------ actions ------------------ */
 
   const handleSave = useCallback(async () => {
-    if (!projectId) {
-      uiToast.error("Missing projectId");
+    if (!websiteId) {
+      uiToast.error("Missing website");
       return;
     }
 
     setSaving(true);
 
     try {
-      if (brand) {
-        await apiPatchProjectBrand(projectId, brand);
+      // ✅ persist brand changes
+      if (brand && brandId) {
+        await apiSaveBrand(brandId, brand);
       }
-      await apiSaveWebsite(projectId, data);
-      uiToast.success("Website saved");
+
+      // ✅ persist draft website
+      await apiSaveWebsite(websiteId, data);
+
+      uiToast.success("Changes saved");
     } catch (err) {
-      uiToast.error(getErrorMessage(err, "Failed to save website"));
+      uiToast.error(getErrorMessage(err, "Failed to save changes"));
     } finally {
       setSaving(false);
     }
-  }, [projectId, brand, data, setSaving]);
+  }, [websiteId, brandId, brand, data, setSaving]);
 
   const handleGenerateWebsite = useCallback(async () => {
-    if (!projectId) {
-      uiToast.error("Missing projectId");
+    if (!websiteId) {
+      uiToast.error("Missing website");
       return;
     }
 
@@ -149,13 +99,14 @@ export function useWebsiteBuilder(projectId: string | null) {
         data[dataSection];
 
       await apiSaveSectionHistory({
-        projectId,
+        websiteId,
         section: dataSection,
         prevSectionData,
         maxSlots: 2,
       });
 
       const patch = await apiGenerateWebsite({
+        websiteId,
         idea,
         brand,
         section: dataSection,
@@ -164,19 +115,19 @@ export function useWebsiteBuilder(projectId: string | null) {
       const merged: WebsiteData = { ...data, ...patch };
       setData(merged);
 
-      await apiSaveWebsite(projectId, merged);
+      await apiSaveWebsite(websiteId, merged);
 
       uiToast.success("Section regenerated successfully");
-    } catch (err: unknown) {
-      uiToast.error(err, "Failed to regenerate section");
+    } catch (err) {
+      uiToast.error(getErrorMessage(err, "Failed to regenerate section"));
     } finally {
       uiToast.dismiss(loadingId);
       setGenerating(false);
     }
-  }, [projectId, brand, section, data, setData, setGenerating]);
+  }, [websiteId, brand, section, data, setData, setGenerating]);
 
   const handleRestoreSection = useCallback(async () => {
-    if (!projectId) return;
+    if (!websiteId) return;
 
     const dataSection = SECTION_TO_DATA_KEY[section];
 
@@ -185,7 +136,7 @@ export function useWebsiteBuilder(projectId: string | null) {
 
     try {
       const res = await apiRestoreSection({
-        projectId,
+        websiteId,
         section: dataSection,
       });
 
@@ -195,16 +146,17 @@ export function useWebsiteBuilder(projectId: string | null) {
       };
 
       setData(merged);
-      await apiSaveWebsite(projectId, merged);
+      await apiSaveWebsite(websiteId, merged);
 
       uiToast.success("Section restored successfully");
     } catch (err) {
       uiToast.error(getErrorMessage(err, "Failed to restore section"));
     } finally {
-      uiToast.dismiss(toastId); // ✅ THIS FIXES IT
+      uiToast.dismiss(toastId);
       setRestoring(false);
     }
-  }, [projectId, section, data, setData, setRestoring]);
+  }, [websiteId, section, data, setData, setRestoring]);
+
   return {
     section,
     setSection,

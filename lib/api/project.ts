@@ -5,7 +5,7 @@ import { getOrCreateGuestId } from "@/lib/guest/guest";
 /* ──────────────────────────────
    Helpers
 ────────────────────────────── */
-function withGuestHeaders(headers?: HeadersInit): HeadersInit {
+export function withGuestHeaders(headers?: HeadersInit): HeadersInit {
   return {
     ...(headers || {}),
     "x-guest-id": getOrCreateGuestId(),
@@ -47,23 +47,6 @@ export type ProjectWithBrand = {
 /* ──────────────────────────────
    API calls
 ────────────────────────────── */
-
-// export async function apiCreateProject(
-//   payload: CreateProjectPayload
-// ): Promise<Project> {
-//   const res = await fetch("/api/projects", {
-//     method: "POST",
-//     headers: withGuestHeaders({
-//       "Content-Type": "application/json",
-//     }),
-//     body: JSON.stringify(payload),
-//   });
-
-//   const json = await safeJson(res);
-//   if (!res.ok) throw new Error(json.error || "Failed to create project");
-
-//   return json.project as Project;
-// }
 
 export async function apiUpdateProject(
   projectId: string,

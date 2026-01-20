@@ -1,23 +1,30 @@
 import { create } from "zustand";
-import type { BrandData } from "@/lib/types/brandTypes";
+import type { BrandDataNew } from "@/lib/types/brandTypes";
 
 type BrandStore = {
-  brand: BrandData | null;
+  brandId: string | null;
+  brand: BrandDataNew | null;
 
   setBrand: (
-    value: BrandData | null | ((prev: BrandData | null) => BrandData | null)
+    brandId: string,
+    value:
+      | BrandDataNew
+      | null
+      | ((prev: BrandDataNew | null) => BrandDataNew | null)
   ) => void;
 
   clearBrand: () => void;
 };
 
 export const useBrandStore = create<BrandStore>((set) => ({
+  brandId: null,
   brand: null,
 
-  setBrand: (value) =>
+  setBrand: (brandId, value) =>
     set((state) => ({
+      brandId,
       brand: typeof value === "function" ? value(state.brand) : value,
     })),
 
-  clearBrand: () => set({ brand: null }),
+  clearBrand: () => set({ brandId: null, brand: null }),
 }));

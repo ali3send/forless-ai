@@ -27,7 +27,7 @@ export function ProjectCard({ project }: { project: ProjectRow }) {
     <Wrapper
       {...(!isDeleted &&
         !isUnpublished && {
-          href: `/website-builder/${project.id}`,
+          href: `/dashboard/projects/${project.id}`,
         })}
       className="group flex flex-col rounded-lg border bg-secondary-fade p-3 text-xs transition hover:border-primary"
     >

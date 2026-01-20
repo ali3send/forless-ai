@@ -10,11 +10,11 @@ import { FeaturesSection } from "./sections/FeaturesSection";
 import { OffersSection } from "./sections/OffersSection";
 import { ContactSection } from "./sections/ContactSection";
 import { Footer } from "./sections/Footer";
-import { BrandData } from "@/lib/types/brandTypes";
+import { BrandDataNew } from "@/lib/types/brandTypes";
 
 type Props = {
   data: WebsiteData;
-  brand: BrandData | null;
+  brand: BrandDataNew | null;
   projectId: string;
 };
 

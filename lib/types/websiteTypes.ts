@@ -2,6 +2,7 @@
 export type WebsiteType = "product" | "service" | "personal" | "business";
 
 export type WebsiteData = {
+  websiteId: string;
   template: "template1" | "template2" | "template3";
   type: string;
   brandName: string;
@@ -69,6 +70,7 @@ export type WebsiteData = {
 
 export function getDefaultWebsiteData(type: WebsiteType): WebsiteData {
   return {
+    websiteId: "default",
     template: "template1",
     type,
     brandName: "Your Brand",

@@ -5,7 +5,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { urls } from "@/lib/config/urls";
 import { checkUsage } from "@/lib/usage/checkUsage";
 import { commitUsage } from "@/lib/usage/commitUsage";
-import { saveWebsite } from "@/app/api/lib/saveWebsite";
+import { saveWebsite } from "@/lib/server/saveWebsite";
 
 function slugify(text: string) {
   return text
