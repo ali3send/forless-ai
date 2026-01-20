@@ -383,3 +383,6 @@
 //     website: { data: upsertedWebsite },
 //   });
 // }
+export async function GET() {
+  return Response.json({ message: " hello" });
+}
