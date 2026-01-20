@@ -3,22 +3,31 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { PLAN_LIMITS, type PlanKey } from "@/lib/billing/planLimits";
 import { getNormalizedPeriodEnd } from "./period";
 import { UsageKey } from "./types";
-// import type { UsageKey } from "./types";
 
 export async function checkUsage({
   userId,
+  guestId,
   projectId = null,
   key,
   plan,
   currentPeriodEnd,
 }: {
-  userId: string;
+  userId: string | null;
+  guestId?: string | null;
   projectId?: string | null;
   key: UsageKey;
   plan: PlanKey;
   currentPeriodEnd?: string | null;
 }) {
   const supabase = await createServerSupabaseClient();
+
+  /* ──────────────────────────────
+     Resolve identity (REQUIRED)
+  ────────────────────────────── */
+  if (!userId && !guestId) {
+    throw new Error("checkUsage requires userId or guestId");
+  }
+
   const limit = Number(PLAN_LIMITS?.[plan]?.[key] ?? 0);
   const periodEnd = getNormalizedPeriodEnd(currentPeriodEnd);
 
@@ -32,13 +41,23 @@ export async function checkUsage({
     };
   }
 
+  /* ──────────────────────────────
+     Base query
+  ────────────────────────────── */
   let query = supabase
     .from("usage_counters")
     .select("count")
-    .eq("user_id", userId)
     .eq("key", key)
     .eq("period_end", periodEnd);
 
+  // Identity binding
+  if (userId) {
+    query = query.eq("user_id", userId);
+  } else {
+    query = query.eq("guest_id", guestId);
+  }
+
+  // Project scoping
   if (projectId === null) {
     query = query.is("project_id", null);
   } else {

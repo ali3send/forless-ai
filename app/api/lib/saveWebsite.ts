@@ -5,31 +5,39 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 export async function saveWebsite({
   supabase,
   userId,
+  guestId,
   projectId,
   data,
 }: {
   supabase: SupabaseClient;
-  userId: string;
   projectId: string;
   data: WebsiteData;
+  userId?: string | null;
+  guestId?: string | null;
 }) {
   console.log("🟢 saveWebsite called", {
     projectId,
     userId,
+    guestId,
     dataKeys: Object.keys(data ?? {}),
   });
 
-  // 1️⃣ Save website (upsert)
+  if (!userId && !guestId) {
+    throw new Error("Missing userId or guestId");
+  }
+
+  /* ───────── UPSERT WEBSITE ───────── */
+
+  const payload = {
+    project_id: projectId,
+    user_id: userId ?? null,
+    guest_id: guestId ?? null,
+    data,
+  };
+
   const { data: website, error } = await supabase
     .from("websites")
-    .upsert(
-      {
-        project_id: projectId,
-        user_id: userId,
-        data,
-      },
-      { onConflict: "project_id" }
-    )
+    .upsert(payload, { onConflict: "project_id" })
     .select()
     .single();
 
@@ -38,7 +46,9 @@ export async function saveWebsite({
     throw error;
   }
 
-  console.log("✅ saveWebsite upserted", website?.id);
+  console.log("✅ saveWebsite upserted", website.id);
+
+  /* ───────── UPDATE PROJECT THUMBNAIL ───────── */
 
   try {
     const thumbnailUrl =
@@ -48,13 +58,20 @@ export async function saveWebsite({
         : null);
 
     if (thumbnailUrl) {
-      await supabase
+      const projectUpdate = supabase
         .from("projects")
         .update({ thumbnail_url: thumbnailUrl })
-        .eq("id", projectId)
-        .eq("user_id", userId);
+        .eq("id", projectId);
+
+      // ownership guard
+      if (userId) projectUpdate.eq("user_id", userId);
+      if (guestId) projectUpdate.eq("guest_id", guestId);
+
+      await projectUpdate;
     }
-  } catch {}
+  } catch (err) {
+    console.warn("Thumbnail update failed (non-blocking)", err);
+  }
 
   return website;
 }

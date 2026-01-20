@@ -30,7 +30,7 @@ export async function getUsageData(days = 30): Promise<UsagePoint[]> {
     supabase
       .from("projects")
       .select("published_at")
-      .eq("published", true)
+      .eq("status", "published")
       .gte("published_at", start.toISOString()),
   ]);
 

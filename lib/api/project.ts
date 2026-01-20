@@ -1,7 +1,24 @@
 // lib/api/projects.ts
-
 import { BrandData } from "../types/brandTypes";
+import { getOrCreateGuestId } from "@/lib/guest/guest";
 
+/* ──────────────────────────────
+   Helpers
+────────────────────────────── */
+function withGuestHeaders(headers?: HeadersInit): HeadersInit {
+  return {
+    ...(headers || {}),
+    "x-guest-id": getOrCreateGuestId(),
+  };
+}
+
+async function safeJson(res: Response) {
+  return res.json().catch(() => ({}));
+}
+
+/* ──────────────────────────────
+   Types
+────────────────────────────── */
 export type CreateProjectPayload = {
   name: string;
   description?: string;
@@ -27,24 +44,26 @@ export type ProjectWithBrand = {
   brand_data?: BrandData | null;
 };
 
-async function safeJson(res: Response) {
-  return res.json().catch(() => ({} as unknown));
-}
+/* ──────────────────────────────
+   API calls
+────────────────────────────── */
 
-export async function apiCreateProject(
-  payload: CreateProjectPayload
-): Promise<Project> {
-  const res = await fetch("/api/projects", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
+// export async function apiCreateProject(
+//   payload: CreateProjectPayload
+// ): Promise<Project> {
+//   const res = await fetch("/api/projects", {
+//     method: "POST",
+//     headers: withGuestHeaders({
+//       "Content-Type": "application/json",
+//     }),
+//     body: JSON.stringify(payload),
+//   });
 
-  const json = await safeJson(res);
-  if (!res.ok) throw new Error(json.error || "Failed to create project");
+//   const json = await safeJson(res);
+//   if (!res.ok) throw new Error(json.error || "Failed to create project");
 
-  return json.project as Project;
-}
+//   return json.project as Project;
+// }
 
 export async function apiUpdateProject(
   projectId: string,
@@ -52,7 +71,9 @@ export async function apiUpdateProject(
 ): Promise<Project> {
   const res = await fetch(`/api/projects/${encodeURIComponent(projectId)}`, {
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
+    headers: withGuestHeaders({
+      "Content-Type": "application/json",
+    }),
     body: JSON.stringify(payload),
   });
 
@@ -65,17 +86,16 @@ export async function apiUpdateProject(
 export async function apiGetProjectWithBrand(
   projectId: string
 ): Promise<ProjectWithBrand | null> {
-  const res = await fetch(`/api/projects/${encodeURIComponent(projectId)}`);
-  const json = await safeJson(res);
+  const res = await fetch(`/api/projects/${encodeURIComponent(projectId)}`, {
+    headers: withGuestHeaders(),
+  });
 
+  const json = await safeJson(res);
   if (!res.ok || !json.project) return null;
+
   return json.project as ProjectWithBrand;
 }
 
-/**
- * PATCH = partial save (recommended for builder)
- * Allows saving name/slogan even if palette/font not yet selected.
- */
 export async function apiPatchProjectBrand(
   projectId: string,
   brand: Partial<BrandData>
@@ -84,21 +104,19 @@ export async function apiPatchProjectBrand(
     `/api/projects/${encodeURIComponent(projectId)}/brand`,
     {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: withGuestHeaders({
+        "Content-Type": "application/json",
+      }),
       body: JSON.stringify(brand),
     }
   );
 
   const json = await safeJson(res);
-  if (!res.ok) throw new Error(json.error || "Failed to patch brand/design");
+  if (!res.ok) throw new Error(json.error || "Failed to patch brand");
 
   return json as { success: true; brand_data: BrandData };
 }
 
-/**
- * POST = finalize/strict save
- * Requires palette + font (use when user completes brand kit).
- */
 export async function apiSaveProjectBrand(
   projectId: string,
   brand: BrandData
@@ -107,28 +125,33 @@ export async function apiSaveProjectBrand(
     `/api/projects/${encodeURIComponent(projectId)}/brand`,
     {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: withGuestHeaders({
+        "Content-Type": "application/json",
+      }),
       body: JSON.stringify(brand),
     }
   );
 
   const json = await safeJson(res);
-  if (!res.ok) throw new Error(json.error || "Failed to save brand/design");
+  if (!res.ok) throw new Error(json.error || "Failed to save brand");
 
   return json as { success: true; brand_data: BrandData };
 }
+
 export async function apiCreateAndGenerateProject(payload: {
-  name: string;
-  idea: string;
-}): Promise<{ success: true; project: { id: string } }> {
-  const res = await fetch("/api/projects/create-and-generate", {
+  name?: string;
+  description: string;
+}): Promise<{ success: true; projectId: string }> {
+  const res = await fetch("/api/projects/guest-create-and-generate", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: withGuestHeaders({
+      "Content-Type": "application/json",
+    }),
     body: JSON.stringify(payload),
   });
 
-  const json = await res.json().catch(() => ({} as unknown));
+  const json = await safeJson(res);
   if (!res.ok) throw new Error(json.error || "Failed to create + generate");
 
-  return json;
+  return json as { success: true; projectId: string };
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { getOrCreateGuestId } from "@/lib/guest/guest";
 
 type UsageData = {
   used: number;
@@ -16,10 +17,22 @@ export function useUsage(key: string) {
     setLoading(true);
 
     try {
-      const res = await fetch(`/api/usage?key=${key}`);
+      const guestId = getOrCreateGuestId();
+
+      const res = await fetch(`/api/usage?key=${encodeURIComponent(key)}`, {
+        headers: {
+          "x-guest-id": guestId,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch usage");
+      }
+
       const json = await res.json();
       setData(json);
     } catch {
+      setData(null);
     } finally {
       setLoading(false);
     }

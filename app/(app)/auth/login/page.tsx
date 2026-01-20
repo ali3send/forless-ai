@@ -19,14 +19,25 @@ export default function LoginPage() {
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
-    setErrorMsg(null);
     setLoading(true);
 
     try {
       await login(email, password);
+
+      await fetch("/api/claim-guest-project", {
+        method: "POST",
+        headers: {
+          "x-guest-id": localStorage.getItem("guest_id") || "",
+        },
+        credentials: "include", // 🔥 REQUIRED
+      });
+
+      // clean up
+      localStorage.removeItem("guest_id");
+
       router.replace("/dashboard");
     } catch (e) {
-      setErrorMsg(getErrorMessage(e));
+      setErrorMsg(getErrorMessage(e, "Failed to log in"));
       uiToast.error(getErrorMessage(e, "Failed to log in"));
       setLoading(false);
     }

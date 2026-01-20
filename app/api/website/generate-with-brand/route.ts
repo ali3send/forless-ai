@@ -1,3 +1,4 @@
+// app/api/website/generate-with-brand/route.ts
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createServerSupabaseClient } from "@/lib/supabase/server";

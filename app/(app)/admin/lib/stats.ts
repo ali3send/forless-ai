@@ -22,11 +22,11 @@ export async function getAdminStats(days: number) {
       supabase
         .from("projects")
         .select("id", { count: "exact", head: true })
-        .eq("published", true),
+        .eq("status", "published"),
       supabase
         .from("projects")
         .select("id", { count: "exact", head: true })
-        .eq("published", true)
+        .eq("status", "published")
         .lt("published_at", start.toISOString()),
     ]);
 
@@ -48,11 +48,10 @@ export async function getModerationStats() {
       .from("profiles")
       .select("id", { count: "exact", head: true })
       .eq("is_suspended", true),
-
     supabase
       .from("projects")
       .select("id", { count: "exact", head: true })
-      .eq("published", false),
+      .eq("status", "unpublished"),
   ]);
 
   return {

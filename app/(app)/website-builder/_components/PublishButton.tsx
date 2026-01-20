@@ -1,10 +1,10 @@
-// app/website-builder/_components/PublishButton.tsx
 "use client";
 
 import { urls } from "@/lib/config/urls.client";
 import { WebsiteData } from "@/lib/types/websiteTypes";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
+import { getOrCreateGuestId } from "@/lib/guest/guest";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
@@ -28,7 +28,9 @@ export function PublishButton({ projectId, defaultSlug, websiteData }: Props) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Load project state (slug + published)
+  /* ──────────────────────────────
+     Load project state
+  ────────────────────────────── */
   useEffect(() => {
     if (!projectId) return;
 
@@ -36,8 +38,13 @@ export function PublishButton({ projectId, defaultSlug, websiteData }: Props) {
 
     (async () => {
       try {
+        const guestId = getOrCreateGuestId();
+
         const res = await fetch(`/api/projects/${projectId}`, {
           cache: "no-store",
+          headers: {
+            "x-guest-id": guestId,
+          },
         });
 
         if (!res.ok) return;
@@ -62,15 +69,19 @@ export function PublishButton({ projectId, defaultSlug, websiteData }: Props) {
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectId]);
+  }, [projectId, slug]);
 
-  // Derived permanent URL
+  /* ──────────────────────────────
+     Derived URLs
+  ────────────────────────────── */
   const finalUrl = useMemo(() => {
     if (!isPublished || !slug) return null;
     return urls.site(slug);
   }, [isPublished, slug]);
 
+  /* ──────────────────────────────
+     Preview
+  ────────────────────────────── */
   async function preview(open = true) {
     const cleanSlug = slugify(slug);
     if (!cleanSlug) {
@@ -79,10 +90,16 @@ export function PublishButton({ projectId, defaultSlug, websiteData }: Props) {
     }
 
     const t = uiToast.loading("Preparing preview…");
+
     try {
+      const guestId = getOrCreateGuestId();
+
       const res = await fetch(`/api/projects/${projectId}/preview`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-guest-id": guestId,
+        },
         body: JSON.stringify({ slug: cleanSlug }),
         cache: "no-store",
       });
@@ -101,9 +118,10 @@ export function PublishButton({ projectId, defaultSlug, websiteData }: Props) {
     }
   }
 
+  /* ──────────────────────────────
+     Publish
+  ────────────────────────────── */
   async function publish() {
-    if (!projectId) return;
-
     const cleanSlug = slugify(slug);
     if (!cleanSlug) {
       uiToast.error("Please enter a subdomain (slug).");
@@ -119,9 +137,14 @@ export function PublishButton({ projectId, defaultSlug, websiteData }: Props) {
     const t = uiToast.loading("Publishing…");
 
     try {
+      const guestId = getOrCreateGuestId();
+
       const res = await fetch(`/api/projects/${projectId}/publish`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-guest-id": guestId,
+        },
         body: JSON.stringify({
           slug: cleanSlug,
           data: websiteData,
@@ -129,7 +152,6 @@ export function PublishButton({ projectId, defaultSlug, websiteData }: Props) {
       });
 
       const json = await res.json();
-      uiToast.dismiss(t);
 
       if (!res.ok) {
         uiToast.error(json?.error || "Publish failed");
@@ -142,9 +164,9 @@ export function PublishButton({ projectId, defaultSlug, websiteData }: Props) {
 
       uiToast.success("Published successfully!");
     } catch (e) {
-      uiToast.dismiss(t);
       uiToast.error(getErrorMessage(e, "Publish failed"));
     } finally {
+      uiToast.dismiss(t);
       setLoading(false);
     }
   }

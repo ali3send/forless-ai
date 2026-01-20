@@ -81,6 +81,7 @@ export async function POST(req: Request) {
       currentPeriodEnd: profile.current_period_end,
     });
 
+    console.log("Usage check for website_regen:", usage);
     if (!usage.ok) {
       return NextResponse.json(
         { error: "Regeneration limit reached. Upgrade your plan." },
@@ -177,7 +178,7 @@ Email/phone/whatsapp: use placeholders if unknown.
       key: "website_regen",
       currentPeriodEnd: profile.current_period_end,
     });
-
+    console.log("Committed usage for website_regen");
     return NextResponse.json({ data: parsed });
   } catch (err) {
     console.error("website/generate error:", err);

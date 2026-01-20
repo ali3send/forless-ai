@@ -7,6 +7,20 @@ import StatsRow from "./StatsRow";
 import ProjectGrid from "./ProjectGrid";
 import type { ProjectRow, DashboardStats } from "../types";
 
+function filterProjects(projects: ProjectRow[], filter: FilterId) {
+  switch (filter) {
+    case "published":
+    case "draft":
+    case "unpublished":
+    case "deleted":
+      return projects.filter((p) => p.status === filter);
+
+    case "all":
+    default:
+      return projects.filter((p) => p.status !== "deleted");
+  }
+}
+
 export default function DashboardContent({
   projects,
   stats,
@@ -18,14 +32,12 @@ export default function DashboardContent({
   const [search, setSearch] = useState("");
 
   const filtered = useMemo(() => {
-    let projectList = [...projects];
-
-    if (filter !== "all")
-      projectList = projectList.filter((project) => project.status === filter);
+    let projectList = filterProjects(projects, filter);
 
     if (search.trim()) {
+      const q = search.toLowerCase();
       projectList = projectList.filter((project) =>
-        (project.name ?? "").toLowerCase().includes(search.toLowerCase())
+        (project.name ?? "").toLowerCase().includes(q)
       );
     }
 

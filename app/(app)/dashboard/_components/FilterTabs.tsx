@@ -1,12 +1,18 @@
 "use client";
 
-export type FilterId = "all" | "active" | "draft" | "archived";
+export type FilterId =
+  | "all"
+  | "published"
+  | "draft"
+  | "unpublished"
+  | "deleted";
 
 const FILTERS = [
   { id: "all" as const, label: "All" },
-  { id: "active" as const, label: "Active" },
   { id: "draft" as const, label: "Draft" },
-  { id: "archived" as const, label: "Archived" },
+  { id: "published" as const, label: "Published" },
+  { id: "deleted" as const, label: "Deleted" },
+  { id: "unpublished" as const, label: "Unpublished" },
 ];
 
 interface Props {

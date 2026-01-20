@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { AuthProvider } from "./providers";
 import { Toaster } from "sonner";
+import { GuestInit } from "./Guestinit";
 
 export const metadata: Metadata = {
   title: "ForlessAI",
@@ -16,6 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-white text-black antialiased">
+        <GuestInit />
         <AuthProvider>{children}</AuthProvider>
 
         <Toaster
