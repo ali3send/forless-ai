@@ -2,7 +2,6 @@
 export type WebsiteType = "product" | "service" | "personal" | "business";
 
 export type WebsiteData = {
-  websiteId: string;
   template: "template1" | "template2" | "template3";
   type: string;
   brandName: string;
@@ -17,7 +16,7 @@ export type WebsiteData = {
     secondaryCtaLink?: string;
     imageUrl?: string;
     imagePath?: string;
-    imageQuery: string; // for Unsplash
+    imageQuery: string;
   };
 
   about: {
@@ -34,12 +33,11 @@ export type WebsiteData = {
   };
 
   offers: {
-    // products or services
     title: string;
     items: {
       name: string;
       description: string;
-      priceLabel?: string; // "From $49", "Starting at $10/hr"
+      priceLabel?: string;
     }[];
   };
 
@@ -70,7 +68,6 @@ export type WebsiteData = {
 
 export function getDefaultWebsiteData(type: WebsiteType): WebsiteData {
   return {
-    websiteId: "default",
     template: "template1",
     type,
     brandName: "Your Brand",

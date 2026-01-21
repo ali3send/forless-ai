@@ -1,10 +1,9 @@
-// app/api/projects/[projectId]/brands/websites/[websiteId]/route.ts
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { projectId: string; websiteId: string } }
+  req: Request,
+  { params }: { params: Promise<{ websiteId: string }> }
 ) {
   const supabase = await createServerSupabaseClient();
 
@@ -16,8 +15,9 @@ export async function GET(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { projectId, websiteId } = params;
+  const { websiteId } = await params;
 
+  /* ── fetch website ── */
   const { data: website, error } = await supabase
     .from("websites")
     .select(
@@ -26,27 +26,30 @@ export async function GET(
         project_id,
         brand_id,
         draft_data,
-        is_published,
-        slug
+        is_published
       `
     )
     .eq("id", websiteId)
-    .eq("project_id", projectId)
+    // .eq("user_id", user.id)
     .single();
+  console.log("WEBSITE QUERY RESULT:", { website, error });
 
   if (error || !website) {
     return NextResponse.json({ error: "Website not found" }, { status: 404 });
   }
 
-  let draftData = website.draft_data;
-  if (typeof draftData === "string") {
-    try {
-      draftData = JSON.parse(draftData);
-    } catch {
-      draftData = null;
-    }
+  /* ── parse draft ── */
+  let draftData = null;
+  try {
+    draftData =
+      typeof website.draft_data === "string"
+        ? JSON.parse(website.draft_data)
+        : website.draft_data;
+  } catch {
+    draftData = null;
   }
 
+  /* ── load brand ── */
   let brand = null;
   if (website.brand_id) {
     const { data } = await supabase
@@ -61,11 +64,10 @@ export async function GET(
   return NextResponse.json({
     website: {
       id: website.id,
-      projectId: website.project_id,
-      brandId: website.brand_id,
+      project_id: website.project_id,
       draft_data: draftData,
       is_published: website.is_published,
-      slug: website.slug,
+      // slug: website.slug,
     },
     brand,
   });

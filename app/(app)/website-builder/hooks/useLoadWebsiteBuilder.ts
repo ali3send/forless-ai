@@ -1,31 +1,42 @@
 // app/(app)/website-builder/hooks/useLoadWebsiteBuilder.ts
 "use client";
+
 import { useEffect } from "react";
 import { apiGetWebsite } from "@/lib/api/website";
 import { useWebsiteStore } from "@/store/website.store";
 import { useBrandStore } from "@/store/brand.store";
 
-export function useLoadWebsiteBuilder(projectId: string, websiteId: string) {
+export function useLoadWebsiteBuilder(websiteId: string | null) {
   const setWebsiteData = useWebsiteStore((s) => s.setData);
   const setLoading = useWebsiteStore((s) => s.setLoading);
   const setBrand = useBrandStore((s) => s.setBrand);
 
   useEffect(() => {
-    if (!projectId || !websiteId) return;
+    if (!websiteId) {
+      console.warn("Missing websiteId for loading website builder");
+      return;
+    }
 
     let cancelled = false;
 
     async function load() {
       setLoading(true);
       try {
-        const { website, brand } = await apiGetWebsite(projectId, websiteId);
+        /**
+         * Expected API response:
+         * {
+         *   website: { draft_data: WebsiteData }
+         *   brand: BrandData
+         * }
+         */
+        const { website, brand } = await apiGetWebsite(websiteId as string);
 
         if (cancelled) return;
 
-        // 1️⃣ hydrate website draft
+        // 1️⃣ hydrate website draft (single source of truth)
         setWebsiteData(website.draft_data);
 
-        // 2️⃣ hydrate brand (NORMALIZED)
+        // 2️⃣ hydrate brand (normalized, no ids here)
         setBrand({
           name: brand.name,
           slogan: brand.slogan,
@@ -34,7 +45,7 @@ export function useLoadWebsiteBuilder(projectId: string, websiteId: string) {
           logoSvg: brand.logoSvg ?? undefined,
         });
       } catch (err) {
-        console.error("Failed to load builder data", err);
+        console.error("Failed to load website builder data", err);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -45,5 +56,5 @@ export function useLoadWebsiteBuilder(projectId: string, websiteId: string) {
     return () => {
       cancelled = true;
     };
-  }, [projectId, websiteId, setWebsiteData, setBrand, setLoading]);
+  }, [websiteId, setWebsiteData, setBrand, setLoading]);
 }

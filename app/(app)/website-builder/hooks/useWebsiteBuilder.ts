@@ -10,7 +10,6 @@ import {
   apiGenerateWebsite,
   apiRestoreSection,
 } from "@/lib/api/website";
-import { apiSaveBrand } from "@/lib/api/brand";
 
 import { builderSections } from "../builderSections";
 import { SECTION_TO_DATA_KEY } from "../sectionMap";
@@ -20,10 +19,7 @@ import { useWebsiteStore } from "@/store/website.store";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
 
-export function useWebsiteBuilder(
-  websiteId: string | null,
-  brandId: string | null
-) {
+export function useWebsiteBuilder(websiteId: string | null) {
   /* ------------------ stores ------------------ */
 
   const brand = useBrandStore((s) => s.brand);
@@ -59,21 +55,15 @@ export function useWebsiteBuilder(
     setSaving(true);
 
     try {
-      // ✅ persist brand changes
-      if (brand && brandId) {
-        await apiSaveBrand(brandId, brand);
-      }
-
-      // ✅ persist draft website
-      await apiSaveWebsite(websiteId, data);
-
+      // ✅ persist draft website only
+      await apiSaveWebsite(websiteId, data, brand);
       uiToast.success("Changes saved");
     } catch (err) {
       uiToast.error(getErrorMessage(err, "Failed to save changes"));
     } finally {
       setSaving(false);
     }
-  }, [websiteId, brandId, brand, data, setSaving]);
+  }, [websiteId, data, brand, setSaving]);
 
   const handleGenerateWebsite = useCallback(async () => {
     if (!websiteId) {
@@ -115,7 +105,7 @@ export function useWebsiteBuilder(
       const merged: WebsiteData = { ...data, ...patch };
       setData(merged);
 
-      await apiSaveWebsite(websiteId, merged);
+      await apiSaveWebsite(websiteId, merged, brand);
 
       uiToast.success("Section regenerated successfully");
     } catch (err) {
@@ -146,7 +136,7 @@ export function useWebsiteBuilder(
       };
 
       setData(merged);
-      await apiSaveWebsite(websiteId, merged);
+      await apiSaveWebsite(websiteId, merged, brand);
 
       uiToast.success("Section restored successfully");
     } catch (err) {
@@ -155,7 +145,7 @@ export function useWebsiteBuilder(
       uiToast.dismiss(toastId);
       setRestoring(false);
     }
-  }, [websiteId, section, data, setData, setRestoring]);
+  }, [websiteId, section, data, setData, brand, setRestoring]);
 
   return {
     section,

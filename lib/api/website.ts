@@ -76,14 +76,19 @@ export async function apiGenerateWebsiteWithBrand(payload: {
 
 export async function apiSaveWebsite(
   websiteId: string,
-  data: WebsiteData
+  data: WebsiteData,
+  brand?: BrandDataNew | null
 ): Promise<void> {
   const res = await fetch("/api/website", {
     method: "POST",
     headers: withGuestHeaders({
       "Content-Type": "application/json",
     }),
-    body: JSON.stringify({ websiteId, data }),
+    body: JSON.stringify({
+      websiteId,
+      data,
+      brand,
+    }),
   });
 
   const json = await res.json().catch(() => ({}));
@@ -93,10 +98,7 @@ export async function apiSaveWebsite(
   }
 }
 
-export async function apiGetWebsite(
-  projectId: string,
-  websiteId: string
-): Promise<{
+export async function apiGetWebsite(websiteId: string): Promise<{
   website: {
     id: string;
     draft_data: WebsiteData;
@@ -104,7 +106,7 @@ export async function apiGetWebsite(
   };
   brand: BrandDataNew;
 }> {
-  const res = await fetch(`/api/projects/${projectId}/websites/${websiteId}`, {
+  const res = await fetch(`/api/websites/${websiteId}`, {
     headers: withGuestHeaders(),
   });
 

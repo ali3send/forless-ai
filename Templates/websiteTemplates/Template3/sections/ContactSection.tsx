@@ -1,4 +1,6 @@
-import { useContactForm } from "../../hooks/useContacForm";
+// components/website/sections/ContactSection.tsx
+"use client";
+
 import { ContactData, FinalCtaData } from "../../template.types";
 import { ContactRow } from "../../ui/ContactRow";
 import { TextInput } from "../../ui/TextInput";
@@ -6,12 +8,9 @@ import { TextInput } from "../../ui/TextInput";
 type Props = {
   contact: ContactData;
   finalCta: FinalCtaData;
-  projectId: string;
 };
 
-export function ContactSection({ contact, finalCta, projectId }: Props) {
-  const { submit, loading, success, error } = useContactForm(projectId);
-
+export function ContactSection({ contact, finalCta }: Props) {
   return (
     <section
       id="contact"
@@ -35,10 +34,7 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
 
         {/* CTA band */}
         <div
-          className="
-
-            rounded-3xl px-8 py-10
-          "
+          className="rounded-3xl px-8 py-10"
           style={{
             background: "color-mix(in srgb, var(--color-bg) 92%, black)",
             border:
@@ -46,14 +42,8 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
           }}
         >
           <div className="grid items-stretch gap-14 md:grid-cols-2">
-            {/* Left: form */}
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                submit(e.currentTarget);
-              }}
-              className="space-y-4"
-            >
+            {/* Left: form (static in templates) */}
+            <form className="space-y-4">
               <h3 className="text-lg font-semibold text-text">
                 {finalCta.headline}
               </h3>
@@ -65,7 +55,7 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
               <div className="grid gap-3 sm:grid-cols-2">
                 <TextInput
                   name="name"
-                  label="name"
+                  label="Name"
                   placeholder="Enter your name"
                 />
                 <TextInput
@@ -81,53 +71,17 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
                 <textarea
                   rows={8}
                   maxLength={400}
-                  className="
-                    mt-1 w-full rounded-md border px-3 py-2 resize-none
-                    text-xs outline-none
-                    bg-(--color-bg)
-                    text-text
-                  "
-                  name="message"
-                  onFocus={(e) => {
-                    e.currentTarget.style.borderColor = "var(--color-primary)";
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.style.borderColor =
-                      "color-mix(in srgb, var(--color-primary) 22%, transparent) ";
-                  }}
-                  style={{
-                    borderColor:
-                      "color-mix(in srgb, var(--color-primary) 22%, transparent) ",
-                  }}
+                  className="mt-1 w-full rounded-md border px-3 py-2 resize-none text-xs outline-none bg-(--color-bg) text-text"
                   placeholder="Tell us briefly what you’re looking for…"
                 />
               </label>
 
               <button
-                disabled={loading || success}
-                type="submit"
-                className="
-                  inline-flex items-center justify-center
-                  rounded-full px-6 py-2.5
-                  text-sm font-medium transition
-                  bg-primary
-                  text-white
-                  hover:opacity-90
-                "
+                type="button"
+                className="inline-flex items-center justify-center rounded-full px-6 py-2.5 text-sm font-medium bg-primary text-white opacity-60 cursor-not-allowed"
               >
-                {loading
-                  ? "Sending…"
-                  : success
-                  ? "Sent!"
-                  : finalCta.buttonLabel}
+                {finalCta.buttonLabel}
               </button>
-              {success && (
-                <p className="mt-3 text-xs text-green-600">
-                  Thanks! Your message has been sent.
-                </p>
-              )}
-
-              {error && <p className="mt-3 text-xs text-red-600">{error}</p>}
             </form>
 
             {/* Right: contact options */}

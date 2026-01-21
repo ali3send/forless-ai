@@ -7,9 +7,14 @@ import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 // import { saveWebsite } from "../../../lib/server/saveWebsite";
 import { getOwner } from "@/lib/auth/getOwner";
 
+// const postSchema = z.object({
+//   websiteId: z.uuid(),
+//   data: z.any(),
+// });
 const postSchema = z.object({
   websiteId: z.uuid(),
   data: z.any(),
+  brand: z.any().optional(),
 });
 
 /* ──────────────────────────────
@@ -64,6 +69,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const supabase = await createServerSupabaseClient();
 
+  // ── resolve owner (user OR guest) ──
   let owner;
   try {
     owner = await getOwner(req, supabase);
@@ -71,6 +77,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  // ── parse body ──
   const body = await req.json().catch(() => ({}));
   const parsed = postSchema.safeParse(body);
 
@@ -81,27 +88,67 @@ export async function POST(req: Request) {
     );
   }
 
-  const { websiteId, data } = parsed.data;
+  const { websiteId, data, brand } = parsed.data;
 
   try {
-    const { error } = await supabase
+    // ──────────────────────────────
+    // 1️⃣ Load website (ownership enforced)
+    // ──────────────────────────────
+    const { data: website, error: websiteError } = await supabase
       .from("websites")
-      .update({
-        draft_data: data as WebsiteData,
-        updated_at: new Date().toISOString(),
-      })
+      .select("id, brand_id")
       .eq("id", websiteId)
       .eq(
         owner.type === "user" ? "user_id" : "guest_id",
         owner.type === "user" ? owner.userId : owner.guestId
-      );
+      )
+      .single();
 
-    if (error) {
-      throw error;
+    if (websiteError || !website) {
+      return NextResponse.json({ error: "Website not found" }, { status: 404 });
     }
 
+    // ──────────────────────────────
+    // 2️⃣ Update website draft
+    // ──────────────────────────────
+    const { error: updateWebsiteError } = await supabase
+      .from("websites")
+      .update({
+        draft_data: data,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", websiteId);
+
+    if (updateWebsiteError) {
+      throw updateWebsiteError;
+    }
+
+    // ──────────────────────────────
+    // 3️⃣ Update brand (if provided)
+    // ──────────────────────────────
+    if (brand && website.brand_id) {
+      const { error: updateBrandError } = await supabase
+        .from("brands")
+        .update({
+          name: brand.name,
+          slogan: brand.slogan,
+          palette: brand.palette,
+          font: brand.font,
+          logoSvg: brand.logoSvg,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", website.brand_id);
+
+      if (updateBrandError) {
+        throw updateBrandError;
+      }
+    }
+
+    // ──────────────────────────────
+    // 4️⃣ Done
+    // ──────────────────────────────
     return NextResponse.json({ success: true });
-  } catch (err: unknown) {
+  } catch (err) {
     const errMsg = getErrorMessage(err, "Failed to save website");
     console.error("Save website failed:", errMsg);
     return NextResponse.json({ error: errMsg }, { status: 500 });

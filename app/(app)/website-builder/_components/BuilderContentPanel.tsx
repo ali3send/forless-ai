@@ -1,3 +1,4 @@
+// app/website-builder/_components/BuilderContentPanel.tsx
 "use client";
 
 import { builderSections } from "../builderSections";

@@ -1,3 +1,4 @@
+// app/(app)/website-builder/_components/BuilderDesignPanel.tsx
 "use client";
 
 import { PALETTES, FONTS } from "@/app/(app)/brand/brandConfig";
@@ -26,7 +27,7 @@ function ensureBrand(prev: BrandDataNew | null): BrandDataNew {
 
 export function BuilderDesignPanel() {
   const brand = useBrandStore((s) => s.brand);
-  const setBrand = useBrandStore((s) => s.setBrand);
+  const updateBrand = useBrandStore((s) => s.updateBrand);
 
   const current = ensureBrand(brand);
 
@@ -43,7 +44,7 @@ export function BuilderDesignPanel() {
   const handlePaletteChange = (paletteId: string) => {
     const p = PALETTES.find((x) => x.id === paletteId) ?? PALETTES[0];
 
-    setBrand((prev) => {
+    updateBrand((prev) => {
       const base = ensureBrand(prev);
       return {
         ...base,
@@ -58,7 +59,7 @@ export function BuilderDesignPanel() {
   const handleFontChange = (fontId: string) => {
     const f = FONTS.find((x) => x.id === fontId) ?? FONTS[0];
 
-    setBrand((prev) => {
+    updateBrand((prev) => {
       const base = ensureBrand(prev);
       return {
         ...base,

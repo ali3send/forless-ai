@@ -1,8 +1,8 @@
 // app/website-builder/_components/WebsiteBuilderPage.tsx
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
+import { useParams } from "next/navigation";
 import clsx from "clsx";
 
 import { BuilderSidebar } from "./BuilderSidebar";
@@ -11,7 +11,6 @@ import { useLoadWebsiteBuilder } from "../hooks/useLoadWebsiteBuilder";
 
 import { useBrandStore } from "@/store/brand.store";
 import { useWebsiteStore } from "@/store/website.store";
-import { useProjectStore } from "@/store/project.store";
 
 import { ThemeProvider } from "@/Templates/websiteTheme/ThemeProvider";
 import {
@@ -20,24 +19,27 @@ import {
 } from "@/Templates/websiteTemplates/templates";
 
 export default function WebsiteBuilderPage() {
-  const router = useRouter();
+  /* ──────────────────────────────
+     ROUTE PARAM (WEBSITE ONLY)
+  ────────────────────────────── */
+  const { websiteId } = useParams<{ websiteId: string }>();
 
-  const { projectId, websiteId } = useParams<{
-    projectId: string;
-    websiteId?: string;
-  }>();
-
-  const setProjectId = useProjectStore((s) => s.setProjectId);
+  /* ──────────────────────────────
+     STORES
+  ────────────────────────────── */
   const brand = useBrandStore((s) => s.brand);
-  const brandId = useBrandStore((s) => s.brandId);
+  const { data, saving, generating, restoring } = useWebsiteStore();
 
-  const { data, loading, saving, generating, restoring } = useWebsiteStore();
   const [focus, setFocus] = useState<"editor" | "split" | "preview">("split");
 
-  console.log("WebsiteBuilderPage render:", { data, websiteId });
+  /* ──────────────────────────────
+     LOAD WEBSITE (SOURCE OF TRUTH)
+  ────────────────────────────── */
+  useLoadWebsiteBuilder(websiteId ?? null);
 
-  useLoadWebsiteBuilder(projectId, websiteId ?? "");
-
+  /* ──────────────────────────────
+     BUILDER ACTIONS
+  ────────────────────────────── */
   const {
     builderSections,
     currentIndex,
@@ -46,59 +48,22 @@ export default function WebsiteBuilderPage() {
     handleSave,
     handleGenerateWebsite,
     handleRestoreSection,
-  } = useWebsiteBuilder(websiteId ?? null, brandId);
+  } = useWebsiteBuilder(websiteId ?? null);
 
-  // ──────────────────────────────
-  // ensure projectId in store
-  // ──────────────────────────────
-  useEffect(() => {
-    if (projectId) setProjectId(projectId);
-  }, [projectId, setProjectId]);
-
-  // ──────────────────────────────
-  // if websiteId missing → resolve it
-  // ──────────────────────────────
-  useEffect(() => {
-    if (!projectId || websiteId) return;
-
-    async function resolveWebsite() {
-      try {
-        const res = await fetch(`/api/projects/${projectId}`, {
-          method: "POST",
-        });
-
-        const json = await res.json();
-
-        if (json?.websiteId) {
-          router.replace(`/website-builder/${projectId}/${json.websiteId}`);
-        }
-      } catch (err) {
-        console.error("Failed to resolve website", err);
-      }
-    }
-
-    resolveWebsite();
-  }, [projectId, websiteId, router]);
-
-  // ──────────────────────────────
-  // EARLY UI RETURNS (after hooks)
-  // ──────────────────────────────
+  /* ──────────────────────────────
+     EARLY RETURN
+  ────────────────────────────── */
   if (!websiteId) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        Preparing website…
+        Invalid website
       </div>
     );
   }
 
-  // if (loading) {
-  //   return (
-  //     <div className="min-h-screen flex items-center justify-center">
-  //       Loading website… {websiteId}
-  //     </div>
-  //   );
-  // }
-
+  /* ──────────────────────────────
+     TEMPLATE RESOLUTION
+  ────────────────────────────── */
   const templateKey =
     data.template && data.template in WEBSITE_TEMPLATES
       ? (data.template as TemplateKey)
@@ -106,6 +71,9 @@ export default function WebsiteBuilderPage() {
 
   const ActiveTemplate = WEBSITE_TEMPLATES[templateKey].component;
 
+  /* ──────────────────────────────
+     RENDER
+  ────────────────────────────── */
   return (
     <div className="h-screen overflow-hidden">
       <div className="flex h-full w-full">
@@ -119,7 +87,7 @@ export default function WebsiteBuilderPage() {
           )}
         >
           <BuilderSidebar
-            projectId={projectId}
+            websiteId={websiteId}
             builderSections={builderSections}
             currentIndex={currentIndex}
             isFirst={isFirst}
@@ -150,7 +118,7 @@ export default function WebsiteBuilderPage() {
                 fontFamily: brand?.font?.css,
               }}
             >
-              <ActiveTemplate data={data} brand={brand} projectId={projectId} />
+              <ActiveTemplate data={data} brand={brand} websiteId={websiteId} />
             </ThemeProvider>
           </div>
         </main>
