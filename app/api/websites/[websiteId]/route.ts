@@ -1,3 +1,4 @@
+// app/api/websites/[websiteId]/route.ts
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -60,7 +61,16 @@ export async function GET(
       .eq("id", website.brand_id)
       .single();
 
-    brand = data ?? null;
+    brand = data
+      ? {
+          id: data.id,
+          name: data.name,
+          slogan: data.slogan,
+          palette: data.palette,
+          font: data.font,
+          logoSvg: data.logo_svg,
+        }
+      : null;
   }
 
   return NextResponse.json({
