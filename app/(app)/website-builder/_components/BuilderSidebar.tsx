@@ -42,7 +42,7 @@ export function BuilderSidebar(props: Props) {
         Website Builder
       </h1>
 
-      {/* Publish uses WEBSITE context, not projectId */}
+      {/* Publish button */}
       <PublishButton
         websiteId={props.websiteId}
         defaultSlug={data?.brandName?.toLowerCase().replace(/\s+/g, "-")}

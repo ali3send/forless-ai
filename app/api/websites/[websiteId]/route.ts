@@ -26,7 +26,9 @@ export async function GET(
         project_id,
         brand_id,
         draft_data,
-        is_published
+        is_published,
+        slug
+
       `
     )
     .eq("id", websiteId)
@@ -67,7 +69,7 @@ export async function GET(
       project_id: website.project_id,
       draft_data: draftData,
       is_published: website.is_published,
-      // slug: website.slug,
+      slug: website.slug,
     },
     brand,
   });
