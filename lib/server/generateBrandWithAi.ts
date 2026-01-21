@@ -1,4 +1,3 @@
-import { Message } from "./../../app/(app)/dashboard/messages/_components/MessageDetail";
 import { openai } from "@/lib/openai";
 import { BrandData } from "@/lib/types/brandTypes";
 

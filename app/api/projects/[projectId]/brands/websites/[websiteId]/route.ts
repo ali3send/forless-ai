@@ -4,8 +4,9 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { projectId: string; websiteId: string } }
+  { params }: { params: Promise<{ projectId: string; websiteId: string }> }
 ) {
+  // const { projectId, websiteId } = await params;
   const supabase = await createServerSupabaseClient();
 
   const {
@@ -16,7 +17,7 @@ export async function GET(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { projectId, websiteId } = params;
+  const { projectId, websiteId } = await params;
 
   const { data: website, error } = await supabase
     .from("websites")

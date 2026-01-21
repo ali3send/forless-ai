@@ -19,27 +19,15 @@ import {
 } from "@/Templates/websiteTemplates/templates";
 
 export default function WebsiteBuilderPage() {
-  /* ──────────────────────────────
-     ROUTE PARAM (WEBSITE ONLY)
-  ────────────────────────────── */
   const { websiteId } = useParams<{ websiteId: string }>();
 
-  /* ──────────────────────────────
-     STORES
-  ────────────────────────────── */
   const brand = useBrandStore((s) => s.brand);
   const { data, saving, generating, restoring } = useWebsiteStore();
 
   const [focus, setFocus] = useState<"editor" | "split" | "preview">("split");
 
-  /* ──────────────────────────────
-     LOAD WEBSITE (SOURCE OF TRUTH)
-  ────────────────────────────── */
   useLoadWebsiteBuilder(websiteId ?? null);
 
-  /* ──────────────────────────────
-     BUILDER ACTIONS
-  ────────────────────────────── */
   const {
     builderSections,
     currentIndex,
@@ -50,9 +38,6 @@ export default function WebsiteBuilderPage() {
     handleRestoreSection,
   } = useWebsiteBuilder(websiteId ?? null);
 
-  /* ──────────────────────────────
-     EARLY RETURN
-  ────────────────────────────── */
   if (!websiteId) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -61,9 +46,6 @@ export default function WebsiteBuilderPage() {
     );
   }
 
-  /* ──────────────────────────────
-     TEMPLATE RESOLUTION
-  ────────────────────────────── */
   const templateKey =
     data.template && data.template in WEBSITE_TEMPLATES
       ? (data.template as TemplateKey)
@@ -71,9 +53,6 @@ export default function WebsiteBuilderPage() {
 
   const ActiveTemplate = WEBSITE_TEMPLATES[templateKey].component;
 
-  /* ──────────────────────────────
-     RENDER
-  ────────────────────────────── */
   return (
     <div className="h-screen overflow-hidden">
       <div className="flex h-full w-full">

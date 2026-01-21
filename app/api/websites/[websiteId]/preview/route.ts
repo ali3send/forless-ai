@@ -43,7 +43,17 @@ export async function POST(
   if (!website) {
     return NextResponse.json({ error: "Website not found" }, { status: 404 });
   }
+  const { error: updateError } = await supabase
+    .from("websites")
+    .update({ slug })
+    .eq("id", websiteId);
 
+  if (updateError) {
+    return NextResponse.json(
+      { error: "Failed to save preview slug" },
+      { status: 500 }
+    );
+  }
   /* ── preview URL (no DB mutation) ── */
   const previewUrl = urls.preview(slug);
 

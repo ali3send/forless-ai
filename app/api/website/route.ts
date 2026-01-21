@@ -92,7 +92,7 @@ export async function POST(req: Request) {
 
   try {
     // ──────────────────────────────
-    // 1️⃣ Load website (ownership enforced)
+    // 1️⃣ Load website
     // ──────────────────────────────
     const { data: website, error: websiteError } = await supabase
       .from("websites")

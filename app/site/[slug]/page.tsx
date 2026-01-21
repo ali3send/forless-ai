@@ -10,7 +10,7 @@ import {
   type TemplateKey,
 } from "@/Templates/websiteTemplates/templates";
 import { WebsiteData } from "@/lib/types/websiteTypes";
-import { BrandData } from "@/lib/types/brandTypes";
+import { BrandDataNew } from "@/lib/types/brandTypes";
 
 function getPublishedSite(slug: string) {
   return unstable_cache(
@@ -35,8 +35,8 @@ function getPublishedSite(slug: string) {
 
 function renderSite(
   data: WebsiteData,
-  brand: BrandData | null,
-  projectId: string
+  brand: BrandDataNew | null,
+  websiteId: string
 ) {
   const templateKey = (data.template ?? "template1") as TemplateKey;
   const ActiveTemplate =
@@ -51,7 +51,7 @@ function renderSite(
         fontFamily: brand?.font?.css,
       }}
     >
-      <ActiveTemplate data={data} brand={brand} projectId={projectId} />
+      <ActiveTemplate data={data} brand={brand} websiteId={websiteId} />
     </ThemeProvider>
   );
 }

@@ -51,9 +51,6 @@ export async function GET(
     return NextResponse.json({ error: "Website not found" }, { status: 404 });
   }
 
-  /* ──────────────────────────────
-     PARSE DRAFT DATA
-  ────────────────────────────── */
   let draftData: any = null;
 
   try {
@@ -68,9 +65,6 @@ export async function GET(
     );
   }
 
-  /* ──────────────────────────────
-     FETCH BRAND
-  ────────────────────────────── */
   let brand = null;
 
   if (websiteRow.brand_id) {

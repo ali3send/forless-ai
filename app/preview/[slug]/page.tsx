@@ -9,12 +9,12 @@ import {
   type TemplateKey,
 } from "@/Templates/websiteTemplates/templates";
 import { WebsiteData } from "@/lib/types/websiteTypes";
-import { BrandData } from "@/lib/types/brandTypes";
+import { BrandDataNew } from "@/lib/types/brandTypes";
 
 function renderSite(
   data: WebsiteData,
-  brand: BrandData | null,
-  projectId: string
+  brand: BrandDataNew | null,
+  websiteId: string
 ) {
   const templateKey = (data.template ?? "template1") as TemplateKey;
   const ActiveTemplate =
@@ -29,7 +29,7 @@ function renderSite(
         fontFamily: brand?.font?.css,
       }}
     >
-      <ActiveTemplate data={data} brand={brand} projectId={projectId} />
+      <ActiveTemplate data={data} brand={brand} websiteId={websiteId} />
     </ThemeProvider>
   );
 }
@@ -44,28 +44,43 @@ export default async function PreviewPage({
   noStore();
 
   const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
 
-  if (!user) return notFound();
-
-  const { data: project } = await supabase
-    .from("projects")
-    .select("id, brand_data")
-    .eq("slug", slug)
-    .eq("user_id", user.id)
-    .maybeSingle();
-
-  if (!project) return notFound();
-
-  const { data: website } = await supabase
+  /* ── load website by slug ── */
+  const { data: website, error } = await supabase
     .from("websites")
-    .select("data")
-    .eq("project_id", project.id)
+    .select(
+      `
+        id,
+        project_id,
+        brand_id,
+        draft_data,
+        is_published
+      `
+    )
+    .eq("slug", slug)
     .maybeSingle();
 
-  if (!website?.data) return notFound();
+  if (error || !website || !website.draft_data) {
+    return notFound();
+  }
 
-  return renderSite(website.data, project.brand_data, project.id);
+  /* ── load brand ── */
+  let brand = null;
+  if (website.brand_id) {
+    const { data } = await supabase
+      .from("brands")
+      .select("*")
+      .eq("id", website.brand_id)
+      .single();
+
+    brand = data ?? null;
+  }
+
+  /* ── parse draft ── */
+  const data: WebsiteData =
+    typeof website.draft_data === "string"
+      ? JSON.parse(website.draft_data)
+      : website.draft_data;
+
+  return renderSite(data, brand, website.project_id);
 }
