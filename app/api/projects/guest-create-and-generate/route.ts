@@ -19,7 +19,7 @@ const Schema = z.object({
   websiteType: z
     .enum(["product", "service", "business", "personal"])
     .optional(),
-  brandId: z.string().uuid().optional(), // 👈 NEW
+  brandId: z.string().optional(),
 });
 
 export async function POST(req: Request) {
@@ -47,7 +47,6 @@ export async function POST(req: Request) {
       { status: 400 }
     );
   }
-
   const {
     name,
     description,
@@ -149,7 +148,6 @@ export async function POST(req: Request) {
     font: { id: string; css: string };
   };
 
-  // CASE A — Existing brand selected
   if (incomingBrandId) {
     const { data: brand, error } = await supabase
       .from("brands")
@@ -166,10 +164,7 @@ export async function POST(req: Request) {
     }
 
     brandForAi = brand;
-  }
-
-  // CASE B — No brand → generate AI brand
-  else {
+  } else {
     const aiBrand = await generateBrandWithAI(finalDescription);
 
     const { data: brand, error } = await supabase
@@ -286,6 +281,7 @@ Return EXACTLY this JSON shape:
   let websiteData: WebsiteData;
   try {
     websiteData = JSON.parse(resp.output_text || "");
+    websiteData.type = type;
   } catch {
     return NextResponse.json(
       { error: "Invalid AI JSON output" },
@@ -296,18 +292,26 @@ Return EXACTLY this JSON shape:
   /* ──────────────────────────────
      4️⃣ SAVE WEBSITE
   ────────────────────────────── */
-  try {
-    await saveWebsite({
-      supabase,
-      userId: owner.type === "user" ? owner.userId : null,
-      guestId: owner.type === "guest" ? owner.guestId : null,
-      projectId: project.id,
-      brandId: brandForAi.id, // 👈 KEY LINK
-      data: websiteData,
-    });
-  } catch (err) {
+  const { data: website, error: websiteErr } = await supabase
+    .from("websites")
+    .upsert(
+      {
+        project_id: project.id,
+        user_id: owner.type === "user" ? owner.userId : null,
+        guest_id: owner.type === "guest" ? owner.guestId : null,
+        brand_id: brandForAi.id,
+        draft_data: websiteData,
+        is_published: false,
+        slug: null,
+      },
+      { onConflict: "project_id" }
+    )
+    .select("id")
+    .single();
+
+  if (websiteErr || !website) {
     return NextResponse.json(
-      { error: "Failed to save website", err },
+      { error: "Failed to save website", details: websiteErr?.message },
       { status: 500 }
     );
   }
@@ -322,6 +326,6 @@ Return EXACTLY this JSON shape:
 
   return NextResponse.json({
     success: true,
-    projectId: project.id,
+    websiteId: website.id,
   });
 }

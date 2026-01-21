@@ -124,7 +124,7 @@ export async function apiSaveProjectBrand(
 export async function apiCreateAndGenerateProject(payload: {
   name?: string;
   description: string;
-}): Promise<{ success: true; projectId: string }> {
+}): Promise<{ success: true; websiteId: string }> {
   const res = await fetch("/api/projects/guest-create-and-generate", {
     method: "POST",
     headers: withGuestHeaders({
@@ -136,5 +136,5 @@ export async function apiCreateAndGenerateProject(payload: {
   const json = await safeJson(res);
   if (!res.ok) throw new Error(json.error || "Failed to create + generate");
 
-  return json as { success: true; projectId: string };
+  return json as { success: true; websiteId: string };
 }
