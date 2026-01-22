@@ -35,7 +35,6 @@ export async function GET(
     .eq("id", websiteId)
     // .eq("user_id", user.id)
     .single();
-  console.log("WEBSITE QUERY RESULT:", { website, error });
 
   if (error || !website) {
     return NextResponse.json({ error: "Website not found" }, { status: 404 });
@@ -82,5 +81,6 @@ export async function GET(
       slug: website.slug,
     },
     brand,
+    projectId: website.project_id,
   });
 }

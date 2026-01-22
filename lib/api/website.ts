@@ -103,14 +103,18 @@ export async function apiGetWebsite(websiteId: string): Promise<{
     id: string;
     draft_data: WebsiteData;
     brand_id: string;
+    project_id: string;
   };
   brand: BrandDataNew;
+  projectId: string;
 }> {
+  console.log("apiGetWebsite:", { websiteId });
   const res = await fetch(`/api/websites/${websiteId}`, {
     headers: withGuestHeaders(),
   });
 
   const json = await res.json();
+  console.log("apiGetWebsite:", { json });
 
   if (!res.ok) {
     throw new Error(json.error || "Failed to load website");

@@ -6,17 +6,17 @@ import { BuilderSection } from "@/app/(app)/website-builder/builderSections";
 type WebsiteStore = {
   data: WebsiteData;
   section: BuilderSection;
-
+  projectId: string | null;
   loading: boolean;
   saving: boolean;
   generating: boolean;
   restoring: boolean;
 
   setData: (value: WebsiteData | ((prev: WebsiteData) => WebsiteData)) => void;
-
   patchData: (patch: Partial<WebsiteData>) => void;
 
   setSection: (section: BuilderSection) => void;
+  setProjectId: (projectId: string | null) => void;
 
   setLoading: (v: boolean) => void;
   setSaving: (v: boolean) => void;
@@ -29,6 +29,7 @@ type WebsiteStore = {
 export const useWebsiteStore = create<WebsiteStore>((set) => ({
   data: getDefaultWebsiteData("product"),
   section: "hero",
+  projectId: null,
 
   loading: true,
   saving: false,
@@ -39,6 +40,7 @@ export const useWebsiteStore = create<WebsiteStore>((set) => ({
     set((state) => ({
       data: typeof value === "function" ? value(state.data) : value,
     })),
+  setProjectId: (projectId) => set({ projectId }),
 
   patchData: (patch) =>
     set((state) => ({

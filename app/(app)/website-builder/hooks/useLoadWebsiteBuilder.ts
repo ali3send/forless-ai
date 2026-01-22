@@ -9,6 +9,7 @@ import { useBrandStore } from "@/store/brand.store";
 export function useLoadWebsiteBuilder(websiteId: string | null) {
   const setWebsiteData = useWebsiteStore((s) => s.setData);
   const setLoading = useWebsiteStore((s) => s.setLoading);
+  const setProjectId = useWebsiteStore((s) => s.setProjectId);
   const setBrand = useBrandStore((s) => s.setBrand);
 
   useEffect(() => {
@@ -22,21 +23,13 @@ export function useLoadWebsiteBuilder(websiteId: string | null) {
     async function load() {
       setLoading(true);
       try {
-        /**
-         * Expected API response:
-         * {
-         *   website: { draft_data: WebsiteData }
-         *   brand: BrandData
-         * }
-         */
         const { website, brand } = await apiGetWebsite(websiteId as string);
 
         if (cancelled) return;
 
-        // 1️⃣ hydrate website draft (single source of truth)
         setWebsiteData(website.draft_data);
+        setProjectId(website.project_id);
 
-        // 2️⃣ hydrate brand (normalized, no ids here)
         setBrand({
           name: brand.name,
           slogan: brand.slogan,
@@ -56,5 +49,5 @@ export function useLoadWebsiteBuilder(websiteId: string | null) {
     return () => {
       cancelled = true;
     };
-  }, [websiteId, setWebsiteData, setBrand, setLoading]);
+  }, [websiteId, setWebsiteData, setBrand, setLoading, setProjectId]);
 }
