@@ -80,6 +80,7 @@ export function BuilderSidebar(props: Props) {
       {/* Panels */}
       {activePanel === "content" ? (
         <BuilderContentPanel
+          websiteId={props.websiteId}
           onGenerate={props.onGenerate}
           onRestore={props.handleRestoreSection}
         />

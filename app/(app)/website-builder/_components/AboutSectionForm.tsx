@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { WebsiteData } from "@/lib/types/websiteTypes";
 import { StateUpdater } from "@/lib/types/state";
-import { useProjectStore } from "@/store/project.store";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
 import { TextField } from "../../components/ui/TextField";
@@ -12,24 +11,25 @@ import { TextField } from "../../components/ui/TextField";
 export type AboutSectionFormProps = {
   data: WebsiteData;
   setData: StateUpdater<WebsiteData>;
+  websiteId: string;
 };
 
-export function AboutSectionForm({ data, setData }: AboutSectionFormProps) {
-  const projectId = useProjectStore((s) => s.projectId);
-
+export function AboutSectionForm({
+  data,
+  setData,
+  websiteId,
+}: AboutSectionFormProps) {
   const [uploading, setUploading] = useState(false);
   const [removing, setRemoving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
   async function onUpload(file: File) {
-    console.log("file", file);
-    console.log("projectId", projectId);
-    if (!projectId) return;
+    if (!websiteId) return;
     setErr(null);
     setUploading(true);
     try {
       const fd = new FormData();
-      fd.append("projectId", projectId);
+      fd.append("websiteId", websiteId);
       fd.append("file", file);
       console.log(fd);
       const res = await fetch("/api/storage/upload/about", {
@@ -55,7 +55,7 @@ export function AboutSectionForm({ data, setData }: AboutSectionFormProps) {
   }
 
   async function removeImage() {
-    if (!projectId) return;
+    if (!websiteId) return;
     setErr(null);
 
     setData((d) => ({
@@ -68,7 +68,7 @@ export function AboutSectionForm({ data, setData }: AboutSectionFormProps) {
       const res = await fetch("/api/storage/remove/about", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectId }),
+        body: JSON.stringify({ websiteId }),
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json.error || "Remove failed");

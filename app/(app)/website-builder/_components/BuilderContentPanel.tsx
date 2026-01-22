@@ -14,9 +14,14 @@ import { ContactSectionForm } from "./ContactSectionForm";
 type Props = {
   onGenerate: () => Promise<void> | void;
   onRestore: () => void;
+  websiteId: string;
 };
 
-export function BuilderContentPanel({ onGenerate, onRestore }: Props) {
+export function BuilderContentPanel({
+  onGenerate,
+  onRestore,
+  websiteId,
+}: Props) {
   const { data, setData, section, setSection, generating, restoring } =
     useWebsiteStore();
 
@@ -133,9 +138,11 @@ export function BuilderContentPanel({ onGenerate, onRestore }: Props) {
       </div>
 
       {/* ───────────────── Section Forms ───────────────── */}
-      {section === "hero" && <HeroSectionForm data={data} setData={setData} />}
+      {section === "hero" && (
+        <HeroSectionForm data={data} setData={setData} websiteId={websiteId} />
+      )}
       {section === "about" && (
-        <AboutSectionForm data={data} setData={setData} />
+        <AboutSectionForm data={data} setData={setData} websiteId={websiteId} />
       )}
       {section === "features" && (
         <FeaturesSectionForm data={data} setData={setData} />

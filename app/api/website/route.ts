@@ -6,6 +6,7 @@ import type { WebsiteData } from "@/lib/types/websiteTypes";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 // import { saveWebsite } from "../../../lib/server/saveWebsite";
 import { getOwner } from "@/lib/auth/getOwner";
+import { fetchUnsplashImage } from "@/lib/unsplash";
 
 // const postSchema = z.object({
 //   websiteId: z.uuid(),
@@ -64,7 +65,7 @@ export async function GET(req: Request) {
 }
 
 /* ──────────────────────────────
-   POST save website (user OR guest)
+   POST save website
 ────────────────────────────── */
 export async function POST(req: Request) {
   const supabase = await createServerSupabaseClient();
@@ -96,7 +97,7 @@ export async function POST(req: Request) {
     // ──────────────────────────────
     const { data: website, error: websiteError } = await supabase
       .from("websites")
-      .select("id, brand_id")
+      .select("id, brand_id,project_id")
       .eq("id", websiteId)
       .eq(
         owner.type === "user" ? "user_id" : "guest_id",
@@ -124,6 +125,35 @@ export async function POST(req: Request) {
     }
 
     // ──────────────────────────────
+    // 2️⃣.5️⃣ Update project thumbnail (best-effort)
+    // ──────────────────────────────
+    try {
+      let thumbnailUrl: string | null = null;
+
+      if (
+        typeof data?.hero?.imageUrl === "string" &&
+        data.hero.imageUrl.trim()
+      ) {
+        thumbnailUrl = data.hero.imageUrl;
+      } else if (
+        typeof data?.hero?.imageQuery === "string" &&
+        data.hero.imageQuery.trim()
+      ) {
+        thumbnailUrl = await fetchUnsplashImage(data.hero.imageQuery);
+      }
+
+      // 3️⃣ Update project thumbnail
+      if (thumbnailUrl && website.project_id) {
+        await supabase
+          .from("projects")
+          .update({ thumbnail_url: thumbnailUrl })
+          .eq("id", website.project_id);
+      }
+    } catch (e) {
+      console.warn("Thumbnail update failed:", e);
+    }
+
+    // ──────────────────────────────
     // 3️⃣ Update brand (if provided)
     // ──────────────────────────────
     if (brand && website.brand_id) {
@@ -134,7 +164,7 @@ export async function POST(req: Request) {
           slogan: brand.slogan,
           palette: brand.palette,
           font: brand.font,
-          logoSvg: brand.logoSvg,
+          logo_svg: brand.logoSvg,
           updated_at: new Date().toISOString(),
         })
         .eq("id", website.brand_id);

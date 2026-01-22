@@ -7,6 +7,7 @@ import { useProjectActions } from "./useProjectActions";
 import { ProjectCardDeleted } from "./ProjectCardDeleted";
 import { ProjectCardHeader } from "./ProjectCardHeader";
 import { ProjectRow } from "../../types";
+import { formatDate } from "@/lib/utils/formatDate";
 
 export function ProjectCard({ project }: { project: ProjectRow }) {
   const name = project.name || "Untitled project";
@@ -60,10 +61,7 @@ export function ProjectCard({ project }: { project: ProjectRow }) {
       <ProjectCardHeader name={name} status={status} />
 
       <div className="mt-2 text-[10px] text-secondary">
-        Last updated{" "}
-        {project.updated_at
-          ? new Date(project.updated_at).toLocaleDateString()
-          : "—"}
+        Last updated {formatDate(project.updated_at)}
       </div>
 
       {isDeleted && (
