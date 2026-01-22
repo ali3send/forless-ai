@@ -8,8 +8,23 @@ import { ProjectCardDeleted } from "./ProjectCardDeleted";
 import { ProjectCardHeader } from "./ProjectCardHeader";
 import { ProjectRow } from "../../types";
 import { formatDate } from "@/lib/utils/formatDate";
+import { useRouter } from "next/navigation";
 
 export function ProjectCard({ project }: { project: ProjectRow }) {
+  const router = useRouter();
+
+  async function openBuilder(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const res = await fetch(`/api/websites/resolve?projectId=${project.id}`);
+
+    const json = await res.json();
+
+    if (!res.ok || !json.websiteId) return;
+
+    router.push(`/website-builder/${json.websiteId}`);
+  }
   const name = project.name || "Untitled project";
   const status = project.status || "draft";
 
@@ -25,12 +40,9 @@ export function ProjectCard({ project }: { project: ProjectRow }) {
   const Wrapper: any = isDeleted || isUnpublished ? "div" : Link;
 
   return (
-    <Wrapper
-      {...(!isDeleted &&
-        !isUnpublished && {
-          href: `/dashboard/projects/${project.id}`,
-        })}
-      className="group flex flex-col rounded-lg border bg-secondary-fade p-3 text-xs transition hover:border-primary"
+    <div
+      onClick={openBuilder}
+      className="group cursor-pointer flex flex-col rounded-lg border bg-secondary-fade p-3 text-xs transition hover:border-primary"
     >
       <div className="relative h-28 overflow-hidden rounded-md bg-secondary-light">
         {project.thumbnail_url ? (
@@ -71,6 +83,6 @@ export function ProjectCard({ project }: { project: ProjectRow }) {
           onPermanentDelete={actions.permanentDelete}
         />
       )}
-    </Wrapper>
+    </div>
   );
 }
