@@ -11,6 +11,9 @@ type WebsiteStore = {
   saving: boolean;
   generating: boolean;
   restoring: boolean;
+  activeBrandId: string | null;
+
+  setActiveBrandId: (id: string | null) => void;
 
   setData: (value: WebsiteData | ((prev: WebsiteData) => WebsiteData)) => void;
   patchData: (patch: Partial<WebsiteData>) => void;
@@ -35,6 +38,9 @@ export const useWebsiteStore = create<WebsiteStore>((set) => ({
   saving: false,
   generating: false,
   restoring: false,
+  activeBrandId: null,
+
+  setActiveBrandId: (id) => set({ activeBrandId: id }),
 
   setData: (value) =>
     set((state) => ({

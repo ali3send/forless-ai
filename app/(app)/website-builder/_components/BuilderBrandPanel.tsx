@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import { apiListBrands, apiGenerateBrands } from "@/lib/api/brand";
 import { useWebsiteStore } from "@/store/website.store";
+import { useBrandStore } from "@/store/brand.store";
 
 type Brand = {
   id: string;
@@ -16,7 +17,14 @@ type Brand = {
 export function BuilderBrandsPanel() {
   //   console.log("BUILDER BRANDS PANEL projectId =", projectId);
 
-  const { data, setData, projectId: websiteProjectId } = useWebsiteStore();
+  const {
+    data,
+    setData,
+    projectId: websiteProjectId,
+    activeBrandId,
+    setActiveBrandId,
+  } = useWebsiteStore();
+  const setBrand = useBrandStore((s) => s.setBrand);
 
   const [brands, setBrands] = useState<Brand[]>([]);
   const [idea, setIdea] = useState("");
@@ -61,16 +69,24 @@ export function BuilderBrandsPanel() {
   // Apply brand to website
   // ──────────────────────────────
   function applyBrand(brand: Brand) {
+    setActiveBrandId(brand.id);
+    setBrand({
+      name: brand.name,
+      slogan: brand.slogan ?? "",
+      palette: brand.palette,
+      font: {
+        id: "default",
+        css: "system-ui, -apple-system, sans-serif",
+      },
+    });
+
+    // 2️⃣ Update WEBSITE CONTENT
     setData((d) => ({
       ...d,
-      brandId: brand.id,
       brandName: brand.name,
       tagline: brand.slogan ?? "",
-      palette: brand.palette,
     }));
   }
-
-  const activeBrandId = data.brandId;
 
   return (
     <div className="space-y-6">
