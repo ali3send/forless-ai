@@ -4,14 +4,9 @@ import { z } from "zod";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import type { WebsiteData } from "@/lib/types/websiteTypes";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
-// import { saveWebsite } from "../../../lib/server/saveWebsite";
 import { getOwner } from "@/lib/auth/getOwner";
 import { fetchUnsplashImage } from "@/lib/unsplash";
 
-// const postSchema = z.object({
-//   websiteId: z.uuid(),
-//   data: z.any(),
-// });
 const postSchema = z.object({
   websiteId: z.uuid(),
   data: z.any(),

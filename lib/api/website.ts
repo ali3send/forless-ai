@@ -51,29 +51,6 @@ export async function apiGenerateWebsite(
   return json.patch as Pick<WebsiteData, SectionKey>;
 }
 
-export async function apiGenerateWebsiteWithBrand(payload: {
-  projectId: string;
-  brandId: string;
-  idea: string;
-  websiteType?: "product" | "service" | "business" | "personal";
-}): Promise<{ websiteId: string }> {
-  const res = await fetch("/api/website/generate-with-brand", {
-    method: "POST",
-    headers: withGuestHeaders({
-      "Content-Type": "application/json",
-    }),
-    body: JSON.stringify(payload),
-  });
-
-  const json = await res.json().catch(() => ({}));
-
-  if (!res.ok || !json.websiteId) {
-    throw new Error(json.error || "Failed to generate website");
-  }
-
-  return { websiteId: json.websiteId };
-}
-
 export async function apiSaveWebsite(
   websiteId: string,
   data: WebsiteData,
