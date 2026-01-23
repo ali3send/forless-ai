@@ -21,35 +21,9 @@ function withGuestHeaders(headers?: HeadersInit): HeadersInit {
 ────────────────────────────── */
 type SectionKey = "hero" | "about" | "features" | "offers" | "contact";
 
-type GenerateSectionPayload = {
-  idea: string;
-  brand: BrandDataNew;
-  section: SectionKey;
-};
-
 /* ──────────────────────────────
    API calls
 ────────────────────────────── */
-
-export async function apiGenerateWebsite(
-  payload: GenerateSectionPayload & { websiteId: string }
-): Promise<Pick<WebsiteData, SectionKey>> {
-  const res = await fetch("/api/website/generate", {
-    method: "POST",
-    headers: withGuestHeaders({
-      "Content-Type": "application/json",
-    }),
-    body: JSON.stringify(payload),
-  });
-
-  const json = await res.json().catch(() => ({}));
-
-  if (!res.ok || !json.patch) {
-    throw new Error(json.error || "Failed to generate section");
-  }
-
-  return json.patch as Pick<WebsiteData, SectionKey>;
-}
 
 export async function apiGenerateSection(payload: {
   websiteId: string;
