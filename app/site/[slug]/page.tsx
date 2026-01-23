@@ -61,10 +61,16 @@ const getPublishedSite = (slug: string) =>
         if (brandError) {
           console.error("❌ [PUBLIC SITE] brand query error:", brandError);
         } else {
-          brand = brandData?.[0] ?? null;
+          const row = brandData?.[0] ?? null;
+
+          if (row) {
+            brand = {
+              ...row,
+              logoSvg: row.logo_svg,
+            };
+          }
         }
       }
-
       const data: WebsiteData =
         typeof website.draft_data === "string"
           ? JSON.parse(website.draft_data)
