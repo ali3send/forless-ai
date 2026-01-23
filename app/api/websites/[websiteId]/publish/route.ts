@@ -79,7 +79,7 @@ export async function POST(
     })
     .eq("id", websiteId);
   // provide a profile string as the first argument and the tag as the second
-  revalidateTag("default", `site:${slug}`);
+  revalidateTag("max", "default");
 
   if (publishError) {
     return NextResponse.json(

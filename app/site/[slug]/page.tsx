@@ -48,7 +48,6 @@ const getPublishedSite = (slug: string) =>
         return null;
       }
 
-      /* ── fetch brand (optional) ── */
       let brand: BrandDataNew | null = null;
 
       if (website.brand_id) {
@@ -89,7 +88,7 @@ const getPublishedSite = (slug: string) =>
     },
     ["published-site", slug],
     {
-      tags: [`site:${slug}`],
+      tags: ["max"],
     }
   )();
 
@@ -135,7 +134,6 @@ export default async function SitePage({
   const site = await getPublishedSite(slug);
 
   if (!site) {
-    console.warn("🚫 [PUBLIC SITE] notFound for slug:", slug);
     return notFound();
   }
 

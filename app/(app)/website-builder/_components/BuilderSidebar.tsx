@@ -68,11 +68,7 @@ export function BuilderSidebar(props: Props) {
       {activeMode === "builder" && (
         <>
           {/* Publish button */}
-          <PublishButton
-            websiteId={props.websiteId}
-            defaultSlug={data?.brandName?.toLowerCase().replace(/\s+/g, "-")}
-            websiteData={data}
-          />
+          <PublishButton websiteId={props.websiteId} websiteData={data} />
 
           <TemplateSelector />
 

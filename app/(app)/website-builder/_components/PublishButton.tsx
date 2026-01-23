@@ -7,7 +7,7 @@ import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
 import { getOrCreateGuestId } from "@/lib/guest/guest";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type Props = {
   websiteId: string;
@@ -23,8 +23,9 @@ function slugify(text: string) {
     .replace(/^-+|-+$/g, "");
 }
 
-export function PublishButton({ websiteId, defaultSlug, websiteData }: Props) {
-  const [slug, setSlug] = useState(defaultSlug ?? "");
+export function PublishButton({ websiteId, websiteData }: Props) {
+  const hydratedRef = useRef(false);
+  const [slug, setSlug] = useState("");
   const [isPublished, setIsPublished] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -33,7 +34,7 @@ export function PublishButton({ websiteId, defaultSlug, websiteData }: Props) {
      Load website publish state
   ────────────────────────────── */
   useEffect(() => {
-    if (!websiteId) return;
+    if (!websiteId || hydratedRef.current) return;
 
     let cancelled = false;
 
@@ -43,9 +44,7 @@ export function PublishButton({ websiteId, defaultSlug, websiteData }: Props) {
 
         const res = await fetch(`/api/websites/${websiteId}`, {
           cache: "no-store",
-          headers: {
-            "x-guest-id": guestId,
-          },
+          headers: { "x-guest-id": guestId },
         });
 
         if (!res.ok) return;
@@ -55,13 +54,10 @@ export function PublishButton({ websiteId, defaultSlug, websiteData }: Props) {
 
         const website = json.website ?? json;
 
-        if (typeof website?.is_published === "boolean") {
-          setIsPublished(website.is_published);
-        }
+        hydratedRef.current = true;
 
-        if (website?.slug && !slug) {
-          setSlug(website.slug);
-        }
+        setIsPublished(Boolean(website?.is_published));
+        if (website?.slug) setSlug(website.slug);
       } catch (e) {
         console.error(e);
       }
@@ -70,7 +66,7 @@ export function PublishButton({ websiteId, defaultSlug, websiteData }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [websiteId, slug]);
+  }, [websiteId]);
 
   /* ──────────────────────────────
      Derived URLs

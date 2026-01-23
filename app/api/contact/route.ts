@@ -1,9 +1,10 @@
 // app/api/contact/route.ts
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 
 export async function POST(req: Request) {
-  const supabase = await createServerSupabaseClient();
+  const supabase = await createAdminSupabaseClient();
   const body = await req.json().catch(() => ({}));
 
   const { websiteId, name, email, message } = body;
@@ -16,10 +17,19 @@ export async function POST(req: Request) {
     .from("websites")
     .select("project_id")
     .eq("id", websiteId)
-    .single();
+    .maybeSingle();
 
-  if (websiteError || !website) {
-    return NextResponse.json({ error: "Invalid website" }, { status: 404 });
+  console.log("🔍 CONTACT DEBUG", {
+    websiteId,
+    website,
+    websiteError,
+  });
+
+  if (!website) {
+    return NextResponse.json(
+      { error: `Website ${websiteId} not found` },
+      { status: 404 }
+    );
   }
 
   const project_id = website.project_id;
@@ -32,6 +42,7 @@ export async function POST(req: Request) {
     .single();
 
   if (projectError || !project) {
+    console.error("Project fetch failed", projectError);
     return NextResponse.json({ error: "Invalid project" }, { status: 404 });
   }
 
@@ -41,7 +52,7 @@ export async function POST(req: Request) {
 
   const { error } = await supabase.from("contact_messages").insert({
     project_id: project_id,
-    user_id: project.user_id,
+    // user_id: project.user_id,
     name,
     email,
     message,
