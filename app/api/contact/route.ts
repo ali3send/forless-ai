@@ -6,25 +6,41 @@ export async function POST(req: Request) {
   const supabase = await createServerSupabaseClient();
   const body = await req.json().catch(() => ({}));
 
-  const { projectId, name, email, message } = body;
+  const { websiteId, name, email, message } = body;
 
-  if (!projectId || !name || !email || !message) {
+  if (!websiteId || !name || !email || !message) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
 
+  const { data: website, error: websiteError } = await supabase
+    .from("websites")
+    .select("project_id")
+    .eq("id", websiteId)
+    .single();
+
+  if (websiteError || !website) {
+    return NextResponse.json({ error: "Invalid website" }, { status: 404 });
+  }
+
+  const project_id = website.project_id;
+
   // find project owner
-  const { data: project } = await supabase
+  const { data: project, error: projectError } = await supabase
     .from("projects")
     .select("user_id")
-    .eq("id", projectId)
+    .eq("id", project_id)
     .single();
+
+  if (projectError || !project) {
+    return NextResponse.json({ error: "Invalid project" }, { status: 404 });
+  }
 
   if (!project) {
     return NextResponse.json({ error: "Invalid project" }, { status: 404 });
   }
 
   const { error } = await supabase.from("contact_messages").insert({
-    project_id: projectId,
+    project_id: project_id,
     user_id: project.user_id,
     name,
     email,

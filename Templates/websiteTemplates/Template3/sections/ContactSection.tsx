@@ -1,6 +1,7 @@
 // components/website/sections/ContactSection.tsx
 "use client";
 
+import { useContactForm } from "../../hooks/useContacForm";
 import { ContactData, FinalCtaData } from "../../template.types";
 import { ContactRow } from "../../ui/ContactRow";
 import { TextInput } from "../../ui/TextInput";
@@ -8,9 +9,12 @@ import { TextInput } from "../../ui/TextInput";
 type Props = {
   contact: ContactData;
   finalCta: FinalCtaData;
+  websiteId: string;
 };
 
-export function ContactSection({ contact, finalCta }: Props) {
+export function ContactSection({ contact, finalCta, websiteId }: Props) {
+  const { submit, loading, success, error } = useContactForm(websiteId);
+
   return (
     <section
       id="contact"
@@ -43,7 +47,13 @@ export function ContactSection({ contact, finalCta }: Props) {
         >
           <div className="grid items-stretch gap-14 md:grid-cols-2">
             {/* Left: form (static in templates) */}
-            <form className="space-y-4">
+            <form
+              className="space-y-4"
+              onSubmit={(e) => {
+                e.preventDefault();
+                submit(e.currentTarget);
+              }}
+            >
               <h3 className="text-lg font-semibold text-text">
                 {finalCta.headline}
               </h3>
@@ -77,11 +87,22 @@ export function ContactSection({ contact, finalCta }: Props) {
               </label>
 
               <button
-                type="button"
+                disabled={loading || success}
+                type="submit"
                 className="inline-flex items-center justify-center rounded-full px-6 py-2.5 text-sm font-medium bg-primary text-white opacity-60 cursor-not-allowed"
               >
-                {finalCta.buttonLabel}
+                {loading
+                  ? "Sending…"
+                  : success
+                  ? "Sent!"
+                  : finalCta.buttonLabel}
               </button>
+              {success && (
+                <p className="mt-3 text-xs text-green-600">
+                  Thanks! Your message has been sent.
+                </p>
+              )}
+              {error && <p className="mt-3 text-xs text-red-600">{error}</p>}
             </form>
 
             {/* Right: contact options */}
