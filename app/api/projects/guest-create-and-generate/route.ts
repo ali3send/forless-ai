@@ -171,6 +171,7 @@ export async function POST(req: Request) {
       .insert({
         project_id: project.id,
         user_id: owner.type === "user" ? owner.userId : null,
+        guest_id: owner.type === "guest" ? owner.guestId : null,
         name: aiBrand.name,
         slogan: aiBrand.slogan,
         palette: aiBrand.palette,
@@ -181,9 +182,15 @@ export async function POST(req: Request) {
       .select("id, name, slogan, palette, font")
       .single();
 
-    if (error || !brand) {
+    if (error) {
+      console.error("❌ BRAND INSERT ERROR:", {
+        error,
+        owner,
+        projectId: project.id,
+      });
+
       return NextResponse.json(
-        { error: "Failed to create brand" },
+        { error: error.message, details: error },
         { status: 500 }
       );
     }
