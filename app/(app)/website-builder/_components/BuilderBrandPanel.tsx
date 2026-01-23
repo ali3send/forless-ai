@@ -12,6 +12,7 @@ type Brand = {
   slogan?: string;
   palette: { primary: string; secondary: string };
   source?: "ai" | "manual";
+  logoSvg?: string;
 };
 
 export function BuilderBrandsPanel() {
@@ -35,6 +36,7 @@ export function BuilderBrandsPanel() {
   // Load brands
   // ──────────────────────────────
   async function loadBrands() {
+    console.log("Loading brands...");
     if (!websiteProjectId) return;
     setLoadingBrands(true);
     try {
@@ -46,12 +48,10 @@ export function BuilderBrandsPanel() {
   }
 
   useEffect(() => {
+    console.log("BUILDER BRANDS PANEL projectId =", websiteProjectId);
     loadBrands();
   }, [websiteProjectId]);
 
-  // ──────────────────────────────
-  // Generate brand (AI)
-  // ──────────────────────────────
   async function handleGenerate() {
     if (!idea.trim()) return;
 
@@ -73,6 +73,7 @@ export function BuilderBrandsPanel() {
     setBrand({
       name: brand.name,
       slogan: brand.slogan ?? "",
+      logoSvg: brand.logoSvg,
       palette: brand.palette,
       font: {
         id: "default",
@@ -162,12 +163,17 @@ function BrandCard({
         />
       </div>
 
+      {brand.logoSvg && (
+        <div
+          className="mb-2 h-10 w-10"
+          dangerouslySetInnerHTML={{ __html: brand.logoSvg }}
+        />
+      )}
       {/* Logo / name */}
       <div className="font-medium text-secondary-dark">{brand.name}</div>
       {brand.slogan && (
         <div className="text-xs text-secondary">{brand.slogan}</div>
       )}
-
       {/* Action */}
       <div className="mt-3">
         {active ? (

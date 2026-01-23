@@ -116,5 +116,15 @@ export async function GET(
     );
   }
 
-  return NextResponse.json({ brands: data });
+  const brands = (data ?? []).map((b) => ({
+    id: b.id,
+    name: b.name,
+    slogan: b.slogan,
+    palette: b.palette,
+    font: b.font,
+    source: b.source,
+    logoSvg: b.logo_svg,
+  }));
+
+  return NextResponse.json({ brands });
 }
