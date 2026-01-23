@@ -2,19 +2,23 @@
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { generateBrandWithAI } from "@/lib/server/generateBrandWithAi";
+import { getOwner } from "@/lib/auth/getOwner";
 
 export async function POST(
   req: Request,
   context: { params: Promise<{ projectId: string }> }
 ) {
+  console.log("POST /api/projects/[projectId]/brands/generate called");
   const { projectId } = await context.params;
+  console.log(projectId);
 
   const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
 
-  if (!user) {
+  /* ── owner (user OR guest) ── */
+  let owner;
+  try {
+    owner = await getOwner(req, supabase);
+  } catch {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -22,14 +26,17 @@ export async function POST(
   if (!idea) {
     return NextResponse.json({ error: "Missing idea" }, { status: 400 });
   }
+  console.log("Generating brand for idea:", idea, "by owner:", owner);
 
   const brand = await generateBrandWithAI(idea);
 
+  /* ── insert brand ── */
   const { data, error } = await supabase
     .from("brands")
     .insert({
       project_id: projectId,
-      user_id: user.id,
+      user_id: owner.type === "user" ? owner.userId : null,
+      guest_id: owner.type === "guest" ? owner.guestId : null,
       name: brand.name,
       slogan: brand.slogan,
       palette: brand.palette,
@@ -42,10 +49,7 @@ export async function POST(
 
   if (error) {
     console.error("Save AI brand error:", error);
-    return NextResponse.json(
-      { error: "Failed to save AI brand" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
   return NextResponse.json({ brand: data });

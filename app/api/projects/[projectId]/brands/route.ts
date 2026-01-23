@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { BrandDataNew } from "@/lib/types/brandTypes";
+import { getOwner } from "@/lib/auth/getOwner";
 
 const BrandSchema = z.object({
   name: z.string().min(1),
@@ -67,20 +68,41 @@ export async function POST(
 }
 
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   context: { params: Promise<{ projectId: string }> }
 ) {
   const { projectId } = await context.params;
 
   const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
 
-  if (!user) {
+  /* ── owner (user OR guest) ── */
+  let owner;
+  try {
+    owner = await getOwner(req, supabase);
+  } catch {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  /* ── verify project ownership ── */
+  const { data: project, error: projectError } = await supabase
+    .from("projects")
+    .select("id, user_id, guest_id")
+    .eq("id", projectId)
+    .single();
+
+  if (projectError || !project) {
+    return NextResponse.json({ error: "Project not found" }, { status: 404 });
+  }
+
+  if (owner.type === "user" && project.user_id !== owner.userId) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  if (owner.type === "guest" && project.guest_id !== owner.guestId) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  /* ── load brands ── */
   const { data, error } = await supabase
     .from("brands")
     .select("id, name, slogan, palette, font, logo_svg, source, created_at")

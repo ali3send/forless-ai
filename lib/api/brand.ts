@@ -71,7 +71,10 @@ export async function apiGenerateLogo(payload: {
 //new apis
 // lib/api/brand.ts
 export async function apiListBrands(projectId: string) {
-  const res = await fetch(`/api/projects/${projectId}/brands`);
+  const res = await fetch(`/api/projects/${projectId}/brands`, {
+    headers: withGuestHeaders(),
+  });
+
   const json = await res.json();
   if (!res.ok) throw new Error(json.error);
   return json.brands;
@@ -91,7 +94,9 @@ export async function apiCreateBrand(projectId: string, brand: any) {
 export async function apiGenerateBrands(projectId: string, idea: string) {
   const res = await fetch(`/api/projects/${projectId}/brands/generate`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: withGuestHeaders({
+      "Content-Type": "application/json",
+    }),
     body: JSON.stringify({ idea }),
   });
   const json = await res.json();
