@@ -2,7 +2,7 @@ export const runtime = "nodejs";
 
 import { notFound } from "next/navigation";
 import { unstable_noStore as noStore } from "next/cache";
-// import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { ThemeProvider } from "@/Templates/websiteTheme/ThemeProvider";
 import {
   WEBSITE_TEMPLATES,
@@ -10,7 +10,6 @@ import {
 } from "@/Templates/websiteTemplates/templates";
 import { WebsiteData } from "@/lib/types/websiteTypes";
 import { BrandDataNew } from "@/lib/types/brandTypes";
-import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 
 function renderSite(
   data: WebsiteData,
@@ -44,7 +43,7 @@ export default async function PreviewPage({
 
   noStore();
 
-  const supabase = await createAdminSupabaseClient();
+  const supabase = await createServerSupabaseClient();
 
   const { data: website, error } = await supabase
     .from("websites")
