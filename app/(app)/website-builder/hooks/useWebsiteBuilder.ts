@@ -7,8 +7,8 @@ import { WebsiteData } from "@/lib/types/websiteTypes";
 import {
   apiSaveWebsite,
   apiSaveSectionHistory,
-  apiGenerateWebsite,
   apiRestoreSection,
+  apiGenerateSection,
 } from "@/lib/api/website";
 
 import { builderSections } from "../builderSections";
@@ -92,14 +92,14 @@ export function useWebsiteBuilder(websiteId: string | null) {
         websiteId,
         section: dataSection,
         prevSectionData,
-        maxSlots: 2,
+        maxSlots: 3,
       });
 
-      const patch = await apiGenerateWebsite({
+      const patch = await apiGenerateSection({
         websiteId,
+        section: dataSection,
         idea,
         brand,
-        section: dataSection,
       });
 
       const merged: WebsiteData = { ...data, ...patch };

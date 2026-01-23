@@ -51,6 +51,29 @@ export async function apiGenerateWebsite(
   return json.patch as Pick<WebsiteData, SectionKey>;
 }
 
+export async function apiGenerateSection(payload: {
+  websiteId: string;
+  section: SectionKey;
+  idea: string;
+  brand: BrandDataNew;
+}): Promise<Pick<WebsiteData, SectionKey>> {
+  const res = await fetch("/api/website/generate-section", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const json = await res.json().catch(() => ({}));
+
+  if (!res.ok || !json.patch) {
+    throw new Error(json.error || "Failed to generate section");
+  }
+
+  return json.patch;
+}
+
 export async function apiSaveWebsite(
   websiteId: string,
   data: WebsiteData,

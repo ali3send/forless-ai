@@ -3,7 +3,7 @@ import { z } from "zod";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 const schema = z.object({
-  projectId: z.uuid(),
+  websiteId: z.uuid(),
   section: z.enum(["hero", "about", "features", "offers", "contact"]),
 });
 
@@ -25,13 +25,13 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid body" }, { status: 400 });
   }
 
-  const { projectId, section } = parsed.data;
+  const { websiteId, section } = parsed.data;
 
   // get website id
   const { data: website, error: wErr } = await supabase
     .from("websites")
     .select("id")
-    .eq("project_id", projectId)
+    .eq("id", websiteId)
     .eq("user_id", user.id)
     .single();
 
