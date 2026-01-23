@@ -1,6 +1,7 @@
 // app/api/websites/[websiteId]/route.ts
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { getOwner } from "@/lib/auth/getOwner";
 
 export async function GET(
   req: Request,
@@ -8,11 +9,11 @@ export async function GET(
 ) {
   const supabase = await createServerSupabaseClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
+  /* ── owner (user OR guest) ── */
+  let owner;
+  try {
+    owner = await getOwner(req, supabase);
+  } catch {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -28,16 +29,25 @@ export async function GET(
         brand_id,
         draft_data,
         is_published,
-        slug
-
+        slug,
+        user_id,
+        guest_id
       `
     )
     .eq("id", websiteId)
-    // .eq("user_id", user.id)
     .single();
 
   if (error || !website) {
     return NextResponse.json({ error: "Website not found" }, { status: 404 });
+  }
+
+  /* ── ownership check ── */
+  if (owner.type === "user" && website.user_id !== owner.userId) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  if (owner.type === "guest" && website.guest_id !== owner.guestId) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   /* ── parse draft ── */
@@ -67,7 +77,7 @@ export async function GET(
           slogan: data.slogan,
           palette: data.palette,
           font: data.font,
-          logoSvg: data.logo_svg,
+          logoSvg: data.logo_svg, // normalized
         }
       : null;
   }
