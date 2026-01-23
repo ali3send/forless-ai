@@ -21,28 +21,22 @@ const getPublishedSite = (slug: string) =>
       /* ── fetch website (NO .single() for safer debugging) ── */
       const { data: websites, error } = await supabase
         .from("websites")
-        .select("id, slug, draft_data, brand_id, is_published")
+        .select("id, slug, published_data, brand_id, is_published")
         .eq("slug", slug)
         .eq("is_published", true)
         .limit(1);
 
       if (error) {
-        console.error("❌ [PUBLIC SITE] website query error:", error);
         return null;
       }
 
       const website = websites?.[0] ?? null;
 
       if (!website) {
-        console.warn("⚠️ [PUBLIC SITE] no published website found for:", slug);
         return null;
       }
 
-      if (!website.draft_data) {
-        console.warn(
-          "⚠️ [PUBLIC SITE] published site missing draft_data:",
-          website.id
-        );
+      if (!website.published_data) {
         return null;
       }
 
@@ -69,9 +63,9 @@ const getPublishedSite = (slug: string) =>
         }
       }
       const data: WebsiteData =
-        typeof website.draft_data === "string"
-          ? JSON.parse(website.draft_data)
-          : website.draft_data;
+        typeof website.published_data === "string"
+          ? JSON.parse(website.published_data)
+          : website.published_data;
 
       console.log("✅ [PUBLIC SITE] loaded:", {
         websiteId: website.id,
