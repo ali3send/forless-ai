@@ -1,3 +1,4 @@
+//  app/api/usage/route.ts
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { checkUsage } from "@/lib/usage/checkUsage";
@@ -15,11 +16,16 @@ export async function GET(req: Request) {
   }
 
   const { searchParams } = new URL(req.url);
+
   const key = searchParams.get("key") as UsageKey | null;
 
   if (!key) {
     return NextResponse.json({ error: "Missing key" }, { status: 400 });
   }
+
+  /* ──────────────────────────────
+     GUEST USAGE (free plan)
+  ────────────────────────────── */
   if (owner.type === "guest") {
     const usage = await checkUsage({
       userId: null,
@@ -49,7 +55,7 @@ export async function GET(req: Request) {
   const usage = await checkUsage({
     userId: owner.userId,
     guestId: null,
-    projectId: null,
+    projectId: null, // ✅ MATCH COMMIT SCOPE
     key,
     plan: profile.plan ?? "free",
     currentPeriodEnd: profile.current_period_end,

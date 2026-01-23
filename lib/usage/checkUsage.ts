@@ -12,7 +12,7 @@ export async function checkUsage({
   plan,
   currentPeriodEnd,
 }: {
-  userId: string | null;
+  userId?: string | null;
   guestId?: string | null;
   projectId?: string | null;
   key: UsageKey;
