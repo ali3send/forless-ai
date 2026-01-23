@@ -64,6 +64,23 @@ export async function POST(req: Request) {
 
   console.log("🟢 [CLAIM] Websites claimed:", websites?.length ?? 0);
 
+  // claim brands
+  const { data: brands, error: bErr } = await supabaseAdmin
+    .from("brands")
+    .update({
+      user_id: user.id,
+      guest_id: null,
+    })
+    .eq("guest_id", guestId)
+    .select("id");
+
+  if (bErr) {
+    console.error("❌ [CLAIM] Brands update failed", bErr);
+    return NextResponse.json({ error: bErr.message }, { status: 500 });
+  }
+
+  console.log("🟢 [CLAIM] Brands claimed:", brands?.length ?? 0);
+
   console.log("✅ [CLAIM] Migration completed");
 
   return NextResponse.json({
