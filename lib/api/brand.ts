@@ -1,5 +1,6 @@
 // lib/api/brand.ts
 // import type { WebsiteData } from "@/lib/websiteTypes";
+
 import { BrandDataNew } from "../types/brandTypes";
 import { getErrorMessage } from "../utils/getErrorMessage";
 import { withGuestHeaders } from "./project";
@@ -21,7 +22,7 @@ export async function apiGenerateBrand(
   const json = await res.json().catch(() => ({} as any));
 
   if (!res.ok) {
-    throw new Error((json as any).error || "Failed to generate brand");
+    throw new Error(getErrorMessage(json, "Failed to generate brand"));
   }
 
   // expect json.brands: { name, slogan }[]

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { apiListBrands, apiGenerateBrands } from "@/lib/api/brand";
 import { useWebsiteStore } from "@/store/website.store";
 import { useBrandStore } from "@/store/brand.store";
+import BrandLogo from "../../brand/_components/BrandLogo";
 
 type Brand = {
   id: string;
@@ -16,10 +17,7 @@ type Brand = {
 };
 
 export function BuilderBrandsPanel() {
-  //   console.log("BUILDER BRANDS PANEL projectId =", projectId);
-
   const {
-    data,
     setData,
     projectId: websiteProjectId,
     activeBrandId,
@@ -36,7 +34,6 @@ export function BuilderBrandsPanel() {
   // Load brands
   // ──────────────────────────────
   async function loadBrands() {
-    console.log("Loading brands...");
     if (!websiteProjectId) return;
     setLoadingBrands(true);
     try {
@@ -48,7 +45,6 @@ export function BuilderBrandsPanel() {
   }
 
   useEffect(() => {
-    console.log("BUILDER BRANDS PANEL projectId =", websiteProjectId);
     loadBrands();
   }, [websiteProjectId]);
 
@@ -100,21 +96,41 @@ export function BuilderBrandsPanel() {
       </div>
 
       {/* Generate brand */}
-      <div>
+      {/* Generate brand */}
+      <div className="rounded-lg border border-secondary-fade bg-secondary-soft p-3">
+        <label className="mb-1 block text-xs font-medium text-secondary">
+          Generate brand with AI
+        </label>
+
         <textarea
           value={idea}
           onChange={(e) => setIdea(e.target.value)}
-          placeholder="Describe your business for AI brand generation"
+          placeholder="Describe your business, vibe, and target audience…"
+          className="w-full resize-none rounded-md border border-secondary-fade bg-background p-2 text-sm outline-none focus:border-primary"
+          rows={3}
         />
 
-        <button onClick={handleGenerate} disabled={loading}>
-          {loading ? "Generating..." : "Generate brand"}
-        </button>
+        <div className="mt-2 flex justify-end">
+          <button
+            onClick={handleGenerate}
+            disabled={loading}
+            className="rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-primary-hover disabled:opacity-50"
+          >
+            {loading ? "Generating…" : "Generate brand"}
+          </button>
+        </div>
       </div>
 
-      {/* Brand list */}
-      <div>
-        {loadingBrands && <p>Loading brands...</p>}
+      <div className="space-y-3">
+        {loadingBrands && (
+          <div className="text-xs text-secondary">Loading brands…</div>
+        )}
+
+        {!loadingBrands && brands.length === 0 && (
+          <div className="rounded-md border border-dashed border-secondary-fade p-4 text-xs text-secondary">
+            No brands yet. Generate one above or create manually.
+          </div>
+        )}
 
         {!loadingBrands &&
           brands.map((brand) => {
@@ -145,49 +161,70 @@ function BrandCard({
 }) {
   return (
     <div
-      className={`rounded-lg border p-3 ${
+      className={`group relative rounded-lg border p-3 transition ${
         active
           ? "border-primary bg-primary/5"
-          : "border-secondary-fade bg-secondary-soft"
+          : "border-secondary-fade bg-secondary-soft hover:border-secondary-hover"
       }`}
     >
-      {/* Palette */}
-      <div className="mb-2 flex gap-1">
-        <span
-          className="h-3 w-3 rounded-full"
-          style={{ backgroundColor: brand.palette.primary }}
-        />
-        <span
-          className="h-3 w-3 rounded-full"
-          style={{ backgroundColor: brand.palette.secondary }}
-        />
+      {/* Active badge */}
+      {active && (
+        <span className="absolute right-2 top-2 rounded-full bg-primary px-2 py-0.5 text-[10px] font-semibold text-white">
+          Active
+        </span>
+      )}
+
+      <div className="flex items-start gap-3">
+        {/* Logo */}
+        <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-md border border-secondary-fade bg-background">
+          {brand.logoSvg ? (
+            <BrandLogo
+              svg={brand.logoSvg}
+              primary={brand.palette.primary}
+              secondary={brand.palette.secondary}
+            />
+          ) : (
+            <span className="text-xs font-semibold text-secondary">
+              {brand.name.slice(0, 2).toUpperCase()}
+            </span>
+          )}
+        </div>
+
+        {/* Info */}
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-sm font-medium text-secondary-dark">
+            {brand.name}
+          </div>
+          {brand.slogan && (
+            <div className="mt-0.5 line-clamp-2 text-xs text-secondary">
+              {brand.slogan}
+            </div>
+          )}
+
+          {/* Palette */}
+          <div className="mt-2 flex gap-1">
+            <span
+              className="h-2.5 w-2.5 rounded-full"
+              style={{ backgroundColor: brand.palette.primary }}
+            />
+            <span
+              className="h-2.5 w-2.5 rounded-full"
+              style={{ backgroundColor: brand.palette.secondary }}
+            />
+          </div>
+        </div>
       </div>
 
-      {brand.logoSvg && (
-        <div
-          className="mb-2 h-10 w-10"
-          dangerouslySetInnerHTML={{ __html: brand.logoSvg }}
-        />
-      )}
-      {/* Logo / name */}
-      <div className="font-medium text-secondary-dark">{brand.name}</div>
-      {brand.slogan && (
-        <div className="text-xs text-secondary">{brand.slogan}</div>
-      )}
       {/* Action */}
-      <div className="mt-3">
-        {active ? (
-          <span className="text-xs font-semibold text-primary">✓ Active</span>
-        ) : (
-          <button
-            type="button"
-            onClick={onUse}
-            className="text-xs font-semibold text-primary hover:text-primary-hover"
-          >
-            Use this brand
-          </button>
-        )}
-      </div>
+      {!active && (
+        <button
+          type="button"
+          onClick={onUse}
+          className="mt-3 w-full rounded-md border border-secondary-fade bg-background py-1.5 text-xs font-semibold text-primary transition hover:border-primary hover:bg-primary/5"
+        >
+          Use this brand
+        </button>
+      )}
     </div>
   );
 }
