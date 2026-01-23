@@ -17,8 +17,8 @@ export const PLAN_LIMITS: Record<PlanKey, Record<string, number>> = {
     website_generate: 3,
     website_regen: 3,
     websites_published: 1,
-    // projects: 10,
-    projects: 5,
+    projects: 10,
+    // projects: 5,
   },
   pro: {
     website_generate: 20,
