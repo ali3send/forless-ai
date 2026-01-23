@@ -8,8 +8,6 @@ export const runtime = "nodejs";
 const BUCKET = "site-images";
 
 export async function POST(req: Request) {
-  console.log("UPLOAD HERO IMAGE REQUEST RECEIVED");
-
   try {
     const supabase = await createServerSupabaseClient();
 

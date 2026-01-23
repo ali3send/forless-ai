@@ -73,12 +73,12 @@ export async function POST(
     .from("websites")
     .update({
       draft_data: data,
+      published_data: data,
       slug,
       is_published: true,
       published_at: new Date().toISOString(),
     })
     .eq("id", websiteId);
-  // provide a profile string as the first argument and the tag as the second
   revalidateTag("max", "default");
 
   if (publishError) {

@@ -61,6 +61,7 @@ export function useProjectActions(project: { id: string; name: string }) {
           );
           if (!res.ok) throw new Error();
           uiToast.success("Project permanently deleted.");
+          router.push("/dashboard");
           router.refresh();
         } catch {
           uiToast.error("Permanent delete failed.");

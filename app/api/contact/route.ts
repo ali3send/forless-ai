@@ -19,13 +19,7 @@ export async function POST(req: Request) {
     .eq("id", websiteId)
     .maybeSingle();
 
-  console.log("🔍 CONTACT DEBUG", {
-    websiteId,
-    website,
-    websiteError,
-  });
-
-  if (!website) {
+  if (!website || websiteError) {
     return NextResponse.json(
       { error: `Website ${websiteId} not found` },
       { status: 404 }

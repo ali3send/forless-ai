@@ -45,7 +45,6 @@ export default function SignupPage() {
       uiToast.success("Account created! Please check your email to verify.");
     } catch (err: unknown) {
       uiToast.dismiss(t);
-      console.log(err);
       uiToast.error(getErrorMessage(err, "Failed to create account"));
     } finally {
       setLoading(false);

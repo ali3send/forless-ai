@@ -20,8 +20,6 @@ async function getRawBody(req: Request) {
 }
 
 export async function POST(req: Request) {
-  console.log("🔥 HIT /api/stripe/webhook");
-
   const sig = req.headers.get("stripe-signature");
   if (!sig) {
     return NextResponse.json(
@@ -49,8 +47,6 @@ export async function POST(req: Request) {
       { status: 400 }
     );
   }
-
-  console.log("✅ event", event.type);
 
   try {
     switch (event.type) {

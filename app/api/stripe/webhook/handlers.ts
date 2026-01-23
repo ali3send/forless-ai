@@ -22,7 +22,6 @@ async function updateByUserId(userId: string, patch: Record<string, any>) {
     )
     .single();
   if (error) throw error;
-  console.log("[profiles updated]", data);
   return data;
 }
 
@@ -92,17 +91,6 @@ export async function handleCheckoutSessionCompleted(
       ? session.customer
       : (session.customer as any)?.id ?? null;
 
-  console.log("[checkout.session.completed raw]", {
-    userId,
-    customerId,
-    sessionId: session.id,
-    subscription: session.subscription,
-    payment_status: (session as any).payment_status,
-    mode: session.mode,
-    metaPlan: session.metadata?.plan,
-    metaInterval: session.metadata?.interval,
-  });
-
   if (!userId) return;
 
   const dedupe = await markEventProcessed(userId, event.id);
@@ -141,15 +129,6 @@ export async function handleCheckoutSessionCompleted(
   if (!cpeIso && typeof subObj?.current_period_end === "number") {
     cpeIso = toIsoFromUnixSeconds(subObj.current_period_end);
   }
-
-  console.log("[checkout.session.completed expanded]", {
-    subscriptionId,
-    priceId,
-    metaPlan,
-    status,
-    active,
-    currentPeriodEndIso: cpeIso,
-  });
 
   // ✅ IMPORTANT: do NOT overwrite good values with null
   const patch: Record<string, any> = {
@@ -208,8 +187,6 @@ export async function handleSubscriptionEvent(
   } else if (cpeIso) {
     patch.current_period_end = cpeIso;
   }
-
-  console.log("[subscription patch]", { userId, customerId, patch });
 
   if (userId) {
     const dedupe = await markEventProcessed(userId, event.id);
@@ -289,15 +266,6 @@ export async function handleInvoicePaymentSucceeded(invoice: Stripe.Invoice) {
   if (resolvedPlan !== "free") patch.plan = resolvedPlan;
 
   await updateByCustomerId(customerId, patch);
-
-  console.log("[invoice.payment_succeeded patch]", {
-    customerId,
-    subscriptionId,
-    priceId,
-    metaPlan,
-    resolvedPlan,
-    currentPeriodEndIso: cpeIso,
-  });
 }
 
 /** ✅ invoice.paid */

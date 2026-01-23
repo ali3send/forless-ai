@@ -8,9 +8,7 @@ export async function POST(
   req: Request,
   context: { params: Promise<{ projectId: string }> }
 ) {
-  console.log("POST /api/projects/[projectId]/brands/generate called");
   const { projectId } = await context.params;
-  console.log(projectId);
 
   const supabase = await createServerSupabaseClient();
 
@@ -26,7 +24,6 @@ export async function POST(
   if (!idea) {
     return NextResponse.json({ error: "Missing idea" }, { status: 400 });
   }
-  console.log("Generating brand for idea:", idea, "by owner:", owner);
 
   const brand = await generateBrandWithAI(idea);
 

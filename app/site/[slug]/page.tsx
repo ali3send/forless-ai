@@ -18,8 +18,6 @@ const getPublishedSite = (slug: string) =>
     async () => {
       const supabase = createPublicSupabaseClient();
 
-      console.log("🌍 [PUBLIC SITE] fetching slug:", slug);
-
       /* ── fetch website (NO .single() for safer debugging) ── */
       const { data: websites, error } = await supabase
         .from("websites")
