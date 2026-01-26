@@ -25,7 +25,9 @@ function slugify(text: string) {
 
 export function PublishButton({ websiteId, websiteData }: Props) {
   const hydratedRef = useRef(false);
-  const [slug, setSlug] = useState("");
+  const [slug, setSlug] = useState(
+    websiteData.brandName ? slugify(websiteData.brandName) : "",
+  );
   const [isPublished, setIsPublished] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
