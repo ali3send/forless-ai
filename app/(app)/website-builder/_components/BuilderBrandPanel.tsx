@@ -49,8 +49,6 @@ export function BuilderBrandsPanel() {
   }, [websiteProjectId]);
 
   async function handleGenerate() {
-    if (!idea.trim()) return;
-
     setLoading(true);
     try {
       await apiGenerateBrands(websiteProjectId as string, idea);

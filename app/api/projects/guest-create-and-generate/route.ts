@@ -43,7 +43,7 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     return NextResponse.json(
       { error: "Invalid body", details: parsed.error.flatten() },
-      { status: 400 }
+      { status: 400 },
     );
   }
   const {
@@ -73,7 +73,7 @@ export async function POST(req: Request) {
     if (error || !profile) {
       return NextResponse.json(
         { error: "Failed to load user profile" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -103,7 +103,7 @@ export async function POST(req: Request) {
         remaining: usage.remaining,
         periodEnd: usage.periodEnd,
       },
-      { status: 403 }
+      { status: 403 },
     );
   }
 
@@ -124,7 +124,7 @@ export async function POST(req: Request) {
   if (projectErr || !project) {
     return NextResponse.json(
       { error: projectErr?.message || "Failed to create project" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 
@@ -158,7 +158,7 @@ export async function POST(req: Request) {
     if (error || !brand) {
       return NextResponse.json(
         { error: "Invalid brand selected" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -191,7 +191,7 @@ export async function POST(req: Request) {
 
       return NextResponse.json(
         { error: error.message, details: error },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -227,6 +227,13 @@ Secondary: ${brandForAi.palette.secondary}
 Business description:
 ${finalDescription}
 
+Rules:
+- Use realistic content.
+- Use short and catchy headlines.
+- Use links as "#".
+- For images, use keywords searchable on unstplash maximally 3 words.
+- For images, provide keywords that matches the idea.
+- Do not include markdown or explanations.
 Return EXACTLY this JSON shape:
 
 {
@@ -291,7 +298,7 @@ Return EXACTLY this JSON shape:
   } catch {
     return NextResponse.json(
       { error: "Invalid AI JSON output" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 
@@ -310,7 +317,7 @@ Return EXACTLY this JSON shape:
         is_published: false,
         slug: null,
       },
-      { onConflict: "project_id" }
+      { onConflict: "project_id" },
     )
     .select("id")
     .single();
@@ -318,7 +325,7 @@ Return EXACTLY this JSON shape:
   if (websiteErr || !website) {
     return NextResponse.json(
       { error: "Failed to save website", details: websiteErr?.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 

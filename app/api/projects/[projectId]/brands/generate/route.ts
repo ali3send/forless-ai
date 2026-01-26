@@ -6,7 +6,7 @@ import { getOwner } from "@/lib/auth/getOwner";
 
 export async function POST(
   req: Request,
-  context: { params: Promise<{ projectId: string }> }
+  context: { params: Promise<{ projectId: string }> },
 ) {
   const { projectId } = await context.params;
 
@@ -20,9 +20,20 @@ export async function POST(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { idea } = await req.json().catch(() => ({}));
+  let { idea } = await req.json().catch(() => ({}));
   if (!idea) {
-    return NextResponse.json({ error: "Missing idea" }, { status: 400 });
+    // if not idea getting idea from projects.description
+    const { data: project, error } = await supabase
+      .from("projects")
+      .select("description")
+      .eq("id", projectId)
+      .single();
+
+    if (error || !project) {
+      return NextResponse.json({ error: "Project not found" }, { status: 404 });
+    }
+
+    idea = project.description;
   }
 
   const brand = await generateBrandWithAI(idea);

@@ -40,7 +40,10 @@ Rules:
 - slogan should be short and catchy
 - palette colors must be valid hex colors
 - font.id should be one of: "sans", "serif", "mono"
+_logo must be circular or square in aspect ratio
 - logoSvg must be a valid SVG string starting with "<svg"
+- logoSvg should represent the business idea
+- Use realistic and creative names and slogans
 - Do not include markdown
 - Do not include comments
 `.trim(),
