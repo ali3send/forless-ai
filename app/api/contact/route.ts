@@ -10,7 +10,12 @@ export async function POST(req: Request) {
   const { websiteId, name, email, message } = body;
 
   if (!websiteId || !name || !email || !message) {
-    return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+    return NextResponse.json(
+      {
+        error: `${!websiteId ? "Missing websiteId" : ""} ${!name ? "Missing name" : ""} ${!email ? "Missing email" : ""} ${!message ? "Missing message" : ""}`,
+      },
+      { status: 400 },
+    );
   }
 
   const { data: website, error: websiteError } = await supabase
@@ -22,7 +27,7 @@ export async function POST(req: Request) {
   if (!website || websiteError) {
     return NextResponse.json(
       { error: `Website ${websiteId} not found` },
-      { status: 404 }
+      { status: 404 },
     );
   }
 
@@ -87,7 +92,7 @@ export async function GET(req: Request) {
       message,
       is_read,
       created_at
-    `
+    `,
     )
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });

@@ -79,9 +79,22 @@ export function ContactSection({ contact, finalCta, websiteId }: Props) {
               <label className="block text-xs text-(--color-muted)">
                 Message
                 <textarea
-                  rows={8}
+                  name="message"
+                  rows={6}
                   maxLength={400}
-                  className="mt-1 w-full rounded-md border px-3 py-2 resize-none text-xs outline-none bg-(--color-bg) text-text"
+                  className="mt-1 w-full rounded-md border px-3 py-2 resize-none text-xs outline-none bg-(--color-bg) text-text
+                  transition"
+                  style={{
+                    borderColor:
+                      "color-mix(in srgb, var(--color-primary) 25%, transparent)",
+                  }}
+                  onFocus={(e) =>
+                    (e.currentTarget.style.borderColor = "var(--color-primary)")
+                  }
+                  onBlur={(e) =>
+                    (e.currentTarget.style.borderColor =
+                      "color-mix(in srgb, var(--color-primary) 25%, transparent)")
+                  }
                   placeholder="Tell us briefly what you’re looking for…"
                 />
               </label>
@@ -94,8 +107,8 @@ export function ContactSection({ contact, finalCta, websiteId }: Props) {
                 {loading
                   ? "Sending…"
                   : success
-                  ? "Sent!"
-                  : finalCta.buttonLabel}
+                    ? "Sent!"
+                    : finalCta.buttonLabel}
               </button>
               {success && (
                 <p className="mt-3 text-xs text-green-600">
