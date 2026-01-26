@@ -1,11 +1,53 @@
-// app/api/websites/[websiteId]/publish/route.ts
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { revalidateTag } from "next/cache";
-import { checkUsage } from "@/lib/usage/checkUsage";
 import { commitUsage } from "@/lib/usage/commitUsage";
 import type { PlanKey } from "@/lib/billing/planLimits";
+import { checkUsage } from "@/lib/usage/checkUsage";
+
+type CanPublishArgs = {
+  userId: string;
+  plan: PlanKey;
+  currentPeriodEnd: string | null;
+  isAlreadyPublished: boolean;
+};
+
+type CanPublishResult = {
+  shouldChargeUsage: boolean;
+};
+
+export async function canPublishWebsite(
+  args: CanPublishArgs,
+): Promise<CanPublishResult> {
+  const { userId, plan, currentPeriodEnd, isAlreadyPublished } = args;
+
+  // Re-publish → no usage charge
+  if (isAlreadyPublished) {
+    return { shouldChargeUsage: false };
+  }
+
+  // First publish → check usage
+  const usage = await checkUsage({
+    userId,
+    key: "websites_published",
+    plan,
+    projectId: null,
+    currentPeriodEnd,
+  });
+
+  if (!usage.ok) {
+    const error: any = new Error("Publishing limit reached");
+    error.status = 403;
+    error.meta = {
+      limit: usage.limit,
+      used: usage.used,
+    };
+    throw error;
+  }
+
+  return { shouldChargeUsage: true };
+}
 
 const PublishSchema = z.object({
   slug: z.string().min(1),
@@ -14,10 +56,13 @@ const PublishSchema = z.object({
 
 export async function POST(
   req: Request,
-  { params }: { params: Promise<{ websiteId: string }> }
+  { params }: { params: Promise<{ websiteId: string }> },
 ) {
   const supabase = await createServerSupabaseClient();
 
+  /* ──────────────────────────────
+     AUTH
+  ────────────────────────────── */
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -29,7 +74,7 @@ export async function POST(
   const { websiteId } = await params;
 
   /* ──────────────────────────────
-     Load profile (plan + period)
+     PROFILE (PLAN + PERIOD)
   ────────────────────────────── */
   const { data: profile } = await supabase
     .from("profiles")
@@ -40,29 +85,7 @@ export async function POST(
   const plan = (profile?.plan ?? "free") as PlanKey;
 
   /* ──────────────────────────────
-     USAGE CHECK (websites_published)
-  ────────────────────────────── */
-  const usage = await checkUsage({
-    userId: user.id,
-    key: "websites_published",
-    plan,
-    projectId: null,
-    currentPeriodEnd: profile?.current_period_end ?? null,
-  });
-
-  if (!usage.ok) {
-    return NextResponse.json(
-      {
-        error: "Publishing limit reached. Upgrade your plan.",
-        limit: usage.limit,
-        used: usage.used,
-      },
-      { status: 403 }
-    );
-  }
-
-  /* ──────────────────────────────
-     Validate request
+     VALIDATE BODY
   ────────────────────────────── */
   const body = await req.json().catch(() => null);
   const parsed = PublishSchema.safeParse(body);
@@ -73,9 +96,12 @@ export async function POST(
 
   const { slug, data } = parsed.data;
 
+  /* ──────────────────────────────
+     LOAD WEBSITE
+  ────────────────────────────── */
   const { data: website, error: loadError } = await supabase
     .from("websites")
-    .select("id, user_id")
+    .select("id, user_id, is_published")
     .eq("id", websiteId)
     .single();
 
@@ -83,6 +109,9 @@ export async function POST(
     return NextResponse.json({ error: "Website not found" }, { status: 404 });
   }
 
+  /* ──────────────────────────────
+     CLAIM WEBSITE (IF NEEDED)
+  ────────────────────────────── */
   if (!website.user_id) {
     const { error: claimError } = await supabase
       .from("websites")
@@ -92,11 +121,14 @@ export async function POST(
     if (claimError) {
       return NextResponse.json(
         { error: "Failed to claim website" },
-        { status: 500 }
+        { status: 500 },
       );
     }
   }
 
+  /* ──────────────────────────────
+     SLUG CONFLICT CHECK
+  ────────────────────────────── */
   const { data: conflict } = await supabase
     .from("websites")
     .select("id")
@@ -109,7 +141,31 @@ export async function POST(
   }
 
   /* ──────────────────────────────
-     Publish website
+     USAGE DECISION (HELPER)
+  ────────────────────────────── */
+  let shouldChargeUsage = false;
+
+  try {
+    const res = await canPublishWebsite({
+      userId: user.id,
+      plan,
+      currentPeriodEnd: profile?.current_period_end ?? null,
+      isAlreadyPublished: !!website.is_published,
+    });
+
+    shouldChargeUsage = res.shouldChargeUsage;
+  } catch (err: any) {
+    return NextResponse.json(
+      {
+        error: err.message ?? "Publishing limit reached",
+        ...err.meta,
+      },
+      { status: err.status ?? 403 },
+    );
+  }
+
+  /* ──────────────────────────────
+     PUBLISH WEBSITE
   ────────────────────────────── */
   const { error: publishError } = await supabase
     .from("websites")
@@ -118,31 +174,36 @@ export async function POST(
       published_data: data,
       slug,
       is_published: true,
-      published_at: new Date().toISOString(),
+      published_at: website.is_published
+        ? undefined // preserve original publish date
+        : new Date().toISOString(),
     })
     .eq("id", websiteId);
 
   if (publishError) {
     return NextResponse.json(
       { error: publishError.message ?? "Failed to publish website" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 
   /* ──────────────────────────────
-     COMMIT USAGE (after success)
+     COMMIT USAGE (ONLY IF FIRST PUBLISH)
   ────────────────────────────── */
-  await commitUsage({
-    userId: user.id,
-    key: "websites_published",
-    projectId: null,
-    currentPeriodEnd: profile?.current_period_end ?? null,
-  });
+  if (shouldChargeUsage) {
+    await commitUsage({
+      userId: user.id,
+      key: "websites_published",
+      projectId: null,
+      currentPeriodEnd: profile?.current_period_end ?? null,
+    });
+  }
 
   revalidateTag("max", "default");
 
   return NextResponse.json({
     published: true,
     slug,
+    charged: shouldChargeUsage,
   });
 }
