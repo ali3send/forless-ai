@@ -7,39 +7,44 @@ export async function getAdminStats(days: number) {
 
   const [usersNow, usersPrev, projectsNow, projectsPrev, sitesNow, sitesPrev] =
     await Promise.all([
+      // USERS
       supabase.from("profiles").select("id", { count: "exact", head: true }),
       supabase
         .from("profiles")
         .select("id", { count: "exact", head: true })
         .lt("created_at", start.toISOString()),
 
+      // PROJECTS (all projects, lifecycle-agnostic)
       supabase.from("projects").select("id", { count: "exact", head: true }),
       supabase
         .from("projects")
         .select("id", { count: "exact", head: true })
         .lt("created_at", start.toISOString()),
 
+      // 🔥 PUBLISHED SITES (NEW SOURCE OF TRUTH)
       supabase
-        .from("projects")
+        .from("websites")
         .select("id", { count: "exact", head: true })
-        .eq("status", "published"),
+        .eq("is_published", true),
+
       supabase
-        .from("projects")
+        .from("websites")
         .select("id", { count: "exact", head: true })
-        .eq("status", "published")
+        .eq("is_published", true)
         .lt("published_at", start.toISOString()),
     ]);
 
   return {
     users: usersNow.count ?? 0,
     prevUsers: usersPrev.count ?? 0,
+
     projects: projectsNow.count ?? 0,
     prevProjects: projectsPrev.count ?? 0,
+
     sites: sitesNow.count ?? 0,
     prevSites: sitesPrev.count ?? 0,
   };
 }
-
 export async function getModerationStats() {
   const supabase = await createAdminSupabaseClient();
 
@@ -48,10 +53,12 @@ export async function getModerationStats() {
       .from("profiles")
       .select("id", { count: "exact", head: true })
       .eq("is_suspended", true),
+
+    // 🔥 Explicit unpublishes only
     supabase
-      .from("projects")
+      .from("websites")
       .select("id", { count: "exact", head: true })
-      .eq("status", "unpublished"),
+      .or("unpublished_at.not.is.null,unpublished_by.not.is.null"),
   ]);
 
   return {

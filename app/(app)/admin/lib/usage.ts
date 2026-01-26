@@ -1,3 +1,4 @@
+// app/(app)/admin/lib/usage.ts
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 
 type UsagePoint = {
@@ -28,9 +29,9 @@ export async function getUsageData(days = 30): Promise<UsagePoint[]> {
 
     // Sites published per day
     supabase
-      .from("projects")
+      .from("websites")
       .select("published_at")
-      .eq("status", "published")
+      .eq("is_published", true)
       .gte("published_at", start.toISOString()),
   ]);
 
@@ -88,7 +89,7 @@ export async function getUsageData(days = 30): Promise<UsagePoint[]> {
         projects: 0,
         users: 0,
         sites: 0,
-      }
+      },
     );
   }
 
