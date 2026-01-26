@@ -100,9 +100,9 @@ export function ContactSection({ contact, finalCta, websiteId }: Props) {
               </label>
 
               <button
-                disabled={loading || success}
+                // disabled={loading || success}
                 type="submit"
-                className="inline-flex items-center justify-center rounded-full px-6 py-2.5 text-sm font-medium bg-primary text-white opacity-60 cursor-not-allowed"
+                className="inline-flex items-center justify-center rounded-full px-6 py-2.5 text-sm font-medium bg-primary text-white"
               >
                 {loading
                   ? "Sending…"
