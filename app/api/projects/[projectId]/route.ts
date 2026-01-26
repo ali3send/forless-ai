@@ -29,7 +29,7 @@ export async function PATCH(req: Request, context: RouteContext) {
   if (!Object.keys(updates).length) {
     return NextResponse.json(
       { error: "No valid fields to update" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -49,44 +49,8 @@ export async function PATCH(req: Request, context: RouteContext) {
     console.error("Update project error:", error);
     return NextResponse.json(
       { error: "Failed to update project" },
-      { status: 500 }
+      { status: 500 },
     );
-  }
-
-  return NextResponse.json({ project: data });
-}
-
-/* ──────────────────────────────
-   GET project
-────────────────────────────── */
-export async function GET(req: Request, context: RouteContext) {
-  const { projectId } = await context.params;
-  const supabase = await createServerSupabaseClient();
-
-  let owner;
-  try {
-    owner = await getOwner(req, supabase);
-  } catch {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const query = supabase
-    .from("projects")
-    .select(
-      "id, name, status, description, brand_data, thumbnail_url, updated_at, slug, published_at"
-    )
-    .eq("id", projectId);
-
-  if (owner.type === "user") {
-    query.eq("user_id", owner.userId);
-  } else {
-    query.eq("guest_id", owner.guestId);
-  }
-
-  const { data, error } = await query.single();
-
-  if (error || !data) {
-    return NextResponse.json({ error: "Project not found" }, { status: 404 });
   }
 
   return NextResponse.json({ project: data });

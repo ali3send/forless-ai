@@ -36,22 +36,57 @@ Return JSON EXACTLY in this shape:
   "logoSvg": string
 }
 
+Generate brand options as strict JSON only.
+
 Rules:
 - name must be a brandable business name
 - slogan should be short and catchy
 - palette colors must be valid hex colors
-- font.id should be one of: "sans", "serif", "mono"
-- logo must be circular or square in aspect ratio
+- font.id must be one of: "sans", "serif", "mono"
+
+Logo rules:
 - logoSvg must be a valid SVG string starting with "<svg"
-- logoSvg MUST use CSS variables:
-  - var(--brand-primary)
-  - var(--brand-secondary)
-  - logoSvg MUST include a viewBox attribute (e.g. "viewBox='0 0 100 100'")
-- logoSvg MUST NOT include fixed width or height attributes
-- logoSvg MUST scale correctly inside a square container
-- Do NOT use hex colors inside logoSvg
-- Do not include markdown
-- Do not include comments
+- logoSvg must include a viewBox attribute
+- logoSvg must NOT include width or height attributes
+- logoSvg must scale correctly inside a square container
+- logoSvg must NOT include hex colors
+- logoSvg must ONLY use:
+  var(--brand-primary)
+  var(--brand-secondary)
+
+Logo concept rules:
+- Choose ONE logo style:
+  1) Lettermark monogram using exactly 2 letters
+  2) Negative-space symbol derived from geometry
+  3) Symbol + letterform shape (no text)
+
+Lettermark rules:
+- Letters must be built from geometry, not implied
+- Letters must share at least one stroke or boundary
+- Do NOT use <text> unless lettermark is selected
+
+Shape rules:
+- Use 2 to 4 SVG primitives maximum
+- Primitives may be path, rect, circle, or polygon
+- Shapes must touch, overlap, or subtract from each other
+
+Design rules:
+- Logo must encode a concrete idea from the business domain
+- The logo must NOT work equally well for an unrelated industry
+- Do NOT generate generic abstract shapes
+
+Forbidden patterns:
+- Single circle with initials
+- Circle enclosing text
+- Non-interacting shapes
+- Spinner-like or loader-like designs
+
+Before returning, internally verify:
+- Logo uses no fixed colors
+- Logo is not generic
+- Logo could not belong to any random company
+
+Return strict JSON only.
 `.trim(),
       },
     ],
