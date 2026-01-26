@@ -8,6 +8,7 @@ export function Navbar({
   offersTitle,
   logoSvg,
   primary,
+  secondary,
 }: NavbarData) {
   return (
     <header className="relative z-20">
@@ -30,7 +31,7 @@ export function Navbar({
                 <BrandLogo
                   svg={logoSvg}
                   primary={primary}
-                  secondary={primary}
+                  secondary={secondary}
                 />
               </div>
             )}

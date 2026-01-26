@@ -12,18 +12,21 @@ import { OffersSection } from "./sections/OffersSection";
 import { ContactSection } from "./sections/ContactSection";
 import { Footer } from "./sections/Footer";
 
-type Props = {
+export function WebsiteTemplateBasic({
+  data,
+  brand,
+  websiteId,
+}: {
   data: WebsiteData;
   brand: BrandDataNew | null;
   websiteId: string;
-};
-
-export function WebsiteTemplateBasic({ data, brand, websiteId }: Props) {
+}) {
   return (
     <div className="min-h-screen bg-(--color-bg) text-text">
       <Navbar
         brandName={data.brandName}
         primary={brand?.palette?.primary ?? "#10b981"}
+        secondary={brand?.palette?.secondary ?? "#3b82f6"}
         offersTitle={data.offers.title}
         logoSvg={brand?.logoSvg ?? null}
       />

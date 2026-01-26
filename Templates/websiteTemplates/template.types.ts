@@ -55,4 +55,5 @@ export type NavbarData = {
   offersTitle: string;
   logoSvg: string | null;
   primary: string;
+  secondary: string;
 };

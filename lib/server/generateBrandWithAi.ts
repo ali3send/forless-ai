@@ -1,3 +1,4 @@
+// lib/server/generateBrandWithAi.ts
 import { openai } from "@/lib/openai";
 import { BrandData } from "@/lib/types/brandTypes";
 
@@ -40,10 +41,15 @@ Rules:
 - slogan should be short and catchy
 - palette colors must be valid hex colors
 - font.id should be one of: "sans", "serif", "mono"
-_logo must be circular or square in aspect ratio
+- logo must be circular or square in aspect ratio
 - logoSvg must be a valid SVG string starting with "<svg"
-- logoSvg should represent the business idea
-- Use realistic and creative names and slogans
+- logoSvg MUST use CSS variables:
+  - var(--brand-primary)
+  - var(--brand-secondary)
+  - logoSvg MUST include a viewBox attribute (e.g. "viewBox='0 0 100 100'")
+- logoSvg MUST NOT include fixed width or height attributes
+- logoSvg MUST scale correctly inside a square container
+- Do NOT use hex colors inside logoSvg
 - Do not include markdown
 - Do not include comments
 `.trim(),

@@ -8,13 +8,20 @@ export function Navbar({
   offersTitle,
   logoSvg,
   primary,
+  secondary,
 }: NavbarData) {
   return (
     <header className="border-b border-secondary-dark">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
         <div className="flex items-center gap-2">
           {logoSvg && (
-            <BrandLogo svg={logoSvg} primary={primary} secondary={primary} />
+            <>
+              <BrandLogo
+                svg={logoSvg}
+                primary={primary}
+                secondary={secondary}
+              />
+            </>
           )}
 
           <div className="font-semibold">{brandName}</div>

@@ -27,6 +27,7 @@ export function WebsiteTemplateImmersive({
       <Navbar
         brandName={data.brandName}
         primary={brand?.palette?.primary ?? "#10b981"}
+        secondary={brand?.palette?.secondary ?? "#3b82f6"}
         offersTitle={data.offers.title}
         logoSvg={brand?.logoSvg ?? null}
       />

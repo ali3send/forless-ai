@@ -8,6 +8,7 @@ export function Navbar({
   offersTitle,
   logoSvg,
   primary,
+  secondary,
 }: NavbarData) {
   return (
     <header
@@ -27,7 +28,11 @@ export function Navbar({
         <div className="flex items-center gap-2">
           {logoSvg && (
             <div>
-              <BrandLogo svg={logoSvg} primary={primary} secondary={primary} />
+              <BrandLogo
+                svg={logoSvg}
+                primary={primary}
+                secondary={secondary}
+              />
             </div>
           )}
 
