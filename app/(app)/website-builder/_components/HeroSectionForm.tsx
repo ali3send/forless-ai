@@ -1,3 +1,4 @@
+// app/(app)/website-builder/_components/HeroSectionForm.tsx
 "use client";
 
 import Image from "next/image";
@@ -5,30 +6,39 @@ import { useState } from "react";
 
 import { WebsiteData } from "@/lib/types/websiteTypes";
 import { StateUpdater } from "@/lib/types/state";
-import { useProjectStore } from "@/store/project.store";
+// import { useProjectStore } from "@/store/project.store";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
 import { TextField } from "../../components/ui/TextField";
 export type HeroSectionFormProps = {
+  websiteId: string;
   data: WebsiteData;
   setData: StateUpdater<WebsiteData>;
 };
 
-export function HeroSectionForm({ data, setData }: HeroSectionFormProps) {
-  const projectId = useProjectStore((s) => s.projectId);
+export function HeroSectionForm({
+  websiteId,
+  data,
+  setData,
+}: HeroSectionFormProps) {
+  // const projectId = useProjectStore((s) => s.projectId);
 
   const [uploading, setUploading] = useState(false);
   const [removing, setRemoving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
   async function onUpload(file: File) {
-    if (!projectId) return;
+    console.log("UPLOAD STARTED", file);
+    if (!websiteId) {
+      uiToast.error("Missing websiteId ID");
+      return;
+    }
 
     setErr(null);
     setUploading(true);
     try {
       const fd = new FormData();
-      fd.append("projectId", projectId);
+      fd.append("websiteId", websiteId);
       fd.append("file", file);
 
       const res = await fetch("/api/storage/upload/hero", {
@@ -56,7 +66,7 @@ export function HeroSectionForm({ data, setData }: HeroSectionFormProps) {
   }
 
   async function removeImage() {
-    if (!projectId) return;
+    if (!websiteId) return;
 
     setErr(null);
 
@@ -70,7 +80,7 @@ export function HeroSectionForm({ data, setData }: HeroSectionFormProps) {
       const res = await fetch("/api/storage/remove/hero", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectId }),
+        body: JSON.stringify({ websiteId }),
       });
 
       const json = await res.json().catch(() => ({}));

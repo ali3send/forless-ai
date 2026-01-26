@@ -1,31 +1,52 @@
 // app/api/contact/route.ts
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 
 export async function POST(req: Request) {
-  const supabase = await createServerSupabaseClient();
+  const supabase = await createAdminSupabaseClient();
   const body = await req.json().catch(() => ({}));
 
-  const { projectId, name, email, message } = body;
+  const { websiteId, name, email, message } = body;
 
-  if (!projectId || !name || !email || !message) {
+  if (!websiteId || !name || !email || !message) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
 
+  const { data: website, error: websiteError } = await supabase
+    .from("websites")
+    .select("project_id")
+    .eq("id", websiteId)
+    .maybeSingle();
+
+  if (!website || websiteError) {
+    return NextResponse.json(
+      { error: `Website ${websiteId} not found` },
+      { status: 404 }
+    );
+  }
+
+  const project_id = website.project_id;
+
   // find project owner
-  const { data: project } = await supabase
+  const { data: project, error: projectError } = await supabase
     .from("projects")
     .select("user_id")
-    .eq("id", projectId)
+    .eq("id", project_id)
     .single();
+
+  if (projectError || !project) {
+    console.error("Project fetch failed", projectError);
+    return NextResponse.json({ error: "Invalid project" }, { status: 404 });
+  }
 
   if (!project) {
     return NextResponse.json({ error: "Invalid project" }, { status: 404 });
   }
 
   const { error } = await supabase.from("contact_messages").insert({
-    project_id: projectId,
-    user_id: project.user_id,
+    project_id: project_id,
+    // user_id: project.user_id,
     name,
     email,
     message,

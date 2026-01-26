@@ -6,7 +6,6 @@ export type Owner =
 const GuestIdSchema = z.uuid();
 
 export async function getOwner(req: Request, supabase: any): Promise<Owner> {
-  // 1️⃣ Authenticated user always wins
   const {
     data: { user },
     error,

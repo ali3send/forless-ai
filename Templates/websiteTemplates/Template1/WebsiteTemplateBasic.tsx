@@ -2,6 +2,7 @@
 "use client";
 
 import type { WebsiteData } from "@/lib/types/websiteTypes";
+import type { BrandDataNew } from "@/lib/types/brandTypes";
 
 import { Navbar } from "./sections/Navbar";
 import { HeroSection } from "./sections/HeroSection";
@@ -10,15 +11,14 @@ import { FeaturesSection } from "./sections/FeaturesSection";
 import { OffersSection } from "./sections/OffersSection";
 import { ContactSection } from "./sections/ContactSection";
 import { Footer } from "./sections/Footer";
-import { BrandData } from "@/lib/types/brandTypes";
 
 type Props = {
   data: WebsiteData;
-  brand: BrandData | null;
-  projectId: string;
+  brand: BrandDataNew | null;
+  websiteId: string;
 };
 
-export function WebsiteTemplateBasic({ data, brand, projectId }: Props) {
+export function WebsiteTemplateBasic({ data, brand, websiteId }: Props) {
   return (
     <div className="min-h-screen bg-(--color-bg) text-text">
       <Navbar
@@ -51,7 +51,7 @@ export function WebsiteTemplateBasic({ data, brand, projectId }: Props) {
       <ContactSection
         contact={data.contact}
         finalCta={data.finalCta}
-        projectId={projectId}
+        websiteId={websiteId}
       />
 
       <Footer brandName={data.brandName} />

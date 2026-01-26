@@ -6,11 +6,11 @@ import { TextInput } from "../../ui/TextInput";
 type Props = {
   contact: ContactData;
   finalCta: FinalCtaData;
-  projectId: string;
+  websiteId: string;
 };
 
-export function ContactSection({ contact, finalCta, projectId }: Props) {
-  const { submit, loading, success, error } = useContactForm(projectId);
+export function ContactSection({ contact, finalCta, websiteId }: Props) {
+  const { submit, loading, success, error } = useContactForm(websiteId);
 
   return (
     <section

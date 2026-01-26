@@ -1,3 +1,4 @@
+// app/(app)/dashboard/_components/ProjectGrid.tsx
 "use client";
 
 import type { ProjectRow } from "../types";

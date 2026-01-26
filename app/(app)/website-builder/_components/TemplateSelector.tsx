@@ -1,3 +1,4 @@
+// app/(app)/website-builder/_components/TemplateSelector.tsx
 "use client";
 
 import { useState, useRef, useEffect } from "react";
