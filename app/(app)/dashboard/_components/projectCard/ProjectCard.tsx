@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
 import { Trash2 } from "lucide-react";
 import { useProjectActions } from "./useProjectActions";
@@ -17,6 +16,9 @@ export function ProjectCard({ project }: { project: ProjectRow }) {
     e.preventDefault();
     e.stopPropagation();
 
+    if (isDeleted || isUnpublished) {
+      return;
+    }
     const res = await fetch(`/api/websites/resolve?projectId=${project.id}`);
 
     const json = await res.json();
@@ -37,12 +39,10 @@ export function ProjectCard({ project }: { project: ProjectRow }) {
     name,
   });
 
-  const Wrapper: any = isDeleted || isUnpublished ? "div" : Link;
-
   return (
     <div
       onClick={openBuilder}
-      className="group cursor-pointer flex flex-col rounded-lg border bg-secondary-fade p-3 text-xs transition hover:border-primary"
+      className={`${isDeleted || isUnpublished ? "cursor-default" : "cursor-pointer"} group flex flex-col rounded-lg border bg-secondary-fade p-3 text-xs transition hover:border-primary`}
     >
       <div className="relative h-28 overflow-hidden rounded-md bg-secondary-light">
         {project.thumbnail_url ? (

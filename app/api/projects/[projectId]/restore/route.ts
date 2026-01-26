@@ -3,7 +3,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export async function POST(
   _req: Request,
-  context: { params: Promise<{ projectId: string }> }
+  context: { params: Promise<{ projectId: string }> },
 ) {
   const { projectId } = await context.params;
 
@@ -12,6 +12,7 @@ export async function POST(
   }
 
   const supabase = await createServerSupabaseClient();
+
   const {
     data: { user },
     error: userError,
@@ -21,37 +22,49 @@ export async function POST(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  /* ───────── FETCH PROJECT ───────── */
-  const { data: project, error: fetchError } = await supabase
+  /* ───────── FETCH PROJECT + WEBSITE ───────── */
+  const { data, error } = await supabase
     .from("projects")
-    .select("status, unpublished_at")
+    .select(
+      `
+        status,
+        deleted_at,
+        websites (
+          unpublished_at
+        )
+      `,
+    )
     .eq("id", projectId)
     .eq("user_id", user.id)
     .single();
 
-  if (fetchError || !project) {
+  if (error || !data) {
     return NextResponse.json({ error: "Project not found" }, { status: 404 });
   }
 
+  const website = Array.isArray(data.websites)
+    ? data.websites[0]
+    : data.websites;
+
   /* ───────── VALIDATION ───────── */
-  if (project.status !== "deleted") {
+  if (data.status !== "deleted") {
     return NextResponse.json(
       { error: "Project is not deleted" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
-  if (project.unpublished_at) {
+  if (website?.unpublished_at) {
     return NextResponse.json(
       {
         error:
           "This project was unpublished by admin and cannot be restored. Please contact support.",
       },
-      { status: 403 }
+      { status: 403 },
     );
   }
 
-  /* ───────── RESTORE ───────── */
+  /* ───────── RESTORE PROJECT ───────── */
   const { error: updateError } = await supabase
     .from("projects")
     .update({
