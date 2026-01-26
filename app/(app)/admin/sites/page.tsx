@@ -4,7 +4,6 @@ import { UnpublishButton } from "../components/UnpublishButton";
 
 type SiteRow = {
   id: string;
-  name: string | null;
   slug: string | null;
   user_id: string | null;
   updated_at: string | null;
@@ -15,9 +14,9 @@ export default async function AdminSitesPage() {
   if (!admin.ok) redirect("/");
   const { supabase } = admin;
   const { data, error } = await supabase
-    .from("projects")
-    .select("id, name, slug, user_id, updated_at")
-    .eq("status", "published")
+    .from("websites")
+    .select("id, slug, user_id, updated_at")
+    .eq("is_published", true)
     .order("updated_at", { ascending: false })
     .limit(200);
 
@@ -52,20 +51,20 @@ export default async function AdminSitesPage() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <div className="font-medium text-secondary-dark">
-                  Project name: {s.name ?? "(no name)"}{" "}
+                  {/* Project name: {s.name ?? "(no name)"}{" "} */}
                   {s.slug ? (
                     <div className="text-secondary"> Slug: {s.slug}</div>
                   ) : null}
                 </div>
                 <div className="mt-1 text-xs text-secondary">
-                  Project ID: {s.id}
+                  Website ID: {s.id}
                 </div>
                 <div className="mt-1 text-xs text-secondary">
                   Owner: {s.user_id ?? "—"}
                 </div>
               </div>
 
-              <UnpublishButton projectId={s.id} />
+              <UnpublishButton websiteID={s.id} />
             </div>
           </div>
         ))}

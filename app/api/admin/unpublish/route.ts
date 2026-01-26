@@ -4,7 +4,7 @@ import { requireAdmin } from "@/lib/auth/requireAdmin";
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 
 const Schema = z.object({
-  projectId: z.string().min(1),
+  websiteID: z.string().min(1),
 });
 
 export async function POST(req: Request) {
@@ -22,20 +22,19 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid body" }, { status: 400 });
   }
 
-  const { projectId } = parsed.data;
+  const { websiteID } = parsed.data;
 
-  /* ───────── UPDATE PROJECT ───────── */
+  /* ───────── UPDATE websiteID ───────── */
   const { error } = await supabase
-    .from("projects")
+    .from("websites")
     .update({
-      status: "unpublished",
+      is_published: false,
       slug: null,
       published_at: null,
       unpublished_at: new Date().toISOString(),
       unpublished_by: admin.user.id,
     })
-    .eq("id", projectId)
-    .neq("status", "deleted"); // safety guard
+    .eq("id", websiteID);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -46,8 +45,8 @@ export async function POST(req: Request) {
     type: "project",
     message: "Website unpublished by admin",
     actor_id: admin.user.id,
-    entity_id: projectId,
-    entity_type: "project",
+    entity_id: websiteID,
+    entity_type: "website",
   });
 
   return NextResponse.json({ ok: true });

@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { uiToast } from "@/lib/utils/uiToast";
 
-export function UnpublishButton({ projectId }: { projectId: string }) {
+export function UnpublishButton({ websiteID }: { websiteID: string }) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -13,15 +14,16 @@ export function UnpublishButton({ projectId }: { projectId: string }) {
       const res = await fetch("/api/admin/unpublish", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectId }),
+        body: JSON.stringify({ websiteID }),
       });
 
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        alert(data?.error || "Failed to unpublish");
+        uiToast.error(data?.error || "Failed to unpublish");
         return;
       }
+      uiToast.success("Website unpublished successfully");
       router.refresh();
     } finally {
       setLoading(false);
