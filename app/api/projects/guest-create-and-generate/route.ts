@@ -1,3 +1,4 @@
+// app/api/projects/guest-create-and-generate/route.ts
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -8,6 +9,7 @@ import type { PlanKey } from "@/lib/billing/planLimits";
 import { WebsiteData } from "@/lib/types/websiteTypes";
 import { commitUsage } from "@/lib/usage/commitUsage";
 import { generateBrandWithAI } from "@/lib/server/generateBrandWithAi";
+import { fetchUnsplashImage } from "@/lib/unsplash";
 
 /* ──────────────────────────────
    REQUEST SCHEMA
@@ -327,6 +329,27 @@ Return EXACTLY this JSON shape:
       { error: "Failed to save website", details: websiteErr?.message },
       { status: 500 },
     );
+  }
+
+  try {
+    let thumbnailUrl: string | null = null;
+
+    if (
+      typeof websiteData?.hero?.imageQuery === "string" &&
+      websiteData.hero.imageQuery.trim()
+    ) {
+      thumbnailUrl = await fetchUnsplashImage(websiteData.hero.imageQuery);
+    }
+
+    // 3️⃣ Update project thumbnail
+    if (thumbnailUrl && project.id) {
+      await supabase
+        .from("projects")
+        .update({ thumbnail_url: thumbnailUrl })
+        .eq("id", project.id);
+    }
+  } catch (e) {
+    console.warn("Thumbnail update failed:", e);
   }
 
   await commitUsage({

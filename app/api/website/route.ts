@@ -50,7 +50,7 @@ export async function GET(req: Request) {
     console.error("Failed to load website:", error);
     return NextResponse.json(
       { error: "Failed to load website" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 
@@ -80,7 +80,7 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     return NextResponse.json(
       { error: "Invalid body", details: parsed.error.flatten() },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -96,7 +96,7 @@ export async function POST(req: Request) {
       .eq("id", websiteId)
       .eq(
         owner.type === "user" ? "user_id" : "guest_id",
-        owner.type === "user" ? owner.userId : owner.guestId
+        owner.type === "user" ? owner.userId : owner.guestId,
       )
       .single();
 
@@ -120,7 +120,7 @@ export async function POST(req: Request) {
     }
 
     // ──────────────────────────────
-    // 2️⃣.5️⃣ Update project thumbnail (best-effort)
+    // 2️⃣.5️⃣ Update project thumbnail
     // ──────────────────────────────
     try {
       let thumbnailUrl: string | null = null;
