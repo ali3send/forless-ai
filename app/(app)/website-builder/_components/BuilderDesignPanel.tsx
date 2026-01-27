@@ -4,6 +4,7 @@
 import { PALETTES, FONTS } from "@/app/(app)/brand/brandConfig";
 import { BrandDataNew } from "@/lib/types/brandTypes";
 import { useBrandStore } from "@/store/brand.store";
+import { useState } from "react";
 
 function ensureBrand(prev: BrandDataNew | null): BrandDataNew {
   return {
@@ -28,20 +29,31 @@ function ensureBrand(prev: BrandDataNew | null): BrandDataNew {
 export function BuilderDesignPanel() {
   const brand = useBrandStore((s) => s.brand);
   const updateBrand = useBrandStore((s) => s.updateBrand);
-
+  const [selectedPaletteId, setSelectedPaletteId] = useState<string | null>(
+    null,
+  );
   const current = ensureBrand(brand);
-
-  const currentPaletteId =
+  const inferredPaletteId =
     PALETTES.find(
       (p) =>
         p.primary === current.palette.primary &&
-        p.secondary === current.palette.secondary
-    )?.id ?? PALETTES[0]?.id;
-
+        p.secondary === current.palette.secondary,
+    )?.id ?? "custom";
+  const customPalette = {
+    primary: current.palette.primary,
+    secondary: current.palette.secondary,
+  };
+  const currentPaletteId = selectedPaletteId ?? inferredPaletteId;
   const currentFontId =
     FONTS.find((f) => f.css === current.font.css)?.id ?? FONTS[0]?.id;
 
   const handlePaletteChange = (paletteId: string) => {
+    setSelectedPaletteId(paletteId);
+
+    if (paletteId === "custom") {
+      return;
+    }
+
     const p = PALETTES.find((x) => x.id === paletteId) ?? PALETTES[0];
 
     updateBrand((prev) => {
@@ -92,11 +104,21 @@ export function BuilderDesignPanel() {
               <div className="flex items-center gap-2">
                 <span
                   className="h-4 w-4 rounded-full"
-                  style={{ backgroundColor: p.primary }}
+                  style={{
+                    backgroundColor:
+                      p.id === "custom" && p.id === currentPaletteId
+                        ? customPalette.primary
+                        : p.primary,
+                  }}
                 />
                 <span
                   className="h-4 w-4 rounded-full"
-                  style={{ backgroundColor: p.secondary }}
+                  style={{
+                    backgroundColor:
+                      p.id === "custom" && p.id === currentPaletteId
+                        ? customPalette.secondary
+                        : p.secondary,
+                  }}
                 />
                 <span className="text-[11px] text-secondary-dark">
                   {p.label}
@@ -106,6 +128,62 @@ export function BuilderDesignPanel() {
                 <span className="text-[10px] font-semibold text-primary">
                   Selected
                 </span>
+              )}
+
+              {p.id === "custom" && p.id === currentPaletteId && (
+                <div className="mt-2 flex items-center justify-between px-1">
+                  <div className="flex gap-2">
+                    <label className="relative">
+                      <span
+                        className="block h-6 w-6 rounded-full border"
+                        style={{ backgroundColor: customPalette.primary }}
+                      />
+                      <input
+                        type="color"
+                        value={current.palette.primary}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          updateBrand((prev) => {
+                            const base = ensureBrand(prev);
+                            return {
+                              ...base,
+                              palette: {
+                                primary: value,
+                                secondary: base.palette.secondary,
+                              },
+                            };
+                          });
+                        }}
+                        className="absolute inset-0 cursor-pointer opacity-0"
+                      />
+                    </label>
+
+                    <label className="relative">
+                      <span
+                        className="block h-6 w-6 rounded-full border"
+                        style={{ backgroundColor: customPalette.secondary }}
+                      />
+                      <input
+                        type="color"
+                        value={current.palette.secondary}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          updateBrand((prev) => {
+                            const base = ensureBrand(prev);
+                            return {
+                              ...base,
+                              palette: {
+                                primary: base.palette.primary,
+                                secondary: value,
+                              },
+                            };
+                          });
+                        }}
+                        className="absolute inset-0 cursor-pointer opacity-0"
+                      />
+                    </label>
+                  </div>
+                </div>
               )}
             </button>
           ))}

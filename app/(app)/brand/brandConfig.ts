@@ -1,20 +1,11 @@
 // app/brand/brandConfig.ts
 
-export type BrandOption = {
-  id: string;
-  name: string;
-  slogan: string;
-  primaryColor: string;
-  secondaryColor: string;
-  font: string;
-  logoSvg: string;
-};
-
 export type Palette = {
   id: string;
   label: string;
   primary: string;
   secondary: string;
+  isCustom?: boolean;
 };
 
 export type BrandFont = {
@@ -65,6 +56,13 @@ export const PALETTES: Palette[] = [
     label: "Warm Business Light",
     primary: "#f59e0b",
     secondary: "#f3f4f6",
+  },
+  {
+    id: "custom",
+    label: "Custom colors",
+    primary: "#000000",
+    secondary: "#ffffff",
+    isCustom: true,
   },
 ];
 

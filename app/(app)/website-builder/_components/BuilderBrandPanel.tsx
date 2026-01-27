@@ -94,7 +94,6 @@ export function BuilderBrandsPanel() {
       </div>
 
       {/* Generate brand */}
-      {/* Generate brand */}
       <div className="rounded-lg border border-secondary-fade bg-secondary-soft p-3">
         <label className="mb-1 block text-xs font-medium text-secondary">
           Generate brand with AI

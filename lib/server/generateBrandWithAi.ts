@@ -1,8 +1,8 @@
 // lib/server/generateBrandWithAi.ts
 import { openai } from "@/lib/openai";
-import { BrandData } from "@/lib/types/brandTypes";
+import { BrandDataNew } from "@/lib/types/brandTypes";
 
-export async function generateBrandWithAI(idea: string): Promise<BrandData> {
+export async function generateBrandWithAI(idea: string): Promise<BrandDataNew> {
   if (!idea || !idea.trim()) {
     throw new Error("Missing idea for brand generation");
   }
