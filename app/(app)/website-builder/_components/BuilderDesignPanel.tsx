@@ -45,10 +45,6 @@ export function BuilderDesignPanel() {
         p.primary === current.palette.primary &&
         p.secondary === current.palette.secondary,
     )?.id ?? "custom";
-  const customPalette = {
-    primary: current.palette.primary,
-    secondary: current.palette.secondary,
-  };
   const currentPaletteId = selectedPaletteId ?? inferredPaletteId;
   const currentFontId =
     FONTS.find((f) => f.css === current.font.css)?.id ?? FONTS[0]?.id;
@@ -134,7 +130,7 @@ export function BuilderDesignPanel() {
                   className="h-4 w-4 rounded-full"
                   style={{
                     backgroundColor:
-                      p.id === "custom" && p.id === currentPaletteId
+                      p.id === "custom"
                         ? customPaletteState.primary
                         : p.primary,
                   }}
@@ -143,7 +139,7 @@ export function BuilderDesignPanel() {
                   className="h-4 w-4 rounded-full"
                   style={{
                     backgroundColor:
-                      p.id === "custom" && p.id === currentPaletteId
+                      p.id === "custom"
                         ? customPaletteState.secondary
                         : p.secondary,
                   }}
@@ -164,7 +160,7 @@ export function BuilderDesignPanel() {
                     <label className="relative">
                       <span
                         className="block h-6 w-6 rounded-full border"
-                        style={{ backgroundColor: customPalette.primary }}
+                        style={{ backgroundColor: customPaletteState.primary }}
                       />
                       <input
                         type="color"
@@ -179,7 +175,9 @@ export function BuilderDesignPanel() {
                     <label className="relative">
                       <span
                         className="block h-6 w-6 rounded-full border"
-                        style={{ backgroundColor: customPalette.secondary }}
+                        style={{
+                          backgroundColor: customPaletteState.secondary,
+                        }}
                       />
                       <input
                         type="color"
