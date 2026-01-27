@@ -65,7 +65,7 @@ export function UsersTable() {
 
   const filteredUsers = useMemo(
     () => selectUsers(rows, filters, debouncedQuery),
-    [rows, filters, debouncedQuery]
+    [rows, filters, debouncedQuery],
   );
 
   /* ============================
@@ -88,7 +88,7 @@ export function UsersTable() {
 
   const patchRow = useCallback((userId: string, patch: Partial<UserRow>) => {
     setRows((prev) =>
-      prev.map((r) => (r.id === userId ? { ...r, ...patch } : r))
+      prev.map((r) => (r.id === userId ? { ...r, ...patch } : r)),
     );
   }, []);
 
@@ -122,7 +122,7 @@ export function UsersTable() {
         uiToast.dismiss(toastId);
       }
     },
-    [rows, patchRow]
+    [rows, patchRow],
   );
 
   const performSuspend = useCallback(
@@ -132,7 +132,7 @@ export function UsersTable() {
       patchRow(userId, {
         is_suspended: suspend,
         suspended_at: suspend ? new Date().toISOString() : null,
-        suspended_reason: suspend ? reason ?? null : null,
+        suspended_reason: suspend ? (reason ?? null) : null,
       });
 
       try {
@@ -149,7 +149,7 @@ export function UsersTable() {
         throw e;
       }
     },
-    [rows, patchRow]
+    [rows, patchRow],
   );
 
   const toggleSuspend = useCallback(
@@ -197,7 +197,7 @@ export function UsersTable() {
         },
       });
     },
-    [performSuspend]
+    [performSuspend],
   );
 
   const deleteUser = useCallback(
@@ -234,7 +234,7 @@ export function UsersTable() {
         },
       });
     },
-    [rows]
+    [rows],
   );
 
   return (
@@ -266,7 +266,7 @@ export function UsersTable() {
             {filteredUsers.map((u) => (
               <UserCard
                 key={u.id}
-                u={u}
+                user={u}
                 expanded={expanded[u.id] === true}
                 onToggleExpanded={() =>
                   setExpanded((p) => ({

@@ -6,20 +6,20 @@ import { ActionsMenu } from "./ActionsMenu";
 import { UserDetails } from "./UserDetails";
 
 export function UserCard(props: {
-  u: UserRow;
+  user: UserRow;
   expanded: boolean;
   onToggleExpanded: () => void;
   menuOpen: string | null;
   setMenuOpen: (
-    v: string | null | ((cur: string | null) => string | null)
+    v: string | null | ((cur: string | null) => string | null),
   ) => void;
   onToggleSuspend: (userId: string, suspend: boolean) => void;
   onSetRole: (userId: string, role: "user" | "admin") => void;
   onDelete: (userId: string, email?: string | null) => void;
 }) {
-  const u = props.u;
-  const suspended = !!u.is_suspended;
-  const role = (u.role || "user") as "user" | "admin";
+  const user = props.user;
+  const suspended = !!user.is_suspended;
+  const role = (user.role || "user") as "user" | "admin";
 
   return (
     <div
@@ -51,14 +51,14 @@ export function UserCard(props: {
               }
             `}
           >
-            {initials(u.full_name, u.email)}
+            {initials(user.full_name, user.email)}
           </div>
 
           <div className="min-w-0">
             {/* Name + badges */}
             <div className="flex flex-wrap items-center gap-2">
               <div className="truncate text-sm font-semibold text-secondary-dark">
-                {u.full_name || "—"}
+                {user.full_name || "—"}
               </div>
 
               {role === "admin" ? (
@@ -76,7 +76,7 @@ export function UserCard(props: {
 
             {/* Email */}
             <div className="mt-1 truncate text-xs text-secondary">
-              {u.email || "—"}
+              {user.email || "—"}
             </div>
 
             {/* Meta */}
@@ -84,13 +84,13 @@ export function UserCard(props: {
               <span>
                 Last sign-in{" "}
                 <span className="text-secondary-dark">
-                  {fmtDate(u.last_sign_in_at)}
+                  {fmtDate(user.last_sign_in_at)}
                 </span>
               </span>
               <span>
                 Created{" "}
                 <span className="text-secondary-dark">
-                  {fmtDate(u.auth_created_at ?? u.created_at)}
+                  {fmtDate(user.auth_created_at ?? user.created_at)}
                 </span>
               </span>
             </div>
@@ -117,7 +117,7 @@ export function UserCard(props: {
           </button>
 
           <ActionsMenu
-            user={u}
+            user={user}
             menuOpen={props.menuOpen}
             setMenuOpen={props.setMenuOpen}
             onToggleSuspend={props.onToggleSuspend}
@@ -130,7 +130,7 @@ export function UserCard(props: {
       {/* Expanded */}
       {props.expanded ? (
         <div className="mt-4 border-t border-secondary-fade pt-4">
-          <UserDetails u={u} />
+          <UserDetails user={user} />
         </div>
       ) : null}
     </div>
