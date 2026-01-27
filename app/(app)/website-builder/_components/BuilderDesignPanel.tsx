@@ -32,7 +32,13 @@ export function BuilderDesignPanel() {
   const [selectedPaletteId, setSelectedPaletteId] = useState<string | null>(
     null,
   );
+
   const current = ensureBrand(brand);
+  const [customPaletteState, setCustomPaletteState] = useState(() => ({
+    primary: current.palette.primary,
+    secondary: current.palette.secondary,
+  }));
+
   const inferredPaletteId =
     PALETTES.find(
       (p) =>
@@ -50,14 +56,20 @@ export function BuilderDesignPanel() {
   const handlePaletteChange = (paletteId: string) => {
     setSelectedPaletteId(paletteId);
 
-    if (paletteId === "custom") {
-      return;
-    }
-
-    const p = PALETTES.find((x) => x.id === paletteId) ?? PALETTES[0];
-
     updateBrand((prev) => {
       const base = ensureBrand(prev);
+
+      if (paletteId === "custom") {
+        return {
+          ...base,
+          palette: {
+            primary: customPaletteState.primary,
+            secondary: customPaletteState.secondary,
+          },
+        };
+      }
+
+      const p = PALETTES.find((x) => x.id === paletteId) ?? PALETTES[0];
       return {
         ...base,
         palette: {
@@ -67,7 +79,23 @@ export function BuilderDesignPanel() {
       };
     });
   };
+  const updateCustomPalette = (patch: {
+    primary?: string;
+    secondary?: string;
+  }) => {
+    setCustomPaletteState((prev) => ({ ...prev, ...patch }));
 
+    updateBrand((prev) => {
+      const base = ensureBrand(prev);
+      return {
+        ...base,
+        palette: {
+          primary: patch.primary ?? base.palette.primary,
+          secondary: patch.secondary ?? base.palette.secondary,
+        },
+      };
+    });
+  };
   const handleFontChange = (fontId: string) => {
     const f = FONTS.find((x) => x.id === fontId) ?? FONTS[0];
 
@@ -101,13 +129,13 @@ export function BuilderDesignPanel() {
                   : "border-secondary-fade bg-secondary-soft hover:border-primary"
               }`}
             >
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 ">
                 <span
                   className="h-4 w-4 rounded-full"
                   style={{
                     backgroundColor:
                       p.id === "custom" && p.id === currentPaletteId
-                        ? customPalette.primary
+                        ? customPaletteState.primary
                         : p.primary,
                   }}
                 />
@@ -116,7 +144,7 @@ export function BuilderDesignPanel() {
                   style={{
                     backgroundColor:
                       p.id === "custom" && p.id === currentPaletteId
-                        ? customPalette.secondary
+                        ? customPaletteState.secondary
                         : p.secondary,
                   }}
                 />
@@ -141,19 +169,9 @@ export function BuilderDesignPanel() {
                       <input
                         type="color"
                         value={current.palette.primary}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          updateBrand((prev) => {
-                            const base = ensureBrand(prev);
-                            return {
-                              ...base,
-                              palette: {
-                                primary: value,
-                                secondary: base.palette.secondary,
-                              },
-                            };
-                          });
-                        }}
+                        onChange={(e) =>
+                          updateCustomPalette({ primary: e.target.value })
+                        }
                         className="absolute inset-0 cursor-pointer opacity-0"
                       />
                     </label>
@@ -166,19 +184,9 @@ export function BuilderDesignPanel() {
                       <input
                         type="color"
                         value={current.palette.secondary}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          updateBrand((prev) => {
-                            const base = ensureBrand(prev);
-                            return {
-                              ...base,
-                              palette: {
-                                primary: base.palette.primary,
-                                secondary: value,
-                              },
-                            };
-                          });
-                        }}
+                        onChange={(e) =>
+                          updateCustomPalette({ secondary: e.target.value })
+                        }
                         className="absolute inset-0 cursor-pointer opacity-0"
                       />
                     </label>
