@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { UserRow } from "./_components/utils/types";
 import { UsersToolbar } from "./_components/ui/UsersToolbar";
