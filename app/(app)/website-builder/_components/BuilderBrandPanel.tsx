@@ -133,7 +133,7 @@ export function BuilderBrandsPanel() {
             <textarea
               value={idea}
               onChange={(e) => setIdea(e.target.value)}
-              placeholder="Describe your business, vibe, and target audience…"
+              placeholder="Describe your brand idea(Optional)"
               className="w-full resize-none rounded-md border border-secondary-fade bg-background p-2 text-sm outline-none focus:border-primary"
               rows={3}
             />

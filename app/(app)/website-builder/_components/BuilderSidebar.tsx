@@ -7,7 +7,6 @@ import type { BuilderSection } from "../builderSections";
 import { useWebsiteStore } from "@/store/website.store";
 
 import { BuilderContentPanel } from "./BuilderContentPanel";
-import { BuilderDesignPanel } from "./BuilderDesignPanel";
 import { PublishButton } from "./PublishButton";
 import TemplateSelector from "./TemplateSelector";
 import { BuilderBrandsPanel } from "./BuilderBrandPanel";
@@ -33,9 +32,6 @@ export function BuilderSidebar(props: Props) {
   const { saving, onSave } = props;
   const { data } = useWebsiteStore();
 
-  const [activePanel, setActivePanel] = useState<"content" | "design">(
-    "content",
-  );
   const [activeMode, setActiveMode] = useState<"builder" | "brands">("builder");
 
   return (
@@ -72,44 +68,11 @@ export function BuilderSidebar(props: Props) {
 
           <TemplateSelector />
 
-          {/* Panel switch */}
-          <div className="flex gap-1 rounded-full border border-secondary-fade bg-secondary-soft p-1 text-[11px]">
-            <button
-              type="button"
-              onClick={() => setActivePanel("content")}
-              className={`flex-1 rounded-full px-2 py-1 transition ${
-                activePanel === "content"
-                  ? "bg-primary text-white font-medium"
-                  : "text-secondary hover:text-secondary-dark"
-              }`}
-            >
-              Content
-            </button>
-            <button
-              type="button"
-              onClick={() => setActivePanel("design")}
-              className={`flex-1 rounded-full px-2 py-1 transition ${
-                activePanel === "design"
-                  ? "bg-primary text-white font-medium"
-                  : "text-secondary hover:text-secondary-dark"
-              }`}
-            >
-              Design
-            </button>
-          </div>
-
-          {/* Panels */}
-          {activePanel === "content" ? (
-            <BuilderContentPanel
-              websiteId={props.websiteId}
-              onGenerate={props.onGenerate}
-              onRestore={props.handleRestoreSection}
-            />
-          ) : (
-            <BuilderDesignPanel />
-          )}
-
-          {/* Save */}
+          <BuilderContentPanel
+            websiteId={props.websiteId}
+            onGenerate={props.onGenerate}
+            onRestore={props.handleRestoreSection}
+          />
         </>
       )}
 
