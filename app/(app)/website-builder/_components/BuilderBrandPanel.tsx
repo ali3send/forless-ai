@@ -6,6 +6,7 @@ import { apiListBrands, apiGenerateBrands } from "@/lib/api/brand";
 import { useWebsiteStore } from "@/store/website.store";
 import { useBrandStore } from "@/store/brand.store";
 import BrandLogo from "../../brand/_components/BrandLogo";
+import { BuilderDesignPanel } from "./BuilderDesignPanel";
 
 type Brand = {
   id: string;
@@ -29,6 +30,7 @@ export function BuilderBrandsPanel() {
   const [idea, setIdea] = useState("");
   const [loading, setLoading] = useState(false);
   const [loadingBrands, setLoadingBrands] = useState(false);
+  const [activeTab, setActiveTab] = useState<"ai" | "default">("ai");
 
   // ──────────────────────────────
   // Load brands
@@ -84,66 +86,109 @@ export function BuilderBrandsPanel() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h2 className="text-sm font-semibold">Brands</h2>
-        <p className="text-xs text-muted">
-          Choose or create a brand for this website
-        </p>
+    <>
+      <div className="flex gap-1 rounded-full border border-secondary-fade bg-secondary-soft p-1 text-[11px]">
+        <button
+          type="button"
+          onClick={() => setActiveTab("ai")}
+          className={`flex-1 rounded-full px-2 py-1 transition ${
+            activeTab === "ai"
+              ? "bg-primary text-white font-medium"
+              : "text-secondary hover:text-secondary-dark"
+          }`}
+        >
+          Generate with AI
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab("default")}
+          className={`flex-1 rounded-full px-2 py-1 transition ${
+            activeTab === "default"
+              ? "bg-primary text-white font-medium"
+              : "text-secondary hover:text-secondary-dark"
+          }`}
+        >
+          Default Design
+        </button>
       </div>
 
-      {/* Generate brand */}
-      <div className="rounded-lg border border-secondary-fade bg-secondary-soft p-3">
-        <label className="mb-1 block text-xs font-medium text-secondary">
-          Generate brand with AI
-        </label>
-
-        <textarea
-          value={idea}
-          onChange={(e) => setIdea(e.target.value)}
-          placeholder="Describe your business, vibe, and target audience…"
-          className="w-full resize-none rounded-md border border-secondary-fade bg-background p-2 text-sm outline-none focus:border-primary"
-          rows={3}
-        />
-
-        <div className="mt-2 flex justify-end">
-          <button
-            onClick={handleGenerate}
-            disabled={loading}
-            className="rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-primary-hover disabled:opacity-50"
-          >
-            {loading ? "Generating…" : "Generate brand"}
-          </button>
-        </div>
-      </div>
-
-      <div className="space-y-3">
-        {loadingBrands && (
-          <div className="text-xs text-secondary">Loading brands…</div>
-        )}
-
-        {!loadingBrands && brands.length === 0 && (
-          <div className="rounded-md border border-dashed border-secondary-fade p-4 text-xs text-secondary">
-            No brands yet. Generate one above or create manually.
+      {activeTab === "ai" && (
+        <div className="space-y-6">
+          {/* Header */}
+          <div>
+            <h2 className="text-sm font-semibold">Brands</h2>
+            <p className="text-xs text-muted">
+              Choose or create a brand for this website
+            </p>
           </div>
-        )}
 
-        {!loadingBrands &&
-          brands.map((brand) => {
-            const isActive = brand.id === activeBrandId;
+          {/* Generate brand */}
 
-            return (
-              <BrandCard
-                key={brand.id}
-                brand={brand}
-                active={isActive}
-                onUse={() => applyBrand(brand)}
-              />
-            );
-          })}
-      </div>
-    </div>
+          <div className="rounded-lg border border-secondary-fade bg-secondary-soft p-3">
+            <label className="mb-1 block text-xs font-medium text-secondary">
+              Generate brand with AI
+            </label>
+
+            <textarea
+              value={idea}
+              onChange={(e) => setIdea(e.target.value)}
+              placeholder="Describe your business, vibe, and target audience…"
+              className="w-full resize-none rounded-md border border-secondary-fade bg-background p-2 text-sm outline-none focus:border-primary"
+              rows={3}
+            />
+
+            <div className="mt-2 flex justify-end">
+              <button
+                onClick={handleGenerate}
+                disabled={loading}
+                className="rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-primary-hover disabled:opacity-50"
+              >
+                {loading ? "Generating…" : "Generate brand"}
+              </button>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            {loadingBrands && (
+              <div className="text-xs text-secondary">Loading brands…</div>
+            )}
+
+            {!loadingBrands && brands.length === 0 && (
+              <div className="rounded-md border border-dashed border-secondary-fade p-4 text-xs text-secondary">
+                No brands yet. Generate one above or create manually.
+              </div>
+            )}
+
+            {!loadingBrands &&
+              brands.map((brand) => {
+                const isActive = brand.id === activeBrandId;
+
+                return (
+                  <BrandCard
+                    key={brand.id}
+                    brand={brand}
+                    active={isActive}
+                    onUse={() => applyBrand(brand)}
+                  />
+                );
+              })}
+          </div>
+        </div>
+      )}
+      {activeTab === "default" && (
+        <div className="space-y-4">
+          <div>
+            <h2 className="text-sm font-semibold">Default Design</h2>
+            <p className="text-xs text-muted">
+              Customize colors and typography for your brand
+            </p>
+          </div>
+
+          <BuilderDesignPanel />
+        </div>
+      )}
+    </>
   );
 }
 

@@ -54,7 +54,6 @@ export async function POST(
     })
     .select()
     .single();
-
   if (error) {
     console.error("Save AI brand error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });

@@ -34,7 +34,7 @@ export function BuilderSidebar(props: Props) {
   const { data } = useWebsiteStore();
 
   const [activePanel, setActivePanel] = useState<"content" | "design">(
-    "content"
+    "content",
   );
   const [activeMode, setActiveMode] = useState<"builder" | "brands">("builder");
 
@@ -62,7 +62,7 @@ export function BuilderSidebar(props: Props) {
               : "text-secondary hover:text-secondary-dark"
           }`}
         >
-          Brands
+          Branding
         </button>
       </div>
       {activeMode === "builder" && (
@@ -110,20 +110,20 @@ export function BuilderSidebar(props: Props) {
           )}
 
           {/* Save */}
-          <div className="mt-2 flex flex-col gap-2">
-            <button
-              type="button"
-              onClick={onSave}
-              disabled={saving}
-              className="w-full rounded-full border border-secondary-fade bg-secondary-soft px-3 py-1.5 text-xs font-semibold text-secondary-dark transition hover:border-primary hover:text-primary disabled:opacity-60"
-            >
-              {saving ? "Saving..." : "Save changes"}
-            </button>
-          </div>
         </>
       )}
 
       {activeMode === "brands" && <BuilderBrandsPanel />}
+      <div className="mt-2 flex flex-col gap-2">
+        <button
+          type="button"
+          onClick={onSave}
+          disabled={saving}
+          className="w-full rounded-full border border-secondary-fade bg-secondary-soft px-3 py-1.5 text-xs font-semibold text-secondary-dark transition hover:border-primary hover:text-primary disabled:opacity-60"
+        >
+          {saving ? "Saving..." : "Save changes"}
+        </button>
+      </div>
     </aside>
   );
 }
