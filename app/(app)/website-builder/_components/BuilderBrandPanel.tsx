@@ -7,6 +7,7 @@ import { useWebsiteStore } from "@/store/website.store";
 import { useBrandStore } from "@/store/brand.store";
 import BrandLogo from "../../brand/_components/BrandLogo";
 import { BuilderDesignPanel } from "./BuilderDesignPanel";
+import { uiToast } from "@/lib/utils/uiToast";
 
 type Brand = {
   id: string;
@@ -56,6 +57,8 @@ export function BuilderBrandsPanel() {
       await apiGenerateBrands(websiteProjectId as string, idea);
       setIdea("");
       await loadBrands();
+    } catch (err) {
+      uiToast.error(err);
     } finally {
       setLoading(false);
     }
