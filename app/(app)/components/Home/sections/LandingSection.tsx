@@ -1,14 +1,10 @@
 export default function LandingSection() {
   return (
     <div>
-      <div className="inline-flex items-center gap-2 rounded-full border border-secondary-fade bg-secondary-soft px-3 py-1 text-xs text-secondary">
+      <div className="inline-flex items-center gap-2 rounded-full border border-secondary-fade bg-secondary-fade px-3 py-1 text-xs text-secondary-active">
         <span className="h-2 w-2 animate-pulse rounded-full bg-primary" />
         <span className="font-semibold tracking-wide">
           ForlessAI Website Builder
-        </span>
-        <span className="text-secondary">•</span>
-        <span className="text-secondary">
-          v1 · New features every week · No extra cost
         </span>
       </div>
 
