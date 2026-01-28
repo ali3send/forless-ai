@@ -6,7 +6,7 @@ import type { BillingInterval } from "@/lib/billing/types/types";
 import BillingIntervalToggle from "../../BillingIntervalToggle";
 // import BillingIntervalToggle from "./BillingIntervalToggle";
 // import BillingIntervalToggle from "@/app/(app)/billing/plans/_components/BillingIntervalToggle";
-type Plan = typeof import("@/lib/billing/data/plans").PLANS[number];
+type Plan = (typeof import("@/lib/billing/data/plans").PLANS)[number];
 
 export function HomePricingCard({ plan }: { plan: Plan }) {
   const router = useRouter();
@@ -14,8 +14,8 @@ export function HomePricingCard({ plan }: { plan: Plan }) {
 
   const price =
     interval === "monthly"
-      ? plan.pricing.monthly.label
-      : plan.pricing.yearly.label;
+      ? plan.pricing?.monthly.label
+      : plan.pricing?.yearly.label;
 
   return (
     <div
@@ -37,30 +37,46 @@ export function HomePricingCard({ plan }: { plan: Plan }) {
       <p className="mt-1 text-sm text-secondary">{plan.tagline}</p>
 
       {/* Toggle */}
-      <div className="mt-4">
-        <BillingIntervalToggle interval={interval} setInterval={setInterval} />
-      </div>
 
-      {/* Price */}
-      <div className="mt-4 text-2xl font-bold text-secondary-dark">
-        {price}
-
-        {interval === "yearly" && (
+      <div className="mt-4 min-h-[92px]">
+        {plan.pricing ? (
           <>
-            <span className="ml-2 text-xs font-normal text-secondary">
-              (${(Number(price.replace(/[^0-9.]/g, "")) / 12).toFixed(2)}{" "}
-              /month)
-            </span>
+            {/* Toggle */}
+            <BillingIntervalToggle
+              interval={interval}
+              setInterval={setInterval}
+            />
 
-            {plan.pricing.yearly.note && (
-              <span className="ml-2 text-xs font-normal text-primary">
-                • {plan.pricing.yearly.note}
-              </span>
-            )}
+            {/* Price */}
+            <div className="mt-4 text-2xl font-bold text-secondary-dark">
+              {price}
+
+              {interval === "yearly" && (
+                <>
+                  <span className="ml-2 text-xs font-normal text-secondary">
+                    (${(Number(price?.replace(/[^0-9.]/g, "")) / 12).toFixed(2)}{" "}
+                    /month)
+                  </span>
+
+                  {plan.pricing?.yearly.note && (
+                    <span className="ml-2 text-xs font-normal text-primary">
+                      • {plan.pricing.yearly.note}
+                    </span>
+                  )}
+                </>
+              )}
+            </div>
           </>
+        ) : (
+          /* Free plan placeholder */
+          <div className="flex h-full flex-col justify-center">
+            <div className="text-2xl font-bold text-secondary-dark">Free</div>
+            <div className="text-xs text-secondary">
+              No credit card required
+            </div>
+          </div>
         )}
       </div>
-
       {/* Features */}
       <ul className="mt-5 space-y-2 text-sm">
         {plan.features.map((feature) => (
@@ -75,10 +91,12 @@ export function HomePricingCard({ plan }: { plan: Plan }) {
       <div
         onClick={() => router.push("/billing/plans")}
         className={`mt-6 w-full rounded-md px-4 py-2 text-center text-sm font-semibold ${
-          plan.highlight ? "bg-primary text-white" : "border border-secondary"
+          plan.highlight
+            ? "bg-primary text-white"
+            : "border border-secondary text-secondary-dark"
         }`}
       >
-        View plan
+        {plan.pricing ? "View plan" : "Get started free"}
       </div>
     </div>
   );

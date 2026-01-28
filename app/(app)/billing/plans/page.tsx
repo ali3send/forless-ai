@@ -6,18 +6,16 @@ import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
 import BillingHeader from "./_components/BillingHeader";
-import FreePlanCard from "./_components/FreePlanCard";
-import PaidPlanCard from "./_components/PaidPlanCard";
 import type {
   BillingInterval,
-  PaidPlan,
   Plan,
   Profile,
 } from "../../../../lib/billing/types/types";
 import { PROFILE_CACHE_KEY } from "./_lib/utils";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
-import { FREE_FEATURES, PLANS } from "@/lib/billing/data/plans";
+import { PLANS } from "@/lib/billing/data/plans";
+import PlanCard from "./_components/PlanCard";
 
 export default function BillingPlansPage() {
   const router = useRouter();
@@ -84,7 +82,7 @@ export default function BillingPlansPage() {
         try {
           sessionStorage.setItem(
             PROFILE_CACHE_KEY,
-            JSON.stringify(nextProfile)
+            JSON.stringify(nextProfile),
           );
         } catch {}
       } catch (e: unknown) {
@@ -119,10 +117,7 @@ export default function BillingPlansPage() {
     return s;
   }, [profile]);
 
-  async function startCheckout(
-    plan: PaidPlan,
-    billingInterval: BillingInterval
-  ) {
+  async function startCheckout(plan: Plan, billingInterval: BillingInterval) {
     const t = uiToast.loading("Redirecting to checkout…");
     try {
       const res = await fetch("/api/stripe/checkout", {
@@ -194,16 +189,9 @@ export default function BillingPlansPage() {
         onManage={openPortal}
       />
 
-      <FreePlanCard
-        currentPlan={currentPlan}
-        profile={profile}
-        freeFeatures={FREE_FEATURES}
-        onLogin={() => router.push("/auth/login")}
-      />
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
         {PLANS.map((p) => (
-          <PaidPlanCard
+          <PlanCard
             key={p.key}
             plan={p}
             // interval={interval}
@@ -218,7 +206,7 @@ export default function BillingPlansPage() {
         ))}
       </div>
 
-      <div className="mt-8 rounded-2xl border border-secondary-fade bg-secondary-fade p-5 shadow-sm">
+      <div className="mt-8 rounded-2xl border border-secondary-fade bg-secondary-fade/70 p-5 shadow-sm">
         <div className="text-sm font-semibold text-secondary-dark">FAQ</div>
 
         <div className="mt-2 grid gap-3 text-sm text-secondary">

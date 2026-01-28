@@ -11,7 +11,8 @@ export default function FreePlanCard(props: {
   const { currentPlan, profile, freeFeatures, onLogin } = props;
 
   return (
-    <div className="mt-6 rounded-2xl border border-secondary-fade bg-secondary-fade p-5 shadow-sm">
+    <div className="relative rounded-2xl border p-6 transition shadow-sm border-secondary-fade">
+      {" "}
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
@@ -39,8 +40,7 @@ export default function FreePlanCard(props: {
           ) : null}
         </div>
       </div>
-
-      <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+      <ul className="mt-5 space-y-2 text-sm">
         {freeFeatures.map((feature) => (
           <li key={feature} className="flex gap-2">
             <span className="text-primary mt-0.5">✓</span>
@@ -48,7 +48,6 @@ export default function FreePlanCard(props: {
           </li>
         ))}
       </ul>
-
       <div className="mt-3 text-[11px] text-secondary">
         Upgrade anytime to publish and unlock higher limits.
       </div>
