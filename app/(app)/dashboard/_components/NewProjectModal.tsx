@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Plus } from "lucide-react";
 import { apiCreateAndGenerateProject } from "@/lib/api/project";
 import { uiToast } from "@/lib/utils/uiToast";
 import { TextField } from "../../components/ui/TextField";
@@ -62,23 +63,48 @@ export default function NewProjectModal() {
       <button
         onClick={() => setModalOpen(true)}
         disabled={loading}
-        className="btn-fill"
+        className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#0149E1] text-sm font-semibold text-white shadow-sm transition hover:bg-[#0149E1]/90 disabled:opacity-60"
+        style={{
+          width: 188,
+          height: 60,
+          paddingTop: 12,
+          paddingRight: 36,
+          paddingBottom: 12,
+          paddingLeft: 28,
+        }}
       >
+        <Plus className="h-5 w-5 shrink-0" strokeWidth={2.5} />
         {loading ? "Creating..." : "New Project"}
       </button>
 
       {modalOpen && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/55 p-4">
-          <div className="w-full max-w-md rounded-2xl  bg-secondary-fade p-5 text-xs">
+          <div
+            className="flex flex-col bg-white text-sm shadow-xl"
+            style={{
+              width: 896,
+              borderRadius: 32,
+              padding: 32,
+              rowGap: 32,
+            }}
+          >
             {/* Header */}
-            <div className="flex items-start justify-between gap-3">
+            <div className="flex items-start justify-between gap-4">
               <div>
-                <h2 className="text-base font-semibold text-secondary-dark">
-                  Describe your business idea
+                <h2
+                  className="text-gray-900"
+                  style={{
+                    fontFamily: "Helvetica, sans-serif",
+                    fontWeight: 700,
+                    fontSize: "24px",
+                    lineHeight: "32px",
+                    letterSpacing: "0px",
+                  }}
+                >
+                  Describe your idea
                 </h2>
-                <p className="mt-1 text-[12px] leading-5 text-secondary">
-                  Describe your business idea in a few sentences, and let the AI
-                  do the rest for you.
+                <p className="mt-1 text-sm text-gray-500">
+                  Forless generates. Publish in second.
                 </p>
               </div>
 
@@ -86,7 +112,7 @@ export default function NewProjectModal() {
                 type="button"
                 onClick={() => setModalOpen(false)}
                 disabled={loading}
-                className="rounded-md  bg-secondary-light px-2 py-1 text-[11px] text-secondary-dark hover:bg-secondary"
+                className="rounded-full p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
                 aria-label="Close"
                 title="Close"
               >
@@ -95,73 +121,79 @@ export default function NewProjectModal() {
             </div>
 
             {/* Form */}
-            <div className="mt-4 space-y-3">
-              <TextField
-                as="textarea"
-                label="Business Idea"
-                placeholder="Example: I'm starting a small tea shop for young professionals..."
-                value={projectIdea}
-                onChange={setProjectIdea}
-                limit="projectIdea"
-                showLimit
-                className="
-                    h-24 resize-none
-                      px-3 py-2
-                      text-[13px]
-                    "
-              />
+            <div className="space-y-5">
+              <div>
+                <TextField
+                  as="textarea"
+                  value={projectIdea}
+                  onChange={setProjectIdea}
+                  limit="projectIdea"
+                  placeholder="I'm starting an online clothing store..."
+                  className="h-32 w-full resize-none rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800"
+                />
+              </div>
 
-              <TextField
-                label="Project name"
-                placeholder="Tea Shop Website"
-                value={projectName}
-                onChange={setProjectName}
-                limit="projectName"
-                className="                   
-                  px-3 py-2
-                  text-[13px]
-                    "
-              />
+              <div>
+                <TextField
+                  label="Project Name"
+                  placeholder="John Doe"
+                  value={projectName}
+                  onChange={setProjectName}
+                  limit="projectName"
+                  className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800"
+                />
+                <p className="mt-1 text-xs text-gray-400 text-left">
+                  Give your project a name (You can change it anytime)
+                </p>
+              </div>
+
+              <div className="rounded-2xl bg-[#E5F1FF] px-4 py-3 text-xs text-gray-700">
+                <span className="font-semibold text-[#112E6D]">Tip: </span>
+                <span>
+                  Keep it short – we&apos;ll generate the website, branding, and
+                  content for you.
+                </span>
+              </div>
             </div>
 
             {/* Actions */}
-            <div className="mt-5 flex items-center justify-end gap-2">
-              <button
-                type="button"
-                onClick={() => setModalOpen(false)}
-                disabled={loading}
-                className="
-                px-4 py-2
-                text-xs font-semibold
-                disabled:opacity-60
-                btn-secondary
-              "
-              >
-                Cancel
-              </button>
-
+            <div className="flex items-center gap-3">
               <button
                 type="button"
                 onClick={handleCreateProject}
                 disabled={loading}
-                className="
-                rounded-lg
-                btn-fill
-                px-4 py-2
-                text-xs font-semibold 
-              
-                disabled:opacity-60
-              "
+                className="flex flex-1 items-center justify-center bg-[#0149E1] text-sm font-semibold text-white shadow-sm transition hover:bg-[#0149E1]/90 disabled:opacity-60"
+                style={{
+                  height: 44,
+                  maxWidth: 677,
+                  borderRadius: 40,
+                  paddingTop: 8,
+                  paddingRight: 24,
+                  paddingBottom: 8,
+                  paddingLeft: 24,
+                  gap: 8,
+                }}
               >
-                {loading ? "Creating..." : "Create Project"}
+                <Plus className="h-5 w-5 shrink-0" strokeWidth={2.2} />
+                {loading ? "Generating..." : "Generate Website"}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setModalOpen(false)}
+                disabled={loading}
+                className="inline-flex items-center justify-center bg-gray-100 text-sm font-semibold text-gray-600 shadow-sm transition hover:bg-gray-200 disabled:opacity-60"
+                style={{
+                  width: 143,
+                  height: 44,
+                  borderRadius: 48,
+                  padding: 12,
+                  gap: 8,
+                }}
+              >
+                Cancel
               </button>
             </div>
-
-            {/* Subtle hint */}
-            <p className="mt-3 text-[11px] text-secondary">
-              Tip: Keep it short — we’ll generate sections, branding, and
-              content from it.
-            </p>
           </div>
         </div>
       )}

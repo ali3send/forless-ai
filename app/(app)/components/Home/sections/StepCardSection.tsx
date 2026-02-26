@@ -1,26 +1,28 @@
-// import { HOW_IT_WORKS_STEPS } from "@/data/howItWorksSteps";
-// import { HowItWorksStepCard } from "@/components/HowItWorksStepCard";
-// import { SectionHeading } from "@/components/SectionHeading";
-import { Rocket } from "lucide-react";
-import { SectionHeading } from "../components/SectionHeading";
 import { HOW_IT_WORKS_STEPS } from "../data/HowItWorks";
 import { HowItWorksStepCard } from "../components/StepCard";
 
 export function HowItWorksSection() {
   return (
-    <section className="py-20">
-      <div className="mx-auto max-w-6xl px-4">
-        <SectionHeading
-          badge="How It Works"
-          badgeIcon={<Rocket size={14} />}
-          title="From Idea to Live Website in 4 Simple Steps"
-          subtitle="Our streamlined process makes website creation effortless"
-        />
+    <section className="py-16">
+      <div className="mx-auto max-w-6xl px-4 text-center">
+        <p
+          className="text-xs font-medium uppercase tracking-widest text-gray-500"
+          style={{ fontFamily: "Helvetica, sans-serif" }}
+        >
+          HOW IT WORKS
+        </p>
+        <h2
+          className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
+          style={{ fontFamily: "Helvetica, sans-serif", lineHeight: 1.25 }}
+        >
+          Three steps.{" "}
+          <span className="text-[#0149E1]">Zero complexity</span>
+        </h2>
+        <p className="mt-3 text-base text-gray-500 sm:text-lg">
+          From idea to reality in seconds
+        </p>
 
-        <div className="relative mt-16 grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Connector line (desktop only) */}
-          <div className="absolute left-0 right-0 top-7 hidden h-px bg-secondary-fade lg:block" />
-
+        <div className="mt-12 grid gap-6 sm:grid-cols-3">
           {HOW_IT_WORKS_STEPS.map((step) => (
             <HowItWorksStepCard key={step.id} {...step} />
           ))}

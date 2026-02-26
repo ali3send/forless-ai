@@ -15,64 +15,74 @@ export const PLANS: Array<{
   highlight?: boolean;
   pricing: {
     monthly: { label: string };
-    yearly: { label: string; note?: string };
+    yearly: {
+      savePercent: string;
+      yearLabel: string;
+      perMonthLabel: string;
+    };
   };
 }> = [
   {
     key: "gowebsite",
     name: "GoWebsite",
-    tagline: "Publish your first site and go live.",
+    tagline: "Perfect for getting started with your first website",
     features: [
-      "Everything in Free",
-      "1 published website",
-      "Basic website editor",
-      "Connect your own domain",
-      "Hosting included",
+      "1 website",
+      "AI website generator",
+      "Free hosting & SSL",
+      "Mobile responsive",
+      "Custom domain support",
+      "SEO ready",
     ],
     pricing: {
       monthly: { label: "$0.99 / month" },
       yearly: {
-        label: "$5.99 / year",
-        note: `save ${calculateYearlySavings(0.99, 5.99)}%`,
+        savePercent: "16%",
+        yearLabel: "$0.99 / year",
+        perMonthLabel: "($0.83 / month)",
       },
     },
   },
   {
     key: "creator",
     name: "Creator",
-    tagline: "Brand + templates + marketing kit for creators.",
+    tagline: "For creators building multiple projects",
     features: [
+      "Up to 5 websites",
       "Everything in GoWebsite",
-      "Full brand kit",
-      "Logo generations",
-      "Templates",
-      "Marketing kit",
+      "Priority support",
+      "Advanced analytics",
+      "Custom fonts",
+      "Remove Forless branding",
     ],
     highlight: true,
     pricing: {
       monthly: { label: "$2.49 / month" },
       yearly: {
-        label: "$19 / year",
-        note: `save ${calculateYearlySavings(2.49, 19)}%`,
+        savePercent: "17%",
+        yearLabel: "$99.99 / year",
+        perMonthLabel: "($8.33 / month)",
       },
     },
   },
   {
     key: "pro",
     name: "Pro",
-    tagline: "Unlimited brands, templates, and marketing suite.",
+    tagline: "For professionals and growing businesses",
     features: [
-      "Up to 5 published websites",
-      "Unlimited brand kits",
-      "Full template library",
-      "Full marketing suites",
-      "Priority support",
+      "Unlimited websites",
+      "Everything in Creator",
+      "Priority support (24/7)",
+      "Custom code injection",
+      "Team collaboration",
+      "White-label options",
     ],
     pricing: {
-      monthly: { label: "$4.99 / month" },
+      monthly: { label: "$9.99 / month" },
       yearly: {
-        label: "$39 / year",
-        note: `save ${calculateYearlySavings(4.99, 39)}%`,
+        savePercent: "17%",
+        yearLabel: "$99.99 / year",
+        perMonthLabel: "($8.33 / month)",
       },
     },
   },

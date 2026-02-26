@@ -6,8 +6,8 @@ import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
 import BillingHeader from "./_components/BillingHeader";
-import FreePlanCard from "./_components/FreePlanCard";
 import PaidPlanCard from "./_components/PaidPlanCard";
+import PlansFAQ from "./_components/PlansFAQ";
 import type {
   BillingInterval,
   PaidPlan,
@@ -17,7 +17,7 @@ import type {
 import { PROFILE_CACHE_KEY } from "./_lib/utils";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
-import { FREE_FEATURES, PLANS } from "@/lib/billing/data/plans";
+import { PLANS } from "@/lib/billing/data/plans";
 
 export default function BillingPlansPage() {
   const router = useRouter();
@@ -181,32 +181,15 @@ export default function BillingPlansPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto">
-      <BillingHeader
-        hydrated={hydrated}
-        loading={loading}
-        profile={profile}
-        currentPlan={currentPlan}
-        statusText={statusText}
-        isPaidPlan={isPaidPlan}
-        // interval={interval}
-        // setInterval={setInterval}
-        onManage={openPortal}
-      />
+    <div className="min-h-screen bg-white">
+      <div className="mx-auto max-w-6xl px-4 py-10">
+      <BillingHeader />
 
-      <FreePlanCard
-        currentPlan={currentPlan}
-        profile={profile}
-        freeFeatures={FREE_FEATURES}
-        onLogin={() => router.push("/auth/login")}
-      />
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+      <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3 md:items-stretch">
         {PLANS.map((p) => (
           <PaidPlanCard
             key={p.key}
             plan={p}
-            // interval={interval}
             currentPlan={currentPlan}
             hydrated={hydrated}
             loading={loading}
@@ -218,29 +201,7 @@ export default function BillingPlansPage() {
         ))}
       </div>
 
-      <div className="mt-8 rounded-2xl border border-secondary-fade bg-secondary-fade p-5 shadow-sm">
-        <div className="text-sm font-semibold text-secondary-dark">FAQ</div>
-
-        <div className="mt-2 grid gap-3 text-sm text-secondary">
-          <div>
-            <div className="font-semibold text-secondary-dark">
-              Will my projects be deleted if I cancel?
-            </div>
-            <div>
-              Never. You can keep your projects. Paid limits may revert to Free.
-            </div>
-          </div>
-
-          <div>
-            <div className="font-semibold text-secondary-dark">
-              How do I change or cancel my plan?
-            </div>
-            <div>
-              Open “Manage” to update payment method, download invoices, or
-              cancel.
-            </div>
-          </div>
-        </div>
+      <PlansFAQ />
       </div>
     </div>
   );

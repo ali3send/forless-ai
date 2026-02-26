@@ -22,7 +22,7 @@ interface Props {
 
 export default function FilterTabs({ active, onChange }: Props) {
   return (
-    <nav className="flex gap-2 border-b border-secondary-dark pb-2 text-xs">
+    <nav className="mt-6 flex justify-center gap-2 text-xs">
       {FILTERS.map((filter) => {
         const isActive = active === filter.id;
 
@@ -30,10 +30,10 @@ export default function FilterTabs({ active, onChange }: Props) {
           <button
             key={filter.id}
             onClick={() => onChange(filter.id)}
-            className={`rounded-full px-3 py-1 transition ${
+            className={`rounded-full px-4 py-1.5 text-xs font-medium transition ${
               isActive
-                ? "bg-primary text-white"
-                : "bg-secondary text-secondary-fade hover:bg-secondary-dark"
+                ? "bg-[#0149E1] text-white shadow-sm"
+                : "border border-gray-200 bg-white text-gray-500 hover:border-[#0149E1]/50 hover:text-[#0149E1]"
             }`}
           >
             {filter.label}

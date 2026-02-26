@@ -13,4 +13,7 @@ export type DashboardStats = {
   totalProjects: number;
   publishedSites: number;
   campaignsCreated: number;
+  regenerationLeft?: string;
+  currentPlan?: string;
+  creditBalance?: string;
 };

@@ -1,34 +1,38 @@
 import React from "react";
-
-import { Sparkles } from "lucide-react";
 import { FeatureCard } from "../components/FeatureCard";
-import { FEATURES } from "../data/FeatureData";
-import { SectionHeading } from "../components/SectionHeading";
+import { HERO_FEATURES } from "../data/FeatureData";
 
-function FeaturesSection() {
+export default function FeaturesSection() {
   return (
-    <>
-      <SectionHeading
-        badge="Features"
-        badgeIcon={<Sparkles size={14} />}
-        title="Everything You Need to Build Amazing Websites"
-        subtitle="Powerful features that make website creation effortless and enjoyable"
-      />
+    <section id="features" className="mt-20 text-center scroll-mt-20">
+      <p
+        className="text-sm font-medium uppercase tracking-wide text-gray-500"
+        style={{ fontFamily: "Helvetica, sans-serif" }}
+      >
+        Your completed website solution
+      </p>
+      <h2
+        className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
+        style={{ fontFamily: "Helvetica, sans-serif", lineHeight: 1.25 }}
+      >
+        All the essentials,{" "}
+        <span className="text-[#0149E1]">Included</span>
+      </h2>
+      <p className="mt-3 text-base text-gray-500 sm:text-lg">
+        Build your website fast · No Setup. No Confusion.
+      </p>
 
-      <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {FEATURES.map((f) => (
+      <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
+        {HERO_FEATURES.map((f) => (
           <FeatureCard
             key={f.title}
             title={f.title}
             description={f.description}
-            icon={f.icon}
+            imageSrc={f.image}
             variant={f.variant}
-            // highlighted={f.highlighted}
           />
         ))}
       </div>
-    </>
+    </section>
   );
 }
-
-export default FeaturesSection;

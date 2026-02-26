@@ -38,10 +38,13 @@ export default async function DashboardPage() {
     totalProjects: safeProjects.length,
     publishedSites: safeProjects.filter((p) => p.status === "published").length,
     campaignsCreated: 0,
+    regenerationLeft: "0/0",
+    currentPlan: "Free",
+    creditBalance: "$0.00",
   };
 
   return (
-    <div className="min-h-screen ">
+    <div className="min-h-screen bg-white">
       <DashboardContent projects={safeProjects} stats={stats} />
     </div>
   );

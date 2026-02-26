@@ -8,6 +8,7 @@
 --color-primary: #2563eb;          /* blue-600 */
 --color-primary-hover: #3b82f6;    /* blue-500 */
 --color-primary-active: #1d4ed8;   /* blue-700 */
+  --color-primary-700: #0149E1;   /* primary-700 for auth buttons */
 
 /* Primary Variants */
 --color-primary-light: #60a5fa;    /* blue-400 */
@@ -85,6 +86,30 @@ html {
 }
 
 
+
+/* Auth pages: light card on white background */
+.auth-page-light {
+  --color-secondary: #9ca3af;
+  --color-secondary-soft: #f9fafb;
+  --color-secondary-fade: #e5e7eb;
+  --color-secondary-dark: #374151;
+  --color-secondary-darker: #111827;
+}
+.auth-page-light label span.text-secondary {
+  color: #374151;
+}
+.auth-page-light .input-base {
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  background-color: #fff;
+}
+.auth-page-light .input-base::placeholder {
+  color: #9ca3af;
+}
+.auth-page-light .input-base:focus {
+  border-color: #0149E1;
+  box-shadow: 0 0 0 2px rgba(1, 73, 225, 0.2);
+}
 
 /* dark mode */
 .dark {

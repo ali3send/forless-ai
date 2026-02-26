@@ -3,10 +3,22 @@
 import { useRouter } from "next/navigation";
 import { uiToast } from "@/lib/utils/uiToast";
 
-export function useProjectActions(project: { id: string; name: string }) {
+type Options = {
+  onRequestDelete?: (projectId: string, projectName: string, type: "soft" | "permanent") => void;
+};
+
+export function useProjectActions(
+  project: { id: string; name: string },
+  options: Options = {}
+) {
   const router = useRouter();
+  const { onRequestDelete } = options;
 
   const softDelete = async () => {
+    if (onRequestDelete) {
+      onRequestDelete(project.id, project.name, "soft");
+      return;
+    }
     uiToast.confirm({
       title: `Delete "${project.name}"?`,
       destructive: true,
@@ -48,6 +60,10 @@ export function useProjectActions(project: { id: string; name: string }) {
   };
 
   const permanentDelete = async () => {
+    if (onRequestDelete) {
+      onRequestDelete(project.id, project.name, "permanent");
+      return;
+    }
     uiToast.confirm({
       title: `Permanently delete "${project.name}"?`,
       destructive: true,

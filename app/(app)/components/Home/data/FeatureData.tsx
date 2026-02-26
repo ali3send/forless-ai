@@ -1,5 +1,48 @@
 // data/features.ts
-import { Sparkles, Wand2, Palette, Zap, Globe, Lock } from "lucide-react";
+import {
+  Sparkles,
+  Wand2,
+  Palette,
+  Zap,
+  Globe,
+  Lock,
+} from "lucide-react";
+
+/** Hero "All the essentials" section — 5 cards (each can have its own image) */
+export const HERO_FEATURES = [
+  {
+    title: "AI Website Generator",
+    description:
+      "Create a complete website instantly. No design. No setup.",
+    image: "/AI.jpeg",
+    variant: "primary" as const,
+  },
+  {
+    title: "One-Click Publish",
+    description: "Go live in seconds. Edit anytime.",
+    image: "/AI.jpeg",
+    variant: "accent" as const,
+  },
+  {
+    title: "Custom Domain",
+    description: "Use your own domain. Your brand, your name.",
+    image: "/AI.jpeg",
+    variant: "primary" as const,
+  },
+  {
+    title: "Free Hosting & SSL",
+    description: "Fast hosting with SSL included. Secure by default.",
+    image: "/AI.jpeg",
+    variant: "accent" as const,
+  },
+  {
+    title: "Mobile & SEO Ready",
+    description:
+      "Looks perfect everywhere. Google-ready from day one.",
+    image: "/AI.jpeg",
+    variant: "primary" as const,
+  },
+];
 
 export const FEATURES = [
   {

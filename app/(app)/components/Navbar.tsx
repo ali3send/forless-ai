@@ -7,12 +7,15 @@ import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
+import { LogoutModal } from "./LogoutModal";
 
 export function Navbar() {
   const { user, isAdmin, logout } = useAuth();
   const [billingOpen, setBillingOpen] = useState(false);
   const billingRef = useRef<HTMLDivElement | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [logoutModalOpen, setLogoutModalOpen] = useState(false);
+  const [logoutLoading, setLogoutLoading] = useState(false);
 
   useEffect(() => {
     function onDocMouseDown(e: MouseEvent) {
@@ -35,25 +38,21 @@ export function Navbar() {
     };
   }, [billingOpen]);
 
-  const handleLogout = () => {
-    uiToast.confirm({
-      title: "Are you sure you want to logout?",
-      confirmLabel: "Logout",
-      destructive: true,
+  const handleLogoutClick = () => {
+    setLogoutModalOpen(true);
+  };
 
-      onConfirm: async () => {
-        const t = uiToast.loading("Logging out...");
-
-        try {
-          await logout();
-          window.location.href = "/auth/login"; // hard navigation
-        } catch (e: unknown) {
-          uiToast.error(e, "Failed to log out.");
-        } finally {
-          uiToast.dismiss(t);
-        }
-      },
-    });
+  const handleLogoutConfirm = async () => {
+    setLogoutLoading(true);
+    try {
+      await logout();
+      setLogoutModalOpen(false);
+      window.location.href = "/auth/login";
+    } catch (e: unknown) {
+      uiToast.error(e, "Failed to log out.");
+    } finally {
+      setLogoutLoading(false);
+    }
   };
 
   async function openBillingPortal() {
@@ -161,7 +160,7 @@ export function Navbar() {
 
           {user ? (
             <>
-              <button onClick={handleLogout} className="hover:underline">
+              <button onClick={handleLogoutClick} className="hover:underline">
                 Logout
               </button>
 
@@ -246,7 +245,7 @@ export function Navbar() {
 
               {user ? (
                 <button
-                  onClick={handleLogout}
+                  onClick={handleLogoutClick}
                   className="text-left px-4 py-3 text-red-600 hover:bg-red-500/10"
                 >
                   Logout
@@ -272,6 +271,13 @@ export function Navbar() {
           </div>
         </div>
       )}
+
+      <LogoutModal
+        open={logoutModalOpen}
+        onClose={() => !logoutLoading && setLogoutModalOpen(false)}
+        onConfirm={handleLogoutConfirm}
+        loading={logoutLoading}
+      />
     </header>
   );
 }

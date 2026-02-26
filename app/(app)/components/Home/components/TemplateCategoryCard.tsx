@@ -1,38 +1,84 @@
-// components/TemplateCategoryCard.tsx
-// import { TemplateCategory } from "@/data/templateCategories";
-
+import Image from "next/image";
 import { TemplateCategory } from "../data/TemplateCategries";
 
-export function TemplateCategoryCard({
-  tag,
-  title,
-  description,
-  icon,
-  variant,
-}: TemplateCategory) {
-  const iconBg = variant === "accent" ? "bg-accent" : "bg-primary";
+const CARD = {
+  width: 416,
+  minHeight: 345,
+  borderRadius: 24,
+  borderWidth: 1,
+  padding: 12,
+  gap: 24,
+} as const;
 
+const TEMPLATE_IMAGE = {
+  width: 392,
+  height: 224,
+  borderRadius: 12,
+  borderWidth: 1,
+} as const;
+
+const SECTION_BELOW = {
+  width: 392,
+  minHeight: 73,
+} as const;
+
+export function TemplateCategoryCard({ id, title, image }: TemplateCategory) {
   return (
     <div
-      className={[
-        "relative rounded-2xl p-6 transition border border-secondary-fade bg-secondary-fade",
-      ].join(" ")}
+      className="group flex flex-col overflow-hidden bg-white shadow-[0_4px_20px_rgba(0,0,0,0.06)] transition hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)]"
+      style={{
+        width: CARD.width,
+        maxWidth: "100%",
+        minHeight: CARD.minHeight,
+        borderRadius: CARD.borderRadius,
+        border: `${CARD.borderWidth}px solid #e5e7eb`,
+        padding: CARD.padding,
+        gap: CARD.gap,
+      }}
     >
-      {/* Icon */}
+      {/* Template image — generic: pass image per card */}
       <div
-        className={`mb-3 flex h-10 w-10 items-center justify-center rounded-xl text-white ${iconBg}`}
+        className="relative shrink-0 overflow-hidden bg-gray-100"
+        style={{
+          width: "100%",
+          maxWidth: TEMPLATE_IMAGE.width,
+          height: TEMPLATE_IMAGE.height,
+          borderRadius: TEMPLATE_IMAGE.borderRadius,
+          borderTopWidth: TEMPLATE_IMAGE.borderWidth,
+          borderRightWidth: TEMPLATE_IMAGE.borderWidth,
+          borderLeftWidth: TEMPLATE_IMAGE.borderWidth,
+          borderBottomWidth: 0,
+          borderStyle: "solid",
+          borderColor: "#e5e7eb",
+        }}
       >
-        {icon}
+        {image ? (
+          <Image
+            src={image}
+            alt=""
+            width={TEMPLATE_IMAGE.width}
+            height={TEMPLATE_IMAGE.height}
+            className="h-full w-full object-cover transition group-hover:scale-[1.02]"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+            <span className="text-sm font-medium text-gray-400">Template</span>
+          </div>
+        )}
       </div>
-
-      {/* Text */}
-      <p className="text-xs font-medium text-secondary">{tag}</p>
-
-      <h3 className="mt-1 text-lg font-semibold text-secondary-dark">
-        {title}
-      </h3>
-
-      <p className="mt-1 text-sm text-secondary">{description}</p>
+      {/* Section below image: Fill 392px, Hug 73px */}
+      <div
+        className="flex flex-col"
+        style={{
+          width: "100%",
+          maxWidth: SECTION_BELOW.width,
+          minHeight: SECTION_BELOW.minHeight,
+        }}
+      >
+        <p className="text-center text-sm font-semibold text-gray-900">
+          {title}
+        </p>
+      </div>
     </div>
   );
 }

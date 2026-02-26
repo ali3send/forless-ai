@@ -1,4 +1,6 @@
 "use client";
+
+import { Search } from "lucide-react";
 import NewProjectModal from "./NewProjectModal";
 
 interface DashboardHeaderProps {
@@ -11,22 +13,41 @@ export default function DashboardHeader({
   onSearchChange,
 }: DashboardHeaderProps) {
   return (
-    <header className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <header className="flex flex-col items-center gap-4 text-center">
       <div>
-        <h1 className="text-xl font-semibold text-secondary-dark">
+        <h1
+          className="text-gray-900"
+          style={{
+            fontFamily: "Helvetica, sans-serif",
+            fontWeight: 700,
+            fontSize: "32px",
+            lineHeight: "36px",
+            letterSpacing: "0.4px",
+          }}
+        >
           Your Projects
         </h1>
-        <p className="text-xs text-secondary">
-          Describe once. Build brand, website, and marketing from one place.
+        <p
+          className="mt-1 text-gray-500"
+          style={{
+            fontFamily: "Helvetica, sans-serif",
+            fontWeight: 400,
+            fontSize: "14px",
+            lineHeight: "20px",
+            letterSpacing: "0px",
+            paddingTop: 14,
+          }}
+        >
+          All projects you worked on in one place
         </p>
       </div>
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <div className="hidden sm:block">
-          <SearchInput value={search} onChange={onSearchChange} />
-        </div>
-
+      <div className="mt-4">
         <NewProjectModal />
+      </div>
+
+      <div className="mt-6 w-full max-w-3xl">
+        <SearchInput value={search} onChange={onSearchChange} />
       </div>
     </header>
   );
@@ -40,23 +61,29 @@ function SearchInput({
   onChange: (v: string) => void;
 }) {
   return (
-    <input
-      type="text"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder="Search projects…"
-      className="
-        w-full sm:w-64
-        rounded-md
-         
-        bg-secondary-fade
-        placeholder:text-secondary
-        px-3 py-1.5
-        text-xs text-secondary-dark
-        outline-none
-        ring-primary/60
-        focus:ring-1
-      "
-    />
+    <div className="relative w-full">
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="Search projects here..."
+        className="
+          w-full
+          rounded-full
+          border border-gray-200
+          bg-white
+          py-3 pl-5 pr-11
+          text-sm text-gray-700
+          placeholder:text-gray-400
+          shadow-sm
+          outline-none
+          focus:border-[#0149E1]
+          focus:ring-2 focus:ring-[#0149E1]/20
+        "
+      />
+      <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400">
+        <Search className="h-5 w-5" strokeWidth={2} />
+      </span>
+    </div>
   );
 }
