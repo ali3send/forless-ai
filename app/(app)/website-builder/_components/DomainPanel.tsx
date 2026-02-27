@@ -9,6 +9,7 @@ import { WebsiteData } from "@/lib/types/websiteTypes";
 import { getOrCreateGuestId } from "@/lib/guest/guest";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
+import { ConnectDomainModal } from "./ConnectDomainModal";
 
 function slugify(text: string) {
   return text
@@ -28,6 +29,9 @@ export function DomainPanel({ projectId, defaultSlug, websiteData }: Props) {
   const [slug, setSlug] = useState(defaultSlug ?? "");
   const [isPublished, setIsPublished] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [domainType, setDomainType] = useState<"free" | "custom">("free");
+  const [customDomain, setCustomDomain] = useState("");
+  const [showConnectModal, setShowConnectModal] = useState(false);
 
   const cleanSlug = useMemo(() => slugify(slug), [slug]);
   const finalUrl = useMemo(() => {
@@ -164,23 +168,28 @@ export function DomainPanel({ projectId, defaultSlug, websiteData }: Props) {
         </p>
       </div>
 
-      {/* Free Forless URL card - Flow: Vertical, Width: 334px, Height: Hug, Radius: 16px, Padding: 24px, Gap: 16px */}
+      {/* Free Forless URL card */}
       <div
-        className="flex flex-col w-full max-w-[334px] border"
+        className="flex flex-col w-full max-w-[334px] border cursor-pointer"
         style={{
-          backgroundColor: "#E1F0FF66",
+          backgroundColor: domainType === "free" ? "#E1F0FF66" : "#FFFFFF",
           borderWidth: 1,
-          borderColor: "var(--color-primary-soft, #93c5fd)",
+          borderColor:
+            domainType === "free"
+              ? "var(--color-primary-soft, #93c5fd)"
+              : "#E5E7EB",
           borderRadius: 16,
           padding: 24,
           gap: 16,
         }}
+        onClick={() => setDomainType("free")}
       >
         <label className="flex cursor-pointer items-center gap-2">
           <input
             type="radio"
             name="domain-type"
-            defaultChecked
+            checked={domainType === "free"}
+            onChange={() => setDomainType("free")}
             className="h-4 w-4 accent-primary"
           />
           <span className="text-sm font-medium text-secondary-dark">
@@ -188,74 +197,100 @@ export function DomainPanel({ projectId, defaultSlug, websiteData }: Props) {
           </span>
         </label>
 
-        <div className="flex flex-col" style={{ gap: 16 }}>
-          <label className="block text-[11px] font-medium uppercase tracking-wide text-secondary">
-            SUBDOMAIN
-          </label>
-          <div className="relative">
-            <input
-              type="text"
-              value={slug}
-              onChange={(e) => setSlug(e.target.value)}
-              placeholder="my-company"
-              disabled={isPublished}
-              className={`w-full rounded-lg border px-3 py-2 pr-9 text-sm transition ${
-                showAvailable
-                  ? "border-green-500 ring-1 ring-green-500"
-                  : "border-secondary-fade"
-              } bg-white text-secondary-dark placeholder:text-secondary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30 disabled:opacity-60`}
-            />
+        {domainType === "free" && (
+          <div className="flex flex-col" style={{ gap: 16 }}>
+            <label className="block text-[11px] font-medium uppercase tracking-wide text-secondary">
+              SUBDOMAIN
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                value={slug}
+                onChange={(e) => setSlug(e.target.value)}
+                placeholder="my-company"
+                disabled={isPublished}
+                className={`w-full rounded-lg border px-3 py-2 pr-9 text-sm transition ${
+                  showAvailable
+                    ? "border-green-500 ring-1 ring-green-500"
+                    : "border-secondary-fade"
+                } bg-white text-secondary-dark placeholder:text-secondary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30 disabled:opacity-60`}
+              />
+              {showAvailable && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500">
+                  <Check className="h-5 w-5" strokeWidth={2.5} />
+                </div>
+              )}
+            </div>
+
+            {fullForlessUrl && (
+              <p className="text-xs text-secondary-dark">{fullForlessUrl}</p>
+            )}
+
             {showAvailable && (
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500">
-                <Check className="h-5 w-5" strokeWidth={2.5} />
+              <div className="rounded-lg bg-green-50 px-3 py-2">
+                <p className="flex items-center gap-1.5 text-sm font-medium text-green-700">
+                  <Check className="h-4 w-4 shrink-0" strokeWidth={2.5} />
+                  This URL is available!
+                </p>
               </div>
             )}
           </div>
-
-          {fullForlessUrl && (
-            <p className="text-xs text-secondary-dark">{fullForlessUrl}</p>
-          )}
-
-          {showAvailable && (
-            <div className="rounded-lg bg-green-50 px-3 py-2">
-              <p className="flex items-center gap-1.5 text-sm font-medium text-green-700">
-                <Check className="h-4 w-4 shrink-0" strokeWidth={2.5} />
-                This URL is available!
-              </p>
-            </div>
-          )}
-        </div>
+        )}
       </div>
 
-      {/* Custom Domain card - Radio left, text block right (title above description, up-down) */}
+      {/* Custom Domain card */}
       <div
-        className="flex flex-row items-start w-full max-w-[334px] rounded-2xl opacity-75"
+        className="flex flex-col w-full max-w-[334px] cursor-pointer"
         style={{
-          backgroundColor: "#FFFFFF",
-          border: "1px solid #E5E7EB",
+          backgroundColor: domainType === "custom" ? "#E1F0FF66" : "#FFFFFF",
+          border: `1px solid ${domainType === "custom" ? "var(--color-primary-soft, #93c5fd)" : "#E5E7EB"}`,
           marginTop: 18,
           marginBottom: 12,
           padding: 24,
-          gap: 12,
-          minHeight: 100,
+          gap: 16,
+          borderRadius: 16,
         }}
+        onClick={() => setDomainType("custom")}
       >
-        <label className="flex cursor-pointer shrink-0 pt-0.5">
-          <input
-            type="radio"
-            name="domain-type"
-            disabled
-            className="h-4 w-4 accent-primary"
-          />
-        </label>
-        <div className="flex flex-col gap-1.5">
-          <span className="text-sm font-semibold text-secondary-dark">
-            Custom Domain
-          </span>
-          <p className="text-xs text-secondary">
-            Use your own domain (example.com).
-          </p>
+        <div className="flex items-start gap-3">
+          <label className="flex cursor-pointer shrink-0 pt-0.5">
+            <input
+              type="radio"
+              name="domain-type"
+              checked={domainType === "custom"}
+              onChange={() => setDomainType("custom")}
+              className="h-4 w-4 accent-primary"
+            />
+          </label>
+          <div className="flex flex-col gap-1.5">
+            <span className="text-sm font-semibold text-secondary-dark">
+              Custom Domain
+            </span>
+            <p className="text-xs text-secondary">
+              Use your own domain (example.com)
+            </p>
+          </div>
         </div>
+
+        {domainType === "custom" && (
+          <div className="flex flex-col" style={{ gap: 16 }}>
+            <input
+              type="text"
+              value={customDomain}
+              onChange={(e) => setCustomDomain(e.target.value)}
+              placeholder="example.com"
+              className="w-full rounded-lg border border-secondary-fade bg-white px-3 py-2 text-sm text-secondary-dark placeholder:text-secondary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+            />
+            <button
+              type="button"
+              className="w-full rounded-full bg-primary py-2.5 text-sm font-semibold text-white transition hover:bg-primary-hover disabled:opacity-50"
+              onClick={() => setShowConnectModal(true)}
+              disabled={!customDomain.trim()}
+            >
+              Connect domain
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Preview / Published buttons - Width: 161px, Height: 48px, Radius: 48px, Padding: 12px 40px, Gap: 8px */}
@@ -292,8 +327,8 @@ export function DomainPanel({ projectId, defaultSlug, websiteData }: Props) {
         </button>
       </div>
 
-      {/* Published URL - Flow: Vertical, Width: 334px, Height: 92px, Radius: 16px, Border: 1px, Padding: 24px - Always visible when slug exists */}
-      {cleanSlug && (
+      {/* Published URL - only for free subdomain */}
+      {domainType === "free" && cleanSlug && (
         <div
           className="flex flex-col w-full max-w-[334px] rounded-2xl bg-white"
           style={{
@@ -324,21 +359,27 @@ export function DomainPanel({ projectId, defaultSlug, websiteData }: Props) {
         </div>
       )}
 
-      {/* Info boxes */}
-      <div className="space-y-2">
-        <div className="flex gap-2 rounded-lg border border-primary/20 bg-primary/5 p-2.5">
-          <Info className="h-4 w-4 shrink-0 text-primary" />
-          <p className="text-xs text-secondary-dark">
-            Please enter a subdomain (slug) to preview.
-          </p>
+      {/* Info boxes (only for free subdomain) */}
+      {domainType === "free" && (
+        <div className="space-y-2">
+          <div className="flex gap-2 rounded-lg border border-primary/20 bg-primary/5 p-2.5">
+            <Info className="h-4 w-4 shrink-0 text-primary" />
+            <p className="text-xs text-secondary-dark">
+              Please enter a subdomain (slug) to preview.
+            </p>
+          </div>
+          <div className="flex gap-2 rounded-lg border border-primary/20 bg-primary/5 p-2.5">
+            <Info className="h-4 w-4 shrink-0 text-primary" />
+            <p className="text-xs text-secondary-dark">
+              Enter a subdomain to publish your site
+            </p>
+          </div>
         </div>
-        <div className="flex gap-2 rounded-lg border border-primary/20 bg-primary/5 p-2.5">
-          <Info className="h-4 w-4 shrink-0 text-primary" />
-          <p className="text-xs text-secondary-dark">
-            Enter a subdomain to publish your site
-          </p>
-        </div>
-      </div>
+      )}
+      <ConnectDomainModal
+        open={showConnectModal}
+        onClose={() => setShowConnectModal(false)}
+      />
     </div>
   );
 }
