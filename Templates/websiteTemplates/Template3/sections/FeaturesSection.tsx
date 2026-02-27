@@ -1,60 +1,74 @@
 import { FeaturesData } from "../../template.types";
+
 export function FeaturesSection({ title, features }: FeaturesData) {
   return (
     <section
-      className="relative"
+      id="features"
+      className="w-full"
       style={{
-        background:
-          "linear-gradient(180deg, var(--color-bg), color-mix(in srgb, var(--color-bg) 90%, black))",
+        background: "linear-gradient(180deg, #EFF6FF 0%, #E0E7FF 100%)",
+        borderTop: "1px solid #e5e7eb",
       }}
     >
-      <div className="mx-auto max-w-4xl px-4 py-28">
-        {/* Title */}
-        <div className="mb-20 max-w-xl">
-          <h2 className="text-3xl font-semibold tracking-tight text-text">
-            {title}
-          </h2>
-        </div>
+      <div
+        className="mx-auto flex flex-col"
+        style={{
+          width: "100%",
+          maxWidth: 918,
+          height: 375,
+          paddingTop: 81,
+          paddingRight: 32,
+          paddingLeft: 32,
+        }}
+      >
+        <h2
+          className="text-center"
+          style={{
+            color: "#374151",
+            fontFamily: "Helvetica, sans-serif",
+            fontWeight: 700,
+            fontSize: 30,
+            letterSpacing: 0.4,
+            textAlign: "center",
+            marginBottom: 40,
+          }}
+        >
+          {title}
+        </h2>
 
-        {/* Vertical feature flow */}
-        <div className="space-y-20">
-          {features.map((item, i) => (
-            <div key={i} className="relative flex gap-6">
-              {/* Index / marker */}
-              <div className="flex flex-col items-center">
-                <div
-                  className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-medium"
-                  style={{
-                    background:
-                      "color-mix(in srgb, var(--color-primary) 18%, transparent)",
-                    color: "var(--color-primary)",
-                  }}
-                >
-                  {i + 1}
-                </div>
-
-                {/* Line */}
-                {i !== features.length - 1 && (
-                  <div
-                    className="mt-4 w-px flex-1"
-                    style={{
-                      background:
-                        "color-mix(in srgb, var(--color-primary) 15%, transparent)",
-                    }}
-                  />
-                )}
+        <div className="grid gap-6 md:grid-cols-3">
+          {features.map((feature, i) => (
+            <div
+              key={i}
+              className="rounded-lg border p-6"
+              style={{
+                backgroundColor: "#FFFFFF",
+                borderColor: "#e5e7eb",
+              }}
+            >
+              <div
+                className="font-bold"
+                style={{
+                  color: "#0149E1",
+                  fontFamily: "Helvetica, sans-serif",
+                  fontSize: 18,
+                  marginBottom: 8,
+                }}
+              >
+                {feature.label}
               </div>
 
-              {/* Content */}
-              <div className="max-w-xl">
-                <h3 className="text-lg font-semibold text-text">
-                  {item.label}
-                </h3>
-
-                <p className="mt-3 text-sm leading-relaxed text-(--color-muted)">
-                  {item.description}
-                </p>
-              </div>
+              <p
+                className="text-sm"
+                style={{
+                  color: "#6b7280",
+                  fontFamily: "Helvetica, sans-serif",
+                  fontSize: 14,
+                  lineHeight: 1.5,
+                }}
+              >
+                {feature.description}
+              </p>
             </div>
           ))}
         </div>

@@ -9,41 +9,45 @@ const CONFIG = {
   email: {
     label: "Email",
     Icon: Mail,
+    iconColor: "#0149E1",
     href: (v: string) => `mailto:${v}`,
   },
   phone: {
     label: "Phone",
     Icon: Phone,
+    iconColor: "#0149E1",
     href: (v: string) => `tel:${v.replace(/\s+/g, "")}`,
   },
   whatsapp: {
     label: "WhatsApp",
     Icon: MessageCircle,
+    iconColor: "#0149E1",
     href: (v: string) => `https://wa.me/${v.replace(/\D/g, "")}`,
   },
 };
 
 export function ContactRow({ type, value }: Props) {
-  const { label, Icon, href } = CONFIG[type];
+  const { label, Icon, iconColor, href } = CONFIG[type];
   const link = href(value);
 
   return (
     <a
       href={link}
-      className="
-        group flex items-center gap-3
-        text-sm text-text
-        transition
-        hover:text-primary
-      "
+      className="group flex items-center gap-3 text-sm transition"
       target={type === "whatsapp" ? "_blank" : undefined}
       rel={type === "whatsapp" ? "noopener noreferrer" : undefined}
+      style={{
+        fontFamily: "Helvetica, sans-serif",
+      }}
     >
-      <Icon className="h-4 w-4 text-primary shrink-0" />
+      <Icon className="h-4 w-4 shrink-0" style={{ color: iconColor }} />
 
-      <span className="text-(--color-muted)">{label}:</span>
+      <span style={{ color: "#6b7280" }}>{label}:</span>
 
-      <span className="font-medium truncate group-hover:underline">
+      <span
+        className="truncate font-medium group-hover:underline"
+        style={{ color: "#374151" }}
+      >
         {value}
       </span>
     </a>

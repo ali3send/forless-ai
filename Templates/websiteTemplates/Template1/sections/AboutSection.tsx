@@ -1,51 +1,83 @@
 import Image from "next/image";
-import { useUnsplashImage } from "../../hooks/useUnsplashImage";
 import { AboutData } from "../../template.types";
 
-export function AboutSection({ title, body, imageQuery, imageUrl }: AboutData) {
-  const unsplashImage = useUnsplashImage(imageQuery);
-
-  const imageSrc =
-    imageUrl && imageUrl.trim() !== "" ? imageUrl : unsplashImage;
+export function AboutSection({ title, body, imageUrl, imageQuery }: AboutData) {
+  const imageSrc = imageUrl && imageUrl.trim() !== "" ? imageUrl : "/AI.jpeg";
 
   return (
     <section
       id="about"
-      className="border-t"
+      className="w-full"
       style={{
-        backgroundColor: "color-mix(in srgb, var(--color-bg) 92%, black)",
-        borderColor:
-          "color-mix(in srgb, var(--color-primary) 18%, transparent)",
+        backgroundColor: "#F9FAFB",
+        borderTop: "1px solid #e5e7eb",
       }}
     >
-      <div className="mx-auto grid max-w-5xl gap-8 px-4 py-12 md:grid-cols-2">
+      <div
+        className="mx-auto flex flex-col"
+        style={{
+          width: "100%",
+          maxWidth: 918,
+          height: 417,
+          paddingTop: 81,
+          paddingRight: 32,
+          paddingBottom: 32,
+          paddingLeft: 32,
+        }}
+      >
+      <div className="flex h-full items-center gap-8 md:grid md:grid-cols-[1fr_397.5px]">
         {/* Text */}
-        <div>
-          <h2 className="text-xl font-semibold text-text">{title}</h2>
-          <p className="mt-4 text-sm text-(--color-muted)">{body}</p>
+        <div className="max-w-[413px]">
+          <h2
+            className="text-center"
+            style={{
+              color: "#374151",
+              fontFamily: "Helvetica, sans-serif",
+              fontWeight: 700,
+              fontSize: 30,
+              letterSpacing: 0.4,
+              textAlign: "center",
+            }}
+          >
+            {title}
+          </h2>
+          <p
+            className="mt-4 text-center"
+            style={{
+              color: "#6b7280",
+              fontFamily: "Helvetica, sans-serif",
+              fontWeight: 400,
+              fontSize: 16,
+              letterSpacing: -0.31,
+              textAlign: "center",
+            }}
+          >
+            {body}
+          </p>
         </div>
 
-        {/* Image */}
+        {/* Image - 397.5×256px, left ~445.5px (text + gap), radius 10px */}
         <div
-          className="overflow-hidden rounded-2xl border"
+          className="relative shrink-0 overflow-hidden"
           style={{
-            backgroundColor: "var(--color-surface)",
-            borderColor:
-              "color-mix(in srgb, var(--color-primary) 22%, transparent)",
+            width: 397.5,
+            height: 256,
+            borderRadius: 10,
           }}
         >
           {imageSrc ? (
             <Image
               src={imageSrc}
               alt={title}
-              width={500}
-              height={800}
+              width={398}
+              height={256}
               className="h-full w-full object-cover"
             />
           ) : (
-            <div className="h-full w-full animate-pulse bg-(--color-surface)" />
+            <div className="h-full w-full animate-pulse bg-gray-200" />
           )}
         </div>
+      </div>
       </div>
     </section>
   );

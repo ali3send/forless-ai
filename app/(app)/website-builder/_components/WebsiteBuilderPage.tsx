@@ -63,15 +63,15 @@ export default function WebsiteBuilderPage() {
   }
 
   return (
-    <div className="h-screen overflow-hidden">
-      <div className="flex h-full w-full">
-        {/* Sidebar */}
+    <div className="h-screen overflow-hidden flex flex-col">
+      <div className="flex flex-1 min-h-0 w-full">
+        {/* Sidebar - icon strip 92px + content panel (398px), Top 80px via pt-20 */}
         <div
           className={clsx(
-            "h-full overflow-y-auto border-r border-secondary-fade transition-all duration-300",
+            "h-full overflow-y-auto transition-all duration-300",
             focus === "editor" && "w-full",
             focus === "preview" && "w-0",
-            focus === "split" && "w-[260px] sm:w-[300px] lg:w-[340px]"
+            focus === "split" && "w-[490px] shrink-0 sm:w-[510px]",
           )}
         >
           <BuilderSidebar
@@ -92,22 +92,29 @@ export default function WebsiteBuilderPage() {
         {/* Preview */}
         <main
           className={clsx(
-            "h-full overflow-y-auto  transition-all duration-300",
+            "flex flex-col overflow-hidden transition-all duration-300",
             focus === "editor" && "w-0",
             focus === "preview" && "flex-1",
-            focus === "split" && "flex-1"
+            focus === "split" && "flex-1",
           )}
         >
-          <div className=" rounded-2xl border border-secondary-fade overflow-hidden">
-            <ThemeProvider
-              value={{
-                primary: brand?.palette?.primary,
-                secondary: brand?.palette?.secondary,
-                fontFamily: brand?.font?.css,
-              }}
-            >
-              <ActiveTemplate data={data} brand={brand} projectId={projectId} />
-            </ThemeProvider>
+          <div className="flex-1 overflow-y-auto">
+            <div className="rounded-2xl border border-secondary-fade overflow-hidden m-4">
+              <ThemeProvider
+                value={{
+                  primary: brand?.palette?.primary,
+                  secondary: brand?.palette?.secondary,
+                  fontFamily: brand?.font?.css,
+                }}
+              >
+                <ActiveTemplate
+                  data={data}
+                  brand={brand}
+                  projectId={projectId}
+                  showEditorButtons
+                />
+              </ThemeProvider>
+            </div>
           </div>
         </main>
       </div>
@@ -121,7 +128,7 @@ export default function WebsiteBuilderPage() {
               onClick={() => setFocus(mode as typeof focus)}
               className={clsx(
                 "px-3 py-1 text-xs font-medium rounded-full",
-                focus === mode ? "bg-primary text-white" : "text-secondary"
+                focus === mode ? "bg-primary text-white" : "text-secondary",
               )}
             >
               {mode}

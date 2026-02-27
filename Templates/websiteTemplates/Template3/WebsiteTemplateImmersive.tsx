@@ -16,17 +16,20 @@ type Props = {
   data: WebsiteData;
   brand: BrandData | null;
   projectId: string;
+  showEditorButtons?: boolean;
 };
 
-export function WebsiteTemplateImmersive({ data, brand, projectId }: Props) {
+export function WebsiteTemplateImmersive({ data, brand, projectId, showEditorButtons }: Props) {
   return (
-    <div className="relative min-h-screen bg-(--color-bg) text-text overflow-x-hidden">
+    <div className="relative min-h-screen bg-white text-slate-800 overflow-x-hidden">
       {/* Top navigation */}
       <Navbar
         brandName={data.brandName}
-        primary={brand?.palette?.primary ?? "#10b981"}
+        primary={brand?.palette?.primary ?? "#2563eb"}
         offersTitle={data.offers.title}
+        featuresTitle={data.features.title}
         logoSvg={brand?.logoSvg ?? null}
+        showEditorButtons={showEditorButtons}
       />
 
       {/* Act 1: Hero (visual anchor) */}

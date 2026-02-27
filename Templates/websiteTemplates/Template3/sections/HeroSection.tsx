@@ -1,94 +1,93 @@
 import Link from "next/link";
-import Image from "next/image";
-import { useUnsplashImage } from "../../hooks/useUnsplashImage";
-import { HeroData } from "../../template.types";
 
 type Props = {
   brandName: string;
   tagline: string;
-  hero: HeroData;
+  hero: {
+    headline: string;
+    subheadline: string;
+    primaryCta: string;
+    secondaryCta?: string;
+    primaryCtaLink?: string;
+    secondaryCtaLink?: string;
+  };
 };
 
 export function HeroSection({ brandName, tagline, hero }: Props) {
-  const heroImage = useUnsplashImage(hero.imageQuery);
-  const imageSrc =
-    hero.imageUrl && hero.imageUrl.trim() !== "" ? hero.imageUrl : heroImage;
-
   return (
-    <section className="relative px-4 pt-12">
-      <div className="relative mx-auto max-w-6xl overflow-hidden rounded-3xl">
-        {/* Background image */}
-        {imageSrc && (
-          <Image
-            src={imageSrc}
-            alt={brandName}
-            width={1400}
-            height={800}
-            priority
-            className="h-[520px] w-full object-cover"
-          />
-        )}
+    <section
+      className="flex min-h-[70vh] flex-col items-center justify-center px-4 py-20 text-center"
+      style={{
+        background: "linear-gradient(180deg, #F0F5FA 0%, #E6EEF5 100%)",
+      }}
+    >
+      <h1
+        className="text-4xl font-bold md:text-5xl"
+        style={{ color: "#374151" }}
+      >
+        {brandName}
+      </h1>
+      <p
+        className="mt-2 text-lg font-normal"
+        style={{ color: "#6b7280" }}
+      >
+        {tagline}
+      </p>
 
-        {/* Overlay */}
-        <div
-          className="absolute inset-0"
+      <h2
+        className="mt-10 text-4xl font-bold md:text-5xl lg:text-6xl"
+        style={{ color: "#374151" }}
+      >
+        {hero.headline}
+      </h2>
+      <p
+        className="mt-3 text-lg font-normal"
+        style={{ color: "#6b7280" }}
+      >
+        {hero.subheadline}
+      </p>
+
+      <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
+        <Link
+          href={hero.primaryCtaLink || "#"}
+          className="flex items-center justify-center text-white transition hover:opacity-90"
           style={{
-            background:
-              "linear-gradient(90deg, rgba(0,0,0,0.55), rgba(0,0,0,0.15), transparent)",
+            width: 149.48,
+            height: 64,
+            borderRadius: 10,
+            backgroundColor: "#0149E1",
+            fontFamily: "Helvetica, sans-serif",
+            fontWeight: 700,
+            fontSize: 18,
+            lineHeight: 28,
+            letterSpacing: -0.44,
+            textAlign: "center",
           }}
-        />
-
-        {/* Content */}
-        <div className="absolute inset-0 flex items-center">
-          <div className="max-w-3xl px-8">
-            <p
-              className="text-xs uppercase tracking-[0.25em] text-white/60 bg-black/30 px-3 py-1 rounded-full "
-              // style={{ color: "var(--color-muted)" }}
-            >
-              {tagline}
-            </p>
-
-            <h1 className="mt-4 text-4xl font-semibold leading-tight text-white md:text-5xl">
-              {hero.headline}
-            </h1>
-
-            <p className="mt-4 text-sm leading-relaxed text-white/80">
-              {hero.subheadline}
-            </p>
-
-            <div className="mt-6 flex flex-wrap items-center gap-4">
-              <Link
-                href={hero.primaryCtaLink || "#"}
-                className="
-                  inline-flex items-center justify-center
-                  rounded-full px-6 py-2.5
-                  text-sm font-medium
-                  transition
-                  bg-white
-                  text-slate-900
-                  hover:opacity-90
-                "
-              >
-                {hero.primaryCta}
-              </Link>
-
-              {hero.secondaryCta && hero.secondaryCtaLink && (
-                <Link
-                  href={hero.secondaryCtaLink}
-                  className="
-                    text-sm font-medium
-                    text-white
-                    underline underline-offset-4
-                    transition
-                    hover:opacity-80
-                  "
-                >
-                  {hero.secondaryCta}
-                </Link>
-              )}
-            </div>
-          </div>
-        </div>
+        >
+          {hero.primaryCta}
+        </Link>
+        {hero.secondaryCta && (
+          <Link
+            href={hero.secondaryCtaLink || "#"}
+            className="flex items-center justify-center transition hover:opacity-90"
+            style={{
+              width: 162.73,
+              height: 64,
+              borderRadius: 10,
+              border: "2px solid #1f2937",
+              color: "white",
+              backgroundColor: "#1f2937",
+              fontFamily: "Helvetica, sans-serif",
+              fontWeight: 700,
+              fontSize: 18,
+              lineHeight: 28,
+              letterSpacing: -0.44,
+              textAlign: "center",
+            }}
+          >
+            {hero.secondaryCta}
+          </Link>
+        )}
       </div>
     </section>
   );

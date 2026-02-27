@@ -71,15 +71,15 @@ export function getDefaultWebsiteData(type: WebsiteType): WebsiteData {
   return {
     template: "template1",
     type,
-    brandName: "Your Brand",
-    tagline: "Short tagline goes here",
+    brandName: "Chic Haven",
+    tagline: "Fashion Meets Comfort",
     hero: {
-      headline: "Make a bold statement",
-      subheadline: "Explain what you do in one simple sentence.",
-      primaryCta: "Get Started",
+      headline: "Welcome to Chic Haven",
+      subheadline: "Where Fashion Meets Comfort",
+      primaryCta: "Shop Now",
       secondaryCta: "Learn More",
-      primaryCtaLink: "https://www.example.com/",
-      secondaryCtaLink: "https://www.example.com/",
+      primaryCtaLink: "#",
+      secondaryCtaLink: "#",
       imageQuery:
         type === "product"
           ? "product"
@@ -90,33 +90,39 @@ export function getDefaultWebsiteData(type: WebsiteType): WebsiteData {
           : "business",
     },
     about: {
-      title: "About Us",
-      body: "Write a short description about your brand, who you help, and what makes you different.",
+      title: "About Chic Haven",
+      body: "At Chic Haven, we believe in blending style with comfort. Our clothing store offers a unique collection designed for those who want to look good without sacrificing comfort.",
       imageQuery: "workspace",
     },
     features: {
-      title: "Why Choose Us",
+      title: "Our Features",
       items: [
         {
-          label: "Quality",
-          description: "We focus on delivering great results.",
+          label: "Quality Fabrics",
+          description: "We source only the best materials for our clothing.",
         },
-        { label: "Trust", description: "Built on long-term relationships." },
-        { label: "Support", description: "We are here when you need us." },
+        {
+          label: "Affordable Prices",
+          description: "Look chic without breaking the bank.",
+        },
+        {
+          label: "Wide Range of Styles",
+          description: "From casual to formal, we have something for everyone.",
+        },
       ],
     },
     offers: {
-      title: type === "product" ? "Our Products" : "Our Services",
+      title: type === "product" ? "Current Offers" : "Our Services",
       items: [
         {
-          name: "Main Offer",
-          description: "Describe your main offer.",
-          priceLabel: "From $99",
+          name: "Summer Collection",
+          description: "Explore our latest summer styles with vibrant colors and light fabrics.",
+          priceLabel: "Starting at $29.99",
         },
         {
-          name: "Secondary Offer",
-          description: "Describe another offer.",
-          priceLabel: "Custom pricing",
+          name: "Buy One Get One 50% Off",
+          description: "Mix and match your favorite pieces and save big.",
+          priceLabel: "Limited Time Offer",
         },
       ],
     },
@@ -139,15 +145,16 @@ export function getDefaultWebsiteData(type: WebsiteType): WebsiteData {
       ],
     },
     contact: {
-      title: "Contact Us",
-      description: "Have questions? Reach out and we’ll respond soon.",
-      email: "you@example.com",
+      title: "Get in Touch",
+      description: "Have questions or feedback? We'd love to hear from you!",
+      email: "support@chichaven.com",
+      phone: "(555) 123-4567",
       whatsapp: "+1234567890",
     },
     finalCta: {
-      headline: "Ready to begin?",
-      subheadline: "Start your journey with us today.",
-      buttonLabel: "Contact Us",
+      headline: "Join the Chic Haven Family",
+      subheadline: "Stay updated with the latest trends and offerings.",
+      buttonLabel: "Subscribe Now",
     },
   };
 }

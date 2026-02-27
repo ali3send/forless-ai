@@ -53,6 +53,8 @@ export type OffersData = {
 export type NavbarData = {
   brandName: string;
   offersTitle: string;
+  featuresTitle: string;
   logoSvg: string | null;
   primary: string;
+  showEditorButtons?: boolean;
 };

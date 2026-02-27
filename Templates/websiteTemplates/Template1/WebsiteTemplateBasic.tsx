@@ -16,16 +16,19 @@ type Props = {
   data: WebsiteData;
   brand: BrandData | null;
   projectId: string;
+  showEditorButtons?: boolean;
 };
 
-export function WebsiteTemplateBasic({ data, brand, projectId }: Props) {
+export function WebsiteTemplateBasic({ data, brand, projectId, showEditorButtons }: Props) {
   return (
-    <div className="min-h-screen bg-(--color-bg) text-text">
+    <div className="min-h-screen bg-white text-slate-800">
       <Navbar
         brandName={data.brandName}
-        primary={brand?.palette?.primary ?? "#10b981"}
+        primary={brand?.palette?.primary ?? "#2563eb"}
         offersTitle={data.offers.title}
+        featuresTitle={data.features.title}
         logoSvg={brand?.logoSvg ?? null}
+        showEditorButtons={showEditorButtons}
       />
 
       <HeroSection
