@@ -7,13 +7,21 @@ type ConnectDomainModalProps = {
 };
 
 export function ConnectDomainModal({ open, onClose }: ConnectDomainModalProps) {
-  const [step, setStep] = useState<1 | 2>(1);
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
 
   useEffect(() => {
     if (open) {
       setStep(1);
     }
   }, [open]);
+
+  useEffect(() => {
+    if (step !== 3) return;
+    const timer = setTimeout(() => {
+      setStep(4);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [step]);
 
   if (!open) return null;
 
@@ -88,18 +96,34 @@ export function ConnectDomainModal({ open, onClose }: ConnectDomainModalProps) {
             </div>
             {/* Step 3 */}
             <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-xs font-semibold text-gray-500">
+              <div
+                className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold ${
+                  step >= 3
+                    ? "bg-[#0149E1] text-white"
+                    : "bg-gray-100 text-gray-500"
+                }`}
+              >
                 3
               </div>
               <div className="h-px w-24 bg-gray-200" />
             </div>
             {/* Step 4 */}
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-xs font-semibold text-gray-500">
+            <div
+              className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold ${
+                step >= 4
+                  ? "bg-[#0149E1] text-white"
+                  : "bg-gray-100 text-gray-500"
+              }`}
+            >
               4
             </div>
           </div>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">
-            Introduction
+            {step === 1 || step === 2
+              ? "Introduction"
+              : step === 3
+                ? "Verification"
+                : "Success!"}
           </p>
         </div>
 
@@ -119,8 +143,11 @@ export function ConnectDomainModal({ open, onClose }: ConnectDomainModalProps) {
                 Connect your domain
               </h2>
               <p className="mt-1 text-sm text-gray-500">
-                We&apos;ll guide you through connecting your domain to your
-                website.
+                We&apos;ll guide you through connecting{" "}
+                <span className="text-[#0149E1] font-helvetica font-bold text-[18px] leading-[28px] tracking-[0px]">
+                  Online Store
+                </span>{" "}
+                to your website.
               </p>
             </div>
 
@@ -168,7 +195,7 @@ export function ConnectDomainModal({ open, onClose }: ConnectDomainModalProps) {
               </div>
             </div>
           </div>
-        ) : (
+        ) : step === 2 ? (
           <div className="space-y-4 px-8 py-6">
             <div>
               <h2
@@ -203,9 +230,10 @@ export function ConnectDomainModal({ open, onClose }: ConnectDomainModalProps) {
                       <p className="text-xs font-medium uppercase text-gray-500">
                         Name
                       </p>
-                      <div className="mt-1 flex items-center rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900">
-                        <span className="flex-1 truncate">@</span>
-                      </div>
+                      <input
+                        placeholder="@"
+                        className="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#0149E1] focus:ring-2 focus:ring-[#0149E1]/20"
+                      />
                     </div>
                     <button
                       type="button"
@@ -221,9 +249,10 @@ export function ConnectDomainModal({ open, onClose }: ConnectDomainModalProps) {
                       <p className="text-xs font-medium uppercase text-gray-500">
                         Value / points to
                       </p>
-                      <div className="mt-1 flex items-center rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900">
-                        <span className="flex-1 truncate">76.76.21.21</span>
-                      </div>
+                      <input
+                        placeholder="76.76.21.21"
+                        className="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#0149E1] focus:ring-2 focus:ring-[#0149E1]/20"
+                      />
                     </div>
                     <button
                       type="button"
@@ -252,9 +281,10 @@ export function ConnectDomainModal({ open, onClose }: ConnectDomainModalProps) {
                       <p className="text-xs font-medium uppercase text-gray-500">
                         Name
                       </p>
-                      <div className="mt-1 flex items-center rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900">
-                        <span className="flex-1 truncate">www</span>
-                      </div>
+                      <input
+                        placeholder="www"
+                        className="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#0149E1] focus:ring-2 focus:ring-[#0149E1]/20"
+                      />
                     </div>
                     <button
                       type="button"
@@ -270,11 +300,10 @@ export function ConnectDomainModal({ open, onClose }: ConnectDomainModalProps) {
                       <p className="text-xs font-medium uppercase text-gray-500">
                         Value / points to
                       </p>
-                      <div className="mt-1 flex items-center rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900">
-                        <span className="flex-1 truncate">
-                          cname.forless.ai
-                        </span>
-                      </div>
+                      <input
+                        placeholder="cname.forless.ai"
+                        className="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#0149E1] focus:ring-2 focus:ring-[#0149E1]/20"
+                      />
                     </div>
                     <button
                       type="button"
@@ -302,6 +331,79 @@ export function ConnectDomainModal({ open, onClose }: ConnectDomainModalProps) {
               </div>
             </div>
           </div>
+        ) : step === 3 ? (
+          <div className="flex flex-col items-center justify-center px-8 py-16 text-center">
+            <h2
+              className="text-gray-900"
+              style={{
+                fontFamily: "Helvetica, sans-serif",
+                fontWeight: 700,
+                fontSize: 24,
+                lineHeight: "32px",
+              }}
+            >
+              Checking your domain…
+            </h2>
+            <p className="mt-2 text-sm text-gray-500 max-w-md">
+              We&apos;re verifying that your DNS records are set up correctly.
+            </p>
+
+            <div className="mt-10 flex items-center justify-center">
+              <div className="h-16 w-16 rounded-full border-4 border-[#0149E1] border-t-transparent animate-spin" />
+            </div>
+
+            <div className="mt-8">
+              <p className="text-sm font-semibold text-gray-900">
+                Checking DNS records…
+              </p>
+              <p className="mt-1 text-xs text-gray-500">
+                This usually takes a few seconds.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center px-8 py-16 text-center">
+            <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+              <span className="text-2xl text-green-600">✓</span>
+            </div>
+            <h2
+              className="text-gray-900"
+              style={{
+                fontFamily: "Helvetica, sans-serif",
+                fontWeight: 700,
+                fontSize: 24,
+                lineHeight: "32px",
+              }}
+            >
+              Your domain is connected! 🎉
+            </h2>
+            <p className="mt-2 max-w-md text-sm text-gray-500">
+              <span className="text-[#0149E1] font-helvetica font-bold text-[18px] leading-[28px] tracking-[0px]">
+                Online Store
+              </span>{" "}
+              is now live and pointing to your website. It may take a few more
+              minutes to fully propagate worldwide.
+            </p>
+
+            <div className="mt-8 w-full max-w-md rounded-2xl border border-green-100 bg-[#F0FDF4] px-6 py-5 text-center">
+              <p
+                className="text-[14px] font-bold leading-[20px] text-[#15803D] text-center"
+                style={{
+                  fontFamily:
+                    "Arial, system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+                  letterSpacing: 0,
+                }}
+              >
+                Your website is now available at:
+              </p>
+              <button
+                type="button"
+                className="mt-2 font-helvetica font-bold text-[18px] leading-[28px] tracking-[0px] text-[#0149E1] underline"
+              >
+                Online Store
+              </button>
+            </div>
+          </div>
         )}
 
         {/* Actions */}
@@ -320,7 +422,7 @@ export function ConnectDomainModal({ open, onClose }: ConnectDomainModalProps) {
               Let&apos;s get started
             </button>
           </div>
-        ) : (
+        ) : step === 2 ? (
           <div className="mt-2 flex justify-between gap-4 px-8 pb-6">
             <button
               type="button"
@@ -331,10 +433,20 @@ export function ConnectDomainModal({ open, onClose }: ConnectDomainModalProps) {
             </button>
             <button
               type="button"
-              onClick={handleClose}
+              onClick={() => setStep(3)}
               className="flex-1 rounded-full bg-[#0149E1] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#0149E1]/90"
             >
               I&apos;ve added the records
+            </button>
+          </div>
+        ) : step === 3 ? null : (
+          <div className="mt-2 flex justify-center pb-6">
+            <button
+              type="button"
+              onClick={handleClose}
+              className="w-full max-w-xl rounded-full bg-[#0149E1] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#0149E1]/90"
+            >
+              Done
             </button>
           </div>
         )}
