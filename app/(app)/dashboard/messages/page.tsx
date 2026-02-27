@@ -5,7 +5,6 @@ import { InboxLayout } from "./_components/InboxLayout";
 export default async function MessagesPage() {
   const supabase = await createServerSupabaseClient();
 
-  // ── auth ─────────────────────────────
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -14,7 +13,6 @@ export default async function MessagesPage() {
     redirect("/auth/login");
   }
 
-  // ── fetch user projects (for sidebar) ──
   const { data: projects, error } = await supabase
     .from("projects")
     .select("id, name")
@@ -27,17 +25,9 @@ export default async function MessagesPage() {
   const projectMap = Object.fromEntries(
     (projects ?? []).map((p) => [p.id, p.name ?? "Untitled project"])
   );
-  return (
-    <div className="mx-auto max-w-7xl px-6 py-8">
-      {/* Page header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-secondary-dark">Inbox</h1>
-        <p className="mt-1 text-sm text-secondary">
-          Messages sent from your websites
-        </p>
-      </div>
 
-      {/* Inbox UI */}
+  return (
+    <div className="mx-auto w-full max-w-[1440px] px-0 pt-0 pb-4">
       <InboxLayout projects={projects ?? []} projectMap={projectMap} />
     </div>
   );
