@@ -20,6 +20,7 @@ import { DomainPanel } from "./DomainPanel";
 import TemplateSelector from "./TemplateSelector";
 import { BrandPanel } from "./BrandPanel";
 import { LayoutPanel } from "./LayoutPanel";
+import { SocialLinksPanel } from "./SocialLinksPanel";
 
 type NavItemId =
   | "domain"
@@ -113,7 +114,7 @@ export function BuilderSidebar(props: Props) {
         style={{ backgroundColor: "#F9FAFB" }}
       >
         {/* Header with title - hidden for panels that render their own heading (Domain, Brand, Pages) */}
-        {activeNav !== "domain" && activeNav !== "brand" && activeNav !== "pages" && activeNav !== "layout" && activeNav !== "design" && (
+        {activeNav !== "domain" && activeNav !== "brand" && activeNav !== "pages" && activeNav !== "layout" && activeNav !== "design" && activeNav !== "social" && (
           <div
             className="flex shrink-0 items-center gap-2 py-3"
             style={{ backgroundColor: "#F9FAFB" }}
@@ -164,12 +165,7 @@ export function BuilderSidebar(props: Props) {
 
           {activeNav === "layout" && <LayoutPanel />}
 
-          {activeNav === "social" && (
-            <PlaceholderPanel
-              title="Social Links"
-              description="Add your social media profiles and links."
-            />
-          )}
+          {activeNav === "social" && <SocialLinksPanel />}
 
           {activeNav === "settings" && (
             <PlaceholderPanel

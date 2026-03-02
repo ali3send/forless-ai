@@ -73,7 +73,8 @@ export function useWebsiteBuilder(projectId: string | null) {
         const brandData = (project?.brand_data as BrandData) ?? null;
         if (brandData) setBrand(brandData);
 
-        const base = website ?? getDefaultWebsiteData("product");
+        const defaults = getDefaultWebsiteData("product");
+        const base = website ?? defaults;
 
         const merged: WebsiteData = brandData
           ? {
@@ -86,6 +87,16 @@ export function useWebsiteBuilder(projectId: string | null) {
               tagline: brandData.slogan || base.tagline,
             }
           : base;
+
+        // Ensure about body is never empty so "About" section always shows text
+        if (!merged.about?.body?.trim()) {
+          merged.about = {
+            ...merged.about,
+            title: merged.about?.title ?? defaults.about.title,
+            body: defaults.about.body,
+            imageQuery: merged.about?.imageQuery ?? defaults.about.imageQuery,
+          };
+        }
 
         setData(merged);
       } catch (err) {

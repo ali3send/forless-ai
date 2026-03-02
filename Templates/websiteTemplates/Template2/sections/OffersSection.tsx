@@ -38,7 +38,7 @@ export function OffersSection({ title, offers }: OffersData) {
         </h2>
 
         <div className="grid gap-6 md:grid-cols-2">
-          {offers.map((offer, i) => (
+          {offers.slice(0, 2).map((offer, i) => (
             <div
               key={i}
               className="flex flex-col overflow-hidden rounded-lg border bg-white"
@@ -99,6 +99,19 @@ export function OffersSection({ title, offers }: OffersData) {
                   >
                     {offer.priceLabel}
                   </div>
+                )}
+
+                {i === 1 && (
+                  <p
+                    className="mb-4 font-semibold"
+                    style={{
+                      color: "#0149E1",
+                      fontFamily: "Helvetica, sans-serif",
+                      fontSize: 15,
+                    }}
+                  >
+                    Limited Time Offer
+                  </p>
                 )}
 
                 <button

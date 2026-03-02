@@ -1,8 +1,12 @@
 import Image from "next/image";
 import { AboutData } from "../../template.types";
 
+const DEFAULT_ABOUT_BODY =
+  "At Chic Haven, we believe in blending style with comfort. Our clothing store offers a unique collection designed for those who want to look good without sacrificing comfort.";
+
 export function AboutSection({ title, body, imageUrl, imageQuery }: AboutData) {
   const imageSrc = imageUrl && imageUrl.trim() !== "" ? imageUrl : "/AI.jpeg";
+  const displayBody = body?.trim() || DEFAULT_ABOUT_BODY;
 
   return (
     <section
@@ -52,7 +56,7 @@ export function AboutSection({ title, body, imageUrl, imageQuery }: AboutData) {
               textAlign: "center",
             }}
           >
-            {body}
+            {displayBody}
           </p>
         </div>
 

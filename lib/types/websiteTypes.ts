@@ -99,7 +99,7 @@ export function getDefaultWebsiteData(type: WebsiteType): WebsiteData {
     },
     about: {
       title: "About Chic Haven",
-      body: "",
+      body: "At Chic Haven, we believe in blending style with comfort. Our clothing store offers a unique collection designed for those who want to look good without sacrificing comfort.",
       imageQuery: "workspace",
     },
     features: {
@@ -131,10 +131,10 @@ export function getDefaultWebsiteData(type: WebsiteType): WebsiteData {
           linkUrl: "/products/premium-tshirt",
         },
         {
-          name: "New offer",
-          description: "",
+          name: "Buy One Get One 50% Off",
+          description: "Mix and match your favorite pieces and save big.",
           priceLabel: "",
-          buttonLabel: "",
+          buttonLabel: "View Deals",
           linkUrl: "",
         },
       ],
