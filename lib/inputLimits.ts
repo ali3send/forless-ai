@@ -40,6 +40,13 @@ export const INPUT_LIMITS = {
 
   projectName: 150,
   projectIdea: 200,
+
+  websiteName: 80,
+  primaryLanguage: 60,
+  seoTitle: 60,
+  seoDescription: 60,
+  googleAnalyticsId: 20,
+  metaPixelId: 20,
 } as const;
 
 export type InputLimitsKey = keyof typeof INPUT_LIMITS;

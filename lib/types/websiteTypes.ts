@@ -7,6 +7,28 @@ export type WebsiteData = {
   brandName: string;
   tagline: string;
 
+  // Global website-level settings
+  websiteName?: string;
+  primaryLanguage?: string;
+  maintenanceMode?: {
+    enabled: boolean;
+  };
+  faviconUrl?: string;
+  // SEO
+  seoTitle?: string;
+  seoDescription?: string;
+  openGraphImageUrl?: string;
+  // Tracking & Integrations
+  googleAnalyticsId?: string;
+  metaPixelId?: string;
+  // Legal
+  legal?: {
+    privacyPolicyAutoGenerate?: boolean;
+    termsAndConditionsAutoGenerate?: boolean;
+  };
+  // Footer
+  footerText?: string;
+
   hero: {
     title?: string;
     headline: string;
@@ -80,6 +102,11 @@ export function getDefaultWebsiteData(type: WebsiteType): WebsiteData {
     type,
     brandName: "Chic Haven",
     tagline: "Fashion Meets Comfort",
+    websiteName: "My Website",
+    primaryLanguage: "English",
+    maintenanceMode: {
+      enabled: false,
+    },
     hero: {
       title: "Home",
       headline: "Welcome to Chic Haven",
