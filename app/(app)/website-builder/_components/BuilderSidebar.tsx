@@ -113,7 +113,7 @@ export function BuilderSidebar(props: Props) {
         style={{ backgroundColor: "#F9FAFB" }}
       >
         {/* Header with title - hidden for panels that render their own heading (Domain, Brand, Pages) */}
-        {activeNav !== "domain" && activeNav !== "brand" && activeNav !== "pages" && activeNav !== "layout" && (
+        {activeNav !== "domain" && activeNav !== "brand" && activeNav !== "pages" && activeNav !== "layout" && activeNav !== "design" && (
           <div
             className="flex shrink-0 items-center gap-2 py-3"
             style={{ backgroundColor: "#F9FAFB" }}
