@@ -1,8 +1,9 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { AlertTriangle, Pencil } from "lucide-react";
 import { useWebsiteStore } from "@/store/website.store";
+import { EditLegalModal } from "./EditLegalModal";
 
 type SettingsPanelProps = {
   onSave?: () => void;
@@ -23,6 +24,9 @@ export function SettingsPanel({ onSave, saving }: SettingsPanelProps) {
   const { data, patchData } = useWebsiteStore();
   const faviconInputRef = useRef<HTMLInputElement>(null);
   const ogImageInputRef = useRef<HTMLInputElement>(null);
+  const [legalModal, setLegalModal] = useState<"privacy" | "terms" | null>(
+    null
+  );
 
   const websiteName = data?.websiteName ?? data?.brandName ?? "My Website";
   const primaryLanguage = data?.primaryLanguage ?? "English";
@@ -96,6 +100,17 @@ export function SettingsPanel({ onSave, saving }: SettingsPanelProps) {
         termsAndConditionsAutoGenerate: !termsAuto,
       },
     });
+
+  const handleLegalSave = (content: string, kind: "privacy" | "terms") => {
+    patchData({
+      legal: {
+        ...data?.legal,
+        ...(kind === "privacy"
+          ? { privacyPolicyContent: content }
+          : { termsContent: content }),
+      },
+    });
+  };
 
   return (
     <div
@@ -505,6 +520,7 @@ export function SettingsPanel({ onSave, saving }: SettingsPanelProps) {
           </div>
           <button
             type="button"
+            onClick={() => setLegalModal("privacy")}
             className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 transition hover:bg-gray-50"
             style={{
               color: "#364153",
@@ -556,6 +572,7 @@ export function SettingsPanel({ onSave, saving }: SettingsPanelProps) {
           </div>
           <button
             type="button"
+            onClick={() => setLegalModal("terms")}
             className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 transition hover:bg-gray-50"
             style={{
               color: "#364153",
@@ -633,6 +650,22 @@ export function SettingsPanel({ onSave, saving }: SettingsPanelProps) {
           </div>
         </div>
       </div>
+
+      {/* Edit Legal modals */}
+      <EditLegalModal
+        open={legalModal === "privacy"}
+        onClose={() => setLegalModal(null)}
+        title="Edit Privacy Policy"
+        initialValue={data?.legal?.privacyPolicyContent ?? ""}
+        onSave={(v) => handleLegalSave(v, "privacy")}
+      />
+      <EditLegalModal
+        open={legalModal === "terms"}
+        onClose={() => setLegalModal(null)}
+        title="Edit Terms & Conditions"
+        initialValue={data?.legal?.termsContent ?? ""}
+        onSave={(v) => handleLegalSave(v, "terms")}
+      />
 
       {/* Save Settings */}
       <button
