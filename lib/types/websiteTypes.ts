@@ -35,12 +35,16 @@ export type WebsiteData = {
   };
 
   offers: {
-    // products or services
+    sectionLabel?: string;
     title: string;
     items: {
       name: string;
       description: string;
-      priceLabel?: string; // "From $49", "Starting at $10/hr"
+      priceLabel?: string;
+      imageUrl?: string;
+      imagePath?: string;
+      buttonLabel?: string;
+      linkUrl?: string;
     }[];
   };
 
@@ -55,6 +59,7 @@ export type WebsiteData = {
   };
 
   contact: {
+    sectionLabel?: string;
     title: string;
     description: string;
     email: string;
@@ -115,17 +120,22 @@ export function getDefaultWebsiteData(type: WebsiteType): WebsiteData {
       ],
     },
     offers: {
-      title: type === "product" ? "Current Offers" : "Our Services",
+      sectionLabel: "Product",
+      title: "Featured Products",
       items: [
         {
-          name: "Summer Collection",
-          description: "Explore our latest summer styles with vibrant colors and light fabrics.",
+          name: "Premium T-Shirt",
+          description: "",
           priceLabel: "Starting at $29.99",
+          buttonLabel: "Buy Now",
+          linkUrl: "/products/premium-tshirt",
         },
         {
-          name: "Buy One Get One 50% Off",
-          description: "Mix and match your favorite pieces and save big.",
-          priceLabel: "Limited Time Offer",
+          name: "New offer",
+          description: "",
+          priceLabel: "",
+          buttonLabel: "",
+          linkUrl: "",
         },
       ],
     },
@@ -148,8 +158,9 @@ export function getDefaultWebsiteData(type: WebsiteType): WebsiteData {
       ],
     },
     contact: {
+      sectionLabel: "Contact",
       title: "Get in Touch",
-      description: "Have questions or feedback? We'd love to hear from you!",
+      description: "",
       email: "support@chichaven.com",
       phone: "(555) 123-4567",
       whatsapp: "+1234567890",

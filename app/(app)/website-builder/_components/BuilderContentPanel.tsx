@@ -207,13 +207,28 @@ export function BuilderContentPanel({
         />
       )}
       {section === "features" && (
-        <FeaturesSectionForm data={data} setData={setData} />
+        <FeaturesSectionForm
+          data={data}
+          setData={setData}
+          onSave={onSave}
+          saving={saving}
+        />
       )}
       {section === "offers" && (
-        <ProductsSectionForm data={data} setData={setData} />
+        <ProductsSectionForm
+          data={data}
+          setData={setData}
+          onSave={onSave}
+          saving={saving}
+        />
       )}
       {section === "contact" && (
-        <ContactSectionForm data={data} setData={setData} />
+        <ContactSectionForm
+          data={data}
+          setData={setData}
+          onSave={onSave}
+          saving={saving}
+        />
       )}
     </div>
   );

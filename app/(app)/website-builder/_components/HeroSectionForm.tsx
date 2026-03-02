@@ -1,14 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
 import { ArrowUpToLine, Sparkles } from "lucide-react";
 
 import { WebsiteData } from "@/lib/types/websiteTypes";
 import { StateUpdater } from "@/lib/types/state";
-import { useProjectStore } from "@/store/project.store";
-import { getErrorMessage } from "@/lib/utils/getErrorMessage";
-import { uiToast } from "@/lib/utils/uiToast";
 import { TextField } from "../../components/ui/TextField";
 import { INPUT_LIMITS } from "@/lib/inputLimits";
 
@@ -27,74 +23,13 @@ export function HeroSectionForm({
   onSave,
   saving,
 }: HeroSectionFormProps) {
-  const projectId = useProjectStore((s) => s.projectId);
-
-  const [uploading, setUploading] = useState(false);
-  const [removing, setRemoving] = useState(false);
-  const [err, setErr] = useState<string | null>(null);
-
-  async function onUpload(file: File) {
-    if (!projectId) return;
-
-    setErr(null);
-    setUploading(true);
-    try {
-      const fd = new FormData();
-      fd.append("projectId", projectId);
-      fd.append("file", file);
-
-      const res = await fetch("/api/storage/upload/hero", {
-        method: "POST",
-        body: fd,
-      });
-
-      const json = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        uiToast.error(getErrorMessage(json.error, "Upload failed"));
-        throw new Error(json.error || "Upload failed");
-      }
-
-      const bustedUrl = `${json.publicUrl}?v=${Date.now()}`;
-
-      setData((d) => ({
-        ...d,
-        hero: { ...d.hero, imagePath: json.path, imageUrl: bustedUrl },
-      }));
-    } catch (e: unknown) {
-      setErr(getErrorMessage(e, "Upload failed"));
-    } finally {
-      setUploading(false);
-    }
-  }
-
-  async function removeImage() {
-    if (!projectId) return;
-
-    setErr(null);
-
+  // UI only: no backend upload/remove
+  function removeImage() {
     setData((d) => ({
       ...d,
       hero: { ...d.hero, imagePath: undefined, imageUrl: undefined },
     }));
-
-    setRemoving(true);
-    try {
-      const res = await fetch("/api/storage/remove/hero", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectId }),
-      });
-
-      const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(json.error || "Remove failed");
-    } catch (e: unknown) {
-      setErr(getErrorMessage(e, "Failed to remove image"));
-    } finally {
-      setRemoving(false);
-    }
   }
-
-  const busy = uploading || removing;
 
   return (
     <div className="space-y-4">
@@ -165,15 +100,7 @@ export function HeroSectionForm({
 
           {/* Hero image upload */}
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <p className="form-label">Hero image</p>
-              {uploading && (
-                <span className="text-[11px] text-secondary">Uploading…</span>
-              )}
-              {removing && (
-                <span className="text-[11px] text-secondary">Removing…</span>
-              )}
-            </div>
+            <p className="form-label">Hero image</p>
 
             {data.hero.imageUrl ? (
               <div className="rounded-lg border border-secondary-fade bg-[#E8F0F7]/30 p-3">
@@ -188,8 +115,7 @@ export function HeroSectionForm({
                   <button
                     type="button"
                     onClick={removeImage}
-                    disabled={busy}
-                    className="text-[11px] font-semibold underline underline-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="text-[11px] font-semibold underline underline-offset-2 hover:opacity-80"
                     style={{ color: ACCENT_BLUE }}
                   >
                     Remove image
@@ -199,7 +125,7 @@ export function HeroSectionForm({
             ) : (
               <label
                 htmlFor="image-upload"
-                className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed py-8 transition hover:border-[#0149E1]/60 disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed py-8 transition hover:border-[#0149E1]/60"
                 style={{
                   backgroundColor: "#E8F0F7",
                   borderColor: "rgba(1,73,225,0.3)",
@@ -209,14 +135,8 @@ export function HeroSectionForm({
                   id="image-upload"
                   type="file"
                   accept="image/*"
-                  disabled={busy}
                   className="hidden"
-                  onChange={async (e) => {
-                    const file = e.target.files?.[0];
-                    e.currentTarget.value = "";
-                    if (!file) return;
-                    await onUpload(file);
-                  }}
+                  onChange={() => {}}
                 />
                 <ArrowUpToLine
                   className="h-10 w-10"
@@ -231,8 +151,6 @@ export function HeroSectionForm({
                 </span>
               </label>
             )}
-
-            {err && <p className="text-[11px] text-secondary">{err}</p>}
           </div>
 
           {/* AI Hero Image */}

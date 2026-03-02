@@ -1,21 +1,29 @@
 "use client";
 
+import { Plus } from "lucide-react";
 import { WebsiteData } from "@/lib/types/websiteTypes";
+import { StateUpdater } from "@/lib/types/state";
 import { TextField } from "../../components/ui/TextField";
+
+const ACCENT_BLUE = "#0149E1";
 
 type FeaturesSectionFormProps = {
   data: WebsiteData;
-  setData: React.Dispatch<React.SetStateAction<WebsiteData>>;
+  setData: StateUpdater<WebsiteData>;
+  onSave?: () => void;
+  saving?: boolean;
 };
 
 export function FeaturesSectionForm({
   data,
   setData,
+  onSave,
+  saving,
 }: FeaturesSectionFormProps) {
   const updateItem = (
     index: number,
     field: "label" | "description",
-    value: string
+    value: string,
   ) => {
     setData((prev) => {
       const updated = [...prev.features.items];
@@ -41,86 +49,79 @@ export function FeaturesSectionForm({
     }));
   };
 
-  const removeFeature = (index: number) => {
-    setData((prev) => ({
-      ...prev,
-      features: {
-        ...prev.features,
-        items: prev.features.items.filter((_, i) => i !== index),
-      },
-    }));
-  };
-
   return (
     <div className="space-y-4">
-      {/* Features Title */}
-      <TextField
-        label="Features Section Title"
-        placeholder="e.g., Features, Our Services, Benefits"
-        value={data.features.title}
-        onChange={(v) =>
-          setData((prev) => ({
-            ...prev,
-            features: { ...prev.features, title: v },
-          }))
-        }
-        limit="featuresTitle"
-        showLimit
-      />
+      {/* Title */}
+      <div className="rounded-xl border border-secondary-fade/80 bg-white p-4 shadow-sm">
+        <TextField
+          label="Title"
+          placeholder="Features"
+          value={data.features.title}
+          showAsPlaceholderWhenValueEquals="Our Features"
+          onChange={(v) =>
+            setData((prev) => ({
+              ...prev,
+              features: { ...prev.features, title: v },
+            }))
+          }
+          limit="featuresTitle"
+        />
+      </div>
 
       {/* Feature Items */}
       <div className="space-y-4">
         {data.features.items.map((item, index) => (
           <div
             key={index}
-            className="rounded-xl border border-secondary-fade bg-secondary-soft p-3 space-y-2"
+            className="rounded-xl border border-secondary-fade/80 bg-white p-4 shadow-sm"
           >
-            <div className="flex justify-between items-center">
-              <h4 className="text-xs font-semibold text-secondary-dark">
-                Feature {index + 1}
-              </h4>
+            <h4 className="form-label mb-4">Feature {index + 1}</h4>
 
-              {data.features.items.length > 1 && (
-                <button
-                  onClick={() => removeFeature(index)}
-                  className="text-xs text-red-500 hover:text-red-700 transition"
-                >
-                  Remove
-                </button>
-              )}
+            <div className="space-y-4">
+              <TextField
+                label="Label"
+                placeholder="e.g., Quality Fabrics, Affordable Prices"
+                value={item.label}
+                onChange={(v) => updateItem(index, "label", v)}
+                limit="featureLabel"
+                showLimit
+              />
+
+              <TextField
+                as="textarea"
+                rows={6}
+                maxHeight={120}
+                label="Description"
+                placeholder="Describe this feature"
+                value={item.description}
+                onChange={(v) => updateItem(index, "description", v)}
+                limit="featureDescription"
+                showLimit
+              />
             </div>
-
-            <TextField
-              label="Label"
-              placeholder="e.g., Feature 1, Feature 2, Feature 3"
-              value={item.label}
-              onChange={(v) => updateItem(index, "label", v)}
-              limit="featureLabel"
-              showLimit
-              className="border-none ring-1 ring-secondary-light focus:ring-2 focus:ring-primary/50"
-            />
-
-            <TextField
-              as="textarea"
-              rows={4}
-              label="Description"
-              value={item.description}
-              onChange={(v) => updateItem(index, "description", v)}
-              limit="featureDescription"
-              showLimit
-              maxHeight={80}
-              className="border-none ring-1 ring-secondary-light focus:ring-2 focus:ring-primary/50"
-            />
           </div>
         ))}
       </div>
 
       {/* Add Feature Button */}
       <button
+        type="button"
         onClick={addFeature}
-        className="w-full rounded-full btn-fill text-xs py-1.5"
+        className="flex w-full items-center justify-center gap-2 rounded-3xl px-4 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+        style={{ backgroundColor: ACCENT_BLUE }}
       >
-        + Add Feature
+        <Plus className="h-4 w-4" aria-hidden />
+        Add feature
+      </button>
+
+      {/* Save changes */}
+      <button
+        type="button"
+        onClick={() => onSave?.()}
+        disabled={saving}
+        className="w-full rounded-3xl border border-secondary-fade bg-secondary-soft px-4 py-3 text-sm font-semibold text-secondary-dark transition hover:bg-secondary-fade/80 disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        {saving ? "Saving…" : "Save changes"}
       </button>
     </div>
   );
