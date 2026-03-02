@@ -19,6 +19,7 @@ import { BuilderDesignPanel } from "./BuilderDesignPanel";
 import { DomainPanel } from "./DomainPanel";
 import TemplateSelector from "./TemplateSelector";
 import { BrandPanel } from "./BrandPanel";
+import { LayoutPanel } from "./LayoutPanel";
 
 type NavItemId =
   | "domain"
@@ -112,7 +113,7 @@ export function BuilderSidebar(props: Props) {
         style={{ backgroundColor: "#F9FAFB" }}
       >
         {/* Header with title - hidden for panels that render their own heading (Domain, Brand, Pages) */}
-        {activeNav !== "domain" && activeNav !== "brand" && activeNav !== "pages" && (
+        {activeNav !== "domain" && activeNav !== "brand" && activeNav !== "pages" && activeNav !== "layout" && (
           <div
             className="flex shrink-0 items-center gap-2 py-3"
             style={{ backgroundColor: "#F9FAFB" }}
@@ -161,12 +162,7 @@ export function BuilderSidebar(props: Props) {
 
           {activeNav === "brand" && <BrandPanel />}
 
-          {activeNav === "layout" && (
-            <PlaceholderPanel
-              title="Layout"
-              description="Adjust page layout and structure."
-            />
-          )}
+          {activeNav === "layout" && <LayoutPanel />}
 
           {activeNav === "social" && (
             <PlaceholderPanel
