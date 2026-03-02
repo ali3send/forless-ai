@@ -13,7 +13,7 @@ const ACCENT_BLUE = "#0149E1";
 const CARD_BG = "#FFFFFF";
 const INPUT_BG = "#F7FAFC";
 const HINT_COLOR = "#718096";
-const LABEL_COLOR = "#1A202C";
+const LABEL_COLOR = "#111827";
 const HOW_IT_WORKS_BG = "#F9FAFB";
 
 const SEO_TITLE_MAX = 60;
@@ -131,7 +131,17 @@ export function SettingsPanel({ onSave, saving }: SettingsPanelProps) {
         className="rounded-xl border border-secondary-fade/80 bg-white p-4 shadow-sm"
         style={{ borderColor: "#E5E7EB" }}
       >
-        <h3 className="text-sm font-bold text-secondary-dark mb-4">General</h3>
+        <h3
+          className="mb-4 text-secondary-dark"
+          style={{
+            fontFamily: "Helvetica, sans-serif",
+            fontWeight: 700,
+            fontSize: "20px",
+            letterSpacing: "-0.15px",
+          }}
+        >
+          General
+        </h3>
         <div className="space-y-4">
           <div>
             <label className="block mb-1">
@@ -189,10 +199,10 @@ export function SettingsPanel({ onSave, saving }: SettingsPanelProps) {
 
       {/* Maintenance Mode */}
       <div
-        className="rounded-xl border p-4 shadow-sm"
+        className="rounded-xl border-2 p-4 shadow-sm"
         style={{
-          backgroundColor: "#FFF7ED",
-          borderColor: "#FED7AA",
+          background: "linear-gradient(#FFF7ED, #EFF6FF)",
+          borderColor: "#FFD6A880",
         }}
       >
         <div className="flex items-start gap-3">
@@ -202,7 +212,15 @@ export function SettingsPanel({ onSave, saving }: SettingsPanelProps) {
             aria-hidden
           />
           <div className="min-w-0 flex-1">
-            <h3 className="text-sm font-bold text-secondary-dark">
+            <h3
+              className="text-secondary-dark"
+              style={{
+                fontFamily: "Helvetica, sans-serif",
+                fontWeight: 700,
+                fontSize: "18px",
+                letterSpacing: "-0.44px",
+              }}
+            >
               Maintenance Mode
             </h3>
             <p className="text-xs text-secondary mt-0.5">
@@ -251,7 +269,16 @@ export function SettingsPanel({ onSave, saving }: SettingsPanelProps) {
           borderColor: "#E5E7EB",
         }}
       >
-        <h3 className="text-base font-bold mb-4" style={{ color: LABEL_COLOR }}>
+        <h3
+          className="mb-4"
+          style={{
+            color: LABEL_COLOR,
+            fontFamily: "Helvetica, sans-serif",
+            fontWeight: 700,
+            fontSize: "20px",
+            letterSpacing: "-0.15px",
+          }}
+        >
           SEO
         </h3>
         <div className="space-y-4">
@@ -338,7 +365,16 @@ export function SettingsPanel({ onSave, saving }: SettingsPanelProps) {
           borderColor: "#E5E7EB",
         }}
       >
-        <h3 className="text-base font-bold mb-4" style={{ color: LABEL_COLOR }}>
+        <h3
+          className="mb-4"
+          style={{
+            color: LABEL_COLOR,
+            fontFamily: "Helvetica, sans-serif",
+            fontWeight: 700,
+            fontSize: "20px",
+            letterSpacing: "-0.15px",
+          }}
+        >
           Tracking & Integrations
         </h3>
         <div className="space-y-4">
@@ -408,10 +444,26 @@ export function SettingsPanel({ onSave, saving }: SettingsPanelProps) {
 
       {/* Legal – main container */}
       <div
-        className="flex w-full max-w-[272px] flex-col gap-4 rounded-[10px] border border-[#E5E7EB] p-4 shadow-sm"
-        style={{ backgroundColor: "#FFFFFF" }}
+        className="flex w-full flex-col rounded-[14px] border shadow-sm"
+        style={{
+          maxWidth: 320,
+          minHeight: 392,
+          padding: 24,
+          gap: 16,
+          borderWidth: 1,
+          borderColor: "#E5E7EB",
+          backgroundColor: "#FFFFFF",
+        }}
       >
-        <h3 className="text-base font-bold" style={{ color: "#333" }}>
+        <h3
+          style={{
+            color: "#333",
+            fontFamily: "Helvetica, sans-serif",
+            fontWeight: 700,
+            fontSize: "20px",
+            letterSpacing: "-0.15px",
+          }}
+        >
           Legal
         </h3>
 
@@ -528,7 +580,16 @@ export function SettingsPanel({ onSave, saving }: SettingsPanelProps) {
           borderColor: "#E5E7EB",
         }}
       >
-        <h3 className="text-base font-bold mb-4" style={{ color: "#333" }}>
+        <h3
+          className="mb-4"
+          style={{
+            color: "#333",
+            fontFamily: "Helvetica, sans-serif",
+            fontWeight: 700,
+            fontSize: "20px",
+            letterSpacing: "-0.15px",
+          }}
+        >
           Footer
         </h3>
         <div className="space-y-4">

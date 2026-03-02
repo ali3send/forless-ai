@@ -96,9 +96,10 @@ export function BuilderSidebar(props: Props) {
                   title={item.label}
                   className={`flex w-full flex-col items-center gap-1 rounded-lg px-2 py-2.5 text-center text-[10px] font-medium transition ${
                     isActive
-                      ? "bg-primary text-white"
+                      ? "text-white"
                       : "text-secondary hover:bg-secondary-fade hover:text-secondary-dark"
                   }`}
+                  style={isActive ? { backgroundColor: "#0149E1" } : undefined}
                 >
                   <Icon className="h-5 w-5 shrink-0" />
                   <span className="leading-tight">{item.label}</span>
