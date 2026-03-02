@@ -18,6 +18,7 @@ import { BuilderContentPanel } from "./BuilderContentPanel";
 import { BuilderDesignPanel } from "./BuilderDesignPanel";
 import { DomainPanel } from "./DomainPanel";
 import TemplateSelector from "./TemplateSelector";
+import { BrandPanel } from "./BrandPanel";
 
 type NavItemId =
   | "domain"
@@ -110,8 +111,8 @@ export function BuilderSidebar(props: Props) {
         className="flex min-w-0 flex-1 flex-col overflow-hidden gap-4 pt-6 pr-4 pb-6 pl-4"
         style={{ backgroundColor: "#F9FAFB" }}
       >
-        {/* Header with title - hidden for Domain to avoid duplicate "Domain" heading */}
-        {activeNav !== "domain" && (
+        {/* Header with title - hidden for panels that render their own heading (Domain, Brand, Pages) */}
+        {activeNav !== "domain" && activeNav !== "brand" && activeNav !== "pages" && (
           <div
             className="flex shrink-0 items-center gap-2 py-3"
             style={{ backgroundColor: "#F9FAFB" }}
@@ -141,6 +142,8 @@ export function BuilderSidebar(props: Props) {
               <BuilderContentPanel
                 onGenerate={props.onGenerate}
                 onRestore={props.handleRestoreSection}
+                onSave={props.onSave}
+                saving={props.saving}
               />
             </>
           )}
@@ -156,12 +159,7 @@ export function BuilderSidebar(props: Props) {
             </div>
           )}
 
-          {activeNav === "brand" && (
-            <PlaceholderPanel
-              title="Brand"
-              description="Customize your brand identity, logo, and colors."
-            />
-          )}
+          {activeNav === "brand" && <BrandPanel />}
 
           {activeNav === "layout" && (
             <PlaceholderPanel

@@ -1,4 +1,5 @@
 export const INPUT_LIMITS = {
+  heroTitle: 30,
   brandName: 40,
   slogan: 80,
   tagline: 60,

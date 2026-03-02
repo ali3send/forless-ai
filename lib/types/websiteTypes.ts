@@ -8,6 +8,7 @@ export type WebsiteData = {
   tagline: string;
 
   hero: {
+    title?: string;
     headline: string;
     subheadline: string;
     primaryCta: string;
@@ -74,6 +75,7 @@ export function getDefaultWebsiteData(type: WebsiteType): WebsiteData {
     brandName: "Chic Haven",
     tagline: "Fashion Meets Comfort",
     hero: {
+      title: "Home",
       headline: "Welcome to Chic Haven",
       subheadline: "Where Fashion Meets Comfort",
       primaryCta: "Shop Now",
@@ -95,7 +97,7 @@ export function getDefaultWebsiteData(type: WebsiteType): WebsiteData {
       imageQuery: "workspace",
     },
     features: {
-      title: "Our Features",
+      title: "",
       items: [
         {
           label: "Quality Fabrics",

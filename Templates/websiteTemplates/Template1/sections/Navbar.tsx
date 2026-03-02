@@ -30,24 +30,24 @@ export function Navbar({
           <span className="text-sm font-semibold text-slate-700">{brandName}</span>
         </div>
 
-        <nav className="hidden items-center gap-8 text-sm text-slate-600 md:flex">
-          <a href="#" className="transition hover:text-slate-900">
+        <nav className="hidden shrink-0 items-center gap-8 text-sm text-slate-600 md:flex">
+          <a href="#" className="shrink-0 transition hover:text-slate-900">
             Home
           </a>
-          <a href="#about" className="transition hover:text-slate-900">
+          <a href="#about" className="shrink-0 transition hover:text-slate-900">
             About
           </a>
-          <a href="#features" className="transition hover:text-slate-900">
-            {featuresTitle}
+          <a href="#features" className="shrink-0 transition hover:text-slate-900">
+            {featuresTitle || "Features"}
           </a>
-          <a href="#offers" className="transition hover:text-slate-900">
-            {offersTitle}
+          <a href="#offers" className="shrink-0 transition hover:text-slate-900">
+            {offersTitle || "Product"}
           </a>
-          <a href="#contact" className="transition hover:text-slate-900">
+          <a href="#contact" className="shrink-0 transition hover:text-slate-900">
             Get in Touch
           </a>
           {showEditorButtons && (
-            <div className="ml-4 flex items-center gap-2" style={{ gap: 8 }}>
+            <div className="ml-4 flex shrink-0 items-center gap-2" style={{ gap: 8 }}>
               <button
                 type="button"
                 className="flex items-center justify-center gap-2 rounded-full text-sm font-medium transition"

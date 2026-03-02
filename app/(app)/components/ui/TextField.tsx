@@ -40,7 +40,7 @@ export function TextField({
       {(label || showLimit || isMax) && (
         <div className="mb-1 flex items-center justify-between">
           {label ? (
-            <span className="text-xs font-medium text-secondary">{label}</span>
+            <span className="form-label">{label}</span>
           ) : (
             <span />
           )}
