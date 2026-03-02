@@ -104,6 +104,7 @@ export function HeroSectionForm({
             label="Title"
             placeholder="Home"
             value={data.hero.title ?? "Home"}
+            showAsPlaceholderWhenValueEquals="Home"
             onChange={(v) =>
               setData((d) => ({
                 ...d,
@@ -117,6 +118,7 @@ export function HeroSectionForm({
             label="Brand name"
             placeholder="Chic Haven"
             value={data.brandName}
+            showAsPlaceholderWhenValueEquals="Chic Haven"
             onChange={(v) => setData((d) => ({ ...d, brandName: v }))}
             limit="brandName"
           />
@@ -125,6 +127,7 @@ export function HeroSectionForm({
             label="Tagline"
             placeholder="Fashion Meets Comfort"
             value={data.tagline ?? ""}
+            showAsPlaceholderWhenValueEquals="Fashion Meets Comfort"
             onChange={(v) => setData((d) => ({ ...d, tagline: v }))}
             limit="tagline"
             showLimit
@@ -134,6 +137,7 @@ export function HeroSectionForm({
             label="Hero headline"
             placeholder="Welcome to Chic Haven"
             value={data.hero.headline}
+            showAsPlaceholderWhenValueEquals="Welcome to Chic Haven"
             onChange={(v) =>
               setData((d) => ({
                 ...d,
@@ -148,6 +152,7 @@ export function HeroSectionForm({
             label="Sub headline"
             placeholder="Where Fashion Meets Comfort"
             value={data.hero.subheadline}
+            showAsPlaceholderWhenValueEquals="Where Fashion Meets Comfort"
             onChange={(v) =>
               setData((d) => ({
                 ...d,
@@ -269,6 +274,7 @@ export function HeroSectionForm({
                   }
                   limit="heroImageQuery"
                   placeholder="Type a few words — we'll generate an image instantly"
+                  showAsPlaceholderWhenValueEquals="product"
                 />
               </div>
             </div>
@@ -283,6 +289,7 @@ export function HeroSectionForm({
             label="Primary CTA"
             placeholder="Shop Now"
             value={data.hero.primaryCta}
+            showAsPlaceholderWhenValueEquals="Shop Now"
             onChange={(v) =>
               setData((d) => ({
                 ...d,
@@ -297,6 +304,7 @@ export function HeroSectionForm({
             label="Primary CTA Link"
             placeholder="#"
             value={data.hero.primaryCtaLink ?? "#"}
+            showAsPlaceholderWhenValueEquals="#"
             onChange={(v) =>
               setData((d) => ({
                 ...d,
@@ -310,6 +318,7 @@ export function HeroSectionForm({
             label="Secondary CTA"
             placeholder="Learn More"
             value={data.hero.secondaryCta ?? ""}
+            showAsPlaceholderWhenValueEquals="Learn More"
             onChange={(v) =>
               setData((d) => ({
                 ...d,
@@ -324,6 +333,7 @@ export function HeroSectionForm({
             label="Secondary CTA Link"
             placeholder="#"
             value={data.hero.secondaryCtaLink ?? ""}
+            showAsPlaceholderWhenValueEquals="#"
             onChange={(v) =>
               setData((d) => ({
                 ...d,

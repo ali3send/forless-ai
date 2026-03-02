@@ -7,6 +7,8 @@ type BaseProps = {
   onChange: (v: string) => void;
   limit: InputLimitsKey;
   placeholder?: string;
+  /** When value equals this string, display as placeholder (empty input, gray hint) while keeping the actual value in store */
+  showAsPlaceholderWhenValueEquals?: string;
   className?: string;
   showLimit?: boolean;
   maxHeight?: number | string;
@@ -24,6 +26,7 @@ export function TextField({
   maxHeight,
   limit,
   placeholder,
+  showAsPlaceholderWhenValueEquals,
   className = "",
   as = "input",
   showLimit = false,
@@ -34,6 +37,13 @@ export function TextField({
   const Component: any = as;
 
   const isMax = value.length >= max;
+  const displayAsPlaceholder =
+    showAsPlaceholderWhenValueEquals != null &&
+    value === showAsPlaceholderWhenValueEquals;
+  const displayValue = displayAsPlaceholder ? "" : value;
+  const displayPlaceholder =
+    placeholder ??
+    (displayAsPlaceholder ? showAsPlaceholderWhenValueEquals : undefined);
 
   return (
     <label className="block">
@@ -62,9 +72,9 @@ export function TextField({
       {/* Input / Textarea */}
       <Component
         {...rest}
-        value={value}
+        value={displayValue}
         disabled={disabled}
-        placeholder={placeholder}
+        placeholder={displayPlaceholder}
         onChange={(e: any) => onChange(enforce(e.target.value))}
         className={`input-base ${className}`}
         style={as === "textarea" && maxHeight ? { maxHeight } : undefined}

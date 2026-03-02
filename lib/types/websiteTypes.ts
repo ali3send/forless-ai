@@ -21,6 +21,7 @@ export type WebsiteData = {
   };
 
   about: {
+    sectionLabel?: string;
     title: string;
     body: string;
     imageUrl?: string;
@@ -93,11 +94,11 @@ export function getDefaultWebsiteData(type: WebsiteType): WebsiteData {
     },
     about: {
       title: "About Chic Haven",
-      body: "At Chic Haven, we believe in blending style with comfort. Our clothing store offers a unique collection designed for those who want to look good without sacrificing comfort.",
+      body: "",
       imageQuery: "workspace",
     },
     features: {
-      title: "",
+      title: "Our Features",
       items: [
         {
           label: "Quality Fabrics",

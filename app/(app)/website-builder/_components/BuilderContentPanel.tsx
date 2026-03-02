@@ -64,31 +64,18 @@ export function BuilderContentPanel({
     }
   };
 
-  // Status card styling based on regen count
-  const getRegenStatusCard = () => {
+  // Quota status cards (light orange and light blue)
+  const getQuotaStatusCards = () => {
     if (regenLoading || !regenUsage) return null;
-    if (regenRemaining === 0)
-      return (
+    return (
+      <>
         <div className="rounded-lg px-3 py-2.5 text-sm font-medium text-orange-600 bg-orange-50 shadow-sm">
           {regenRemaining}/{regenLimit} regenerations left
         </div>
-      );
-    if (regenRemaining === regenLimit)
-      return (
-        <div className="rounded-lg px-3 py-2.5 text-sm font-medium text-orange-600 bg-orange-50 shadow-sm">
-          {regenRemaining}/{regenLimit} regenerations left
-        </div>
-      );
-    if (regenRemaining <= regenLimit / 2)
-      return (
         <div className="rounded-lg px-3 py-2.5 text-sm font-medium text-blue-600 bg-blue-50 shadow-sm">
           {regenRemaining}/{regenLimit} regenerations left
         </div>
-      );
-    return (
-      <div className="rounded-lg px-3 py-2.5 text-sm font-medium text-emerald-700 bg-emerald-50 shadow-sm">
-        All good 😊 You can continue editing manually with no limits.
-      </div>
+      </>
     );
   };
 
@@ -136,8 +123,13 @@ export function BuilderContentPanel({
         </button>
       </div>
 
-      {/* ───────────────── Regeneration Status ───────────────── */}
-      {getRegenStatusCard()}
+      {/* ───────────────── Regeneration Status (above Restore/Generate) ───────────────── */}
+      <div className="space-y-2">
+        {getQuotaStatusCards()}
+        <div className="rounded-lg px-3 py-2.5 text-sm font-medium text-emerald-700 bg-emerald-50 shadow-sm">
+          All good 🙂 You can continue editing manually with no limits.
+        </div>
+      </div>
 
       {/* ───────────────── Restore / Generate ───────────────── */}
       <div className="flex gap-3">
@@ -164,7 +156,7 @@ export function BuilderContentPanel({
       <div className="space-y-2">
         <div className="flex items-center justify-between text-xs">
           <span className="font-semibold text-secondary">SECTION</span>
-          <span className="text-secondary">
+          <span className="text-[#0149E1] font-bold">
             {currentIndex + 1}/{builderSections.length}
           </span>
         </div>
@@ -207,7 +199,12 @@ export function BuilderContentPanel({
         />
       )}
       {section === "about" && (
-        <AboutSectionForm data={data} setData={setData} />
+        <AboutSectionForm
+          data={data}
+          setData={setData}
+          onSave={onSave}
+          saving={saving}
+        />
       )}
       {section === "features" && (
         <FeaturesSectionForm data={data} setData={setData} />
