@@ -2,9 +2,10 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { uiToast } from "@/lib/utils/uiToast";
-import { TextField } from "../../components/ui/TextField";
+import { Footer } from "../../components/Footer";
 
 export default function ResetPasswordUpdatePage() {
   const [supabase] = useState(() => createBrowserSupabaseClient());
@@ -13,21 +14,14 @@ export default function ResetPasswordUpdatePage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
-  const [info, setInfo] = useState<string | null>(
-    "Setting a new password for your ForlessAI account."
-  );
-  const [linkInvalid, setLinkInvalid] = useState(false);
+  const [showNew, setShowNew] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
-  // Optional: check session exists (user came from valid email link)
   useEffect(() => {
     const checkSession = async () => {
       const { data } = await supabase.auth.getSession();
 
       if (!data.session) {
-        setLinkInvalid(true);
-        setInfo(
-          "This reset link is invalid or expired. Please request a new reset email."
-        );
         uiToast.error("Reset link invalid or expired.");
       }
     };
@@ -79,61 +73,138 @@ export default function ResetPasswordUpdatePage() {
     }
   };
 
+  const inputStyle: React.CSSProperties = {
+    width: "100%",
+    height: "54px",
+    borderRadius: "10px",
+    border: "1px solid #E5E7EB",
+    paddingTop: "14px",
+    paddingRight: "44px",
+    paddingBottom: "14px",
+    paddingLeft: "16px",
+    boxSizing: "border-box",
+    backgroundColor: "#F9FAFB",
+  };
+
   return (
-    <div className="min-h-[70vh] flex items-center justify-center">
-      <div className="w-full max-w-md rounded-2xl border border-secondary-fade bg-secondary-soft p-6 shadow-sm">
-        <div className="mb-5">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-2">
-            ForlessAI
-          </p>
-          <h1 className="text-2xl font-bold tracking-tight mb-1 text-secondary-dark">
-            Choose a new password
+    <div className="auth-page-light min-h-screen flex flex-col items-center justify-center bg-white px-4 py-12">
+      <div
+        className="bg-white shadow-[0_4px_24px_rgba(0,0,0,0.08)] p-6 sm:p-8"
+        style={{
+          width: "100%",
+          maxWidth: "576px",
+          height: "504px",
+          borderRadius: "24px",
+          boxSizing: "border-box",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}
+      >
+        {/* Header */}
+        <div className="mb-6">
+          <span className="inline-block rounded-full bg-[#E1F0FF] px-3 py-1 text-xs font-semibold uppercase tracking-wider text-[#0149E1] mb-4">
+            Forless
+          </span>
+          <h1
+            className="text-gray-900 mb-1"
+            style={{
+              fontFamily: "Helvetica, sans-serif",
+              fontWeight: 700,
+              fontSize: "32px",
+              lineHeight: "36px",
+              letterSpacing: "0.4px",
+            }}
+          >
+            New Password
           </h1>
-          {info && <p className="text-xs text-secondary">{info}</p>}
+          <p
+            className="text-gray-500"
+            style={{
+              fontFamily: "Helvetica, sans-serif",
+              fontWeight: 400,
+              fontSize: "16px",
+              lineHeight: "24px",
+              letterSpacing: "0px",
+            }}
+          >
+            You can reset your password easily
+          </p>
         </div>
 
+        {/* Form */}
         <form onSubmit={handleUpdatePassword} className="space-y-4">
-          <TextField
-            label="New password"
-            type="password"
-            placeholder="Minimum 6 characters"
-            value={newPassword}
-            onChange={setNewPassword}
-            limit="password"
-            className="w-full disabled:opacity-60"
-            disabled={loading || linkInvalid}
-          />
+          <div>
+            <span className="form-label mb-1 block text-xs font-medium text-gray-700">
+              New Password
+            </span>
+            <div className="relative">
+              <input
+                type={showNew ? "text" : "password"}
+                placeholder="Your password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                disabled={loading}
+                className="input-base w-full outline-none transition-all focus:border-[#0149E1] focus:ring-2 focus:ring-[#0149E1]/20 disabled:opacity-60"
+                style={inputStyle}
+              />
+              <button
+                type="button"
+                onClick={() => setShowNew((v) => !v)}
+                className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600 transition"
+                aria-label={showNew ? "Hide password" : "Show password"}
+              >
+                {showNew ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
+          </div>
 
-          <TextField
-            label="Confirm new password"
-            type="password"
-            placeholder="Repeat new password"
-            value={confirm}
-            onChange={setConfirm}
-            limit="password"
-            className="w-full disabled:opacity-60"
-            disabled={loading || linkInvalid}
-          />
+          <div>
+            <span className="form-label mb-1 block text-xs font-medium text-gray-700">
+              Confirm Password
+            </span>
+            <div className="relative">
+              <input
+                type={showConfirm ? "text" : "password"}
+                placeholder="Your password"
+                value={confirm}
+                onChange={(e) => setConfirm(e.target.value)}
+                disabled={loading}
+                className="input-base w-full outline-none transition-all focus:border-[#0149E1] focus:ring-2 focus:ring-[#0149E1]/20 disabled:opacity-60"
+                style={inputStyle}
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirm((v) => !v)}
+                className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600 transition"
+                aria-label={showConfirm ? "Hide password" : "Show password"}
+              >
+                {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
+          </div>
 
           <button
             type="submit"
-            disabled={loading || linkInvalid}
-            className="mt-1 w-full inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-hover disabled:opacity-60 disabled:cursor-not-allowed"
+            disabled={loading}
+            className="w-full bg-[#0149E1] font-semibold text-white shadow-sm hover:bg-[#0149E1]/90 transition disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center"
+            style={{
+              height: "48px",
+              borderRadius: "48px",
+              paddingTop: "12px",
+              paddingRight: "40px",
+              paddingBottom: "12px",
+              paddingLeft: "40px",
+              gap: "8px",
+              fontSize: "14px",
+            }}
           >
-            {loading ? "Saving new password..." : "Update password"}
+            {loading ? "Saving..." : "Confirm Password"}
           </button>
         </form>
-
-        <p className="mt-4 text-xs text-secondary">
-          Remembered your password?{" "}
-          <a
-            href="/auth/login"
-            className="text-primary hover:text-primary-hover underline underline-offset-2"
-          >
-            Back to login
-          </a>
-        </p>
       </div>
+
+      <Footer />
     </div>
   );
 }
