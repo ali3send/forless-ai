@@ -9,6 +9,7 @@ import {
   WEBSITE_TEMPLATES,
 } from "@/Templates/websiteTemplates/templates";
 import { useWebsiteStore } from "@/store/website.store";
+import { TemplatePreviewModal } from "./TemplatePreviewModal";
 
 // Layout constants per spec
 const CARD = {
@@ -46,6 +47,7 @@ export function TemplatesPanel() {
       ? (data.template as TemplateKey)
       : "template1";
   const [selected, setSelected] = useState<TemplateKey>(active);
+  const [previewKey, setPreviewKey] = useState<TemplateKey | null>(null);
 
   return (
     <div
@@ -167,8 +169,13 @@ export function TemplatesPanel() {
                     marginTop: 4,
                   }}
                 >
-                  <span
-                    className="flex items-center justify-center gap-2 rounded-full border bg-white font-semibold text-secondary-dark transition hover:bg-gray-50"
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPreviewKey(key);
+                    }}
+                    className="flex items-center justify-center gap-2 rounded-full border bg-white font-semibold text-secondary-dark transition hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0149E1] focus-visible:ring-offset-2"
                     style={{
                       width: BUTTONS.buttonWidth,
                       height: BUTTONS.height,
@@ -183,7 +190,7 @@ export function TemplatesPanel() {
                   >
                     <Eye className="h-4 w-4 shrink-0" aria-hidden />
                     Preview
-                  </span>
+                  </button>
                   <button
                     type="button"
                     onClick={(e) => {
@@ -241,6 +248,56 @@ export function TemplatesPanel() {
           );
         })}
       </div>
+
+      {previewKey && (() => {
+        const raw = WEBSITE_TEMPLATES[previewKey] as Record<string, unknown>;
+        const displayName = String(raw.displayName ?? raw.name ?? "");
+        const description = String(raw.description ?? "");
+        const forList = Array.isArray(raw.for) ? (raw.for as string[]) : [];
+        return (
+          <TemplatePreviewModal
+            open={!!previewKey}
+            onClose={() => setPreviewKey(null)}
+            onApply={() => {
+              setData({ ...data, template: previewKey });
+              setSelected(previewKey);
+              toast.custom(
+                () => (
+                  <div
+                    className="flex items-center gap-3 rounded-full px-5 py-3"
+                    style={{
+                      background: "#E8F4FD",
+                      border: "1px solid #93C5FD",
+                      color: "#2563EB",
+                    }}
+                  >
+                    <div
+                      className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full"
+                      style={{ background: "#0149E1" }}
+                    >
+                      <Check
+                        className="h-3.5 w-3.5 text-white"
+                        strokeWidth={2.5}
+                      />
+                    </div>
+                    <span className="font-medium">
+                      Template applied successfully!
+                    </span>
+                  </div>
+                ),
+                {
+                  duration: 3000,
+                  className:
+                    "!bg-transparent !border-0 !shadow-none !p-0",
+                }
+              );
+            }}
+            displayName={displayName}
+            description={description}
+            for={forList}
+          />
+        );
+      })()}
     </div>
   );
 }
