@@ -11,4 +11,5 @@ export type BrandData = {
     id: string;
     css: string;
   } | null;
+  backgroundGradient?: string | null;
 };

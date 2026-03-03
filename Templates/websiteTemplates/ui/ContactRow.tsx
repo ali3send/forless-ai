@@ -41,11 +41,11 @@ export function ContactRow({ type, value }: Props) {
     >
       <Icon className="h-4 w-4 shrink-0" style={{ color: iconColor }} />
 
-      <span style={{ color: "var(--color-muted)" }}>{label}:</span>
+      <span style={{ color: "var(--color-muted-on-gradient, var(--color-muted))" }}>{label}:</span>
 
       <span
         className="truncate font-medium group-hover:underline"
-        style={{ color: "var(--color-text)" }}
+        style={{ color: "var(--color-text-on-gradient, var(--color-text))" }}
       >
         {value}
       </span>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, ChevronDown, Diamond, Palette } from "lucide-react";
+import { Check, ChevronDown, Diamond, Loader2, Palette } from "lucide-react";
 import { FONTS } from "@/app/(app)/brand/brandConfig";
 import { useBrandStore } from "@/store/brand.store";
 import type { BrandData } from "@/lib/types/brandTypes";
@@ -146,6 +146,8 @@ function ensureBrand(prev: BrandData | null): BrandData {
       id: prev?.font?.id ?? FONTS[0].id,
       css: prev?.font?.css ?? FONTS[0].css,
     },
+    backgroundGradient:
+      prev?.backgroundGradient ?? BACKGROUND_GRADIENTS[0].style.background,
   };
 }
 
@@ -165,15 +167,27 @@ function findActiveFont(brand: BrandData): string {
   return match?.id ?? FONT_OPTIONS[0].id;
 }
 
-export function BuilderDesignPanel() {
+function findActiveGradient(brand: BrandData): string {
+  const g = brand.backgroundGradient;
+  if (!g) return BACKGROUND_GRADIENTS[0].id;
+  const match = BACKGROUND_GRADIENTS.find((i) => i.style.background === g);
+  return match?.id ?? BACKGROUND_GRADIENTS[0].id;
+}
+
+type BuilderDesignPanelProps = {
+  onSave?: () => void | Promise<void>;
+  saving?: boolean;
+};
+
+export function BuilderDesignPanel({ onSave, saving = false }: BuilderDesignPanelProps) {
   const brand = useBrandStore((s) => s.brand);
   const setBrand = useBrandStore((s) => s.setBrand);
   const current = ensureBrand(brand);
 
   const selectedPreset = findActivePreset(current);
   const fontStyle = findActiveFont(current);
+  const selectedGradient = findActiveGradient(current);
 
-  const [selectedGradient, setSelectedGradient] = useState<string>("sky-fade");
   const [customizeColorsOpen, setCustomizeColorsOpen] = useState(false);
 
   const handlePresetChange = (presetId: string) => {
@@ -194,6 +208,18 @@ export function BuilderDesignPanel() {
       return {
         ...base,
         font: { id: opt.id, css: opt.css },
+      };
+    });
+  };
+
+  const handleGradientChange = (gradientId: string) => {
+    const grad =
+      BACKGROUND_GRADIENTS.find((g) => g.id === gradientId) ?? BACKGROUND_GRADIENTS[0];
+    setBrand((prev) => {
+      const base = ensureBrand(prev);
+      return {
+        ...base,
+        backgroundGradient: grad.style.background,
       };
     });
   };
@@ -248,7 +274,7 @@ export function BuilderDesignPanel() {
               <button
                 key={gradient.id}
                 type="button"
-                onClick={() => setSelectedGradient(gradient.id)}
+                onClick={() => handleGradientChange(gradient.id)}
                 className={`flex w-full max-w-[304px] flex-col overflow-hidden rounded-2xl border text-left transition ${
                   isSelected
                     ? "border-2 border-[#0149E1]"
@@ -426,6 +452,26 @@ export function BuilderDesignPanel() {
           })}
         </div>
       </div>
+
+      {/* Apply design changes - persists palette & font to project */}
+      {onSave && (
+        <button
+          type="button"
+          onClick={() => onSave()}
+          disabled={saving}
+          className="w-full rounded-2xl py-3 text-sm font-bold text-white shadow-sm transition disabled:opacity-70 flex items-center justify-center gap-2"
+          style={{ backgroundColor: "#0149E1" }}
+        >
+          {saving ? (
+            <>
+              <Loader2 className="h-4 w-4 shrink-0 animate-spin" aria-hidden />
+              Saving…
+            </>
+          ) : (
+            "Apply design changes"
+          )}
+        </button>
+      )}
 
       {/* Container - page visibility */}
       <div className="flex flex-col gap-2">

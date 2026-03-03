@@ -18,31 +18,31 @@ export function HeroSection({ brandName, tagline, hero }: Props) {
     <section
       className="flex min-h-[70vh] flex-col items-center justify-center px-4 py-20 text-center"
       style={{
-        background: "var(--color-surface)",
+        background: "var(--background-gradient, var(--color-surface))",
       }}
     >
       <h1
         className="text-4xl font-bold md:text-5xl"
-        style={{ color: "var(--color-text)" }}
+        style={{ color: "var(--color-text-on-gradient, var(--color-text))" }}
       >
         {brandName}
       </h1>
       <p
         className="mt-2 text-lg font-normal"
-        style={{ color: "var(--color-muted)" }}
+        style={{ color: "var(--color-muted-on-gradient, var(--color-muted))" }}
       >
         {tagline}
       </p>
 
       <h2
         className="mt-10 text-4xl font-bold md:text-5xl lg:text-6xl"
-        style={{ color: "var(--color-text)" }}
+        style={{ color: "var(--color-text-on-gradient, var(--color-text))" }}
       >
         {hero.headline}
       </h2>
       <p
         className="mt-3 text-lg font-normal"
-        style={{ color: "var(--color-muted)" }}
+        style={{ color: "var(--color-muted-on-gradient, var(--color-muted))" }}
       >
         {hero.subheadline}
       </p>

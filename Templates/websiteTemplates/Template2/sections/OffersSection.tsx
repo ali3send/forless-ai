@@ -7,7 +7,7 @@ export function OffersSection({ title, offers }: OffersData) {
       id="offers"
       className="w-full"
       style={{
-        backgroundColor: "var(--color-surface)",
+        background: "var(--background-gradient, var(--color-surface))",
         borderTop: "1px solid #e5e7eb",
       }}
     >
@@ -25,7 +25,7 @@ export function OffersSection({ title, offers }: OffersData) {
         <h2
           className="text-center"
           style={{
-            color: "var(--color-text)",
+            color: "var(--color-text-on-gradient, var(--color-text))",
             fontWeight: 700,
             fontSize: 30,
             letterSpacing: 0.4,
@@ -66,7 +66,7 @@ export function OffersSection({ title, offers }: OffersData) {
                 <h3
                   className="font-bold"
                   style={{
-                    color: "var(--color-text)",
+                    color: "var(--color-text-on-gradient, var(--color-text))",
                     fontSize: 22,
                     marginBottom: 12,
                   }}
@@ -77,7 +77,7 @@ export function OffersSection({ title, offers }: OffersData) {
                 <p
                   className="mb-4 text-sm"
                   style={{
-                    color: "var(--color-muted)",
+                    color: "var(--color-muted-on-gradient, var(--color-muted))",
                     fontSize: 14,
                     lineHeight: 1.5,
                   }}

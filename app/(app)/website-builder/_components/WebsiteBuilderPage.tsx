@@ -105,6 +105,7 @@ export default function WebsiteBuilderPage() {
                   primary: brand?.palette?.primary,
                   secondary: brand?.palette?.secondary,
                   fontFamily: brand?.font?.css,
+                  backgroundGradient: brand?.backgroundGradient,
                 }}
               >
                 <ActiveTemplate

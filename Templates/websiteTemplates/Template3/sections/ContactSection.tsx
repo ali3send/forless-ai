@@ -17,7 +17,7 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
       id="contact"
       className="w-full"
       style={{
-        background: "var(--color-surface)",
+        background: "var(--background-gradient, var(--color-surface))",
         borderTop: "1px solid #e5e7eb",
       }}
     >
@@ -36,7 +36,7 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
         <div className="text-center">
           <h2
             style={{
-              color: "var(--color-text)",
+              color: "var(--color-text-on-gradient, var(--color-text))",
               fontWeight: 700,
               fontSize: 30,
               letterSpacing: 0.4,
@@ -47,7 +47,7 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
           </h2>
           <p
             style={{
-              color: "var(--color-muted)",
+              color: "var(--color-muted-on-gradient, var(--color-muted))",
               fontSize: 16,
               marginBottom: 40,
             }}
@@ -61,7 +61,7 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
           <div className="space-y-5 pt-1">
             <h3
               style={{
-                color: "var(--color-text)",
+                color: "var(--color-text-on-gradient, var(--color-text))",
                 fontWeight: 700,
                 fontSize: 18,
                 marginBottom: 16,
@@ -83,7 +83,7 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
             <p
               className="pt-3"
               style={{
-                color: "var(--color-muted)",
+                color: "var(--color-muted-on-gradient, var(--color-muted))",
                 fontSize: 12,
               }}
             >
@@ -104,7 +104,7 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
           >
             <h3
               style={{
-                color: "var(--color-text)",
+                color: "var(--color-text-on-gradient, var(--color-text))",
                 fontWeight: 700,
                 fontSize: 20,
                 marginBottom: 8,
@@ -115,7 +115,7 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
 
             <p
               style={{
-                color: "var(--color-muted)",
+                color: "var(--color-muted-on-gradient, var(--color-muted))",
                 fontSize: 14,
                 marginBottom: 16,
               }}

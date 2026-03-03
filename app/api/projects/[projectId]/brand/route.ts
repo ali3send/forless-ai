@@ -30,6 +30,10 @@ function parseIncoming(body: any): Partial<BrandData> {
     incoming.font = { id: body.font.id, css: body.font.css };
   }
 
+  if (typeof body?.backgroundGradient === "string" || body?.backgroundGradient === null) {
+    incoming.backgroundGradient = body.backgroundGradient;
+  }
+
   return incoming;
 }
 
@@ -43,6 +47,9 @@ function mergeBrand(
     logoSvg: incoming.logoSvg ?? existing.logoSvg ?? null,
     palette: incoming.palette ?? existing.palette ?? null,
     font: incoming.font ?? existing.font ?? null,
+    backgroundGradient: incoming.backgroundGradient !== undefined
+      ? incoming.backgroundGradient
+      : existing.backgroundGradient ?? null,
   };
 }
 

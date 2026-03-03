@@ -156,7 +156,9 @@ export function BuilderSidebar(props: Props) {
             </>
           )}
 
-          {activeNav === "design" && <BuilderDesignPanel />}
+          {activeNav === "design" && (
+            <BuilderDesignPanel onSave={props.onSave} saving={props.saving} />
+          )}
 
           {activeNav === "templates" && <TemplatesPanel />}
 

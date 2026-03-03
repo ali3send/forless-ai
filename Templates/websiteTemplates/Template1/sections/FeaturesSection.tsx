@@ -6,7 +6,7 @@ export function FeaturesSection({ title, features }: FeaturesData) {
       id="features"
       className="w-full"
       style={{
-        background: "var(--color-surface)",
+        background: "var(--background-gradient, var(--color-surface))",
         borderTop: "1px solid #e5e7eb",
       }}
     >
@@ -24,7 +24,7 @@ export function FeaturesSection({ title, features }: FeaturesData) {
         <h2
           className="text-center"
           style={{
-            color: "var(--color-text)",
+            color: "var(--color-text-on-gradient, var(--color-text))",
             fontWeight: 700,
             fontSize: 30,
             letterSpacing: 0.4,
@@ -59,7 +59,7 @@ export function FeaturesSection({ title, features }: FeaturesData) {
               <p
                 className="text-sm"
                 style={{
-                  color: "var(--color-muted)",
+                  color: "var(--color-muted-on-gradient, var(--color-muted))",
                   fontSize: 14,
                   lineHeight: 1.5,
                 }}
