@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
+import { toast } from "sonner";
 import { LayoutTemplate, Eye, Check } from "lucide-react";
 import {
   TemplateKey,
@@ -43,6 +45,7 @@ export function TemplatesPanel() {
     data.template && data.template in WEBSITE_TEMPLATES
       ? (data.template as TemplateKey)
       : "template1";
+  const [selected, setSelected] = useState<TemplateKey>(active);
 
   return (
     <div
@@ -77,16 +80,17 @@ export function TemplatesPanel() {
             image: "image" in raw ? raw.image : undefined,
           };
           const isActive = key === active;
+          const isSelected = key === selected;
           const title = template.displayName ?? template.name;
           const forList = template.for ? template.for.join(", ") : "";
 
-          const borderColor = isActive ? "#0149E1" : "#e5e7eb";
+          const borderColor = isSelected ? "#0149E1" : "#e5e7eb";
 
           return (
             <button
               key={key}
               type="button"
-              onClick={() => setData({ ...data, template: key })}
+              onClick={() => setSelected(key)}
               className="flex flex-col shrink-0 overflow-hidden bg-white text-left cursor-pointer transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0149E1] focus-visible:ring-offset-2"
               style={{
                 width: CARD.width,
@@ -180,8 +184,44 @@ export function TemplatesPanel() {
                     <Eye className="h-4 w-4 shrink-0" aria-hidden />
                     Preview
                   </span>
-                  <span
-                    className="flex items-center justify-center rounded-full border border-transparent font-semibold text-white transition"
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setData({ ...data, template: key });
+                      setSelected(key);
+                      toast.custom(
+                        () => (
+                          <div
+                            className="flex items-center gap-3 rounded-full px-5 py-3"
+                            style={{
+                              background: "#E8F4FD",
+                              border: "1px solid #93C5FD",
+                              color: "#2563EB",
+                            }}
+                          >
+                            <div
+                              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full"
+                              style={{ background: "#0149E1" }}
+                            >
+                              <Check
+                                className="h-3.5 w-3.5 text-white"
+                                strokeWidth={2.5}
+                              />
+                            </div>
+                            <span className="font-medium">
+                              Template applied successfully!
+                            </span>
+                          </div>
+                        ),
+                        {
+                          duration: 3000,
+                          className:
+                            "!bg-transparent !border-0 !shadow-none !p-0",
+                        }
+                      );
+                    }}
+                    className="flex items-center justify-center rounded-full border border-transparent font-semibold text-white transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0149E1] focus-visible:ring-offset-2"
                     style={{
                       width: BUTTONS.buttonWidth,
                       height: BUTTONS.height,
@@ -194,7 +234,7 @@ export function TemplatesPanel() {
                     }}
                   >
                     Apply
-                  </span>
+                  </button>
                 </div>
               </div>
             </button>
