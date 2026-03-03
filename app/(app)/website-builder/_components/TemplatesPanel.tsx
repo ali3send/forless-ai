@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { LayoutTemplate, Eye, Check } from "lucide-react";
 import {
@@ -9,6 +10,7 @@ import {
   WEBSITE_TEMPLATES,
 } from "@/Templates/websiteTemplates/templates";
 import { useWebsiteStore } from "@/store/website.store";
+import { useBrandStore } from "@/store/brand.store";
 import { TemplatePreviewModal } from "./TemplatePreviewModal";
 
 // Layout constants per spec
@@ -41,7 +43,9 @@ const BUTTONS = {
 } as const;
 
 export function TemplatesPanel() {
+  const { projectId } = useParams<{ projectId: string }>();
   const { data, setData } = useWebsiteStore();
+  const brand = useBrandStore((s) => s.brand);
   const active: TemplateKey =
     data.template && data.template in WEBSITE_TEMPLATES
       ? (data.template as TemplateKey)
@@ -89,10 +93,12 @@ export function TemplatesPanel() {
           const borderColor = isSelected ? "#0149E1" : "#e5e7eb";
 
           return (
-            <button
+            <div
               key={key}
-              type="button"
+              role="button"
+              tabIndex={0}
               onClick={() => setSelected(key)}
+              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setSelected(key); }}
               className="flex flex-col shrink-0 overflow-hidden bg-white text-left cursor-pointer transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0149E1] focus-visible:ring-offset-2"
               style={{
                 width: CARD.width,
@@ -244,7 +250,7 @@ export function TemplatesPanel() {
                   </button>
                 </div>
               </div>
-            </button>
+            </div>
           );
         })}
       </div>
@@ -254,6 +260,7 @@ export function TemplatesPanel() {
         const displayName = String(raw.displayName ?? raw.name ?? "");
         const description = String(raw.description ?? "");
         const forList = Array.isArray(raw.for) ? (raw.for as string[]) : [];
+        const TemplateComponent = (raw.component as typeof WEBSITE_TEMPLATES[TemplateKey]["component"]);
         return (
           <TemplatePreviewModal
             open={!!previewKey}
@@ -295,6 +302,10 @@ export function TemplatesPanel() {
             displayName={displayName}
             description={description}
             for={forList}
+            TemplateComponent={TemplateComponent}
+            data={{ ...data, template: previewKey }}
+            brand={brand}
+            projectId={projectId ?? ""}
           />
         );
       })()}

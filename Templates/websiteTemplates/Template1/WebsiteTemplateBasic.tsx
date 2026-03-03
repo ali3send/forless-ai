@@ -21,7 +21,7 @@ type Props = {
 
 export function WebsiteTemplateBasic({ data, brand, projectId, showEditorButtons }: Props) {
   return (
-    <div className="min-h-screen bg-white text-slate-800">
+    <div className="min-h-screen bg-(--color-bg) text-(--color-text)">
       <Navbar
         brandName={data.brandName}
         primary={brand?.palette?.primary ?? "#2563eb"}

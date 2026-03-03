@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { Check, ChevronDown, Diamond, Palette } from "lucide-react";
+import { FONTS } from "@/app/(app)/brand/brandConfig";
+import { useBrandStore } from "@/store/brand.store";
+import type { BrandData } from "@/lib/types/brandTypes";
 
 const BACKGROUND_GRADIENTS = [
   {
@@ -48,57 +51,152 @@ const STYLE_PRESETS = [
     name: "Clean Blue",
     description: "Safe default, builds trust",
     colors: ["#1D4ED8", "#3B82F6", "#FFFFFF", "#1F2937"],
+    primary: "#1D4ED8",
+    secondary: "#1F2937",
   },
   {
     id: "midnight-dark",
     name: "Midnight Dark",
     description: "Modern, premium feel",
     colors: ["#1F2937", "#2563EB", "#FFFFFF", "#111827"],
+    primary: "#2563EB",
+    secondary: "#111827",
   },
   {
     id: "soft-neutral",
     name: "Soft Neutral",
     description: "Minimal and calm",
     colors: ["#6B7280", "#E5E7EB", "#FFFFFF", "#1F2937"],
+    primary: "#6B7280",
+    secondary: "#1F2937",
   },
   {
     id: "warm-brand",
     name: "Warm Brand",
     description: "Friendly, lifestyle vibe",
     colors: ["#EA580C", "#FB923C", "#FFFBEB", "#1F2937"],
+    primary: "#EA580C",
+    secondary: "#1F2937",
   },
   {
     id: "bold-accent",
     name: "Bold Accent",
     description: "High energy, gets attention",
     colors: ["#DC2626", "#EF4444", "#FCE7F3", "#1F2937"],
+    primary: "#DC2626",
+    secondary: "#1F2937",
   },
   {
     id: "fresh-green",
     name: "Fresh Green",
     description: "Health, eco, nature",
     colors: ["#0D9488", "#10B981", "#D1FAE5", "#1F2937"],
+    primary: "#10B981",
+    secondary: "#1F2937",
   },
   {
     id: "elegant-mono",
     name: "Elegant Mono",
     description: "Luxury black & white",
     colors: ["#000000", "#374151", "#FFFFFF", "#000000"],
+    primary: "#374151",
+    secondary: "#000000",
   },
   {
     id: "purple-flow",
     name: "Purple Flow",
     description: "Creative and unique",
     colors: ["#C4B5FD", "#8B5CF6", "#EDE9FE", "#1F2937"],
+    primary: "#8B5CF6",
+    secondary: "#1F2937",
   },
 ] as const;
 
+const FONT_OPTIONS = [
+  {
+    id: "sans" as const,
+    name: "Sans",
+    description: "Modern and clean",
+    css: FONTS[0].css,
+  },
+  {
+    id: "serif" as const,
+    name: "Serif",
+    description: "Classic and elegant",
+    css: FONTS[1].css,
+  },
+  {
+    id: "mono" as const,
+    name: "Mono",
+    description: "Tech and minimal",
+    css: FONTS[2].css,
+  },
+];
+
+function ensureBrand(prev: BrandData | null): BrandData {
+  return {
+    name: prev?.name ?? "",
+    slogan: prev?.slogan ?? "",
+    logoSvg: prev?.logoSvg ?? null,
+    palette: {
+      primary: prev?.palette?.primary ?? STYLE_PRESETS[0].primary,
+      secondary: prev?.palette?.secondary ?? STYLE_PRESETS[0].secondary,
+    },
+    font: {
+      id: prev?.font?.id ?? FONTS[0].id,
+      css: prev?.font?.css ?? FONTS[0].css,
+    },
+  };
+}
+
+function findActivePreset(brand: BrandData): string {
+  const p = brand.palette;
+  if (!p) return STYLE_PRESETS[0].id;
+  const match = STYLE_PRESETS.find(
+    (s) => s.primary === p.primary && s.secondary === p.secondary,
+  );
+  return match?.id ?? STYLE_PRESETS[0].id;
+}
+
+function findActiveFont(brand: BrandData): string {
+  const f = brand.font;
+  if (!f) return FONT_OPTIONS[0].id;
+  const match = FONT_OPTIONS.find((o) => o.css === f.css);
+  return match?.id ?? FONT_OPTIONS[0].id;
+}
+
 export function BuilderDesignPanel() {
+  const brand = useBrandStore((s) => s.brand);
+  const setBrand = useBrandStore((s) => s.setBrand);
+  const current = ensureBrand(brand);
+
+  const selectedPreset = findActivePreset(current);
+  const fontStyle = findActiveFont(current);
+
   const [selectedGradient, setSelectedGradient] = useState<string>("sky-fade");
-  const [selectedPreset, setSelectedPreset] = useState<string>("clean-blue");
-  const [fontStyle, setFontStyle] = useState<"sans" | "serif" | "mono">("sans");
   const [customizeColorsOpen, setCustomizeColorsOpen] = useState(false);
-  const [applying, setApplying] = useState(false);
+
+  const handlePresetChange = (presetId: string) => {
+    const preset = STYLE_PRESETS.find((s) => s.id === presetId) ?? STYLE_PRESETS[0];
+    setBrand((prev) => {
+      const base = ensureBrand(prev);
+      return {
+        ...base,
+        palette: { primary: preset.primary, secondary: preset.secondary },
+      };
+    });
+  };
+
+  const handleFontChange = (fontId: string) => {
+    const opt = FONT_OPTIONS.find((o) => o.id === fontId) ?? FONT_OPTIONS[0];
+    setBrand((prev) => {
+      const base = ensureBrand(prev);
+      return {
+        ...base,
+        font: { id: opt.id, css: opt.css },
+      };
+    });
+  };
 
   return (
     <div
@@ -191,7 +289,7 @@ export function BuilderDesignPanel() {
               <button
                 key={preset.id}
                 type="button"
-                onClick={() => setSelectedPreset(preset.id)}
+                onClick={() => handlePresetChange(preset.id)}
                 className={`relative flex w-full flex-col gap-2 rounded-xl border-2 p-3 text-left shadow-sm transition ${
                   isSelected
                     ? "border-[#0149E1] bg-white"
@@ -286,29 +384,13 @@ export function BuilderDesignPanel() {
           </p>
         </div>
         <div className="flex flex-col gap-2">
-          {[
-            {
-              id: "sans" as const,
-              name: "Sans",
-              description: "Modern and clean",
-            },
-            {
-              id: "serif" as const,
-              name: "Serif",
-              description: "Classic and elegant",
-            },
-            {
-              id: "mono" as const,
-              name: "Mono",
-              description: "Tech and minimal",
-            },
-          ].map((opt) => {
+          {FONT_OPTIONS.map((opt) => {
             const isSelected = fontStyle === opt.id;
             return (
               <button
                 key={opt.id}
                 type="button"
-                onClick={() => setFontStyle(opt.id)}
+                onClick={() => handleFontChange(opt.id)}
                 className="relative flex w-full max-w-[304px] flex-col rounded-2xl border text-left transition"
                 style={{
                   minHeight: 82,
@@ -320,6 +402,7 @@ export function BuilderDesignPanel() {
                   borderWidth: 1,
                   borderColor: isSelected ? "#0149E1" : "#E5E7EB",
                   backgroundColor: isSelected ? "#E1F0FF4D" : "#FFFFFF",
+                  fontFamily: opt.css,
                 }}
               >
                 <div className="flex flex-col" style={{ gap: 10 }}>
@@ -343,19 +426,6 @@ export function BuilderDesignPanel() {
           })}
         </div>
       </div>
-
-      <button
-        type="button"
-        onClick={() => {
-          setApplying(true);
-          setTimeout(() => setApplying(false), 500);
-        }}
-        disabled={applying}
-        className="w-full rounded-3xl py-3 text-sm font-bold text-white shadow-sm transition disabled:opacity-70 mb-35.5 mt-4"
-        style={{ backgroundColor: "#0149E1" }}
-      >
-        {applying ? "Applying..." : "Apply Design Changes"}
-      </button>
 
       {/* Container - page visibility */}
       <div className="flex flex-col gap-2">

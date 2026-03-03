@@ -13,7 +13,7 @@ export function AboutSection({ title, body, imageUrl, imageQuery }: AboutData) {
       id="about"
       className="w-full"
       style={{
-        backgroundColor: "#F9FAFB",
+        backgroundColor: "var(--color-bg)",
         borderTop: "1px solid #e5e7eb",
       }}
     >
@@ -35,8 +35,7 @@ export function AboutSection({ title, body, imageUrl, imageQuery }: AboutData) {
           <h2
             className="text-center"
             style={{
-              color: "#374151",
-              fontFamily: "Helvetica, sans-serif",
+              color: "var(--color-text)",
               fontWeight: 700,
               fontSize: 30,
               letterSpacing: 0.4,
@@ -48,8 +47,7 @@ export function AboutSection({ title, body, imageUrl, imageQuery }: AboutData) {
           <p
             className="mt-4 text-center"
             style={{
-              color: "#6b7280",
-              fontFamily: "Helvetica, sans-serif",
+              color: "var(--color-muted)",
               fontWeight: 400,
               fontSize: 16,
               letterSpacing: -0.31,

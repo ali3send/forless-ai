@@ -21,7 +21,7 @@ type Props = {
 
 export function WebsiteTemplateImmersive({ data, brand, projectId, showEditorButtons }: Props) {
   return (
-    <div className="relative min-h-screen bg-white text-slate-800 overflow-x-hidden">
+    <div className="relative min-h-screen bg-(--color-bg) text-(--color-text) overflow-x-hidden">
       {/* Top navigation */}
       <Navbar
         brandName={data.brandName}

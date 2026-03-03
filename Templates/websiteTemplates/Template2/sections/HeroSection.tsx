@@ -18,31 +18,31 @@ export function HeroSection({ brandName, tagline, hero }: Props) {
     <section
       className="flex min-h-[70vh] flex-col items-center justify-center px-4 py-20 text-center"
       style={{
-        background: "linear-gradient(180deg, #F0F5FA 0%, #E6EEF5 100%)",
+        background: "var(--color-surface)",
       }}
     >
       <h1
         className="text-4xl font-bold md:text-5xl"
-        style={{ color: "#374151" }}
+        style={{ color: "var(--color-text)" }}
       >
         {brandName}
       </h1>
       <p
         className="mt-2 text-lg font-normal"
-        style={{ color: "#6b7280" }}
+        style={{ color: "var(--color-muted)" }}
       >
         {tagline}
       </p>
 
       <h2
         className="mt-10 text-4xl font-bold md:text-5xl lg:text-6xl"
-        style={{ color: "#374151" }}
+        style={{ color: "var(--color-text)" }}
       >
         {hero.headline}
       </h2>
       <p
         className="mt-3 text-lg font-normal"
-        style={{ color: "#6b7280" }}
+        style={{ color: "var(--color-muted)" }}
       >
         {hero.subheadline}
       </p>
@@ -55,8 +55,7 @@ export function HeroSection({ brandName, tagline, hero }: Props) {
             width: 149.48,
             height: 64,
             borderRadius: 10,
-            backgroundColor: "#0149E1",
-            fontFamily: "Helvetica, sans-serif",
+            backgroundColor: "var(--color-primary, #0149E1)",
             fontWeight: 700,
             fontSize: 18,
             lineHeight: 28,
@@ -77,7 +76,6 @@ export function HeroSection({ brandName, tagline, hero }: Props) {
               border: "2px solid #1f2937",
               color: "white",
               backgroundColor: "#1f2937",
-              fontFamily: "Helvetica, sans-serif",
               fontWeight: 700,
               fontSize: 18,
               lineHeight: 28,

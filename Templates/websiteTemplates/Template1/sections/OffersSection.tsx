@@ -7,7 +7,7 @@ export function OffersSection({ title, offers }: OffersData) {
       id="offers"
       className="w-full"
       style={{
-        backgroundColor: "#F9FAFB",
+        backgroundColor: "var(--color-surface)",
         borderTop: "1px solid #e5e7eb",
       }}
     >
@@ -25,8 +25,7 @@ export function OffersSection({ title, offers }: OffersData) {
         <h2
           className="text-center"
           style={{
-            color: "#374151",
-            fontFamily: "Helvetica, sans-serif",
+            color: "var(--color-text)",
             fontWeight: 700,
             fontSize: 30,
             letterSpacing: 0.4,
@@ -67,8 +66,7 @@ export function OffersSection({ title, offers }: OffersData) {
                 <h3
                   className="font-bold"
                   style={{
-                    color: "#374151",
-                    fontFamily: "Helvetica, sans-serif",
+                    color: "var(--color-text)",
                     fontSize: 22,
                     marginBottom: 12,
                   }}
@@ -79,8 +77,7 @@ export function OffersSection({ title, offers }: OffersData) {
                 <p
                   className="mb-4 text-sm"
                   style={{
-                    color: "#6b7280",
-                    fontFamily: "Helvetica, sans-serif",
+                    color: "var(--color-muted)",
                     fontSize: 14,
                     lineHeight: 1.5,
                   }}
@@ -92,8 +89,7 @@ export function OffersSection({ title, offers }: OffersData) {
                   <div
                     className="mb-4 font-semibold"
                     style={{
-                      color: "#0149E1",
-                      fontFamily: "Helvetica, sans-serif",
+                      color: "var(--color-primary, #0149E1)",
                       fontSize: 16,
                     }}
                   >
@@ -105,8 +101,7 @@ export function OffersSection({ title, offers }: OffersData) {
                   <p
                     className="mb-4 font-semibold"
                     style={{
-                      color: "#0149E1",
-                      fontFamily: "Helvetica, sans-serif",
+                      color: "var(--color-primary, #0149E1)",
                       fontSize: 15,
                     }}
                   >
@@ -117,8 +112,7 @@ export function OffersSection({ title, offers }: OffersData) {
                 <button
                   className="mt-auto rounded-full px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90"
                   style={{
-                    backgroundColor: "#0149E1",
-                    fontFamily: "Helvetica, sans-serif",
+                    backgroundColor: "var(--color-primary, #0149E1)",
                   }}
                 >
                   View Deals

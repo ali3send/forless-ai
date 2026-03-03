@@ -17,7 +17,7 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
       id="contact"
       className="w-full"
       style={{
-        background: "linear-gradient(180deg, #EFF6FF 0%, #E0E7FF 100%)",
+        background: "var(--color-surface)",
         borderTop: "1px solid #e5e7eb",
       }}
     >
@@ -36,8 +36,7 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
         <div className="text-center">
           <h2
             style={{
-              color: "#374151",
-              fontFamily: "Helvetica, sans-serif",
+              color: "var(--color-text)",
               fontWeight: 700,
               fontSize: 30,
               letterSpacing: 0.4,
@@ -48,8 +47,7 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
           </h2>
           <p
             style={{
-              color: "#6b7280",
-              fontFamily: "Helvetica, sans-serif",
+              color: "var(--color-muted)",
               fontSize: 16,
               marginBottom: 40,
             }}
@@ -63,8 +61,7 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
           <div className="space-y-5 pt-1">
             <h3
               style={{
-                color: "#374151",
-                fontFamily: "Helvetica, sans-serif",
+                color: "var(--color-text)",
                 fontWeight: 700,
                 fontSize: 18,
                 marginBottom: 16,
@@ -86,8 +83,7 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
             <p
               className="pt-3"
               style={{
-                color: "#6b7280",
-                fontFamily: "Helvetica, sans-serif",
+                color: "var(--color-muted)",
                 fontSize: 12,
               }}
             >
@@ -108,8 +104,7 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
           >
             <h3
               style={{
-                color: "#374151",
-                fontFamily: "Helvetica, sans-serif",
+                color: "var(--color-text)",
                 fontWeight: 700,
                 fontSize: 20,
                 marginBottom: 8,
@@ -120,8 +115,7 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
 
             <p
               style={{
-                color: "#6b7280",
-                fontFamily: "Helvetica, sans-serif",
+                color: "var(--color-muted)",
                 fontSize: 14,
                 marginBottom: 16,
               }}
@@ -136,7 +130,6 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
                 className="w-full rounded-lg border px-4 py-2 text-sm outline-none"
                 style={{
                   borderColor: "#e5e7eb",
-                  fontFamily: "Helvetica, sans-serif",
                 }}
               />
               <input
@@ -146,7 +139,6 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
                 className="w-full rounded-lg border px-4 py-2 text-sm outline-none"
                 style={{
                   borderColor: "#e5e7eb",
-                  fontFamily: "Helvetica, sans-serif",
                 }}
               />
               <textarea
@@ -155,7 +147,6 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
                 className="w-full rounded-lg border px-4 py-2 text-sm outline-none"
                 style={{
                   borderColor: "#e5e7eb",
-                  fontFamily: "Helvetica, sans-serif",
                 }}
                 placeholder="Tell us a bit about what you need help with..."
               />
@@ -169,8 +160,7 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
                 width: 339,
                 height: 48,
                 borderRadius: 10,
-                backgroundColor: "#0149E1",
-                fontFamily: "Helvetica, sans-serif",
+                backgroundColor: "var(--color-primary, #0149E1)",
               }}
             >
               {loading ? "Sending…" : success ? "Sent!" : finalCta.buttonLabel}
@@ -179,7 +169,6 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
             {success && (
               <p
                 className="mt-3 text-xs text-green-600"
-                style={{ fontFamily: "Helvetica, sans-serif" }}
               >
                 Thanks! Your message has been sent.
               </p>
@@ -188,7 +177,6 @@ export function ContactSection({ contact, finalCta, projectId }: Props) {
             {error && (
               <p
                 className="mt-3 text-xs text-red-600"
-                style={{ fontFamily: "Helvetica, sans-serif" }}
               >
                 {error}
               </p>
