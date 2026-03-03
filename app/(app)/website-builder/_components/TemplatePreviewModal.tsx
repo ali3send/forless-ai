@@ -120,20 +120,22 @@ export function TemplatePreviewModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 overflow-y-auto bg-black/40 backdrop-blur-sm"
+      className="fixed inset-0 z-50 overflow-y-auto bg-black/40 animate-[fadeIn_150ms_ease-out]"
       onClick={(e) => e.target === e.currentTarget && onClose()}
       role="dialog"
       aria-modal="true"
       aria-labelledby="template-preview-title"
+      style={{ willChange: "opacity" }}
     >
       <div
-        className="relative flex flex-col bg-white shadow-xl"
+        className="relative flex flex-col bg-white shadow-xl animate-[slideUp_150ms_ease-out]"
         style={{
           position: "absolute",
           left: MODAL.left,
           top: MODAL.top,
           width: MODAL.width,
           borderRadius: MODAL.radius,
+          willChange: "transform, opacity",
         }}
         onClick={(e) => e.stopPropagation()}
       >
