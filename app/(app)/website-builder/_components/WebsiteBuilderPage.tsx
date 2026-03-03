@@ -1,38 +1,32 @@
+// app/website-builder/_components/WebsiteBuilderPage.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams } from "next/navigation";
 import clsx from "clsx";
 
 import { BuilderSidebar } from "./BuilderSidebar";
 import { useWebsiteBuilder } from "../hooks/useWebsiteBuilder";
+import { useLoadWebsiteBuilder } from "../hooks/useLoadWebsiteBuilder";
 
 import { useBrandStore } from "@/store/brand.store";
 import { useWebsiteStore } from "@/store/website.store";
+
 import { ThemeProvider } from "@/Templates/websiteTheme/ThemeProvider";
 import {
   WEBSITE_TEMPLATES,
   type TemplateKey,
 } from "@/Templates/websiteTemplates/templates";
-import { useProjectStore } from "@/store/project.store";
 
 export default function WebsiteBuilderPage() {
-  const { projectId } = useParams<{ projectId: string }>();
-  const setProjectId = useProjectStore((s) => s.setProjectId);
+  const { websiteId } = useParams<{ websiteId: string }>();
 
-  useEffect(() => {
-    if (projectId) setProjectId(projectId);
-  }, [projectId, setProjectId]);
+  const brand = useBrandStore((s) => s.brand);
+  const { data, saving, generating, restoring } = useWebsiteStore();
 
-  const brand = useBrandStore((state) => state.brand);
-  const { data, loading, saving, generating, restoring } = useWebsiteStore();
+  const [focus, setFocus] = useState<"editor" | "split" | "preview">("split");
 
-  const templateKey =
-    data.template && data.template in WEBSITE_TEMPLATES
-      ? (data.template as TemplateKey)
-      : "template1";
-
-  const ActiveTemplate = WEBSITE_TEMPLATES[templateKey].component;
+  useLoadWebsiteBuilder(websiteId ?? null);
 
   const {
     builderSections,
@@ -42,25 +36,30 @@ export default function WebsiteBuilderPage() {
     handleSave,
     handleGenerateWebsite,
     handleRestoreSection,
-  } = useWebsiteBuilder(projectId);
+  } = useWebsiteBuilder(websiteId ?? null);
 
-  const [focus, setFocus] = useState<"editor" | "split" | "preview">("split");
-
-  if (!projectId) {
+  if (!websiteId) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        Missing projectId
+        Invalid website
       </div>
     );
   }
 
-  if (loading) {
+  if (!data) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        Loading website…
+        <p className="text-sm text-secondary">Loading website…</p>
       </div>
     );
   }
+
+  const templateKey =
+    data.template && data.template in WEBSITE_TEMPLATES
+      ? (data.template as TemplateKey)
+      : "template1";
+
+  const ActiveTemplate = WEBSITE_TEMPLATES[templateKey].component;
 
   return (
     <div className="h-screen overflow-hidden flex flex-col">
@@ -75,7 +74,7 @@ export default function WebsiteBuilderPage() {
           )}
         >
           <BuilderSidebar
-            projectId={projectId}
+            websiteId={websiteId}
             builderSections={builderSections}
             currentIndex={currentIndex}
             isFirst={isFirst}
@@ -92,30 +91,22 @@ export default function WebsiteBuilderPage() {
         {/* Preview */}
         <main
           className={clsx(
-            "flex flex-col overflow-hidden transition-all duration-300",
+            "h-full overflow-y-auto transition-all duration-300",
             focus === "editor" && "w-0",
             focus === "preview" && "flex-1",
             focus === "split" && "flex-1",
           )}
         >
-          <div className="flex-1 overflow-y-auto">
-            <div className="rounded-2xl border border-secondary-fade overflow-hidden m-4">
-              <ThemeProvider
-                value={{
-                  primary: brand?.palette?.primary,
-                  secondary: brand?.palette?.secondary,
-                  fontFamily: brand?.font?.css,
-                  backgroundGradient: brand?.backgroundGradient,
-                }}
-              >
-                <ActiveTemplate
-                  data={data}
-                  brand={brand}
-                  projectId={projectId}
-                  showEditorButtons
-                />
-              </ThemeProvider>
-            </div>
+          <div className="rounded-2xl border border-secondary-fade overflow-hidden">
+            <ThemeProvider
+              value={{
+                primary: brand?.palette?.primary,
+                secondary: brand?.palette?.secondary,
+                fontFamily: brand?.font?.css,
+              }}
+            >
+              <ActiveTemplate data={data} brand={brand} websiteId={websiteId} showEditorButtons />
+            </ThemeProvider>
           </div>
         </main>
       </div>

@@ -1,22 +1,23 @@
+// store/brand.store.ts
 import { create } from "zustand";
-import type { BrandData } from "@/lib/types/brandTypes";
+import type { BrandDataNew } from "@/lib/types/brandTypes";
 
 type BrandStore = {
-  brand: BrandData | null;
+  brand: BrandDataNew | null;
 
-  setBrand: (
-    value: BrandData | null | ((prev: BrandData | null) => BrandData | null)
-  ) => void;
-
+  setBrand: (brand: BrandDataNew | null) => void;
+  updateBrand: (fn: (prev: BrandDataNew | null) => BrandDataNew | null) => void;
   clearBrand: () => void;
 };
 
 export const useBrandStore = create<BrandStore>((set) => ({
   brand: null,
 
-  setBrand: (value) =>
+  setBrand: (brand) => set({ brand }),
+
+  updateBrand: (fn) =>
     set((state) => ({
-      brand: typeof value === "function" ? value(state.brand) : value,
+      brand: fn(state.brand),
     })),
 
   clearBrand: () => set({ brand: null }),

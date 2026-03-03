@@ -7,16 +7,24 @@ import { useProjectActions } from "./useProjectActions";
 import { ProjectCardDeleted } from "./ProjectCardDeleted";
 import { ProjectCardHeader } from "./ProjectCardHeader";
 import { ProjectRow } from "../../types";
+import { formatDate } from "@/lib/utils/formatDate";
+import { useRouter } from "next/navigation";
 
-const builderUrl = (id: string) => `/website-builder/${id}`;
+export function ProjectCard({ project }: { project: ProjectRow }) {
+  const router = useRouter();
 
-export function ProjectCard({
-  project,
-  onRequestDelete,
-}: {
-  project: ProjectRow;
-  onRequestDelete?: (projectId: string, projectName: string, type: "soft" | "permanent") => void;
-}) {
+  async function openBuilder(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const res = await fetch(`/api/websites/resolve?projectId=${project.id}`);
+
+    const json = await res.json();
+
+    if (!res.ok || !json.websiteId) return;
+
+    router.push(`/website-builder/${json.websiteId}`);
+  }
   const name = project.name || "Untitled project";
   const status = project.status || "draft";
 
@@ -27,12 +35,15 @@ export function ProjectCard({
 
   const actions = useProjectActions(
     { id: project.id, name },
-    { onRequestDelete }
+    {},
   );
 
   return (
-    <div className="group flex flex-col rounded-2xl border border-gray-100 bg-white p-4 text-xs shadow-[0_8px_30px_rgba(15,23,42,0.06)] transition hover:border-[#0149E1]/60 hover:shadow-[0_12px_40px_rgba(15,23,42,0.12)]">
-      <div className="relative h-32 overflow-hidden rounded-xl bg-gray-100">
+    <div
+      onClick={openBuilder}
+      className="group cursor-pointer flex flex-col rounded-lg border bg-secondary-fade p-3 text-xs transition hover:border-primary"
+    >
+      <div className="relative h-28 overflow-hidden rounded-md bg-secondary-light">
         {project.thumbnail_url ? (
           <Image
             src={project.thumbnail_url}
@@ -77,17 +88,19 @@ export function ProjectCard({
 
       <ProjectCardHeader name={name} status={status} />
 
-      <div className="mt-1 text-[11px] text-gray-500">
-        Last update{" "}
-        {project.updated_at
-          ? new Date(project.updated_at).toLocaleDateString()
-          : "—"}
+      <div className="mt-2 text-[10px] text-secondary">
+        Last updated {formatDate(project.updated_at)}
       </div>
 
       {showEditView && (
         <div className="mt-4 flex gap-2">
           <Link
-            href={builderUrl(project.id)}
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              openBuilder(e);
+            }}
             className="flex flex-1 items-center justify-between rounded-full bg-[#0149E1] text-sm font-normal text-white shadow-sm transition hover:bg-[#0149E1]/90"
             style={{
               height: 48,
@@ -100,9 +113,18 @@ export function ProjectCard({
             <span className="flex-1 text-center">Edit</span>
           </Link>
           <Link
-            href={builderUrl(project.id)}
+            href="#"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={async (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              const res = await fetch(`/api/websites/resolve?projectId=${project.id}`);
+              const json = await res.json().catch(() => ({}));
+              if (res.ok && json.websiteId) {
+                window.open(`/website-builder/${json.websiteId}`, "_blank");
+              }
+            }}
             className="flex flex-1 items-center justify-center gap-1.5 rounded-3xl border border-gray-200 bg-white px-3 py-2 text-sm font-normal text-[#4B5563] shadow-sm transition hover:border-gray-300 hover:bg-gray-50"
           >
             View

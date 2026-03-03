@@ -2,7 +2,7 @@
 "use client";
 
 import type { WebsiteData } from "@/lib/types/websiteTypes";
-import { BrandData } from "@/lib/types/brandTypes";
+import { BrandDataNew } from "@/lib/types/brandTypes";
 
 import { Navbar } from "./sections/Navbar";
 import { HeroSection } from "./sections/HeroSection";
@@ -12,14 +12,17 @@ import { OffersSection } from "./sections/OffersSection";
 import { ContactSection } from "./sections/ContactSection";
 import { Footer } from "./sections/Footer";
 
-type Props = {
+export function WebsiteTemplateImmersive({
+  data,
+  brand,
+  websiteId,
+  showEditorButtons = false,
+}: {
   data: WebsiteData;
-  brand: BrandData | null;
-  projectId: string;
+  brand: BrandDataNew | null;
+  websiteId: string;
   showEditorButtons?: boolean;
-};
-
-export function WebsiteTemplateImmersive({ data, brand, projectId, showEditorButtons }: Props) {
+}) {
   return (
     <div className="relative min-h-screen bg-(--color-bg) text-(--color-text) overflow-x-hidden">
       {/* Top navigation */}
@@ -74,7 +77,7 @@ export function WebsiteTemplateImmersive({ data, brand, projectId, showEditorBut
         <ContactSection
           contact={data.contact}
           finalCta={data.finalCta}
-          projectId={projectId}
+          websiteId={websiteId}
         />
       </section>
 

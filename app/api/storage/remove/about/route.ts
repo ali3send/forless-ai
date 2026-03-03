@@ -15,12 +15,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { projectId } = await req.json().catch(() => ({ projectId: "" }));
-    if (!projectId) {
-      return NextResponse.json({ error: "Missing projectId" }, { status: 400 });
+    const { websiteId } = await req.json().catch(() => ({ websiteId: "" }));
+    if (!websiteId) {
+      return NextResponse.json({ error: "Missing websiteId" }, { status: 400 });
     }
 
-    const path = `${auth.user.id}/${projectId}/about`;
+    const path = `${auth.user.id}/${websiteId}/about`;
     const admin = createAdminSupabaseClient();
 
     const { error } = await admin.storage.from(BUCKET).remove([path]);

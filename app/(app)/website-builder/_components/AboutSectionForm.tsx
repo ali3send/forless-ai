@@ -1,10 +1,12 @@
 "use client";
 
-import React from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { ArrowUpToLine, Sparkles } from "lucide-react";
 import { WebsiteData } from "@/lib/types/websiteTypes";
 import { StateUpdater } from "@/lib/types/state";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
+import { uiToast } from "@/lib/utils/uiToast";
 import { TextField } from "../../components/ui/TextField";
 import { INPUT_LIMITS } from "@/lib/inputLimits";
 
@@ -13,6 +15,7 @@ const ACCENT_BLUE = "#0149E1";
 export type AboutSectionFormProps = {
   data: WebsiteData;
   setData: StateUpdater<WebsiteData>;
+  websiteId: string;
   onSave?: () => void;
   saving?: boolean;
 };
@@ -20,15 +23,68 @@ export type AboutSectionFormProps = {
 export function AboutSectionForm({
   data,
   setData,
+  websiteId,
   onSave,
-  saving,
+  saving = false,
 }: AboutSectionFormProps) {
-  // UI only: no backend upload/remove
-  function removeImage() {
+  const [uploading, setUploading] = useState(false);
+  const [removing, setRemoving] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  async function onUpload(file: File) {
+    if (!websiteId) return;
+    setErr(null);
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("websiteId", websiteId);
+      fd.append("file", file);
+      console.log(fd);
+      const res = await fetch("/api/storage/upload/about", {
+        method: "POST",
+        body: fd,
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        uiToast.error(getErrorMessage(json.error, "Upload failed"));
+        throw new Error(json.error || "Upload failed");
+      }
+
+      const bustedUrl = `${json.publicUrl}?v=${Date.now()}`;
+      setData((d) => ({
+        ...d,
+        about: { ...d.about, imagePath: json.path, imageUrl: bustedUrl },
+      }));
+    } catch (e: unknown) {
+      setErr(getErrorMessage(e, "Upload failed"));
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  async function removeImage() {
+    if (!websiteId) return;
+    setErr(null);
+
     setData((d) => ({
       ...d,
       about: { ...d.about, imagePath: undefined, imageUrl: undefined },
     }));
+
+    setRemoving(true);
+    try {
+      const res = await fetch("/api/storage/remove/about", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ websiteId }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error || "Remove failed");
+    } catch (e: unknown) {
+      setErr(getErrorMessage(e, "Failed to remove image"));
+    } finally {
+      setRemoving(false);
+    }
   }
 
   return (

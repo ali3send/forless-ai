@@ -1,3 +1,4 @@
+// app/(app)/dashboard/_components/ProjectGrid.tsx
 "use client";
 
 import { Plus } from "lucide-react";

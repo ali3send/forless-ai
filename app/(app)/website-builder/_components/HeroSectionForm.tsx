@@ -1,16 +1,22 @@
+// app/(app)/website-builder/_components/HeroSectionForm.tsx
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import { ArrowUpToLine, Sparkles } from "lucide-react";
 
 import { WebsiteData } from "@/lib/types/websiteTypes";
 import { StateUpdater } from "@/lib/types/state";
+// import { useProjectStore } from "@/store/project.store";
+import { getErrorMessage } from "@/lib/utils/getErrorMessage";
+import { uiToast } from "@/lib/utils/uiToast";
 import { TextField } from "../../components/ui/TextField";
 import { INPUT_LIMITS } from "@/lib/inputLimits";
 
 const ACCENT_BLUE = "#0149E1";
 
 export type HeroSectionFormProps = {
+  websiteId: string;
   data: WebsiteData;
   setData: StateUpdater<WebsiteData>;
   onSave?: () => void;
@@ -18,17 +24,81 @@ export type HeroSectionFormProps = {
 };
 
 export function HeroSectionForm({
+  websiteId,
   data,
   setData,
   onSave,
-  saving,
+  saving = false,
 }: HeroSectionFormProps) {
-  // UI only: no backend upload/remove
-  function removeImage() {
+  // const projectId = useProjectStore((s) => s.projectId);
+
+  const [uploading, setUploading] = useState(false);
+  const [removing, setRemoving] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  async function onUpload(file: File) {
+    console.log("UPLOAD STARTED", file);
+    if (!websiteId) {
+      uiToast.error("Missing websiteId ID");
+      return;
+    }
+
+    setErr(null);
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("websiteId", websiteId);
+      fd.append("file", file);
+
+      const res = await fetch("/api/storage/upload/hero", {
+        method: "POST",
+        body: fd,
+      });
+
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        uiToast.error(getErrorMessage(json.error, "Upload failed"));
+        throw new Error(json.error || "Upload failed");
+      }
+
+      const bustedUrl = `${json.publicUrl}?v=${Date.now()}`;
+
+      setData((d) => ({
+        ...d,
+        hero: { ...d.hero, imagePath: json.path, imageUrl: bustedUrl },
+      }));
+    } catch (e: unknown) {
+      setErr(getErrorMessage(e, "Upload failed"));
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  async function removeImage() {
+    if (!websiteId) return;
+
+    setErr(null);
+
     setData((d) => ({
       ...d,
       hero: { ...d.hero, imagePath: undefined, imageUrl: undefined },
     }));
+
+    setRemoving(true);
+    try {
+      const res = await fetch("/api/storage/remove/hero", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ websiteId }),
+      });
+
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error || "Remove failed");
+    } catch (e: unknown) {
+      setErr(getErrorMessage(e, "Failed to remove image"));
+    } finally {
+      setRemoving(false);
+    }
   }
 
   return (

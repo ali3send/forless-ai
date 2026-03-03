@@ -13,3 +13,21 @@ export type BrandData = {
   } | null;
   backgroundGradient?: string | null;
 };
+
+// lib/types/brandTypes.ts
+export type BrandDataNew = {
+  name: string;
+  slogan?: string;
+
+  palette: {
+    primary: string;
+    secondary: string;
+  };
+
+  font: {
+    id: string;
+    css: string;
+  };
+
+  logoSvg?: string;
+};

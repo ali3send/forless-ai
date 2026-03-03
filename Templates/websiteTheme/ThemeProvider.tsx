@@ -17,6 +17,9 @@ type Props = {
 export function ThemeProvider({ children, value }: Props) {
   // ✅ Let React Compiler handle memoization
   const theme: WebsiteTheme = createTheme(value);
+  const fontFamily = theme.font.family
+    ?.replace(/^font-family:\s*/i, "")
+    .replace(/;$/, "");
 
   const hasGradient = Boolean(value?.backgroundGradient);
   const cssVars: React.CSSProperties & Record<string, string> = {
@@ -26,8 +29,7 @@ export function ThemeProvider({ children, value }: Props) {
     ["--color-surface"]: theme.colors.surface,
     ["--color-text"]: theme.colors.text,
     ["--color-muted"]: theme.colors.muted,
-    ["--background-gradient"]: value?.backgroundGradient ?? theme.colors.surface,
-    fontFamily: theme.font.family,
+    fontFamily: fontFamily,
   };
   // When gradient is set, use contrast text colors so content stays visible (light gradients → dark text).
   if (hasGradient) {

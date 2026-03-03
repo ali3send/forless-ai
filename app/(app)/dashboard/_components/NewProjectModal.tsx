@@ -45,12 +45,12 @@ export default function NewProjectModal() {
         throw new Error("Failed to create website");
       }
       uiToast.success("Project created!");
-      const projectId = res.projectId;
+      const websiteId = res.websiteId;
       setModalOpen(false);
       setProjectIdea("");
       setProjectName("");
 
-      router.push(`/website-builder/${projectId}`);
+      router.push(`/website-builder/${websiteId}`);
     } catch (err) {
       uiToast.error(getErrorMessage(err, "Failed to create project"));
     } finally {

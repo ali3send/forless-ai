@@ -1,7 +1,7 @@
 "use client";
 
 import type { WebsiteData } from "@/lib/types/websiteTypes";
-import { BrandData } from "@/lib/types/brandTypes";
+import { BrandDataNew } from "@/lib/types/brandTypes";
 
 import { Navbar } from "./sections/Navbar";
 import { HeroSection } from "./sections/HeroSection";
@@ -14,12 +14,12 @@ import { AboutSection } from "./sections/AboutSection";
 export function WebsiteTemplateAlt({
   data,
   brand,
-  projectId,
-  showEditorButtons,
+  websiteId,
+  showEditorButtons = false,
 }: {
   data: WebsiteData;
-  brand: BrandData | null;
-  projectId: string;
+  brand: BrandDataNew | null;
+  websiteId: string;
   showEditorButtons?: boolean;
 }) {
   return (
@@ -56,7 +56,7 @@ export function WebsiteTemplateAlt({
       <ContactSection
         contact={data.contact}
         finalCta={data.finalCta}
-        projectId={projectId}
+        websiteId={websiteId}
       />
 
       <Footer brandName={data.brandName} />

@@ -27,9 +27,9 @@ export default function CreateProjectHero() {
         throw new Error("Failed to create website");
       }
 
-      const projectId = res.projectId;
+      const websiteId = res.websiteId;
 
-      router.push(`/website-builder/${projectId}`);
+      router.push(`/website-builder/${websiteId}`);
     } catch (err) {
       setError(
         err instanceof Error

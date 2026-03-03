@@ -1,143 +1,60 @@
+// app/(app)/website-builder/_components/BuilderDesignPanel.tsx
 "use client";
 
 import { useState } from "react";
 import { Check, ChevronDown, Diamond, Loader2, Palette } from "lucide-react";
-import { FONTS } from "@/app/(app)/brand/brandConfig";
+import { PALETTES, FONTS } from "@/app/(app)/brand/brandConfig";
+import { BrandDataNew } from "@/lib/types/brandTypes";
 import { useBrandStore } from "@/store/brand.store";
-import type { BrandData } from "@/lib/types/brandTypes";
 
 const BACKGROUND_GRADIENTS = [
   {
-    id: "sky-fade",
-    name: "Sky Fade",
-    description: "Light and airy",
-    style: { background: "linear-gradient(to right, #F0F9FF, #F3F4F6)" },
+    id: "soft-gray",
+    name: "Soft Gray",
+    description: "Neutral and clean",
+    style: { background: "linear-gradient(135deg, #f5f5f5 0%, #e5e5e5 100%)" },
   },
   {
-    id: "calm-mint",
-    name: "Calm Mint",
-    description: "Fresh and natural",
-    style: { background: "linear-gradient(to right, #F0FDF4, #F3F4F6)" },
+    id: "cool-blue",
+    name: "Cool Blue",
+    description: "Calm and professional",
+    style: { background: "linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)" },
   },
   {
-    id: "warm-neutral",
-    name: "Warm Neutral",
-    description: "Friendly and inviting",
-    style: { background: "linear-gradient(to right, #FFFEFD, #FFEDE133)" },
+    id: "warm-cream",
+    name: "Warm Cream",
+    description: "Soft and inviting",
+    style: { background: "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)" },
   },
   {
-    id: "sky-fade-2",
-    name: "Sky Fade",
-    description: "Light and airy",
-    style: { background: "linear-gradient(to right, #F0F9FF, #F3F4F6)" },
-  },
-  {
-    id: "calm-mint-2",
-    name: "Calm Mint",
-    description: "Fresh and natural",
-    style: { background: "linear-gradient(to right, #F0FDF4, #F3F4F6)" },
-  },
-  {
-    id: "warm-neutral-2",
-    name: "Warm Neutral",
-    description: "Friendly and inviting",
-    style: { background: "linear-gradient(to right, #FFFEFD, #FFEDE133)" },
+    id: "mint",
+    name: "Mint",
+    description: "Fresh and light",
+    style: { background: "linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)" },
   },
 ] as const;
 
-const STYLE_PRESETS = [
-  {
-    id: "clean-blue",
-    name: "Clean Blue",
-    description: "Safe default, builds trust",
-    colors: ["#1D4ED8", "#3B82F6", "#FFFFFF", "#1F2937"],
-    primary: "#1D4ED8",
-    secondary: "#1F2937",
-  },
-  {
-    id: "midnight-dark",
-    name: "Midnight Dark",
-    description: "Modern, premium feel",
-    colors: ["#1F2937", "#2563EB", "#FFFFFF", "#111827"],
-    primary: "#2563EB",
-    secondary: "#111827",
-  },
-  {
-    id: "soft-neutral",
-    name: "Soft Neutral",
-    description: "Minimal and calm",
-    colors: ["#6B7280", "#E5E7EB", "#FFFFFF", "#1F2937"],
-    primary: "#6B7280",
-    secondary: "#1F2937",
-  },
-  {
-    id: "warm-brand",
-    name: "Warm Brand",
-    description: "Friendly, lifestyle vibe",
-    colors: ["#EA580C", "#FB923C", "#FFFBEB", "#1F2937"],
-    primary: "#EA580C",
-    secondary: "#1F2937",
-  },
-  {
-    id: "bold-accent",
-    name: "Bold Accent",
-    description: "High energy, gets attention",
-    colors: ["#DC2626", "#EF4444", "#FCE7F3", "#1F2937"],
-    primary: "#DC2626",
-    secondary: "#1F2937",
-  },
-  {
-    id: "fresh-green",
-    name: "Fresh Green",
-    description: "Health, eco, nature",
-    colors: ["#0D9488", "#10B981", "#D1FAE5", "#1F2937"],
-    primary: "#10B981",
-    secondary: "#1F2937",
-  },
-  {
-    id: "elegant-mono",
-    name: "Elegant Mono",
-    description: "Luxury black & white",
-    colors: ["#000000", "#374151", "#FFFFFF", "#000000"],
-    primary: "#374151",
-    secondary: "#000000",
-  },
-  {
-    id: "purple-flow",
-    name: "Purple Flow",
-    description: "Creative and unique",
-    colors: ["#C4B5FD", "#8B5CF6", "#EDE9FE", "#1F2937"],
-    primary: "#8B5CF6",
-    secondary: "#1F2937",
-  },
-] as const;
+const STYLE_PRESETS = PALETTES.map((p) => ({
+  id: p.id,
+  name: p.label,
+  description: "",
+  primary: p.primary,
+  secondary: p.secondary,
+  colors: [p.primary, p.secondary],
+}));
 
-const FONT_OPTIONS = [
-  {
-    id: "sans" as const,
-    name: "Sans",
-    description: "Modern and clean",
-    css: FONTS[0].css,
-  },
-  {
-    id: "serif" as const,
-    name: "Serif",
-    description: "Classic and elegant",
-    css: FONTS[1].css,
-  },
-  {
-    id: "mono" as const,
-    name: "Mono",
-    description: "Tech and minimal",
-    css: FONTS[2].css,
-  },
-];
+const FONT_OPTIONS = FONTS.map((f) => ({
+  id: f.id,
+  name: f.label,
+  description: "",
+  css: f.css,
+}));
 
-function ensureBrand(prev: BrandData | null): BrandData {
+function ensureBrand(prev: BrandDataNew | null): BrandDataNew {
   return {
     name: prev?.name ?? "",
     slogan: prev?.slogan ?? "",
-    logoSvg: prev?.logoSvg ?? null,
+    logoSvg: prev?.logoSvg ?? undefined,
     palette: {
       primary: prev?.palette?.primary ?? STYLE_PRESETS[0].primary,
       secondary: prev?.palette?.secondary ?? STYLE_PRESETS[0].secondary,
@@ -151,7 +68,7 @@ function ensureBrand(prev: BrandData | null): BrandData {
   };
 }
 
-function findActivePreset(brand: BrandData): string {
+function findActivePreset(brand: BrandDataNew): string {
   const p = brand.palette;
   if (!p) return STYLE_PRESETS[0].id;
   const match = STYLE_PRESETS.find(
@@ -160,14 +77,14 @@ function findActivePreset(brand: BrandData): string {
   return match?.id ?? STYLE_PRESETS[0].id;
 }
 
-function findActiveFont(brand: BrandData): string {
+function findActiveFont(brand: BrandDataNew): string {
   const f = brand.font;
   if (!f) return FONT_OPTIONS[0].id;
   const match = FONT_OPTIONS.find((o) => o.css === f.css);
   return match?.id ?? FONT_OPTIONS[0].id;
 }
 
-function findActiveGradient(brand: BrandData): string {
+function findActiveGradient(brand: BrandDataNew): string {
   const g = brand.backgroundGradient;
   if (!g) return BACKGROUND_GRADIENTS[0].id;
   const match = BACKGROUND_GRADIENTS.find((i) => i.style.background === g);
@@ -179,43 +96,54 @@ type BuilderDesignPanelProps = {
   saving?: boolean;
 };
 
-export function BuilderDesignPanel({ onSave, saving = false }: BuilderDesignPanelProps) {
+export function BuilderDesignPanel({
+  onSave,
+  saving = false,
+}: BuilderDesignPanelProps) {
   const brand = useBrandStore((s) => s.brand);
-  const setBrand = useBrandStore((s) => s.setBrand);
+  const updateBrand = useBrandStore((s) => s.updateBrand);
+
   const current = ensureBrand(brand);
 
-  const selectedPreset = findActivePreset(current);
-  const fontStyle = findActiveFont(current);
-  const selectedGradient = findActiveGradient(current);
+  const currentPaletteId =
+    PALETTES.find(
+      (p) =>
+        p.primary === current.palette.primary &&
+        p.secondary === current.palette.secondary,
+    )?.id ?? PALETTES[0]?.id;
 
-  const [customizeColorsOpen, setCustomizeColorsOpen] = useState(false);
+  const currentFontId =
+    FONTS.find((f) => f.css === current.font.css)?.id ?? FONTS[0]?.id;
 
-  const handlePresetChange = (presetId: string) => {
-    const preset = STYLE_PRESETS.find((s) => s.id === presetId) ?? STYLE_PRESETS[0];
-    setBrand((prev) => {
+  const handlePaletteChange = (paletteId: string) => {
+    const p = PALETTES.find((x) => x.id === paletteId) ?? PALETTES[0];
+
+    updateBrand((prev) => {
       const base = ensureBrand(prev);
       return {
         ...base,
-        palette: { primary: preset.primary, secondary: preset.secondary },
+        palette: { primary: p.primary, secondary: p.secondary },
       };
     });
   };
 
   const handleFontChange = (fontId: string) => {
-    const opt = FONT_OPTIONS.find((o) => o.id === fontId) ?? FONT_OPTIONS[0];
-    setBrand((prev) => {
+    const f = FONTS.find((x) => x.id === fontId) ?? FONTS[0];
+
+    updateBrand((prev) => {
       const base = ensureBrand(prev);
       return {
         ...base,
-        font: { id: opt.id, css: opt.css },
+        font: { id: f.id, css: f.css },
       };
     });
   };
 
   const handleGradientChange = (gradientId: string) => {
     const grad =
-      BACKGROUND_GRADIENTS.find((g) => g.id === gradientId) ?? BACKGROUND_GRADIENTS[0];
-    setBrand((prev) => {
+      BACKGROUND_GRADIENTS.find((g) => g.id === gradientId) ??
+      BACKGROUND_GRADIENTS[0];
+    updateBrand((prev) => {
       const base = ensureBrand(prev);
       return {
         ...base,
@@ -223,6 +151,11 @@ export function BuilderDesignPanel({ onSave, saving = false }: BuilderDesignPane
       };
     });
   };
+
+  const [customizeColorsOpen, setCustomizeColorsOpen] = useState(false);
+  const selectedGradient = findActiveGradient(current);
+  const selectedPreset = currentPaletteId;
+  const fontStyle = currentFontId;
 
   return (
     <div
@@ -315,7 +248,7 @@ export function BuilderDesignPanel({ onSave, saving = false }: BuilderDesignPane
               <button
                 key={preset.id}
                 type="button"
-                onClick={() => handlePresetChange(preset.id)}
+                onClick={() => handlePaletteChange(preset.id)}
                 className={`relative flex w-full flex-col gap-2 rounded-xl border-2 p-3 text-left shadow-sm transition ${
                   isSelected
                     ? "border-[#0149E1] bg-white"

@@ -1,3 +1,4 @@
+// app/website-builder/_components/BuilderContentPanel.tsx
 "use client";
 
 import { useState } from "react";
@@ -26,13 +27,15 @@ type Props = {
   onRestore: () => void;
   onSave?: () => void;
   saving?: boolean;
+  websiteId: string;
 };
 
 export function BuilderContentPanel({
   onGenerate,
   onRestore,
   onSave,
-  saving,
+  saving = false,
+  websiteId,
 }: Props) {
   const { data, setData, section, setSection, generating, restoring } =
     useWebsiteStore();
@@ -194,6 +197,7 @@ export function BuilderContentPanel({
         <HeroSectionForm
           data={data}
           setData={setData}
+          websiteId={websiteId}
           onSave={onSave}
           saving={saving}
         />
@@ -202,6 +206,7 @@ export function BuilderContentPanel({
         <AboutSectionForm
           data={data}
           setData={setData}
+          websiteId={websiteId}
           onSave={onSave}
           saving={saving}
         />

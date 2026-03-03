@@ -2,7 +2,13 @@
 export type WebsiteType = "product" | "service" | "personal" | "business";
 
 export type WebsiteData = {
-  template: "template1" | "template2" | "template3" | "template4" | "template5" | "template6";
+  template:
+    | "template1"
+    | "template2"
+    | "template3"
+    | "template4"
+    | "template5"
+    | "template6";
   type: string;
   brandName: string;
   tagline: string;
@@ -41,7 +47,7 @@ export type WebsiteData = {
     secondaryCtaLink?: string;
     imageUrl?: string;
     imagePath?: string;
-    imageQuery: string; // for Unsplash
+    imageQuery: string;
   };
 
   about: {
@@ -59,16 +65,11 @@ export type WebsiteData = {
   };
 
   offers: {
-    sectionLabel?: string;
     title: string;
     items: {
       name: string;
       description: string;
       priceLabel?: string;
-      imageUrl?: string;
-      imagePath?: string;
-      buttonLabel?: string;
-      linkUrl?: string;
     }[];
   };
 
@@ -121,10 +122,10 @@ export function getDefaultWebsiteData(type: WebsiteType): WebsiteData {
         type === "product"
           ? "product"
           : type === "service"
-          ? "team"
-          : type === "personal"
-          ? "freelancer"
-          : "business",
+            ? "team"
+            : type === "personal"
+              ? "freelancer"
+              : "business",
     },
     about: {
       title: "About Chic Haven",
