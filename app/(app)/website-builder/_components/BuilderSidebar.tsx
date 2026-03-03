@@ -17,7 +17,7 @@ import { useWebsiteStore } from "@/store/website.store";
 import { BuilderContentPanel } from "./BuilderContentPanel";
 import { BuilderDesignPanel } from "./BuilderDesignPanel";
 import { DomainPanel } from "./DomainPanel";
-import TemplateSelector from "./TemplateSelector";
+import { TemplatesPanel } from "./TemplatesPanel";
 import { BrandPanel } from "./BrandPanel";
 import { LayoutPanel } from "./LayoutPanel";
 import { SocialLinksPanel } from "./SocialLinksPanel";
@@ -73,15 +73,17 @@ export function BuilderSidebar(props: Props) {
 
   return (
     <aside
-      className="flex h-full w-full overflow-hidden"
+      className="flex h-full w-full overflow-hidden gap-0"
       style={{ backgroundColor: "#F9FAFB" }}
     >
-      {/* Sidebar - Vertical, 92px, #F9FAFB */}
+      {/* Sidebar container - distinct with border */}
       <nav
-        className="flex shrink-0 flex-col h-full pt-6 pr-4 pb-6 pl-4"
+        className="flex shrink-0 flex-col h-full pt-6 pr-4 pb-6 pl-4 border-r rounded-l-xl"
         style={{
           width: 92,
-          backgroundColor: "#F9FAFB",
+          backgroundColor: "#F2F5F8",
+          borderColor: "#E5E7EB",
+          borderWidth: 1,
         }}
       >
         <ul className="flex flex-col items-center gap-4">
@@ -94,12 +96,11 @@ export function BuilderSidebar(props: Props) {
                   type="button"
                   onClick={() => setActiveNav(item.id)}
                   title={item.label}
-                  className={`flex w-full flex-col items-center gap-1 rounded-lg px-2 py-2.5 text-center text-[10px] font-medium transition ${
+                  className={`flex w-full flex-col items-center gap-1 rounded-xl px-2 py-2.5 text-center text-[10px] font-medium transition ${
                     isActive
-                      ? "text-white"
-                      : "text-secondary hover:bg-secondary-fade hover:text-secondary-dark"
+                      ? "bg-[#0149E1] text-white shadow-sm"
+                      : "bg-white text-[#111827] shadow-[0_1px_3px_rgba(0,0,0,0.08)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.1)]"
                   }`}
-                  style={isActive ? { backgroundColor: "#0149E1" } : undefined}
                 >
                   <Icon className="h-5 w-5 shrink-0" />
                   <span className="leading-tight">{item.label}</span>
@@ -110,13 +111,16 @@ export function BuilderSidebar(props: Props) {
         </ul>
       </nav>
 
-      {/* Main content panel */}
+      {/* Main content panel - distinct container with border */}
       <div
-        className="flex min-w-0 flex-1 flex-col overflow-hidden gap-4 pt-6 pr-4 pb-6 pl-4"
-        style={{ backgroundColor: "#F9FAFB" }}
+        className="flex min-w-0 flex-1 flex-col overflow-hidden gap-4 pt-6 pr-4 pb-6 pl-4 rounded-r-xl bg-white"
+        style={{
+          border: "1px solid #E5E7EB",
+          borderLeft: "none",
+        }}
       >
         {/* Header with title - hidden for panels that render their own heading (Domain, Brand, Pages) */}
-        {activeNav !== "domain" && activeNav !== "brand" && activeNav !== "pages" && activeNav !== "layout" && activeNav !== "design" && activeNav !== "social" && activeNav !== "settings" && (
+        {activeNav !== "domain" && activeNav !== "brand" && activeNav !== "pages" && activeNav !== "layout" && activeNav !== "design" && activeNav !== "social" && activeNav !== "templates" && activeNav !== "settings" && (
           <div
             className="flex shrink-0 items-center gap-2 py-3"
             style={{ backgroundColor: "#F9FAFB" }}
@@ -154,14 +158,7 @@ export function BuilderSidebar(props: Props) {
 
           {activeNav === "design" && <BuilderDesignPanel />}
 
-          {activeNav === "templates" && (
-            <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-secondary-dark">
-                Templates
-              </h3>
-              <TemplateSelector />
-            </div>
-          )}
+          {activeNav === "templates" && <TemplatesPanel />}
 
           {activeNav === "brand" && <BrandPanel />}
 

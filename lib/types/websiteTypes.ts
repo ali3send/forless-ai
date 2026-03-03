@@ -2,7 +2,7 @@
 export type WebsiteType = "product" | "service" | "personal" | "business";
 
 export type WebsiteData = {
-  template: "template1" | "template2" | "template3";
+  template: "template1" | "template2" | "template3" | "template4" | "template5" | "template6";
   type: string;
   brandName: string;
   tagline: string;
@@ -25,6 +25,8 @@ export type WebsiteData = {
   legal?: {
     privacyPolicyAutoGenerate?: boolean;
     termsAndConditionsAutoGenerate?: boolean;
+    privacyPolicyContent?: string;
+    termsContent?: string;
   };
   // Footer
   footerText?: string;

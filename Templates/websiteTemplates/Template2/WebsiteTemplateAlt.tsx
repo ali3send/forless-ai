@@ -39,17 +39,18 @@ export function WebsiteTemplateAlt({
         hero={data.hero}
       />
 
-      <FeaturesSection
-        title={data.features.title}
-        features={data.features.items}
-      />
-
       <AboutSection
         title={data.about.title}
         body={data.about.body}
         imageQuery={data.about.imageQuery}
         imageUrl={data.about.imageUrl}
       />
+
+      <FeaturesSection
+        title={data.features.title}
+        features={data.features.items}
+      />
+
       <OffersSection title={data.offers.title} offers={data.offers.items} />
 
       <ContactSection
