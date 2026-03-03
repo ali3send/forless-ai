@@ -7,19 +7,26 @@ import { checkUsage } from "@/lib/usage/checkUsage";
 import type { PlanKey } from "@/lib/billing/planLimits";
 import { WebsiteData } from "@/lib/types/websiteTypes";
 import { commitUsage } from "@/lib/usage/commitUsage";
-import { saveWebsite } from "../../lib/saveWebsite";
+import { generateBrandWithAI } from "@/lib/server/generateBrandWithAi";
 
+/* ──────────────────────────────
+   REQUEST SCHEMA
+────────────────────────────── */
 const Schema = z.object({
   name: z.string().optional(),
   description: z.string().trim().min(1, "Description is required"),
   websiteType: z
     .enum(["product", "service", "business", "personal"])
     .optional(),
+  brandId: z.string().optional(),
 });
 
 export async function POST(req: Request) {
   const supabase = await createServerSupabaseClient();
 
+  /* ──────────────────────────────
+     AUTH / OWNER
+  ────────────────────────────── */
   let owner;
   try {
     owner = await getOwner(req, supabase);
@@ -27,10 +34,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  /* ──────────────────────────────
+     VALIDATE BODY
+  ────────────────────────────── */
   const body = await req.json().catch(() => ({}));
   const parsed = Schema.safeParse(body);
-
-  console.log("🟡 [GUEST CREATE] Parsed body:", parsed);
 
   if (!parsed.success) {
     return NextResponse.json(
@@ -38,14 +46,20 @@ export async function POST(req: Request) {
       { status: 400 }
     );
   }
+  const {
+    name,
+    description,
+    websiteType,
+    brandId: incomingBrandId,
+  } = parsed.data;
 
-  const { name, description, websiteType } = parsed.data;
   const finalName = name?.trim() || description.slice(0, 40);
-
   const finalDescription = description.trim();
-
   const type = websiteType ?? "product";
 
+  /* ──────────────────────────────
+     LOAD PLAN / USAGE
+  ────────────────────────────── */
   let plan: PlanKey = "free";
   let currentPeriodEnd: string | null = null;
 
@@ -71,11 +85,6 @@ export async function POST(req: Request) {
     currentPeriodEnd = profile.current_period_end ?? null;
   }
 
-  console.log("userId:", owner.type === "user" ? owner.userId : null);
-  console.log("guestId:", owner.type === "guest" ? owner.guestId : null);
-  console.log("plan:", plan);
-  console.log("currentPeriodEnd:", currentPeriodEnd);
-
   const usage = await checkUsage({
     userId: owner.type === "user" ? owner.userId : null,
     guestId: owner.type === "guest" ? owner.guestId : null,
@@ -99,7 +108,7 @@ export async function POST(req: Request) {
   }
 
   /* ──────────────────────────────
-     1️⃣ CREATE PROJECT (USER / GUEST)
+     1️⃣ CREATE PROJECT
   ────────────────────────────── */
   const { data: project, error: projectErr } = await supabase
     .from("projects")
@@ -118,16 +127,79 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   }
+
   await commitUsage({
     userId: owner.type === "user" ? owner.userId : null,
     guestId: owner.type === "guest" ? owner.guestId : null,
     projectId: null,
     key: "projects",
-    currentPeriodEnd: currentPeriodEnd,
+    currentPeriodEnd,
   });
 
   /* ──────────────────────────────
-     2️⃣ AI WEBSITE GENERATION
+     2️⃣ ENSURE BRAND
+  ────────────────────────────── */
+  let brandForAi: {
+    id: string;
+    name: string;
+    slogan?: string;
+    palette: { primary: string; secondary: string };
+    font: { id: string; css: string };
+  };
+
+  if (incomingBrandId) {
+    const { data: brand, error } = await supabase
+      .from("brands")
+      .select("id, name, slogan, palette, font")
+      .eq("id", incomingBrandId)
+      .eq("project_id", project.id)
+      .single();
+
+    if (error || !brand) {
+      return NextResponse.json(
+        { error: "Invalid brand selected" },
+        { status: 400 }
+      );
+    }
+
+    brandForAi = brand;
+  } else {
+    const aiBrand = await generateBrandWithAI(finalDescription);
+
+    const { data: brand, error } = await supabase
+      .from("brands")
+      .insert({
+        project_id: project.id,
+        user_id: owner.type === "user" ? owner.userId : null,
+        guest_id: owner.type === "guest" ? owner.guestId : null,
+        name: aiBrand.name,
+        slogan: aiBrand.slogan,
+        palette: aiBrand.palette,
+        font: aiBrand.font,
+        logo_svg: aiBrand.logoSvg ?? null,
+        source: "ai",
+      })
+      .select("id, name, slogan, palette, font")
+      .single();
+
+    if (error) {
+      console.error("❌ BRAND INSERT ERROR:", {
+        error,
+        owner,
+        projectId: project.id,
+      });
+
+      return NextResponse.json(
+        { error: error.message, details: error },
+        { status: 500 }
+      );
+    }
+
+    brandForAi = brand;
+  }
+
+  /* ──────────────────────────────
+     3️⃣ AI WEBSITE GENERATION
   ────────────────────────────── */
   const resp = await openai.responses.create({
     model: "gpt-4o-mini",
@@ -142,19 +214,26 @@ export async function POST(req: Request) {
         content: `
 Generate a complete one-page website.
 
-Business name:
-${name}
+Brand name:
+${brandForAi.name}
+
+Brand slogan:
+${brandForAi.slogan ?? ""}
+
+Brand colors:
+Primary: ${brandForAi.palette.primary}
+Secondary: ${brandForAi.palette.secondary}
 
 Business description:
-${description}
+${finalDescription}
 
 Return EXACTLY this JSON shape:
 
 {
-  "template": "template1",
-  "type": "${type}",
+  "type": "product" | "service" | "business" | "personal",
   "brandName": string,
   "tagline": string,
+
   "hero": {
     "headline": string,
     "subheadline": string,
@@ -164,23 +243,27 @@ Return EXACTLY this JSON shape:
     "secondaryCtaLink": "#",
     "imageQuery": string
   },
+
   "about": {
     "title": string,
     "body": string,
     "imageQuery": string
   },
+
   "features": {
     "title": string,
     "items": [
       { "label": string, "description": string }
     ]
   },
+
   "offers": {
     "title": string,
     "items": [
       { "name": string, "description": string, "priceLabel": string }
     ]
   },
+
   "contact": {
     "title": string,
     "description": string,
@@ -188,6 +271,7 @@ Return EXACTLY this JSON shape:
     "phone": string,
     "whatsapp": string
   },
+
   "finalCta": {
     "headline": string,
     "subheadline": string,
@@ -195,12 +279,6 @@ Return EXACTLY this JSON shape:
   }
 }
 
-Rules:
-- Keep copy short and marketing-focused
-- imageQuery must be 1–2 Unsplash keywords
-- Use placeholders if contact info is unknown
-- Do NOT include extra keys
-- Do NOT nest additional objects
         `.trim(),
       },
     ],
@@ -209,6 +287,7 @@ Rules:
   let websiteData: WebsiteData;
   try {
     websiteData = JSON.parse(resp.output_text || "");
+    websiteData.type = type;
   } catch {
     return NextResponse.json(
       { error: "Invalid AI JSON output" },
@@ -216,47 +295,43 @@ Rules:
     );
   }
 
-  if (
-    !websiteData?.hero ||
-    !websiteData?.about ||
-    !websiteData?.features ||
-    !websiteData?.offers ||
-    !websiteData?.contact ||
-    !websiteData?.finalCta
-  ) {
+  /* ──────────────────────────────
+     4️⃣ SAVE WEBSITE
+  ────────────────────────────── */
+  const { data: website, error: websiteErr } = await supabase
+    .from("websites")
+    .upsert(
+      {
+        project_id: project.id,
+        user_id: owner.type === "user" ? owner.userId : null,
+        guest_id: owner.type === "guest" ? owner.guestId : null,
+        brand_id: brandForAi.id,
+        draft_data: websiteData,
+        is_published: false,
+        slug: null,
+      },
+      { onConflict: "project_id" }
+    )
+    .select("id")
+    .single();
+
+  if (websiteErr || !website) {
     return NextResponse.json(
-      { error: "AI returned incomplete website data" },
+      { error: "Failed to save website", details: websiteErr?.message },
       { status: 500 }
     );
   }
 
-  /* ──────────────────────────────
-     4️⃣ SAVE WEBSITE
-  ────────────────────────────── */
-  try {
-    await saveWebsite({
-      supabase,
-      userId: owner.type === "user" ? owner.userId : null,
-      guestId: owner.type === "guest" ? owner.guestId : null,
-      projectId: project.id,
-      data: websiteData,
-    });
-  } catch (err) {
-    return NextResponse.json(
-      { error: "Failed to save website", err },
-      { status: 500 }
-    );
-  }
   await commitUsage({
     userId: owner.type === "user" ? owner.userId : null,
     guestId: owner.type === "guest" ? owner.guestId : null,
     projectId: null,
     key: "website_generate",
-    currentPeriodEnd: currentPeriodEnd,
+    currentPeriodEnd,
   });
 
   return NextResponse.json({
     success: true,
-    projectId: project.id,
+    websiteId: website.id,
   });
 }

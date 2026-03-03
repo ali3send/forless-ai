@@ -1,6 +1,6 @@
 // lib/api/website.ts
 import type { WebsiteData } from "@/lib/types/websiteTypes";
-import { BrandData } from "../types/brandTypes";
+import { BrandDataNew } from "../types/brandTypes";
 import { getErrorMessage } from "../utils/getErrorMessage";
 import { getOrCreateGuestId } from "@/lib/guest/guest";
 
@@ -21,69 +21,48 @@ function withGuestHeaders(headers?: HeadersInit): HeadersInit {
 ────────────────────────────── */
 type SectionKey = "hero" | "about" | "features" | "offers" | "contact";
 
-type GenerateSectionPayload = {
-  idea: string;
-  brand: BrandData;
-  section: SectionKey;
-};
-
 /* ──────────────────────────────
    API calls
 ────────────────────────────── */
 
-export async function apiGenerateWebsite(
-  payload: GenerateSectionPayload
-): Promise<Pick<WebsiteData, SectionKey>> {
-  const res = await fetch("/api/website/generate", {
+export async function apiGenerateSection(payload: {
+  websiteId: string;
+  section: SectionKey;
+  idea: string;
+  brand: BrandDataNew;
+}): Promise<Pick<WebsiteData, SectionKey>> {
+  const res = await fetch("/api/website/generate-section", {
     method: "POST",
-    headers: withGuestHeaders({
+    headers: {
       "Content-Type": "application/json",
-    }),
+    },
     body: JSON.stringify(payload),
   });
 
   const json = await res.json().catch(() => ({}));
 
-  if (!res.ok || !json.data) {
+  if (!res.ok || !json.patch) {
     throw new Error(json.error || "Failed to generate section");
   }
 
-  return json.data as Pick<WebsiteData, SectionKey>;
-}
-
-export async function apiGenerateWebsiteWithBrand(payload: {
-  projectId: string;
-  idea: string;
-  brand: BrandData;
-  websiteType?: "product" | "service" | "business" | "personal";
-}): Promise<WebsiteData> {
-  const res = await fetch("/api/website/generate-with-brand", {
-    method: "POST",
-    headers: withGuestHeaders({
-      "Content-Type": "application/json",
-    }),
-    body: JSON.stringify(payload),
-  });
-
-  const json = await res.json().catch(() => ({}));
-
-  if (!res.ok || !json.success) {
-    throw new Error(json.error || "Failed to generate website");
-  }
-
-  return json.website as WebsiteData;
+  return json.patch;
 }
 
 export async function apiSaveWebsite(
-  projectId: string,
-  data: WebsiteData
+  websiteId: string,
+  data: WebsiteData,
+  brand?: BrandDataNew | null
 ): Promise<void> {
   const res = await fetch("/api/website", {
     method: "POST",
     headers: withGuestHeaders({
       "Content-Type": "application/json",
     }),
-    body: JSON.stringify({ projectId, data }),
+    body: JSON.stringify({
+      websiteId,
+      data,
+      brand,
+    }),
   });
 
   const json = await res.json().catch(() => ({}));
@@ -93,26 +72,31 @@ export async function apiSaveWebsite(
   }
 }
 
-export async function apiGetWebsite(
-  projectId: string
-): Promise<WebsiteData | null> {
-  const res = await fetch(
-    `/api/website?projectId=${encodeURIComponent(projectId)}`,
-    {
-      headers: withGuestHeaders(),
-    }
-  );
+export async function apiGetWebsite(websiteId: string): Promise<{
+  website: {
+    id: string;
+    draft_data: WebsiteData;
+    brand_id: string;
+    project_id: string;
+  };
+  brand: BrandDataNew;
+  projectId: string;
+}> {
+  const res = await fetch(`/api/websites/${websiteId}`, {
+    headers: withGuestHeaders(),
+  });
 
-  const json = await res.json().catch(() => ({}));
+  const json = await res.json();
 
-  if (!res.ok) return null;
-  if (!json.data) return null;
+  if (!res.ok) {
+    throw new Error(json.error || "Failed to load website");
+  }
 
-  return json.data as WebsiteData;
+  return json;
 }
 
 export async function apiSaveSectionHistory(payload: {
-  projectId: string;
+  websiteId: string;
   section: SectionKey;
   prevSectionData: unknown;
   maxSlots?: number;
@@ -133,7 +117,7 @@ export async function apiSaveSectionHistory(payload: {
 }
 
 export async function apiRestoreSection(payload: {
-  projectId: string;
+  websiteId: string;
   section: SectionKey;
 }): Promise<{ sectionData: unknown }> {
   const res = await fetch("/api/website/section-restore", {

@@ -1,3 +1,4 @@
+// app/(app)/website-builder/_components/PublishButton.tsx
 "use client";
 
 import { urls } from "@/lib/config/urls.client";
@@ -6,10 +7,10 @@ import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
 import { getOrCreateGuestId } from "@/lib/guest/guest";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type Props = {
-  projectId: string;
+  websiteId: string;
   defaultSlug?: string;
   websiteData: WebsiteData;
 };
@@ -22,17 +23,18 @@ function slugify(text: string) {
     .replace(/^-+|-+$/g, "");
 }
 
-export function PublishButton({ projectId, defaultSlug, websiteData }: Props) {
-  const [slug, setSlug] = useState(defaultSlug ?? "");
+export function PublishButton({ websiteId, websiteData }: Props) {
+  const hydratedRef = useRef(false);
+  const [slug, setSlug] = useState("");
   const [isPublished, setIsPublished] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   /* ──────────────────────────────
-     Load project state
+     Load website publish state
   ────────────────────────────── */
   useEffect(() => {
-    if (!projectId) return;
+    if (!websiteId || hydratedRef.current) return;
 
     let cancelled = false;
 
@@ -40,27 +42,22 @@ export function PublishButton({ projectId, defaultSlug, websiteData }: Props) {
       try {
         const guestId = getOrCreateGuestId();
 
-        const res = await fetch(`/api/projects/${projectId}`, {
+        const res = await fetch(`/api/websites/${websiteId}`, {
           cache: "no-store",
-          headers: {
-            "x-guest-id": guestId,
-          },
+          headers: { "x-guest-id": guestId },
         });
 
         if (!res.ok) return;
 
-        const data = await res.json();
+        const json = await res.json();
         if (cancelled) return;
 
-        const project = data.project ?? data;
+        const website = json.website ?? json;
 
-        if (typeof project?.published === "boolean") {
-          setIsPublished(project.published);
-        }
+        hydratedRef.current = true;
 
-        if (project?.slug && !slug) {
-          setSlug(project.slug);
-        }
+        setIsPublished(Boolean(website?.is_published));
+        if (website?.slug) setSlug(website.slug);
       } catch (e) {
         console.error(e);
       }
@@ -69,7 +66,7 @@ export function PublishButton({ projectId, defaultSlug, websiteData }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [projectId, slug]);
+  }, [websiteId]);
 
   /* ──────────────────────────────
      Derived URLs
@@ -94,7 +91,7 @@ export function PublishButton({ projectId, defaultSlug, websiteData }: Props) {
     try {
       const guestId = getOrCreateGuestId();
 
-      const res = await fetch(`/api/projects/${projectId}/preview`, {
+      const res = await fetch(`/api/websites/${websiteId}/preview`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -139,7 +136,7 @@ export function PublishButton({ projectId, defaultSlug, websiteData }: Props) {
     try {
       const guestId = getOrCreateGuestId();
 
-      const res = await fetch(`/api/projects/${projectId}/publish`, {
+      const res = await fetch(`/api/websites/${websiteId}/publish`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -200,7 +197,7 @@ export function PublishButton({ projectId, defaultSlug, websiteData }: Props) {
         <button
           type="button"
           onClick={() => preview(true)}
-          disabled={!projectId || loading}
+          disabled={loading}
           className="btn-secondary flex-1"
         >
           Preview

@@ -16,6 +16,9 @@ type Props = {
 export function ThemeProvider({ children, value }: Props) {
   // ✅ Let React Compiler handle memoization
   const theme: WebsiteTheme = createTheme(value);
+  const fontFamily = theme.font.family
+    ?.replace(/^font-family:\s*/i, "")
+    .replace(/;$/, "");
 
   const cssVars: React.CSSProperties & Record<string, string> = {
     ["--color-primary"]: theme.colors.primary,
@@ -24,7 +27,7 @@ export function ThemeProvider({ children, value }: Props) {
     ["--color-surface"]: theme.colors.surface,
     ["--color-text"]: theme.colors.text,
     ["--color-muted"]: theme.colors.muted,
-    fontFamily: theme.font.family,
+    fontFamily: fontFamily,
   };
 
   return (

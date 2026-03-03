@@ -6,7 +6,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 export const runtime = "nodejs";
 
 const schema = z.object({
-  projectId: z.uuid(),
+  websiteId: z.uuid(),
   section: z.enum(["hero", "about", "features", "offers", "contact"]),
   prevSectionData: z.any(),
   maxSlots: z.number().int().min(1).max(10).optional().default(2),
@@ -30,13 +30,12 @@ export async function POST(req: Request) {
     );
   }
 
-  const { projectId, section, prevSectionData, maxSlots } = parsed.data;
+  const { websiteId, section, prevSectionData, maxSlots } = parsed.data;
 
-  // find website_id
   const { data: websiteRow, error: wErr } = await supabase
     .from("websites")
     .select("id")
-    .eq("project_id", projectId)
+    .eq("id", websiteId)
     .eq("user_id", user.id)
     .single();
 

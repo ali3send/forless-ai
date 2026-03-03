@@ -9,7 +9,6 @@ export default function ProjectsTable({
 }: {
   projects: AdminProject[];
 }) {
-  console.log("TABLE RENDER, rows:", projects.length);
   return (
     <div className="rounded-2xl border border-secondary-fade bg-white overflow-hidden">
       {/* Header */}

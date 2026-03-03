@@ -4,7 +4,7 @@ import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
 import { useState } from "react";
 
-export function useContactForm(projectId: string) {
+export function useContactForm(websiteId: string) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,7 +21,7 @@ export function useContactForm(projectId: string) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          projectId,
+          websiteId,
           name: formData.get("name"),
           email: formData.get("email"),
           message: formData.get("message"),

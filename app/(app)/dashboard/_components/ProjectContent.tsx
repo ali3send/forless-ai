@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import type { ProjectRow } from "@/app/(app)/dashboard/types"; // or "../_types"
+import type { ProjectRow } from "@/app/(app)/dashboard/types";
 import { apiUpdateProject } from "@/lib/api/project";
 import { uiToast } from "@/lib/utils/uiToast";
 
@@ -41,14 +41,14 @@ export default function ProjectContent({ project }: { project: ProjectRow }) {
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full max-w-md rounded-md ring-1 input-base px-3 py-1.5 border-0  text-lg font-semibold outline-none focus:border-0 focus:ring-2 focus:ring-primary/60"
+            className="w-full max-w-md rounded-md ring-1 input-base px-3 py-1.5 border-0 text-lg font-semibold outline-none focus:ring-2 focus:ring-primary/60"
           />
           <div className="flex items-center gap-2 text-xs text-secondary-darker">
             <span>Project status:</span>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="rounded border border-secondary-active  px-2 py-1 text-xs outline-none"
+              className="rounded border border-secondary-active px-2 py-1 text-xs outline-none"
             >
               <option value="active">Active</option>
               <option value="draft">Draft</option>
@@ -112,7 +112,7 @@ function ActionCard({
       <div className="mt-4">
         <Link
           href={href}
-          className="btn-fill   px-3 py-1.5 text-[11px] font-medium"
+          className="btn-fill px-3 py-1.5 text-[11px] font-medium"
         >
           {ctaLabel}
         </Link>
