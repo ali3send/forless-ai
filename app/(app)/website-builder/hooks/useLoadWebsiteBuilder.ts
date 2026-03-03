@@ -30,13 +30,15 @@ export function useLoadWebsiteBuilder(websiteId: string | null) {
         setWebsiteData(website.draft_data);
         setProjectId(website.project_id);
 
-        setBrand({
-          name: brand.name,
-          slogan: brand.slogan,
-          palette: brand.palette,
-          font: brand.font,
-          logoSvg: brand.logoSvg ?? undefined,
-        });
+        if (brand) {
+          setBrand({
+            name: brand.name,
+            slogan: brand.slogan,
+            palette: brand.palette,
+            font: brand.font,
+            logoSvg: brand.logoSvg ?? undefined,
+          });
+        }
       } catch (err) {
         console.error("Failed to load website builder data", err);
       } finally {
