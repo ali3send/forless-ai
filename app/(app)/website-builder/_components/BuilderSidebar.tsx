@@ -18,9 +18,10 @@ import { BuilderDesignPanel } from "./BuilderDesignPanel";
 import { PublishButton } from "./PublishButton";
 import TemplateSelector from "./TemplateSelector";
 import { BuilderBrandsPanel } from "./BuilderBrandPanel";
-import { DomainPagePanel } from "./DomainPagePanel";
+import { DomainPanel } from "./DomainPanel";
 import { LayoutPanel } from "./LayoutPanel";
 import { SocialLinksPanel } from "./SocialLinksPanel";
+import { SettingsPanel } from "./SettingsPanel";
 
 type NavItemId =
   | "domain"
@@ -60,7 +61,7 @@ type Props = {
 
 export function BuilderSidebar(props: Props) {
   const { saving, onSave } = props;
-  const { data } = useWebsiteStore();
+  const { data, projectId } = useWebsiteStore();
   const [activeNav, setActiveNav] = useState<NavItemId>("design");
 
   return (
@@ -107,7 +108,11 @@ export function BuilderSidebar(props: Props) {
           )}
 
           {activeNav === "domain" && (
-            <DomainPagePanel websiteId={props.websiteId} websiteData={data} />
+            <DomainPanel
+              websiteId={props.websiteId}
+              projectId={projectId ?? undefined}
+              websiteData={data}
+            />
           )}
           {activeNav === "brand" && (
             <BuilderBrandsPanel onSave={props.onSave} saving={props.saving} />
@@ -143,17 +148,12 @@ export function BuilderSidebar(props: Props) {
           )}
           {activeNav === "social-links" && <SocialLinksPanel />}
           {activeNav === "settings" && (
-            <div className="p-4">
-              <PlaceholderPanel
-                title="Settings"
-                description="General site settings and preferences."
-              />
-            </div>
+            <SettingsPanel onSave={props.onSave} saving={props.saving} />
           )}
         </div>
 
-        {/* Save button at bottom (hidden on Design, Brand, Pages, Domain, Layout, Social Links - they have their own save actions or none) */}
-        {activeNav !== "design" && activeNav !== "brand" && activeNav !== "pages" && activeNav !== "domain" && activeNav !== "layout" && activeNav !== "social-links" && (
+        {/* Save button at bottom (hidden on Design, Brand, Pages, Domain, Layout, Social Links, Settings - they have their own save actions or none) */}
+        {activeNav !== "design" && activeNav !== "brand" && activeNav !== "pages" && activeNav !== "domain" && activeNav !== "layout" && activeNav !== "social-links" && activeNav !== "settings" && (
           <div className="shrink-0 border-t border-gray-100 p-4">
             <button
               type="button"
@@ -166,22 +166,6 @@ export function BuilderSidebar(props: Props) {
           </div>
         )}
       </aside>
-    </div>
-  );
-}
-
-function PlaceholderPanel({
-  title,
-  description,
-}: {
-  title: string;
-  description: string;
-}) {
-  return (
-    <div className="rounded-lg border border-secondary-fade bg-secondary-soft/50 p-4">
-      <h3 className="text-sm font-semibold text-secondary-dark">{title}</h3>
-      <p className="mt-1 text-xs text-secondary">{description}</p>
-      <p className="mt-2 text-[11px] text-secondary">Coming soon.</p>
     </div>
   );
 }

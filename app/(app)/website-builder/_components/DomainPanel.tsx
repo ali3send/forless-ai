@@ -20,12 +20,13 @@ function slugify(text: string) {
 }
 
 type Props = {
-  projectId: string;
+  projectId?: string;
+  websiteId?: string;
   defaultSlug?: string;
   websiteData: WebsiteData;
 };
 
-export function DomainPanel({ projectId, defaultSlug, websiteData }: Props) {
+export function DomainPanel({ projectId, websiteId, defaultSlug, websiteData }: Props) {
   const [slug, setSlug] = useState(defaultSlug ?? "");
   const [isPublished, setIsPublished] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -46,27 +47,36 @@ export function DomainPanel({ projectId, defaultSlug, websiteData }: Props) {
   /* UI-only: show available when slug is valid (no backend check) */
   const showAvailable = cleanSlug.length >= 2;
 
-  /* Load project state */
+  /* Load state from website or project */
   useEffect(() => {
-    if (!projectId) return;
+    if (!websiteId && !projectId) return;
     let cancelled = false;
 
     (async () => {
       try {
         const guestId = getOrCreateGuestId();
-        const res = await fetch(`/api/projects/${projectId}`, {
-          cache: "no-store",
-          headers: { "x-guest-id": guestId },
-        });
-        if (!res.ok) return;
-        const data = await res.json();
-        if (cancelled) return;
-        const project = data.project ?? data;
-        if (typeof project?.published === "boolean") {
-          setIsPublished(project.published);
-        }
-        if (project?.slug && !slug) {
-          setSlug(project.slug);
+        if (websiteId) {
+          const res = await fetch(`/api/websites/${websiteId}`, {
+            cache: "no-store",
+            headers: { "x-guest-id": guestId },
+          });
+          if (!res.ok) return;
+          const json = await res.json();
+          if (cancelled) return;
+          const website = json.website ?? json;
+          setIsPublished(Boolean(website?.is_published));
+          if (website?.slug) setSlug(website.slug);
+        } else if (projectId) {
+          const res = await fetch(`/api/projects/${projectId}`, {
+            cache: "no-store",
+            headers: { "x-guest-id": guestId },
+          });
+          if (!res.ok) return;
+          const data = await res.json();
+          if (cancelled) return;
+          const project = data.project ?? data;
+          setIsPublished(Boolean(project?.published_at));
+          if (project?.slug && !slug) setSlug(project.slug);
         }
       } catch (e) {
         console.error(e);
@@ -76,17 +86,21 @@ export function DomainPanel({ projectId, defaultSlug, websiteData }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [projectId, slug]);
+  }, [websiteId, projectId, slug]);
 
   async function handlePreview() {
     if (!cleanSlug) {
       uiToast.error("Please enter a subdomain (slug) to preview.");
       return;
     }
+    if (!websiteId) {
+      uiToast.error("Website not loaded.");
+      return;
+    }
     const t = uiToast.loading("Preparing preview…");
     try {
       const guestId = getOrCreateGuestId();
-      const res = await fetch(`/api/projects/${projectId}/preview`, {
+      const res = await fetch(`/api/websites/${websiteId}/preview`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -117,12 +131,16 @@ export function DomainPanel({ projectId, defaultSlug, websiteData }: Props) {
       uiToast.error("Website data missing.");
       return;
     }
+    if (!websiteId) {
+      uiToast.error("Website not loaded.");
+      return;
+    }
 
     setLoading(true);
     const t = uiToast.loading("Publishing…");
     try {
       const guestId = getOrCreateGuestId();
-      const res = await fetch(`/api/projects/${projectId}/publish`, {
+      const res = await fetch(`/api/websites/${websiteId}/publish`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
