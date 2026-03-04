@@ -25,7 +25,9 @@ export function ThemeProvider({ children, value }: Props) {
   const cssVars: React.CSSProperties & Record<string, string> = {
     ["--color-primary"]: theme.colors.primary,
     ["--color-secondary"]: theme.colors.secondary,
-    ["--color-bg"]: theme.colors.background,
+    // When gradient is set, use light root bg so gradient sections show correctly.
+    // Style presets (palette) only affect buttons/accents, not section backgrounds.
+    ["--color-bg"]: hasGradient ? "#f8fafc" : theme.colors.background,
     ["--color-surface"]: theme.colors.surface,
     ["--color-text"]: theme.colors.text,
     ["--color-muted"]: theme.colors.muted,

@@ -55,8 +55,16 @@ export function useWebsiteBuilder(websiteId: string | null) {
     setSaving(true);
 
     try {
-      // ✅ persist draft website only
-      await apiSaveWebsite(websiteId, data, brand);
+      // Merge design settings (e.g. backgroundGradient) into draft_data so they persist.
+      // Style presets only affect palette (buttons, accents); gradient is separate.
+      const dataToSave = {
+        ...data,
+        design: {
+          ...data?.design,
+          backgroundGradient: brand?.backgroundGradient ?? data?.design?.backgroundGradient ?? null,
+        },
+      };
+      await apiSaveWebsite(websiteId, dataToSave, brand);
       uiToast.success("Changes saved");
     } catch (err) {
       uiToast.error(getErrorMessage(err, "Failed to save changes"));

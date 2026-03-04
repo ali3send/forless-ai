@@ -110,6 +110,7 @@ function renderSite(
         primary: brand?.palette?.primary,
         secondary: brand?.palette?.secondary,
         fontFamily: brand?.font?.css,
+        backgroundGradient: data?.design?.backgroundGradient ?? brand?.backgroundGradient ?? undefined,
       }}
     >
       <ActiveTemplate data={data} brand={brand} websiteId={websiteId} />

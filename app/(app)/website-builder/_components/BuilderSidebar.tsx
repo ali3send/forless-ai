@@ -96,8 +96,8 @@ export function BuilderSidebar(props: Props) {
       {/* Right: content panel */}
       <aside className="flex min-w-0 flex-1 flex-col overflow-hidden bg-white">
         <div className="flex flex-1 flex-col overflow-y-auto">
-          {/* Publish at top when in builder views */}
-          {(activeNav === "pages" || activeNav === "design" || activeNav === "templates" || activeNav === "brand") && (
+          {/* Publish at top when in builder views (not on Brand, Domain, or Design) */}
+          {(activeNav === "pages" || activeNav === "templates") && (
             <div className="border-b border-gray-100 px-4 py-2">
               <PublishButton websiteId={props.websiteId} websiteData={data} />
             </div>
@@ -111,7 +111,9 @@ export function BuilderSidebar(props: Props) {
               />
             </div>
           )}
-          {activeNav === "brand" && <BuilderBrandsPanel />}
+          {activeNav === "brand" && (
+            <BuilderBrandsPanel onSave={props.onSave} saving={props.saving} />
+          )}
           {activeNav === "pages" && (
             <div className="p-4">
               <BuilderContentPanel
@@ -123,7 +125,9 @@ export function BuilderSidebar(props: Props) {
               />
             </div>
           )}
-          {activeNav === "design" && <BuilderDesignPanel />}
+          {activeNav === "design" && (
+            <BuilderDesignPanel onSave={props.onSave} saving={props.saving} />
+          )}
           {activeNav === "layout" && (
             <div className="p-4">
               <PlaceholderPanel
@@ -160,17 +164,19 @@ export function BuilderSidebar(props: Props) {
           )}
         </div>
 
-        {/* Save button at bottom */}
-        <div className="shrink-0 border-t border-gray-100 p-4">
-          <button
-            type="button"
-            onClick={onSave}
-            disabled={saving}
-            className="w-full rounded-full border border-secondary-fade bg-secondary-soft px-3 py-1.5 text-xs font-semibold text-secondary-dark transition hover:border-primary hover:text-primary disabled:opacity-60"
-          >
-            {saving ? "Saving..." : "Save changes"}
-          </button>
-        </div>
+        {/* Save button at bottom (hidden on Design and Brand - they have their own save actions) */}
+        {activeNav !== "design" && activeNav !== "brand" && (
+          <div className="shrink-0 border-t border-gray-100 p-4">
+            <button
+              type="button"
+              onClick={onSave}
+              disabled={saving}
+              className="w-full rounded-full border border-secondary-fade bg-secondary-soft px-3 py-1.5 text-xs font-semibold text-secondary-dark transition hover:border-primary hover:text-primary disabled:opacity-60"
+            >
+              {saving ? "Saving..." : "Save changes"}
+            </button>
+          </div>
+        )}
       </aside>
     </div>
   );

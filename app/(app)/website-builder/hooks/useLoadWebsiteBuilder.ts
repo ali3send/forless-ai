@@ -31,13 +31,18 @@ export function useLoadWebsiteBuilder(websiteId: string | null) {
         setProjectId(website.project_id);
 
         if (brand) {
+          // backgroundGradient is persisted in draft_data.design (not brands table)
+          // so it survives reload. Style presets only change palette (buttons/accents).
+          const loadedData = website.draft_data as { design?: { backgroundGradient?: string | null } } | null;
+          const backgroundGradient = loadedData?.design?.backgroundGradient ?? brand.backgroundGradient ?? undefined;
+
           setBrand({
             name: brand.name,
             slogan: brand.slogan,
             palette: brand.palette,
             font: brand.font,
             logoSvg: brand.logoSvg ?? undefined,
-            backgroundGradient: brand.backgroundGradient ?? undefined,
+            backgroundGradient: backgroundGradient ?? undefined,
           });
         }
       } catch (err) {

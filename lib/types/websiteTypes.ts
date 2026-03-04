@@ -37,6 +37,11 @@ export type WebsiteData = {
   // Footer
   footerText?: string;
 
+  /** Design overrides (gradient, etc.) - persisted separately from brand palette */
+  design?: {
+    backgroundGradient?: string | null;
+  };
+
   hero: {
     title?: string;
     headline: string;

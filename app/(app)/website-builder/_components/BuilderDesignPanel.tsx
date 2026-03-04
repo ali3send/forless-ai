@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { Check, ChevronDown, Diamond, Loader2, Palette } from "lucide-react";
-import { PALETTES, FONTS } from "@/app/(app)/brand/brandConfig";
+import { FONTS } from "@/app/(app)/brand/brandConfig";
 import { BrandDataNew } from "@/lib/types/brandTypes";
 import { useBrandStore } from "@/store/brand.store";
 
@@ -46,14 +46,72 @@ const BACKGROUND_GRADIENTS = [
   },
 ] as const;
 
-const STYLE_PRESETS = PALETTES.map((p) => ({
-  id: p.id,
-  name: p.label,
-  description: "",
-  primary: p.primary,
-  secondary: p.secondary,
-  colors: [p.primary, p.secondary],
-}));
+const STYLE_PRESETS = [
+  {
+    id: "clean-blue",
+    name: "Clean Blue",
+    description: "Safe default, builds trust",
+    primary: "#2563eb",
+    secondary: "#1e3a5f",
+    swatches: ["#1e3a5f", "#2563eb", "#dbeafe", "#64748b"],
+  },
+  {
+    id: "midnight-dark",
+    name: "Midnight Dark",
+    description: "Modern, premium feel",
+    primary: "#334155",
+    secondary: "#020617",
+    swatches: ["#334155", "#2563eb", "#0f172a", "#cbd5e1"],
+  },
+  {
+    id: "soft-neutral",
+    name: "Soft Neutral",
+    description: "Minimal and calm",
+    primary: "#64748b",
+    secondary: "#475569",
+    swatches: ["#64748b", "#94a3b8", "#e2e8f0", "#475569"],
+  },
+  {
+    id: "warm-brand",
+    name: "Warm Brand",
+    description: "Friendly, lifestyle vibe",
+    primary: "#f97316",
+    secondary: "#ea580c",
+    swatches: ["#f97316", "#ea580c", "#fed7aa", "#1e3a5f"],
+  },
+  {
+    id: "bold-accent",
+    name: "Bold Accent",
+    description: "High energy, gets attention",
+    primary: "#ef4444",
+    secondary: "#dc2626",
+    swatches: ["#ef4444", "#dc2626", "#fecaca", "#475569"],
+  },
+  {
+    id: "fresh-green",
+    name: "Fresh Green",
+    description: "Health, eco, nature",
+    primary: "#10b981",
+    secondary: "#059669",
+    swatches: ["#10b981", "#059669", "#d1fae5", "#475569"],
+  },
+  {
+    id: "elegant-mono",
+    name: "Elegant Mono",
+    description: "Luxury black & white",
+    primary: "#1e293b",
+    secondary: "#0f172a",
+    swatches: ["#1e293b", "#334155", "#f1f5f9", "#475569"],
+  },
+  {
+    id: "purple-flow",
+    name: "Purple Flow",
+    description: "Creative and unique",
+    primary: "#7c3aed",
+    secondary: "#6d28d9",
+    swatches: ["#7c3aed", "#6d28d9", "#c4b5fd", "#475569"],
+  },
+];
 
 const FONT_OPTIONS = FONTS.map((f) => ({
   id: f.id,
@@ -118,17 +176,17 @@ export function BuilderDesignPanel({
   const current = ensureBrand(brand);
 
   const currentPaletteId =
-    PALETTES.find(
+    STYLE_PRESETS.find(
       (p) =>
         p.primary === current.palette.primary &&
         p.secondary === current.palette.secondary,
-    )?.id ?? PALETTES[0]?.id;
+    )?.id ?? STYLE_PRESETS[0]?.id;
 
   const currentFontId =
     FONTS.find((f) => f.css === current.font.css)?.id ?? FONTS[0]?.id;
 
-  const handlePaletteChange = (paletteId: string) => {
-    const p = PALETTES.find((x) => x.id === paletteId) ?? PALETTES[0];
+  const handlePaletteChange = (presetId: string) => {
+    const p = STYLE_PRESETS.find((x) => x.id === presetId) ?? STYLE_PRESETS[0];
 
     updateBrand((prev) => {
       const base = ensureBrand(prev);
@@ -247,12 +305,15 @@ export function BuilderDesignPanel({
       </div>
 
       {/* Style Presets */}
-      <div className="flex flex-col gap-3">
-        <h3 className="text-sm font-bold text-secondary-dark">Style Presets</h3>
-        <p className="text-xs text-secondary">
-          Pick a vibe that matches your brand.
+      <div
+        className="flex flex-col rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
+        style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
+      >
+        <h3 className="text-base font-bold text-[#1a202c]">Style Presets</h3>
+        <p className="mt-0.5 text-sm text-[#64748b]">
+          Pick a vibe that matches your brand
         </p>
-        <div className="flex flex-col gap-2">
+        <div className="mt-3 flex flex-col gap-2">
           {STYLE_PRESETS.map((preset) => {
             const isSelected = selectedPreset === preset.id;
             return (
@@ -260,31 +321,28 @@ export function BuilderDesignPanel({
                 key={preset.id}
                 type="button"
                 onClick={() => handlePaletteChange(preset.id)}
-                className={`relative flex w-full flex-col gap-2 rounded-xl border-2 p-3 text-left shadow-sm transition ${
+                className={`relative flex w-full flex-col gap-3 rounded-xl border-2 p-3 text-left transition ${
                   isSelected
-                    ? "border-[#0149E1] bg-white"
-                    : "border-gray-200 bg-gray-50/50 hover:border-gray-300 hover:bg-gray-50"
+                    ? "border-[#2563eb] bg-white"
+                    : "border-gray-200 bg-white hover:border-gray-300"
                 }`}
               >
                 {isSelected && (
-                  <div
-                    className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full"
-                    style={{ backgroundColor: "#0149E1" }}
-                  >
+                  <div className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-[#2563eb]">
                     <Check className="h-3.5 w-3.5 text-white" aria-hidden />
                   </div>
                 )}
                 <div className="pr-8">
-                  <p className="text-sm font-bold text-secondary-dark">
+                  <p className="text-sm font-bold text-[#1a202c]">
                     {preset.name}
                   </p>
-                  <p className="text-xs text-secondary">{preset.description}</p>
+                  <p className="text-xs text-[#64748b]">{preset.description}</p>
                 </div>
-                <div className="flex gap-1.5">
-                  {preset.colors.map((color, i) => (
+                <div className="flex gap-2">
+                  {preset.swatches.map((color, i) => (
                     <span
                       key={i}
-                      className="h-8 w-8 shrink-0 rounded-lg border border-gray-200 shadow-sm"
+                      className="h-8 w-8 shrink-0 rounded-lg"
                       style={{ backgroundColor: color }}
                       aria-hidden
                     />
