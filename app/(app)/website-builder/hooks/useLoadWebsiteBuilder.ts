@@ -37,6 +37,7 @@ export function useLoadWebsiteBuilder(websiteId: string | null) {
             palette: brand.palette,
             font: brand.font,
             logoSvg: brand.logoSvg ?? undefined,
+            backgroundGradient: brand.backgroundGradient ?? undefined,
           });
         }
       } catch (err) {

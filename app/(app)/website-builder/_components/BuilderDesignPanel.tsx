@@ -9,28 +9,40 @@ import { useBrandStore } from "@/store/brand.store";
 
 const BACKGROUND_GRADIENTS = [
   {
+    id: "sky-fade",
+    name: "Sky Fade",
+    description: "Light and airy",
+    style: {
+      background:
+        "linear-gradient(180deg, #e0f2fe 0%, #f0f9ff 50%, #ffffff 100%)",
+    },
+  },
+  {
+    id: "calm-mint",
+    name: "Calm Mint",
+    description: "Fresh and natural",
+    style: {
+      background:
+        "linear-gradient(180deg, #ccfbf1 0%, #f0fdf9 50%, #ffffff 100%)",
+    },
+  },
+  {
+    id: "warm-neutral",
+    name: "Warm Neutral",
+    description: "Friendly and inviting",
+    style: {
+      background:
+        "linear-gradient(180deg, #fef3c7 0%, #fffbeb 50%, #ffffff 100%)",
+    },
+  },
+  {
     id: "soft-gray",
     name: "Soft Gray",
     description: "Neutral and clean",
-    style: { background: "linear-gradient(135deg, #f5f5f5 0%, #e5e5e5 100%)" },
-  },
-  {
-    id: "cool-blue",
-    name: "Cool Blue",
-    description: "Calm and professional",
-    style: { background: "linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)" },
-  },
-  {
-    id: "warm-cream",
-    name: "Warm Cream",
-    description: "Soft and inviting",
-    style: { background: "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)" },
-  },
-  {
-    id: "mint",
-    name: "Mint",
-    description: "Fresh and light",
-    style: { background: "linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)" },
+    style: {
+      background:
+        "linear-gradient(180deg, #f5f5f5 0%, #fafafa 50%, #ffffff 100%)",
+    },
   },
 ] as const;
 
@@ -189,15 +201,15 @@ export function BuilderDesignPanel({
         </p>
       </div>
 
-      {/* Background Gradients card */}
+      {/* Background Gradients - matching screenshot layout */}
       <div
         className="flex flex-col rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
         style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
       >
-        <h3 className="text-sm font-bold text-secondary-dark">
+        <h3 className="text-base font-bold text-secondary-dark">
           Background Gradients
         </h3>
-        <p className="mt-0.5 text-xs text-secondary">
+        <p className="mt-0.5 text-sm text-secondary">
           Soft, subtle backgrounds for your sections
         </p>
         <div className="mt-3 flex flex-col gap-2">
@@ -208,20 +220,19 @@ export function BuilderDesignPanel({
                 key={gradient.id}
                 type="button"
                 onClick={() => handleGradientChange(gradient.id)}
-                className={`flex w-full max-w-[304px] flex-col overflow-hidden rounded-2xl border text-left transition ${
+                className={`flex w-full flex-col overflow-hidden rounded-2xl border text-left transition ${
                   isSelected
                     ? "border-2 border-[#0149E1]"
                     : "border border-gray-200 hover:border-gray-300"
                 }`}
-                style={{ width: "100%", height: 145, boxSizing: "border-box" }}
               >
-                {/* Gradient part: horizontal flow, fill width, fixed 80px, border-bottom 1px */}
+                {/* Gradient preview - soft top-to-bottom */}
                 <div
-                  className="flex h-20 w-full flex-row items-center border-b border-gray-200"
+                  className="h-24 w-full shrink-0"
                   style={gradient.style}
                 />
-                {/* Text part: vertical flow, fill width, height 62px, padding 12 16, gap 2px, border-bottom 2px */}
-                <div className="flex h-[62px] w-full flex-col justify-center gap-0.5 border-b-2 border-gray-200 pt-3 pr-4 pb-3 pl-4">
+                {/* Name + description */}
+                <div className="flex w-full flex-col gap-0.5 bg-white px-4 py-3">
                   <p className="text-sm font-bold text-secondary-dark">
                     {gradient.name}
                   </p>

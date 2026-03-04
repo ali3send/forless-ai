@@ -31,8 +31,9 @@ export function ThemeProvider({ children, value }: Props) {
     ["--color-muted"]: theme.colors.muted,
     fontFamily: fontFamily,
   };
-  // When gradient is set, use contrast text colors so content stays visible (light gradients → dark text).
-  if (hasGradient) {
+  // When gradient is set, apply it to sections and use contrast text colors.
+  if (hasGradient && value?.backgroundGradient) {
+    cssVars["--background-gradient"] = value.backgroundGradient;
     cssVars["--color-text-on-gradient"] = "#111827";
     cssVars["--color-muted-on-gradient"] = "#4b5563";
   }

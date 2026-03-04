@@ -30,4 +30,5 @@ export type BrandDataNew = {
   };
 
   logoSvg?: string;
+  backgroundGradient?: string | null;
 };
