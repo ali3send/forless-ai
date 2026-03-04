@@ -10,6 +10,7 @@ import {
   LayoutTemplate,
   Settings,
   SquarePlus,
+  Plus,
 } from "lucide-react";
 import type { BuilderSection } from "../builderSections";
 import { useWebsiteStore } from "@/store/website.store";
@@ -22,6 +23,7 @@ import { DomainPanel } from "./DomainPanel";
 import { LayoutPanel } from "./LayoutPanel";
 import { SocialLinksPanel } from "./SocialLinksPanel";
 import { SettingsPanel } from "./SettingsPanel";
+import Link from "next/link";
 
 type NavItemId =
   | "domain"
@@ -144,6 +146,13 @@ export function BuilderSidebar(props: Props) {
                 </h3>
                 <TemplateSelector />
               </div>
+              <Link
+                href="/templates/input"
+                className="flex items-center gap-2 rounded-lg border border-secondary-fade bg-white px-3 py-2.5 text-xs font-medium text-secondary-dark hover:bg-gray-50 hover:border-primary/40 transition"
+              >
+                <Plus className="h-4 w-4" />
+                Add new template
+              </Link>
             </div>
           )}
           {activeNav === "social-links" && <SocialLinksPanel />}
