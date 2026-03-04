@@ -10,7 +10,12 @@ import { ProjectRow } from "../../types";
 import { formatDate } from "@/lib/utils/formatDate";
 import { useRouter } from "next/navigation";
 
-export function ProjectCard({ project }: { project: ProjectRow }) {
+type ProjectCardProps = {
+  project: ProjectRow;
+  onRequestDelete?: (projectId: string, projectName: string, type: "soft" | "permanent") => void;
+};
+
+export function ProjectCard({ project, onRequestDelete }: ProjectCardProps) {
   const router = useRouter();
 
   async function openBuilder(e: React.MouseEvent) {
@@ -35,13 +40,13 @@ export function ProjectCard({ project }: { project: ProjectRow }) {
 
   const actions = useProjectActions(
     { id: project.id, name },
-    {},
+    { onRequestDelete },
   );
 
   return (
     <div
       onClick={openBuilder}
-      className="group cursor-pointer flex flex-col rounded-lg border bg-secondary-fade p-3 text-xs transition hover:border-primary"
+      className="group cursor-pointer flex flex-col rounded-lg border border-gray-200 bg-white p-3 text-xs transition hover:border-primary"
     >
       <div className="relative h-28 overflow-hidden rounded-md bg-secondary-light">
         {project.thumbnail_url ? (
@@ -125,7 +130,7 @@ export function ProjectCard({ project }: { project: ProjectRow }) {
                 window.open(`/website-builder/${json.websiteId}`, "_blank");
               }
             }}
-            className="flex flex-1 items-center justify-center gap-1.5 rounded-3xl border border-gray-200 bg-white px-3 py-2 text-sm font-normal text-[#4B5563] shadow-sm transition hover:border-gray-300 hover:bg-gray-50"
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-3xl border border-gray-200 bg-[#F3F4F6] px-3 py-2 text-sm font-normal text-[#4B5563] shadow-sm transition hover:border-gray-300 hover:bg-gray-200/80"
           >
             View
             <ExternalLink className="h-4 w-4" />

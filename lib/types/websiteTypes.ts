@@ -42,6 +42,18 @@ export type WebsiteData = {
     backgroundGradient?: string | null;
   };
 
+  /** Layout preset and content alignment */
+  layout?: {
+    preset?: "professional" | "sales" | "startup";
+    contentAlignment?: "left" | "center" | "right";
+  };
+
+  /** Social media links for footer */
+  socialLinks?: {
+    showSocialLinks?: boolean;
+    links?: Record<string, string>;
+  };
+
   hero: {
     title?: string;
     headline: string;

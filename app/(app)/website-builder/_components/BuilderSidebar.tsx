@@ -18,6 +18,9 @@ import { BuilderDesignPanel } from "./BuilderDesignPanel";
 import { PublishButton } from "./PublishButton";
 import TemplateSelector from "./TemplateSelector";
 import { BuilderBrandsPanel } from "./BuilderBrandPanel";
+import { DomainPagePanel } from "./DomainPagePanel";
+import { LayoutPanel } from "./LayoutPanel";
+import { SocialLinksPanel } from "./SocialLinksPanel";
 
 type NavItemId =
   | "domain"
@@ -96,20 +99,15 @@ export function BuilderSidebar(props: Props) {
       {/* Right: content panel */}
       <aside className="flex min-w-0 flex-1 flex-col overflow-hidden bg-white">
         <div className="flex flex-1 flex-col overflow-y-auto">
-          {/* Publish at top when in builder views (not on Brand, Domain, or Design) */}
-          {(activeNav === "pages" || activeNav === "templates") && (
+          {/* Publish at top (only on Templates; not on Pages, Brand, Domain, or Design) */}
+          {activeNav === "templates" && (
             <div className="border-b border-gray-100 px-4 py-2">
               <PublishButton websiteId={props.websiteId} websiteData={data} />
             </div>
           )}
 
           {activeNav === "domain" && (
-            <div className="p-4">
-              <PlaceholderPanel
-                title="Domain"
-                description="Configure your site domain and URL."
-              />
-            </div>
+            <DomainPagePanel websiteId={props.websiteId} websiteData={data} />
           )}
           {activeNav === "brand" && (
             <BuilderBrandsPanel onSave={props.onSave} saving={props.saving} />
@@ -130,10 +128,7 @@ export function BuilderSidebar(props: Props) {
           )}
           {activeNav === "layout" && (
             <div className="p-4">
-              <PlaceholderPanel
-                title="Layout"
-                description="Adjust section layout and spacing."
-              />
+              <LayoutPanel onSave={props.onSave} saving={props.saving} />
             </div>
           )}
           {activeNav === "templates" && (
@@ -146,14 +141,7 @@ export function BuilderSidebar(props: Props) {
               </div>
             </div>
           )}
-          {activeNav === "social-links" && (
-            <div className="p-4">
-              <PlaceholderPanel
-                title="Social Links"
-                description="Add your social media profiles."
-              />
-            </div>
-          )}
+          {activeNav === "social-links" && <SocialLinksPanel />}
           {activeNav === "settings" && (
             <div className="p-4">
               <PlaceholderPanel
@@ -164,8 +152,8 @@ export function BuilderSidebar(props: Props) {
           )}
         </div>
 
-        {/* Save button at bottom (hidden on Design and Brand - they have their own save actions) */}
-        {activeNav !== "design" && activeNav !== "brand" && (
+        {/* Save button at bottom (hidden on Design, Brand, Pages, Domain, Layout, Social Links - they have their own save actions or none) */}
+        {activeNav !== "design" && activeNav !== "brand" && activeNav !== "pages" && activeNav !== "domain" && activeNav !== "layout" && activeNav !== "social-links" && (
           <div className="shrink-0 border-t border-gray-100 p-4">
             <button
               type="button"

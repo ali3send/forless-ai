@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { Check, LayoutGrid } from "lucide-react";
+import { useWebsiteStore } from "@/store/website.store";
 
 const LAYOUT_OPTIONS = [
   {
@@ -75,19 +75,36 @@ const ALIGNMENT_OPTIONS = [
   { id: "right", label: "Right", subtitle: "Creative", lines: "justify-end" },
 ] as const;
 
-export function LayoutPanel() {
-  const [selectedLayout, setSelectedLayout] = useState<string>("professional");
-  const [selectedAlignment, setSelectedAlignment] = useState<string>("right");
-  const [saving, setSaving] = useState(false);
+type Props = {
+  onSave: () => void;
+  saving: boolean;
+};
 
-  const handleSave = async () => {
-    setSaving(true);
-    try {
-      // TODO: persist to API/store
-      await new Promise((r) => setTimeout(r, 500));
-    } finally {
-      setSaving(false);
-    }
+export function LayoutPanel({ onSave, saving }: Props) {
+  const { data, patchData } = useWebsiteStore();
+  const selectedLayout = data.layout?.preset ?? "professional";
+  const selectedAlignment = data.layout?.contentAlignment ?? "right";
+
+  const setSelectedLayout = (id: string) => {
+    patchData({
+      layout: {
+        ...data.layout,
+        preset: id as "professional" | "sales" | "startup",
+      },
+    });
+  };
+
+  const setSelectedAlignment = (id: string) => {
+    patchData({
+      layout: {
+        ...data.layout,
+        contentAlignment: id as "left" | "center" | "right",
+      },
+    });
+  };
+
+  const handleSave = () => {
+    onSave();
   };
 
   return (
@@ -111,7 +128,7 @@ export function LayoutPanel() {
           >
             <LayoutGrid
               className="h-5 w-5"
-              style={{ color: "#2563EB" }}
+              style={{ color: "#0149E1" }}
               aria-hidden
             />
           </div>
@@ -188,16 +205,16 @@ export function LayoutPanel() {
                 type="button"
                 onClick={() => setSelectedAlignment(opt.id)}
                 className={`relative flex flex-1 flex-col gap-2 rounded-xl border-2 p-3 transition ${
-                  isSelected
-                    ? "border-[#0149E1] bg-white"
-                    : "border-gray-200 bg-white hover:border-gray-300"
+                isSelected
+                  ? "border-[#0149E1] bg-white"
+                  : "border-gray-200 bg-white hover:border-gray-300"
                 }`}
               >
                 {isSelected && (
-                  <div
-                    className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full"
-                    style={{ backgroundColor: "#0149E1" }}
-                  >
+                <div
+                  className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full"
+                  style={{ backgroundColor: "#0149E1" }}
+                >
                     <Check className="h-3 w-3 text-white" aria-hidden />
                   </div>
                 )}
