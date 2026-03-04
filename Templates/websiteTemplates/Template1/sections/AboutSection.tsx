@@ -4,8 +4,11 @@ import { AboutData } from "../../template.types";
 const DEFAULT_ABOUT_BODY =
   "At Chic Haven, we believe in blending style with comfort. Our clothing store offers a unique collection designed for those who want to look good without sacrificing comfort.";
 
-export function AboutSection({ title, body, imageUrl, imageQuery }: AboutData) {
-  const imageSrc = imageUrl && imageUrl.trim() !== "" ? imageUrl : "/AI.jpeg";
+const FALLBACK_IMAGE =
+  "https://images.unsplash.com/photo-1497366216548-37526070297c?fit=crop&w=800&h=500&q=80";
+
+export function AboutSection({ title, body, imageUrl }: AboutData) {
+  const imageSrc = imageUrl?.trim() ? imageUrl : FALLBACK_IMAGE;
   const displayBody = body?.trim() || DEFAULT_ABOUT_BODY;
 
   return (
@@ -67,17 +70,13 @@ export function AboutSection({ title, body, imageUrl, imageQuery }: AboutData) {
             borderRadius: 10,
           }}
         >
-          {imageSrc ? (
-            <Image
-              src={imageSrc}
-              alt={title}
-              width={398}
-              height={256}
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <div className="h-full w-full animate-pulse bg-gray-200" />
-          )}
+          <Image
+            src={imageSrc}
+            alt={title}
+            width={398}
+            height={256}
+            className="h-full w-full object-cover"
+          />
         </div>
       </div>
       </div>

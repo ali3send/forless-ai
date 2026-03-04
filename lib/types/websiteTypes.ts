@@ -87,6 +87,7 @@ export type WebsiteData = {
       name: string;
       description: string;
       priceLabel?: string;
+      imageUrl?: string;
     }[];
   };
 

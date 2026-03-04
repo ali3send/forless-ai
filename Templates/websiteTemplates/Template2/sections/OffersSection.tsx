@@ -1,6 +1,9 @@
 import Image from "next/image";
 import { OffersData } from "../../template.types";
 
+const FALLBACK_IMAGE =
+  "https://images.unsplash.com/photo-1441986300917-64674bd600d8?fit=crop&w=800&h=500&q=80";
+
 export function OffersSection({ title, offers }: OffersData) {
   return (
     <section
@@ -53,7 +56,7 @@ export function OffersSection({ title, offers }: OffersData) {
                 }}
               >
                 <Image
-                  src="/AI.jpeg"
+                  src={offer.imageUrl?.trim() ? offer.imageUrl : FALLBACK_IMAGE}
                   alt={offer.name}
                   width={428}
                   height={256}

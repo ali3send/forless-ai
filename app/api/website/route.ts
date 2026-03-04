@@ -84,11 +84,46 @@ export async function POST(req: Request) {
     );
   }
 
-  const { websiteId, data, brand } = parsed.data;
+    const { websiteId, data, brand } = parsed.data;
 
   try {
     // ──────────────────────────────
-    // 1️⃣ Load website
+    // 1️⃣.5️⃣ Resolve Unsplash images for about & offers (same as project thumbnail)
+    // ──────────────────────────────
+    let dataToSave = data;
+    try {
+      const resolved = { ...data };
+
+      // About: resolve imageUrl from Unsplash when missing
+      if (resolved?.about && (!resolved.about.imageUrl || !resolved.about.imageUrl.trim())) {
+        const query = "string" === typeof resolved.about.imageQuery ? resolved.about.imageQuery.trim() : "workspace";
+        if (query) {
+          resolved.about = { ...resolved.about, imageUrl: await fetchUnsplashImage(query) };
+        }
+      }
+
+      // Offers: resolve imageUrl for each item from Unsplash when missing
+      if (resolved?.offers?.items?.length) {
+        resolved.offers = {
+          ...resolved.offers,
+          items: await Promise.all(
+            resolved.offers.items.map(async (item: { name?: string; description?: string; priceLabel?: string; imageUrl?: string }) => {
+              if (item.imageUrl && String(item.imageUrl).trim()) return item;
+              const query = (item.name || "products").trim() || "products";
+              const imageUrl = await fetchUnsplashImage(query);
+              return { ...item, imageUrl };
+            })
+          ),
+        };
+      }
+
+      dataToSave = resolved;
+    } catch (e) {
+      console.warn("Unsplash resolution for about/offers failed:", e);
+    }
+
+    // ──────────────────────────────
+    // 2️⃣ Load website
     // ──────────────────────────────
     const { data: website, error: websiteError } = await supabase
       .from("websites")
@@ -110,7 +145,7 @@ export async function POST(req: Request) {
     const { error: updateWebsiteError } = await supabase
       .from("websites")
       .update({
-        draft_data: data,
+        draft_data: dataToSave,
         updated_at: new Date().toISOString(),
       })
       .eq("id", websiteId);

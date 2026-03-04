@@ -43,6 +43,7 @@ type OfferItem = {
   name: string;
   description: string;
   priceLabel?: string;
+  imageUrl?: string;
 };
 
 export type OffersData = {
