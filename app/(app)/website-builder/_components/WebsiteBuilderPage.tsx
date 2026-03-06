@@ -47,7 +47,7 @@ export default function WebsiteBuilderPage() {
   }
 
   const templateKey =
-    data.template && data.template in WEBSITE_TEMPLATES
+    data?.template && data.template in WEBSITE_TEMPLATES
       ? (data.template as TemplateKey)
       : "template1";
 

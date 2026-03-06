@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { apiGetWebsite } from "@/lib/api/website";
 import { useWebsiteStore } from "@/store/website.store";
 import { useBrandStore } from "@/store/brand.store";
+import { getDefaultWebsiteData } from "@/lib/types/websiteTypes";
 
 export function useLoadWebsiteBuilder(websiteId: string | null) {
   const setWebsiteData = useWebsiteStore((s) => s.setData);
@@ -27,7 +28,7 @@ export function useLoadWebsiteBuilder(websiteId: string | null) {
 
         if (cancelled) return;
 
-        setWebsiteData(website.draft_data);
+        setWebsiteData(website.draft_data ?? getDefaultWebsiteData("product"));
         setProjectId(website.project_id);
         if (brand) {
           setBrand({
