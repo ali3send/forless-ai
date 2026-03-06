@@ -1,6 +1,5 @@
-// import type { PaidPlan } from "../_lib/types";
-
 import { PaidPlan } from "@/lib/billing/types/types";
+
 function calculateYearlySavings(monthly: number, yearly: number) {
   const fullYear = monthly * 12;
   const savePercent = Math.round(((fullYear - yearly) / fullYear) * 100);
@@ -14,45 +13,49 @@ export const PLANS: Array<{
   features: string[];
   highlight?: boolean;
   pricing: {
-    monthly: { label: string };
-    yearly: { label: string; note?: string };
+    monthly: { label: string; amount: number };
+    yearly: { label: string; amount: number; note?: string };
   };
 }> = [
   {
     key: "gowebsite",
     name: "GoWebsite",
-    tagline: "Publish your first site and go live.",
+    tagline: "Perfect for getting started with your first website",
     features: [
-      "Everything in Free",
-      "1 published website",
-      "Basic website editor",
-      "Connect your own domain",
-      "Hosting included",
+      "1 website",
+      "AI website generator",
+      "Free hosting & SSL",
+      "Mobile responsive",
+      "Custom domain support",
+      "SEO ready",
     ],
     pricing: {
-      monthly: { label: "$0.99 / month" },
+      monthly: { label: "$0.99 / month", amount: 0.99 },
       yearly: {
-        label: "$5.99 / year",
-        note: `save ${calculateYearlySavings(0.99, 5.99)}%`,
+        label: "$0.99 / year",
+        amount: 0.99,
+        note: `save ${calculateYearlySavings(0.99, 0.99)}%`,
       },
     },
   },
   {
     key: "creator",
     name: "Creator",
-    tagline: "Brand + templates + marketing kit for creators.",
+    tagline: "For creators building multiple projects",
     features: [
+      "Up to 5 websites",
       "Everything in GoWebsite",
-      "Full brand kit",
-      "Logo generations",
-      "Templates",
-      "Marketing kit",
+      "Priority support",
+      "Advanced analytics",
+      "Custom fonts",
+      "Remove Forless branding",
     ],
     highlight: true,
     pricing: {
-      monthly: { label: "$2.49 / month" },
+      monthly: { label: "$2.49 / month", amount: 2.49 },
       yearly: {
         label: "$19 / year",
+        amount: 19,
         note: `save ${calculateYearlySavings(2.49, 19)}%`,
       },
     },
@@ -60,18 +63,20 @@ export const PLANS: Array<{
   {
     key: "pro",
     name: "Pro",
-    tagline: "Unlimited brands, templates, and marketing suite.",
+    tagline: "For professionals and growing businesses",
     features: [
-      "Up to 5 published websites",
-      "Unlimited brand kits",
-      "Full template library",
-      "Full marketing suites",
-      "Priority support",
+      "Unlimited websites",
+      "Everything in Creator",
+      "Priority support (24/7)",
+      "Custom code injection",
+      "Team collaboration",
+      "White-label options",
     ],
     pricing: {
-      monthly: { label: "$4.99 / month" },
+      monthly: { label: "$4.99 / month", amount: 4.99 },
       yearly: {
         label: "$39 / year",
+        amount: 39,
         note: `save ${calculateYearlySavings(4.99, 39)}%`,
       },
     },

@@ -14,6 +14,11 @@ const Schema = z.object({
   plan: z.enum(["gowebsite", "creator", "pro"]),
   interval: z.enum(["monthly", "yearly"]).default("monthly"),
   idempotencyKey: z.string().min(8).optional(),
+  fullName: z.string().optional(),
+  email: z.string().email().optional(),
+  company: z.string().optional(),
+  city: z.string().optional(),
+  country: z.string().optional(),
 });
 
 type Plan = "gowebsite" | "creator" | "pro";
@@ -36,7 +41,16 @@ function resolvePriceId(plan: Plan, interval: Interval) {
 export async function POST(req: Request) {
   try {
     const body = await req.json().catch(() => ({}));
-    const { plan, interval, idempotencyKey } = Schema.parse(body);
+    const {
+      plan,
+      interval,
+      idempotencyKey,
+      fullName,
+      email,
+      company,
+      city,
+      country,
+    } = Schema.parse(body);
 
     const supabase = await createServerSupabaseClient();
     const {
@@ -55,7 +69,31 @@ export async function POST(req: Request) {
       email: user.email,
     });
 
+    // Update Stripe customer with collected details
+    if (fullName || email || company || city || country) {
+      await stripe.customers.update(customerId, {
+        ...(fullName ? { name: fullName } : {}),
+        metadata: {
+          ...(fullName ? { full_name: fullName } : {}),
+          ...(company ? { company } : {}),
+          ...(city ? { city } : {}),
+          ...(country ? { country } : {}),
+        },
+      });
+    }
+
     const appUrl = urls.app();
+
+    const customerMeta = {
+      user_id: user.id,
+      plan,
+      interval,
+      ...(fullName ? { full_name: fullName } : {}),
+      ...(email ? { contact_email: email } : {}),
+      ...(company ? { company } : {}),
+      ...(city ? { city } : {}),
+      ...(country ? { country } : {}),
+    };
 
     const session = await stripe.checkout.sessions.create(
       {
@@ -67,8 +105,8 @@ export async function POST(req: Request) {
         cancel_url: `${appUrl}/billing/cancel`,
 
         client_reference_id: user.id,
-        metadata: { user_id: user.id, plan, interval },
-        subscription_data: { metadata: { user_id: user.id, plan, interval } },
+        metadata: customerMeta,
+        subscription_data: { metadata: customerMeta },
 
         allow_promotion_codes: true,
       },

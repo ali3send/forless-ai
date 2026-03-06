@@ -1,6 +1,6 @@
 import { Navbar } from "@/app/(app)/components/Navbar";
+import Image from "next/image";
 import Link from "next/link";
-// import { Link } from "lucide-react";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -11,18 +11,165 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <div className="mx-auto px-4 py-4 sm:py-4">{children}</div>
       </main>
 
-      <footer className="mt-8 border-t border-secondary-fade bg-secondary-soft">
-        <div className="mx-auto max-w-5xl flex items-center justify-between px-4 py-4 text-xs text-secondary">
-          <span>© {new Date().getFullYear()} ForlessAI</span>
+      {/* Footer */}
+      <footer className="mt-12 border-t-4 border-primary bg-white">
+        <div className="mx-auto max-w-7xl px-6 py-12">
+          {/* Top section */}
+          <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
+            {/* Brand */}
+            <div>
+              <Link href="/">
+                <Image
+                  src="/img.png"
+                  alt="ForlessAI Logo"
+                  width={140}
+                  height={40}
+                  className="object-contain"
+                />
+              </Link>
+              <p className="mt-4 text-sm leading-relaxed text-secondary">
+                Less time. Less effort. One description.
+                <br />
+                Website ready in seconds.
+              </p>
+            </div>
 
-          <span className="hidden sm:inline">
-            <Link
-              href="/privacy"
-              className="text-secondary hover:text-secondary-dark underline-offset-2 hover:underline"
-            >
-              Privacy Policy
-            </Link>
-          </span>
+            {/* Product */}
+            <div>
+              <h3 className="text-sm font-semibold text-secondary-darker">
+                Product
+              </h3>
+              <ul className="mt-4 space-y-3 text-sm text-secondary">
+                <li>
+                  <Link href="/" className="hover:text-primary transition-colors">
+                    Features
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/billing/plans" className="hover:text-primary transition-colors">
+                    Pricing
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/" className="hover:text-primary transition-colors">
+                    Templates
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/" className="hover:text-primary transition-colors">
+                    Use Cases
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Company */}
+            <div>
+              <h3 className="text-sm font-semibold text-secondary-darker">
+                Company
+              </h3>
+              <ul className="mt-4 space-y-3 text-sm text-secondary">
+                <li>
+                  <Link href="/" className="hover:text-primary transition-colors">
+                    About
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/" className="hover:text-primary transition-colors">
+                    Blog
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/" className="hover:text-primary transition-colors">
+                    Careers
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/" className="hover:text-primary transition-colors">
+                    Contact
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Legal */}
+            <div>
+              <h3 className="text-sm font-semibold text-secondary-darker">
+                Legal
+              </h3>
+              <ul className="mt-4 space-y-3 text-sm text-secondary">
+                <li>
+                  <Link href="/privacy" className="hover:text-primary transition-colors">
+                    Privacy
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/" className="hover:text-primary transition-colors">
+                    Terms
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/" className="hover:text-primary transition-colors">
+                    Security
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/" className="hover:text-primary transition-colors">
+                    Cookies
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Bottom bar */}
+          <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-secondary-fade pt-6 sm:flex-row">
+            <p className="text-sm text-secondary">
+              &copy; {new Date().getFullYear()} ForlessAI. All rights reserved.
+            </p>
+
+            {/* Social icons */}
+            <div className="flex items-center gap-4">
+              {/* Instagram */}
+              <a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-secondary-active hover:text-primary transition-colors"
+                aria-label="Instagram"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5" />
+                  <circle cx="12" cy="12" r="5" />
+                  <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none" />
+                </svg>
+              </a>
+              {/* X / Twitter */}
+              <a
+                href="https://x.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-secondary-active hover:text-primary transition-colors"
+                aria-label="X"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
+              </a>
+              {/* Facebook */}
+              <a
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-secondary-active hover:text-primary transition-colors"
+                aria-label="Facebook"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                </svg>
+              </a>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
