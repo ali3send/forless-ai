@@ -194,10 +194,10 @@ export function BuilderContentPanel({
           />
         )}
         {section === "features" && (
-          <FeaturesSectionForm data={data} setData={setData} />
+          <FeaturesSectionForm data={data} setData={setData} websiteId={websiteId} />
         )}
         {section === "offers" && (
-          <ProductsSectionForm data={data} setData={setData} />
+          <ProductsSectionForm data={data} setData={setData} websiteId={websiteId} />
         )}
         {section === "contact" && (
           <ContactSectionForm data={data} setData={setData} />

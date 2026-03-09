@@ -59,13 +59,14 @@ export function WebsiteTemplateImmersive({
         />
         <FeaturesSection
           title={data.features.title}
+          subtitle={data.features.subtitle}
           features={data.features.items}
         />{" "}
       </section>
 
       {/* Act 3: Offer */}
       <section className="relative">
-        <OffersSection title={data.offers.title} offers={data.offers.items} />
+        <OffersSection title={data.offers.title} subtitle={data.offers.subtitle} offers={data.offers.items} />
       </section>
 
       {/* Act 4: Conversion */}

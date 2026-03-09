@@ -1,5 +1,5 @@
 import { FeaturesData } from "../../template.types";
-export function FeaturesSection({ title, features }: FeaturesData) {
+export function FeaturesSection({ title, subtitle, features }: FeaturesData) {
   return (
     <section
       className="relative"
@@ -14,6 +14,9 @@ export function FeaturesSection({ title, features }: FeaturesData) {
           <h2 className="text-3xl font-semibold tracking-tight text-text">
             {title}
           </h2>
+          {subtitle && (
+            <p className="mt-3 text-sm text-(--color-muted)">{subtitle}</p>
+          )}
         </div>
 
         {/* Vertical feature flow */}
@@ -46,7 +49,7 @@ export function FeaturesSection({ title, features }: FeaturesData) {
               </div>
 
               {/* Content */}
-              <div className="max-w-xl">
+              <div className="max-w-xl flex-1">
                 <h3 className="text-lg font-semibold text-text">
                   {item.label}
                 </h3>
@@ -54,6 +57,14 @@ export function FeaturesSection({ title, features }: FeaturesData) {
                 <p className="mt-3 text-sm leading-relaxed text-(--color-muted)">
                   {item.description}
                 </p>
+
+                {item.imageUrl && (
+                  <img
+                    src={item.imageUrl}
+                    alt={item.label}
+                    className="mt-4 h-48 w-full rounded-xl object-cover"
+                  />
+                )}
               </div>
             </div>
           ))}

@@ -1,6 +1,6 @@
 import { OffersData } from "../../template.types";
 
-export function OffersSection({ title, offers }: OffersData) {
+export function OffersSection({ title, subtitle, offers }: OffersData) {
   return (
     <section
       id="offers"
@@ -13,18 +13,28 @@ export function OffersSection({ title, offers }: OffersData) {
     >
       <div className="mx-auto max-w-5xl px-4 py-12">
         <h2 className="text-xl font-semibold text-text">{title}</h2>
+        {subtitle && (
+          <p className="mt-1 text-sm text-(--color-muted)">{subtitle}</p>
+        )}
 
         <div className="mt-6 grid gap-6 md:grid-cols-3">
           {offers.map((offer, i) => (
             <div
               key={i}
-              className="flex flex-col justify-between rounded-2xl border p-4"
+              className="flex flex-col justify-between overflow-hidden rounded-2xl border p-4"
               style={{
                 backgroundColor: "var(--color-surface)",
                 borderColor:
                   "color-mix(in srgb, var(--color-primary) 22%, transparent)",
               }}
             >
+              {offer.imageUrl && (
+                <img
+                  src={offer.imageUrl}
+                  alt={offer.name}
+                  className="mb-3 h-36 w-full rounded-xl object-cover"
+                />
+              )}
               <div>
                 <div className="text-sm font-semibold text-text">
                   {offer.name}

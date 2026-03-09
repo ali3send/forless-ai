@@ -43,10 +43,11 @@ export function WebsiteTemplateBasic({ data, brand, websiteId }: Props) {
 
       <FeaturesSection
         title={data.features.title}
+        subtitle={data.features.subtitle}
         features={data.features.items}
       />
 
-      <OffersSection title={data.offers.title} offers={data.offers.items} />
+      <OffersSection title={data.offers.title} subtitle={data.offers.subtitle} offers={data.offers.items} />
 
       <ContactSection
         contact={data.contact}

@@ -252,15 +252,17 @@ Return EXACTLY this JSON shape:
 
   "features": {
     "title": string,
+    "subtitle": string,
     "items": [
-      { "label": string, "description": string }
+      { "label": string, "description": string, "imageQuery": string }
     ]
   },
 
   "offers": {
     "title": string,
+    "subtitle": string,
     "items": [
-      { "name": string, "description": string, "priceLabel": string }
+      { "name": string, "description": string, "priceLabel": string, "imageQuery": string }
     ]
   },
 

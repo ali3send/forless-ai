@@ -37,6 +37,7 @@ export function WebsiteTemplateAlt({
 
       <FeaturesSection
         title={data.features.title}
+        subtitle={data.features.subtitle}
         features={data.features.items}
       />
 
@@ -46,7 +47,7 @@ export function WebsiteTemplateAlt({
         imageQuery={data.about.imageQuery}
         imageUrl={data.about.imageUrl}
       />
-      <OffersSection title={data.offers.title} offers={data.offers.items} />
+      <OffersSection title={data.offers.title} subtitle={data.offers.subtitle} offers={data.offers.items} />
 
       <ContactSection
         contact={data.contact}

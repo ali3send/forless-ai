@@ -1,5 +1,5 @@
 import { FeaturesData } from "../../template.types";
-export function FeaturesSection({ title, features }: FeaturesData) {
+export function FeaturesSection({ title, subtitle, features }: FeaturesData) {
   return (
     <section
       className="relative border-t"
@@ -21,6 +21,9 @@ export function FeaturesSection({ title, features }: FeaturesData) {
           <h2 className="text-2xl font-semibold tracking-tight text-text">
             {title}
           </h2>
+          {subtitle && (
+            <p className="mt-2 text-sm text-(--color-muted)">{subtitle}</p>
+          )}
         </div>
 
         {/* Features grid */}
@@ -29,7 +32,7 @@ export function FeaturesSection({ title, features }: FeaturesData) {
             <div
               key={i}
               className="
-                group rounded-2xl border p-6
+                group overflow-hidden rounded-2xl border p-6
                 transition
               "
               style={{
@@ -38,6 +41,13 @@ export function FeaturesSection({ title, features }: FeaturesData) {
                   "color-mix(in srgb, var(--color-primary) 22%, transparent)",
               }}
             >
+              {item.imageUrl && (
+                <img
+                  src={item.imageUrl}
+                  alt={item.label}
+                  className="mb-4 h-40 w-full rounded-xl object-cover"
+                />
+              )}
               {/* Feature label */}
               <div className="text-sm font-semibold text-text">
                 {item.label}

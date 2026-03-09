@@ -29,15 +29,19 @@ export type WebsiteData = {
 
   features: {
     title: string;
-    items: { label: string; description: string }[];
+    subtitle?: string;
+    items: { label: string; description: string; imageUrl?: string; imageQuery?: string }[];
   };
 
   offers: {
     title: string;
+    subtitle?: string;
     items: {
       name: string;
       description: string;
       priceLabel?: string;
+      imageUrl?: string;
+      imageQuery?: string;
     }[];
   };
 

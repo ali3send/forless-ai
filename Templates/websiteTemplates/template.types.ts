@@ -21,10 +21,13 @@ export type FinalCtaData = {
 type FeatureItem = {
   label: string;
   description: string;
+  imageUrl?: string;
+  imageQuery?: string;
 };
 
 export type FeaturesData = {
   title: string;
+  subtitle?: string;
   features: FeatureItem[];
 };
 
@@ -43,10 +46,13 @@ type OfferItem = {
   name: string;
   description: string;
   priceLabel?: string;
+  imageUrl?: string;
+  imageQuery?: string;
 };
 
 export type OffersData = {
   title: string;
+  subtitle?: string;
   offers: OfferItem[];
 };
 

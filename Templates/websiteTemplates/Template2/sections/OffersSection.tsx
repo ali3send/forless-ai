@@ -1,6 +1,6 @@
 import { OffersData } from "../../template.types";
 
-export function OffersSection({ title, offers }: OffersData) {
+export function OffersSection({ title, subtitle, offers }: OffersData) {
   return (
     <section
       id="offers"
@@ -25,6 +25,9 @@ export function OffersSection({ title, offers }: OffersData) {
           <h2 className="text-2xl font-semibold tracking-tight text-text">
             {title}
           </h2>
+          {subtitle && (
+            <p className="mt-2 text-sm text-(--color-muted)">{subtitle}</p>
+          )}
         </div>
 
         {/* Offers grid */}
@@ -34,7 +37,7 @@ export function OffersSection({ title, offers }: OffersData) {
               key={i}
               className="
                 group flex flex-col justify-between
-                rounded-2xl border p-6
+                overflow-hidden rounded-2xl border p-6
                 transition
               "
               style={{
@@ -43,6 +46,13 @@ export function OffersSection({ title, offers }: OffersData) {
                   "color-mix(in srgb, var(--color-primary) 22%, transparent)",
               }}
             >
+              {offer.imageUrl && (
+                <img
+                  src={offer.imageUrl}
+                  alt={offer.name}
+                  className="mb-4 h-40 w-full rounded-xl object-cover"
+                />
+              )}
               <div>
                 <div className="text-sm font-semibold text-text">
                   {offer.name}
