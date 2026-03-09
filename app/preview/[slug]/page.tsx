@@ -4,10 +4,7 @@ import { notFound } from "next/navigation";
 import { unstable_noStore as noStore } from "next/cache";
 // import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { ThemeProvider } from "@/Templates/websiteTheme/ThemeProvider";
-import {
-  WEBSITE_TEMPLATES,
-  type TemplateKey,
-} from "@/Templates/websiteTemplates/templates";
+import { resolveTemplate } from "@/Templates/websiteTemplates/templates";
 import { WebsiteData } from "@/lib/types/websiteTypes";
 import { BrandDataNew } from "@/lib/types/brandTypes";
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
@@ -17,10 +14,7 @@ function renderSite(
   brand: BrandDataNew | null,
   websiteId: string
 ) {
-  const templateKey = (data.template ?? "template1") as TemplateKey;
-  const ActiveTemplate =
-    WEBSITE_TEMPLATES[templateKey]?.component ??
-    WEBSITE_TEMPLATES.template1.component;
+  const ActiveTemplate = resolveTemplate(data.template, data.layout);
 
   return (
     <ThemeProvider

@@ -1,9 +1,21 @@
 // app/(app)/website-builder/_components/TemplatesPanel.tsx
 "use client";
 
-import { Grid3X3 } from "lucide-react";
+import { Check } from "lucide-react";
+import {
+  WEBSITE_TEMPLATES,
+  type TemplateKey,
+} from "@/Templates/websiteTemplates/templates";
+import { useWebsiteStore } from "@/store/website.store";
 
 export default function TemplatesPanel() {
+  const { data, setData } = useWebsiteStore();
+
+  const activeTemplate: TemplateKey =
+    data?.template && data.template in WEBSITE_TEMPLATES
+      ? (data.template as TemplateKey)
+      : "template1";
+
   return (
     <div className="space-y-5">
       <div>
@@ -13,14 +25,36 @@ export default function TemplatesPanel() {
         </p>
       </div>
 
-      <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-secondary-fade bg-white py-16 px-6 text-center">
-        <Grid3X3 size={40} className="text-secondary" />
-        <h3 className="mt-4 text-sm font-semibold text-secondary-darker">
-          Coming Soon
-        </h3>
-        <p className="mt-2 text-xs text-secondary">
-          More templates will be available in a future update.
-        </p>
+      <div className="space-y-3">
+        {(Object.keys(WEBSITE_TEMPLATES) as TemplateKey[]).map((key) => {
+          const isActive = key === activeTemplate;
+          const tmpl = WEBSITE_TEMPLATES[key];
+
+          return (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setData({ ...data, template: key })}
+              className={`flex w-full items-center justify-between rounded-xl border-2 p-4 text-left transition ${
+                isActive
+                  ? "border-primary bg-primary/5"
+                  : "border-secondary-fade bg-white hover:border-secondary"
+              }`}
+            >
+              <div>
+                <p className="text-sm font-semibold text-secondary-darker">
+                  {tmpl.name}
+                </p>
+                <p className="text-[10px] text-secondary">{tmpl.description}</p>
+              </div>
+              {isActive && (
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary">
+                  <Check size={14} className="text-white" />
+                </div>
+              )}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

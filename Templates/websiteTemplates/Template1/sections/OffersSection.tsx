@@ -2,56 +2,59 @@ import { OffersData } from "../../template.types";
 
 export function OffersSection({ title, subtitle, offers }: OffersData) {
   return (
-    <section
-      id="offers"
-      className="border-t"
-      style={{
-        backgroundColor: "color-mix(in srgb, var(--color-bg) 92%, black)",
-        borderColor:
-          "color-mix(in srgb, var(--color-primary) 18%, transparent)",
-      }}
-    >
-      <div className="mx-auto max-w-5xl px-4 py-12">
-        <h2 className="text-xl font-semibold text-text">{title}</h2>
-        {subtitle && (
-          <p className="mt-1 text-sm text-(--color-muted)">{subtitle}</p>
-        )}
+    <section id="offers">
+      <div className="mx-auto max-w-5xl px-6 py-16">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-text">{title}</h2>
+          {subtitle && (
+            <p className="mt-2 text-sm text-(--color-muted)">{subtitle}</p>
+          )}
+        </div>
 
-        <div className="mt-6 grid gap-6 md:grid-cols-3">
+        <div className="mt-10 grid gap-8 md:grid-cols-2">
           {offers.map((offer, i) => (
             <div
               key={i}
-              className="flex flex-col justify-between overflow-hidden rounded-2xl border p-4"
+              className="overflow-hidden rounded-2xl border"
               style={{
                 backgroundColor: "var(--color-surface)",
                 borderColor:
-                  "color-mix(in srgb, var(--color-primary) 22%, transparent)",
+                  "color-mix(in srgb, var(--color-primary) 12%, transparent)",
               }}
             >
               {offer.imageUrl && (
                 <img
                   src={offer.imageUrl}
                   alt={offer.name}
-                  className="mb-3 h-36 w-full rounded-xl object-cover"
+                  className="h-52 w-full object-cover"
                 />
               )}
-              <div>
-                <div className="text-sm font-semibold text-text">
-                  {offer.name}
-                </div>
-                <p className="mt-2 text-xs text-(--color-muted)">
+              <div className="p-5">
+                <h3 className="text-lg font-bold text-text">{offer.name}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-(--color-muted)">
                   {offer.description}
                 </p>
-              </div>
 
-              {offer.priceLabel && (
-                <div
-                  className="mt-3 text-xs font-medium"
-                  style={{ color: "var(--color-primary)" }}
+                {offer.priceLabel && (
+                  <p
+                    className="mt-3 text-sm font-bold underline underline-offset-2"
+                    style={{ color: "var(--color-primary)" }}
+                  >
+                    {offer.priceLabel}
+                  </p>
+                )}
+
+                <a
+                  href="#contact"
+                  className="mt-4 block w-full rounded-full py-2.5 text-center text-sm font-semibold transition hover:opacity-90"
+                  style={{
+                    backgroundColor: "var(--color-primary)",
+                    color: "var(--color-bg)",
+                  }}
                 >
-                  {offer.priceLabel}
-                </div>
-              )}
+                  View Deals
+                </a>
+              </div>
             </div>
           ))}
         </div>

@@ -13,10 +13,7 @@ import { useBrandStore } from "@/store/brand.store";
 import { useWebsiteStore } from "@/store/website.store";
 
 import { ThemeProvider } from "@/Templates/websiteTheme/ThemeProvider";
-import {
-  WEBSITE_TEMPLATES,
-  type TemplateKey,
-} from "@/Templates/websiteTemplates/templates";
+import { resolveTemplate } from "@/Templates/websiteTemplates/templates";
 
 export default function WebsiteBuilderPage() {
   const { websiteId } = useParams<{ websiteId: string }>();
@@ -46,12 +43,7 @@ export default function WebsiteBuilderPage() {
     );
   }
 
-  const templateKey =
-    data?.template && data.template in WEBSITE_TEMPLATES
-      ? (data.template as TemplateKey)
-      : "template1";
-
-  const ActiveTemplate = WEBSITE_TEMPLATES[templateKey].component;
+  const ActiveTemplate = resolveTemplate(data?.template, data?.layout);
 
   return (
     <div className="h-screen overflow-hidden">
