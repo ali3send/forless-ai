@@ -73,14 +73,12 @@ export default async function PreviewPage({
       .eq("id", website.brand_id)
       .single();
 
-    if (data === null) {
-      return notFound();
+    if (data) {
+      brand = {
+        ...data,
+        logoSvg: data.logo_svg,
+      };
     }
-
-    brand = {
-      ...data,
-      logoSvg: data.logo_svg,
-    };
   }
 
   /* ── parse draft ── */

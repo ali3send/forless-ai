@@ -9,7 +9,10 @@ import { fetchUnsplashImage } from "@/lib/unsplash";
 
 const postSchema = z.object({
   websiteId: z.uuid(),
-  data: z.any(),
+  data: z.any().refine(
+    (d) => d != null && typeof d === "object" && !Array.isArray(d),
+    { message: "data must be a non-null object" }
+  ),
   brand: z.any().optional(),
 });
 
@@ -151,21 +154,50 @@ export async function POST(req: Request) {
     // ──────────────────────────────
     // 3️⃣ Update brand (if provided)
     // ──────────────────────────────
-    if (brand && website.brand_id) {
-      const { error: updateBrandError } = await supabase
-        .from("brands")
-        .update({
-          name: brand.name,
-          slogan: brand.slogan,
-          palette: brand.palette,
-          font: brand.font,
-          logo_svg: brand.logoSvg,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", website.brand_id);
+    if (brand) {
+      // Build update payload — only include defined fields
+      const brandUpdate: Record<string, unknown> = {
+        palette: brand.palette,
+        font: brand.font,
+        updated_at: new Date().toISOString(),
+      };
+      if (brand.name) brandUpdate.name = brand.name;
+      if (brand.slogan != null) brandUpdate.slogan = brand.slogan;
+      if (brand.logoSvg != null) brandUpdate.logo_svg = brand.logoSvg;
 
-      if (updateBrandError) {
-        throw updateBrandError;
+      if (website.brand_id) {
+        const { error: updateBrandError } = await supabase
+          .from("brands")
+          .update(brandUpdate)
+          .eq("id", website.brand_id);
+
+        if (updateBrandError) {
+          throw updateBrandError;
+        }
+      } else {
+        // No brand linked yet — create one and link it
+        const { data: newBrand, error: insertBrandError } = await supabase
+          .from("brands")
+          .insert({
+            ...brandUpdate,
+            project_id: website.project_id,
+            user_id: owner.type === "user" ? owner.userId : null,
+            guest_id: owner.type === "guest" ? owner.guestId : null,
+            name: brand.name || "My Brand",
+            logo_svg: brand.logoSvg || "",
+            source: "manual",
+          })
+          .select("id")
+          .single();
+
+        if (insertBrandError) {
+          throw insertBrandError;
+        }
+
+        await supabase
+          .from("websites")
+          .update({ brand_id: newBrand.id })
+          .eq("id", websiteId);
       }
     }
 

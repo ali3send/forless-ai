@@ -53,6 +53,10 @@ export async function apiSaveWebsite(
   data: WebsiteData,
   brand?: BrandDataNew | null
 ): Promise<void> {
+  if (!data || typeof data !== "object") {
+    throw new Error("Cannot save: website data is empty");
+  }
+
   const res = await fetch("/api/website", {
     method: "POST",
     headers: withGuestHeaders({

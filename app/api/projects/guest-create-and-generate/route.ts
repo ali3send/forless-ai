@@ -288,6 +288,7 @@ Return EXACTLY this JSON shape:
   try {
     websiteData = JSON.parse(resp.output_text || "");
     websiteData.type = type;
+    websiteData.template = websiteData.template ?? "template1";
   } catch {
     return NextResponse.json(
       { error: "Invalid AI JSON output" },
