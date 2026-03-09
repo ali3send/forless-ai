@@ -1,5 +1,5 @@
 import { useContactForm } from "../../hooks/useContacForm";
-import { ContactData, FinalCtaData } from "../../template.types";
+import { ContactData, FinalCtaData, SectionColors } from "../../template.types";
 import { ContactRow } from "../../ui/ContactRow";
 import { TextInput } from "../../ui/TextInput";
 
@@ -7,23 +7,24 @@ type Props = {
   contact: ContactData;
   finalCta: FinalCtaData;
   websiteId: string;
-};
+} & SectionColors;
 
-export function ContactSection({ contact, finalCta, websiteId }: Props) {
+export function ContactSection({ contact, finalCta, websiteId, bgColor, headingColor, textColor, buttonBg, buttonText, cardBg }: Props) {
   const { submit, loading, success, error } = useContactForm(websiteId);
 
   return (
     <section
       id="contact"
       style={{
-        background:
+        background: bgColor ||
           "linear-gradient(180deg, color-mix(in srgb, var(--color-primary) 8%, var(--color-bg)), color-mix(in srgb, var(--color-primary) 3%, var(--color-bg)))",
+        color: textColor || undefined,
       }}
     >
       <div className="mx-auto max-w-5xl px-6 py-16">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-text">{contact.title}</h2>
-          <p className="mt-2 text-sm text-(--color-muted)">
+          <h2 className="text-2xl font-bold" style={{ color: headingColor || "var(--color-text)" }}>{contact.title}</h2>
+          <p className="mt-2 text-sm" style={{ color: textColor || "var(--color-muted)" }}>
             {contact.description}
           </p>
         </div>
@@ -31,7 +32,7 @@ export function ContactSection({ contact, finalCta, websiteId }: Props) {
         <div className="mt-10 grid items-start gap-8 md:grid-cols-2">
           {/* Contact details */}
           <div className="space-y-5 text-sm pt-2">
-            <h3 className="text-sm font-semibold text-text">Contact details</h3>
+            <h3 className="text-sm font-semibold" style={{ color: headingColor || "var(--color-text)" }}>Contact details</h3>
 
             <div className="space-y-3">
               <ContactRow type="email" value={contact.email} />
@@ -43,7 +44,7 @@ export function ContactSection({ contact, finalCta, websiteId }: Props) {
               )}
             </div>
 
-            <p className="pt-3 text-xs text-(--color-muted)">
+            <p className="pt-3 text-xs" style={{ color: textColor || "var(--color-muted)" }}>
               We usually reply within 24 hours on business days.
             </p>
           </div>
@@ -52,7 +53,7 @@ export function ContactSection({ contact, finalCta, websiteId }: Props) {
           <form
             className="rounded-2xl border p-6"
             style={{
-              backgroundColor: "var(--color-surface)",
+              backgroundColor: cardBg || "var(--color-surface)",
               borderColor:
                 "color-mix(in srgb, var(--color-primary) 15%, transparent)",
             }}
@@ -61,10 +62,10 @@ export function ContactSection({ contact, finalCta, websiteId }: Props) {
               submit(e.currentTarget);
             }}
           >
-            <h3 className="text-lg font-semibold text-text">
+            <h3 className="text-lg font-semibold" style={{ color: headingColor || "var(--color-text)" }}>
               {finalCta.headline}
             </h3>
-            <p className="mt-2 text-sm text-(--color-muted)">
+            <p className="mt-2 text-sm" style={{ color: textColor || "var(--color-muted)" }}>
               {finalCta.subheadline}
             </p>
 
@@ -101,8 +102,8 @@ export function ContactSection({ contact, finalCta, websiteId }: Props) {
               disabled={loading || success}
               className="mt-4 w-full rounded-full px-5 py-2.5 text-sm font-semibold transition hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
               style={{
-                backgroundColor: "var(--color-primary)",
-                color: "var(--color-bg)",
+                backgroundColor: buttonBg || "var(--color-primary)",
+                color: buttonText || "var(--color-bg)",
               }}
             >
               {loading ? "Sending…" : success ? "Sent!" : finalCta.buttonLabel}

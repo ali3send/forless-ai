@@ -10,6 +10,9 @@ export function AboutSection({
   imageQuery,
   imageUrl,
   layout,
+  bgColor,
+  headingColor,
+  textColor,
 }: AboutData & { layout: LayoutKey }) {
   const unsplashImage = useUnsplashImage(imageQuery);
   const finalImage =
@@ -17,7 +20,7 @@ export function AboutSection({
 
   if (layout === "immersive") {
     return (
-      <section id="about" className="relative overflow-hidden">
+      <section id="about" className="relative overflow-hidden" style={{ background: bgColor || undefined, color: textColor || undefined }}>
         {finalImage && (
           <img
             src={finalImage}
@@ -33,8 +36,8 @@ export function AboutSection({
           }}
         />
         <div className="relative mx-auto max-w-3xl px-6 py-28 text-center">
-          <h2 className="text-3xl font-bold text-text">{title}</h2>
-          <p className="mt-4 text-sm leading-relaxed text-(--color-muted)">
+          <h2 className="text-3xl font-bold" style={{ color: headingColor || "var(--color-text)" }}>{title}</h2>
+          <p className="mt-4 text-sm leading-relaxed" style={{ color: textColor || "var(--color-muted)" }}>
             {body}
           </p>
         </div>
@@ -47,6 +50,8 @@ export function AboutSection({
       id="about"
       className="border-t"
       style={{
+        background: bgColor || undefined,
+        color: textColor || undefined,
         borderColor:
           "color-mix(in srgb, var(--color-primary) 12%, transparent)",
       }}
@@ -68,8 +73,8 @@ export function AboutSection({
                     "color-mix(in srgb, var(--color-primary) 85%, white)",
                 }}
               />
-              <h2 className="text-2xl font-bold text-text">{title}</h2>
-              <p className="mt-4 text-sm leading-relaxed text-(--color-muted)">
+              <h2 className="text-2xl font-bold" style={{ color: headingColor || "var(--color-text)" }}>{title}</h2>
+              <p className="mt-4 text-sm leading-relaxed" style={{ color: textColor || "var(--color-muted)" }}>
                 {body}
               </p>
             </div>
@@ -83,8 +88,8 @@ export function AboutSection({
           </>
         ) : (
           <>
-            <h2 className="text-2xl font-bold text-text">{title}</h2>
-            <p className="mt-4 max-w-xl text-sm leading-relaxed text-(--color-muted)">
+            <h2 className="text-2xl font-bold" style={{ color: headingColor || "var(--color-text)" }}>{title}</h2>
+            <p className="mt-4 max-w-xl text-sm leading-relaxed" style={{ color: textColor || "var(--color-muted)" }}>
               {body}
             </p>
             {finalImage && (

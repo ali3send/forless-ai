@@ -1,23 +1,23 @@
 "use client";
 
 import { useUnsplashImage } from "../../hooks/useUnsplashImage";
-import { HeroData } from "../../template.types";
+import { HeroData, SectionColors } from "../../template.types";
 import type { LayoutKey } from "../../templates";
 
 type Props = HeroData & {
   brandName: string;
   tagline: string;
   layout: LayoutKey;
-};
+} & SectionColors;
 
-export function HeroSection({ brandName, tagline, hero, layout }: { brandName: string; tagline: string; hero: HeroData; layout: LayoutKey }) {
+export function HeroSection({ brandName, tagline, hero, layout, bgColor, headingColor, textColor, accentColor, buttonBg, buttonText }: { brandName: string; tagline: string; hero: HeroData; layout: LayoutKey } & SectionColors) {
   const unsplashImage = useUnsplashImage(hero.imageQuery);
   const finalImage =
     hero.imageUrl && hero.imageUrl.trim() !== "" ? hero.imageUrl : unsplashImage;
 
   if (layout === "immersive") {
     return (
-      <section className="relative overflow-hidden" style={{ minHeight: "85vh" }}>
+      <section className="relative overflow-hidden" style={{ minHeight: "85vh", background: bgColor || undefined, color: textColor || undefined }}>
         {finalImage && (
           <img
             src={finalImage}
@@ -39,10 +39,10 @@ export function HeroSection({ brandName, tagline, hero, layout }: { brandName: s
           >
             {tagline}
           </p>
-          <h1 className="mt-4 text-4xl font-bold leading-tight text-text md:text-6xl">
+          <h1 className="mt-4 text-4xl font-bold leading-tight md:text-6xl" style={{ color: headingColor || "var(--color-text)" }}>
             {hero.headline}
           </h1>
-          <p className="mt-4 max-w-xl text-base text-(--color-muted)">
+          <p className="mt-4 max-w-xl text-base" style={{ color: textColor || "var(--color-muted)" }}>
             {hero.subheadline}
           </p>
           <div className="mt-8 flex gap-4">
@@ -75,7 +75,7 @@ export function HeroSection({ brandName, tagline, hero, layout }: { brandName: s
   }
 
   return (
-    <section className="relative">
+    <section className="relative" style={{ background: bgColor || undefined, color: textColor || undefined }}>
       <div
         className={`mx-auto flex flex-col items-center px-6 text-center ${
           layout === "modern" ? "max-w-5xl py-24" : "max-w-4xl py-16"
@@ -83,22 +83,23 @@ export function HeroSection({ brandName, tagline, hero, layout }: { brandName: s
       >
         <p
           className="text-xs font-bold uppercase tracking-widest"
-          style={{ color: "var(--color-primary)" }}
+          style={{ color: accentColor || "var(--color-primary)" }}
         >
           {tagline}
         </p>
 
         <h1
-          className={`mt-4 font-bold leading-tight text-text ${
+          className={`mt-4 font-bold leading-tight ${
             layout === "modern"
               ? "text-4xl md:text-5xl"
               : "text-3xl md:text-4xl"
           }`}
+          style={{ color: headingColor || "var(--color-text)" }}
         >
           {hero.headline}
         </h1>
 
-        <p className="mt-4 max-w-xl text-sm text-(--color-muted)">
+        <p className="mt-4 max-w-xl text-sm" style={{ color: textColor || "var(--color-muted)" }}>
           {hero.subheadline}
         </p>
 
@@ -107,8 +108,8 @@ export function HeroSection({ brandName, tagline, hero, layout }: { brandName: s
             href={hero.primaryCtaLink ?? "#contact"}
             className="rounded-full px-7 py-3 text-sm font-semibold transition hover:opacity-90"
             style={{
-              backgroundColor: "var(--color-primary)",
-              color: "var(--color-bg)",
+              backgroundColor: buttonBg || "var(--color-primary)",
+              color: buttonText || "var(--color-bg)",
             }}
           >
             {hero.primaryCta}

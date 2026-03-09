@@ -25,6 +25,10 @@ export function WebsiteTemplate2Immersive({ data, brand, websiteId }: Props) {
         primary={brand?.palette?.primary ?? "#10b981"}
         offersTitle={data.offers.title}
         logoSvg={brand?.logoSvg ?? null}
+        bgColor={data.navbar?.bgColor}
+        textColor={data.navbar?.textColor}
+        buttonBg={data.navbar?.buttonBg}
+        buttonText={data.navbar?.buttonText}
       />
 
       <HeroSection
@@ -32,6 +36,12 @@ export function WebsiteTemplate2Immersive({ data, brand, websiteId }: Props) {
         tagline={data.tagline}
         hero={data.hero}
         layout="immersive"
+        bgColor={data.hero.bgColor}
+        headingColor={data.hero.headingColor}
+        textColor={data.hero.textColor}
+        accentColor={data.hero.accentColor}
+        buttonBg={data.hero.buttonBg}
+        buttonText={data.hero.buttonText}
       />
 
       <AboutSection
@@ -40,6 +50,9 @@ export function WebsiteTemplate2Immersive({ data, brand, websiteId }: Props) {
         imageQuery={data.about.imageQuery}
         imageUrl={data.about.imageUrl}
         layout="immersive"
+        bgColor={data.about.bgColor}
+        headingColor={data.about.headingColor}
+        textColor={data.about.textColor}
       />
 
       <FeaturesSection
@@ -47,6 +60,11 @@ export function WebsiteTemplate2Immersive({ data, brand, websiteId }: Props) {
         subtitle={data.features.subtitle}
         features={data.features.items}
         layout="immersive"
+        bgColor={data.features.bgColor}
+        headingColor={data.features.headingColor}
+        textColor={data.features.textColor}
+        accentColor={data.features.accentColor}
+        cardBg={data.features.cardBg}
       />
 
       <OffersSection
@@ -54,6 +72,13 @@ export function WebsiteTemplate2Immersive({ data, brand, websiteId }: Props) {
         subtitle={data.offers.subtitle}
         offers={data.offers.items}
         layout="immersive"
+        bgColor={data.offers.bgColor}
+        headingColor={data.offers.headingColor}
+        textColor={data.offers.textColor}
+        accentColor={data.offers.accentColor}
+        buttonBg={data.offers.buttonBg}
+        buttonText={data.offers.buttonText}
+        cardBg={data.offers.cardBg}
       />
 
       <ContactSection
@@ -61,6 +86,12 @@ export function WebsiteTemplate2Immersive({ data, brand, websiteId }: Props) {
         finalCta={data.finalCta}
         websiteId={websiteId}
         layout="immersive"
+        bgColor={data.contact.bgColor}
+        headingColor={data.contact.headingColor}
+        textColor={data.contact.textColor}
+        buttonBg={data.contact.buttonBg}
+        buttonText={data.contact.buttonText}
+        cardBg={data.contact.cardBg}
       />
 
       <Footer brandName={data.brandName} />

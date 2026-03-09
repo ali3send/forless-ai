@@ -1,15 +1,15 @@
 "use client";
 
 import { useUnsplashImage } from "../../hooks/useUnsplashImage";
-import { HeroData } from "../../template.types";
+import { HeroData, SectionColors } from "../../template.types";
 
 type Props = {
   brandName: string;
   tagline: string;
   hero: HeroData;
-};
+} & SectionColors;
 
-export function HeroSection({ brandName, tagline, hero }: Props) {
+export function HeroSection({ brandName, tagline, hero, bgColor, headingColor, textColor, accentColor, buttonBg, buttonText }: Props) {
   const heroImage = useUnsplashImage(hero.imageQuery);
   const imageSrc =
     hero.imageUrl && hero.imageUrl.trim() !== "" ? hero.imageUrl : heroImage;
@@ -17,19 +17,20 @@ export function HeroSection({ brandName, tagline, hero }: Props) {
   return (
     <section
       style={{
-        background:
+        background: bgColor ||
           "linear-gradient(180deg, color-mix(in srgb, var(--color-primary) 8%, var(--color-bg)), color-mix(in srgb, var(--color-primary) 3%, var(--color-bg)))",
+        color: textColor || undefined,
       }}
     >
       <div className="mx-auto flex max-w-4xl flex-col items-center px-6 py-20 text-center">
-        <p className="text-lg font-bold text-text">{brandName}</p>
-        <p className="mt-1 text-sm text-(--color-muted)">{tagline}</p>
+        <p className="text-lg font-bold" style={{ color: headingColor || "var(--color-text)" }}>{brandName}</p>
+        <p className="mt-1 text-sm" style={{ color: textColor || "var(--color-muted)" }}>{tagline}</p>
 
-        <h1 className="mt-6 text-4xl font-bold leading-tight text-text md:text-5xl">
+        <h1 className="mt-6 text-4xl font-bold leading-tight md:text-5xl" style={{ color: headingColor || "var(--color-text)" }}>
           {hero.headline}
         </h1>
 
-        <p className="mt-4 max-w-xl text-base text-(--color-muted)">
+        <p className="mt-4 max-w-xl text-base" style={{ color: textColor || "var(--color-muted)" }}>
           {hero.subheadline}
         </p>
 
@@ -38,8 +39,8 @@ export function HeroSection({ brandName, tagline, hero }: Props) {
             href={hero.primaryCtaLink || "#contact"}
             className="rounded-full px-7 py-3 text-sm font-semibold transition hover:opacity-90"
             style={{
-              backgroundColor: "var(--color-primary)",
-              color: "var(--color-bg)",
+              backgroundColor: buttonBg || "var(--color-primary)",
+              color: buttonText || "var(--color-bg)",
             }}
           >
             {hero.primaryCta}
@@ -50,9 +51,10 @@ export function HeroSection({ brandName, tagline, hero }: Props) {
               href={hero.secondaryCtaLink || "#about"}
               className="rounded-full px-7 py-3 text-sm font-semibold transition hover:opacity-80"
               style={{
-                backgroundColor:
-                  "color-mix(in srgb, var(--color-primary) 15%, var(--color-bg))",
-                color: "var(--color-text)",
+                backgroundColor: accentColor
+                  ? `color-mix(in srgb, ${accentColor} 15%, var(--color-bg))`
+                  : "color-mix(in srgb, var(--color-primary) 15%, var(--color-bg))",
+                color: textColor || "var(--color-text)",
               }}
             >
               {hero.secondaryCta}

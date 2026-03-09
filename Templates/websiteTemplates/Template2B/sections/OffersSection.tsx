@@ -6,6 +6,13 @@ export function OffersSection({
   subtitle,
   offers,
   layout,
+  bgColor,
+  headingColor,
+  textColor,
+  accentColor,
+  buttonBg,
+  buttonText,
+  cardBg,
 }: OffersData & { layout: LayoutKey }) {
   if (layout === "immersive") {
     return (
@@ -13,14 +20,15 @@ export function OffersSection({
         id="offers"
         style={{
           background:
-            "linear-gradient(180deg, color-mix(in srgb, var(--color-bg) 88%, black), var(--color-bg))",
+            bgColor || "linear-gradient(180deg, color-mix(in srgb, var(--color-bg) 88%, black), var(--color-bg))",
+          color: textColor || undefined,
         }}
       >
         <div className="mx-auto max-w-6xl px-6 py-24">
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-text">{title}</h2>
+            <h2 className="text-3xl font-bold" style={{ color: headingColor || "var(--color-text)" }}>{title}</h2>
             {subtitle && (
-              <p className="mt-2 text-sm text-(--color-muted)">{subtitle}</p>
+              <p className="mt-2 text-sm" style={{ color: textColor || "var(--color-muted)" }}>{subtitle}</p>
             )}
           </div>
 
@@ -31,7 +39,7 @@ export function OffersSection({
                 className="group overflow-hidden rounded-2xl transition hover:shadow-xl"
                 style={{
                   background:
-                    "color-mix(in srgb, var(--color-bg) 85%, black)",
+                    cardBg || "color-mix(in srgb, var(--color-bg) 85%, black)",
                   border:
                     "1px solid color-mix(in srgb, var(--color-primary) 15%, transparent)",
                 }}
@@ -44,14 +52,14 @@ export function OffersSection({
                   />
                 )}
                 <div className="p-5">
-                  <h3 className="text-sm font-bold text-text">{offer.name}</h3>
-                  <p className="mt-2 text-xs leading-relaxed text-(--color-muted)">
+                  <h3 className="text-sm font-bold" style={{ color: headingColor || "var(--color-text)" }}>{offer.name}</h3>
+                  <p className="mt-2 text-xs leading-relaxed" style={{ color: textColor || "var(--color-muted)" }}>
                     {offer.description}
                   </p>
                   {offer.priceLabel && (
                     <div
                       className="mt-4 text-lg font-bold"
-                      style={{ color: "var(--color-primary)" }}
+                      style={{ color: accentColor || "var(--color-primary)" }}
                     >
                       {offer.priceLabel}
                     </div>
@@ -71,13 +79,15 @@ export function OffersSection({
       className="border-t"
       style={{
         backgroundColor:
-          layout === "modern"
-            ? undefined
-            : "color-mix(in srgb, var(--color-bg) 94%, black)",
+          bgColor ? undefined
+            : layout === "modern"
+              ? undefined
+              : "color-mix(in srgb, var(--color-bg) 94%, black)",
         background:
-          layout === "modern"
+          bgColor || (layout === "modern"
             ? "linear-gradient(180deg, var(--color-bg), color-mix(in srgb, var(--color-bg) 90%, black))"
-            : undefined,
+            : undefined),
+        color: textColor || undefined,
         borderColor:
           "color-mix(in srgb, var(--color-primary) 12%, transparent)",
       }}
@@ -98,14 +108,15 @@ export function OffersSection({
             />
           )}
           <h2
-            className={`font-bold text-text ${
+            className={`font-bold ${
               layout === "modern" ? "text-2xl" : "text-xl"
             }`}
+            style={{ color: headingColor || "var(--color-text)" }}
           >
             {title}
           </h2>
           {subtitle && (
-            <p className="mt-2 text-sm text-(--color-muted)">{subtitle}</p>
+            <p className="mt-2 text-sm" style={{ color: textColor || "var(--color-muted)" }}>{subtitle}</p>
           )}
         </div>
 
@@ -117,7 +128,7 @@ export function OffersSection({
                 layout === "modern" ? "group hover:shadow-lg" : ""
               }`}
               style={{
-                backgroundColor: "var(--color-surface)",
+                backgroundColor: cardBg || "var(--color-surface)",
                 borderColor:
                   "color-mix(in srgb, var(--color-primary) 18%, transparent)",
               }}
@@ -132,10 +143,10 @@ export function OffersSection({
                 />
               )}
               <div className="p-5">
-                <h3 className="text-sm font-semibold text-text">
+                <h3 className="text-sm font-semibold" style={{ color: headingColor || "var(--color-text)" }}>
                   {offer.name}
                 </h3>
-                <p className="mt-2 text-xs leading-relaxed text-(--color-muted)">
+                <p className="mt-2 text-xs leading-relaxed" style={{ color: textColor || "var(--color-muted)" }}>
                   {offer.description}
                 </p>
                 {offer.priceLabel && (

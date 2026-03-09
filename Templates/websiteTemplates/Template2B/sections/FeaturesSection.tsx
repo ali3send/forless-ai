@@ -6,20 +6,26 @@ export function FeaturesSection({
   subtitle,
   features,
   layout,
+  bgColor,
+  headingColor,
+  textColor,
+  accentColor,
+  cardBg,
 }: FeaturesData & { layout: LayoutKey }) {
   if (layout === "immersive") {
     return (
       <section
         style={{
           background:
-            "linear-gradient(180deg, var(--color-bg), color-mix(in srgb, var(--color-bg) 88%, black))",
+            bgColor || "linear-gradient(180deg, var(--color-bg), color-mix(in srgb, var(--color-bg) 88%, black))",
+          color: textColor || undefined,
         }}
       >
         <div className="mx-auto max-w-6xl px-6 py-24">
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-text">{title}</h2>
+            <h2 className="text-3xl font-bold" style={{ color: headingColor || "var(--color-text)" }}>{title}</h2>
             {subtitle && (
-              <p className="mt-2 text-sm text-(--color-muted)">{subtitle}</p>
+              <p className="mt-2 text-sm" style={{ color: textColor || "var(--color-muted)" }}>{subtitle}</p>
             )}
           </div>
 
@@ -45,15 +51,15 @@ export function FeaturesSection({
                   style={{
                     backgroundColor:
                       "color-mix(in srgb, var(--color-primary) 15%, transparent)",
-                    color: "var(--color-primary)",
+                    color: accentColor || "var(--color-primary)",
                   }}
                 >
                   {String(i + 1).padStart(2, "0")}
                 </div>
-                <h3 className="mt-3 text-sm font-bold text-text">
+                <h3 className="mt-3 text-sm font-bold" style={{ color: headingColor || "var(--color-text)" }}>
                   {item.label}
                 </h3>
-                <p className="mt-2 text-xs leading-relaxed text-(--color-muted)">
+                <p className="mt-2 text-xs leading-relaxed" style={{ color: textColor || "var(--color-muted)" }}>
                   {item.description}
                 </p>
               </div>
@@ -68,6 +74,8 @@ export function FeaturesSection({
     <section
       className="border-t"
       style={{
+        background: bgColor || undefined,
+        color: textColor || undefined,
         borderColor:
           "color-mix(in srgb, var(--color-primary) 12%, transparent)",
       }}
@@ -88,14 +96,15 @@ export function FeaturesSection({
             />
           )}
           <h2
-            className={`font-bold text-text ${
+            className={`font-bold ${
               layout === "modern" ? "text-2xl" : "text-xl"
             }`}
+            style={{ color: headingColor || "var(--color-text)" }}
           >
             {title}
           </h2>
           {subtitle && (
-            <p className="mt-2 text-sm text-(--color-muted)">{subtitle}</p>
+            <p className="mt-2 text-sm" style={{ color: textColor || "var(--color-muted)" }}>{subtitle}</p>
           )}
         </div>
 
@@ -111,7 +120,7 @@ export function FeaturesSection({
                 layout === "modern" ? "hover:shadow-lg" : ""
               }`}
               style={{
-                backgroundColor: "var(--color-surface)",
+                backgroundColor: cardBg || "var(--color-surface)",
                 borderColor:
                   "color-mix(in srgb, var(--color-primary) 18%, transparent)",
               }}
@@ -125,8 +134,8 @@ export function FeaturesSection({
                   }`}
                 />
               )}
-              <h3 className="text-sm font-semibold text-text">{item.label}</h3>
-              <p className="mt-2 text-xs leading-relaxed text-(--color-muted)">
+              <h3 className="text-sm font-semibold" style={{ color: headingColor || "var(--color-text)" }}>{item.label}</h3>
+              <p className="mt-2 text-xs leading-relaxed" style={{ color: textColor || "var(--color-muted)" }}>
                 {item.description}
               </p>
             </div>

@@ -6,11 +6,18 @@ export function Navbar({
   offersTitle,
   logoSvg,
   primary,
+  bgColor,
+  textColor,
+  buttonBg,
+  buttonText,
 }: NavbarData) {
+  const linkStyle = textColor ? { color: textColor } : undefined;
+
   return (
     <header
       className="border-b"
       style={{
+        backgroundColor: bgColor || undefined,
         borderColor:
           "color-mix(in srgb, var(--color-primary) 12%, transparent)",
       }}
@@ -20,28 +27,30 @@ export function Navbar({
           {logoSvg && (
             <BrandLogo svg={logoSvg} primary={primary} secondary={primary} />
           )}
-          <div className="text-lg font-bold text-text">{brandName}</div>
+          <div className="text-lg font-bold" style={{ color: textColor || "var(--color-text)" }}>{brandName}</div>
         </div>
 
         <nav className="hidden gap-8 text-sm font-medium md:flex">
           <a
             href="#about"
-            className="text-(--color-muted) transition hover:text-text"
+            className="transition hover:opacity-80"
+            style={linkStyle || { color: "var(--color-muted)" }}
           >
             About
           </a>
           <a
             href="#offers"
-            className="text-(--color-muted) transition hover:text-text"
+            className="transition hover:opacity-80"
+            style={linkStyle || { color: "var(--color-muted)" }}
           >
             {offersTitle}
           </a>
           <a
             href="#contact"
-            className="rounded-full px-4 py-1.5 text-xs font-semibold transition"
+            className="rounded-full px-4 py-1.5 text-xs font-semibold transition hover:opacity-90"
             style={{
-              backgroundColor: "var(--color-primary)",
-              color: "var(--color-bg)",
+              backgroundColor: buttonBg || "var(--color-primary)",
+              color: buttonText || "var(--color-bg)",
             }}
           >
             Contact

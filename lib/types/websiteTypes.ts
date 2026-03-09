@@ -18,6 +18,13 @@ export type WebsiteData = {
     imageUrl?: string;
     imagePath?: string;
     imageQuery: string;
+    bgColor?: string;
+    headingColor?: string;
+    textColor?: string;
+    accentColor?: string;
+    buttonBg?: string;
+    buttonText?: string;
+    cardBg?: string;
   };
 
   about: {
@@ -26,12 +33,26 @@ export type WebsiteData = {
     imageUrl?: string;
     imagePath?: string;
     imageQuery: string;
+    bgColor?: string;
+    headingColor?: string;
+    textColor?: string;
+    accentColor?: string;
+    buttonBg?: string;
+    buttonText?: string;
+    cardBg?: string;
   };
 
   features: {
     title: string;
     subtitle?: string;
     items: { label: string; description: string; imageUrl?: string; imageQuery?: string }[];
+    bgColor?: string;
+    headingColor?: string;
+    textColor?: string;
+    accentColor?: string;
+    buttonBg?: string;
+    buttonText?: string;
+    cardBg?: string;
   };
 
   offers: {
@@ -44,6 +65,13 @@ export type WebsiteData = {
       imageUrl?: string;
       imageQuery?: string;
     }[];
+    bgColor?: string;
+    headingColor?: string;
+    textColor?: string;
+    accentColor?: string;
+    buttonBg?: string;
+    buttonText?: string;
+    cardBg?: string;
   };
 
   testimonials?: {
@@ -62,12 +90,26 @@ export type WebsiteData = {
     email: string;
     phone?: string;
     whatsapp?: string;
+    bgColor?: string;
+    headingColor?: string;
+    textColor?: string;
+    accentColor?: string;
+    buttonBg?: string;
+    buttonText?: string;
+    cardBg?: string;
   };
 
   finalCta: {
     headline: string;
     subheadline: string;
     buttonLabel: string;
+  };
+
+  navbar?: {
+    bgColor?: string;
+    textColor?: string;
+    buttonBg?: string;
+    buttonText?: string;
   };
 
   // Optional extended fields

@@ -7,6 +7,7 @@ import { WebsiteData } from "@/lib/types/websiteTypes";
 import { TextField } from "../../components/ui/TextField";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
+import { SectionColorPicker } from "./SectionColorPicker";
 
 type OffersSectionFormProps = {
   data: WebsiteData;
@@ -251,6 +252,13 @@ export function ProductsSectionForm({
       >
         + Add Offer
       </button>
+
+      <SectionColorPicker
+        colors={data.offers}
+        onChange={(key, val) =>
+          setData((d) => ({ ...d, offers: { ...d.offers, [key]: val } }))
+        }
+      />
     </div>
   );
 }

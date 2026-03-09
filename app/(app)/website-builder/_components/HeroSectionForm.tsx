@@ -10,6 +10,7 @@ import { StateUpdater } from "@/lib/types/state";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
 import { TextField } from "../../components/ui/TextField";
+import { SectionColorPicker } from "./SectionColorPicker";
 
 export type HeroSectionFormProps = {
   websiteId: string;
@@ -288,6 +289,13 @@ export function HeroSectionForm({
           }))
         }
         limit="secondaryCtaLink"
+      />
+
+      <SectionColorPicker
+        colors={data.hero}
+        onChange={(key, val) =>
+          setData((d) => ({ ...d, hero: { ...d.hero, [key]: val } }))
+        }
       />
     </div>
   );
