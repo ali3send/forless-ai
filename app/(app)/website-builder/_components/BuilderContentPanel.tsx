@@ -1,6 +1,7 @@
 // app/website-builder/_components/BuilderContentPanel.tsx
 "use client";
 
+import { Menu, Plus, Sparkles } from "lucide-react";
 import { builderSections } from "../builderSections";
 import { useWebsiteStore } from "@/store/website.store";
 import { useUsage } from "@/lib/usage/useUsage";
@@ -10,6 +11,14 @@ import { AboutSectionForm } from "./AboutSectionForm";
 import { FeaturesSectionForm } from "./FeatureSectionForm";
 import { ProductsSectionForm } from "./ProductsSectionForm";
 import { ContactSectionForm } from "./ContactSectionForm";
+
+const SECTION_LABELS: Record<string, string> = {
+  hero: "Home",
+  about: "About",
+  features: "Features",
+  offers: "Product",
+  contact: "Contact",
+};
 
 type Props = {
   onGenerate: () => Promise<void> | void;
@@ -26,10 +35,8 @@ export function BuilderContentPanel({
     useWebsiteStore();
 
   const currentIndex = builderSections.findIndex((s) => s.id === section);
-  const isFirst = currentIndex <= 0;
-  const isLast = currentIndex === builderSections.length - 1;
 
-  // 🔹 Usage (regen)
+  // Usage (regen)
   const {
     data: regenUsage,
     loading: regenLoading,
@@ -37,155 +44,165 @@ export function BuilderContentPanel({
   } = useUsage("website_regen");
 
   const regenRemaining = regenUsage?.remaining ?? 0;
+  const regenLimit = regenUsage?.limit ?? 10;
   const regenDisabled =
     regenLoading || regenRemaining <= 0 || generating || restoring;
 
-  // 🔹 Handle regenerate + quota refresh
   const handleGenerate = async () => {
     try {
       await onGenerate();
-      refetchRegen(); // 🔑 update quota immediately
+      refetchRegen();
     } catch {
-      // optional: swallow errors (toast handled elsewhere)
+      // errors handled elsewhere
     }
   };
 
   return (
-    <>
-      {/* ───────────────── Header ───────────────── */}
-      <div className="mb-4 w-full space-y-3">
-        {/* Step header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-sm font-semibold text-secondary-dark">
-            <span>Section</span>
-            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-primary">
-              {currentIndex + 1}/{builderSections.length}
-            </span>
-          </div>
-
-          <div className="text-xs font-medium text-secondary capitalize">
-            {builderSections[currentIndex]?.label}
-          </div>
-        </div>
-
-        {/* Actions */}
-        <div className="flex items-center justify-end gap-2">
-          <button
-            type="button"
-            onClick={onRestore}
-            disabled={restoring || generating}
-            className="rounded-full border border-secondary-fade bg-secondary-soft px-4 py-1.5 text-[11px] font-semibold text-secondary-dark transition
-        hover:border-primary hover:text-primary
-        disabled:opacity-50 disabled:cursor-not-allowed
-        active:scale-[0.97]"
-          >
-            {restoring ? "Restoring..." : "Restore"}
-          </button>
-
-          <button
-            type="button"
-            onClick={handleGenerate}
-            disabled={regenDisabled}
-            className="rounded-full bg-primary px-4 py-1.5 text-[11px] font-semibold text-white transition
-        hover:bg-primary-hover
-        disabled:bg-primary/60 disabled:cursor-not-allowed"
-          >
-            {generating
-              ? "Generating..."
-              : regenRemaining <= 0
-              ? "Upgrade to regenerate"
-              : "Regenerate"}
-          </button>
-        </div>
-
-        {/* Quota */}
-        {!regenLoading && regenUsage && (
-          <div
-            className={`text-right text-[11px] -mt-2 ${
-              regenRemaining === 0
-                ? "text-red-600"
-                : regenRemaining <= 1
-                ? "text-yellow-600"
-                : "text-secondary"
-            }`}
-          >
-            {regenRemaining}/{regenUsage.limit} regenerations left
-          </div>
-        )}
+    <div className="space-y-5">
+      {/* Header */}
+      <div>
+        <h2 className="text-lg font-bold text-secondary-darker">Pages</h2>
+        <p className="mt-1 text-sm text-secondary">
+          Manage your website sections.
+        </p>
       </div>
 
-      <div className="flex rounded-lg bg-secondary-soft p-1">
+      {/* Section list */}
+      <div className="rounded-xl border-2 border-primary/20 bg-white p-2 space-y-1.5">
         {builderSections.map((s) => {
-          const active = s.id === section;
-
+          const isActive = s.id === section;
           return (
             <button
               key={s.id}
+              type="button"
               onClick={() => setSection(s.id)}
-              className={`
-          flex-1 rounded-md px-2 py-1.5 text-xs font-semibold transition
-          ${
-            active
-              ? "text-white bg-primary shadow-sm"
-              : "text-secondary hover:text-secondary-dark"
-          }
-        `}
+              className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
+                isActive
+                  ? "bg-primary text-white"
+                  : "bg-white text-secondary-darker hover:bg-gray-50"
+              }`}
             >
-              {s.label}
+              <Menu
+                size={14}
+                className={isActive ? "text-white/70" : "text-secondary"}
+              />
+              {SECTION_LABELS[s.id] ?? s.label}
             </button>
           );
         })}
-      </div>
 
-      {/* ───────────────── Section Forms ───────────────── */}
-      {section === "hero" && (
-        <HeroSectionForm data={data} setData={setData} websiteId={websiteId} />
-      )}
-      {section === "about" && (
-        <AboutSectionForm data={data} setData={setData} websiteId={websiteId} />
-      )}
-      {section === "features" && (
-        <FeaturesSectionForm data={data} setData={setData} />
-      )}
-      {section === "offers" && (
-        <ProductsSectionForm data={data} setData={setData} />
-      )}
-      {section === "contact" && (
-        <ContactSectionForm data={data} setData={setData} />
-      )}
-
-      {/* ───────────────── Navigation ───────────────── */}
-      <div className="mt-4 flex justify-between">
+        {/* Add new page */}
         <button
           type="button"
-          disabled={isFirst}
-          onClick={() => {
-            if (!isFirst && currentIndex > 0) {
-              setSection(builderSections[currentIndex - 1].id);
-            }
-          }}
-          className="rounded-full border border-secondary-fade bg-secondary-soft px-3 py-1 text-xs font-semibold text-secondary-dark transition
-            hover:border-primary hover:text-primary
-            disabled:opacity-40"
+          disabled
+          className="flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-primary transition hover:bg-primary/5 disabled:opacity-50"
         >
-          Previous
+          <Plus size={14} />
+          Add new Page
+        </button>
+      </div>
+
+      {/* Regeneration quota banners */}
+      {!regenLoading && regenUsage && (
+        <div className="space-y-2">
+          {regenRemaining === regenLimit ? (
+            <div className="rounded-lg bg-orange-100 px-4 py-2.5 text-sm font-medium text-orange-600">
+              {regenRemaining}/{regenLimit} regenerations left
+            </div>
+          ) : regenRemaining > 0 ? (
+            <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm font-medium text-amber-600">
+              {regenRemaining}/{regenLimit} regenerations left
+            </div>
+          ) : (
+            <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-medium text-red-600">
+              0/{regenLimit} regenerations left
+            </div>
+          )}
+
+          <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-2.5 text-sm text-green-700">
+            All good! You can continue editing manually with no limits.
+          </div>
+        </div>
+      )}
+
+      {/* Restore + Generate buttons */}
+      <div className="flex gap-3">
+        <button
+          type="button"
+          onClick={onRestore}
+          disabled={restoring || generating}
+          className="flex-1 rounded-full border border-secondary-fade bg-white px-4 py-2.5 text-sm font-semibold text-secondary-darker transition hover:bg-gray-50 disabled:opacity-50"
+        >
+          {restoring ? "Restoring..." : "Restore"}
         </button>
 
         <button
           type="button"
-          disabled={isLast}
-          onClick={() => {
-            if (!isLast && currentIndex >= 0) {
-              setSection(builderSections[currentIndex + 1].id);
-            }
-          }}
-          className="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-white transition
-            hover:bg-primary-hover
-            disabled:opacity-40"
+          onClick={handleGenerate}
+          disabled={regenDisabled}
+          className="flex flex-1 items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-active disabled:opacity-50"
         >
-          Next
+          <Sparkles size={14} />
+          {generating
+            ? "Generating..."
+            : regenRemaining <= 0
+            ? "Upgrade"
+            : "Generate"}
         </button>
       </div>
-    </>
+
+      {/* Section header */}
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-bold uppercase tracking-wider text-secondary-darker">
+          Section
+        </span>
+        <span className="text-sm font-bold text-primary">
+          {currentIndex + 1}/{builderSections.length}
+        </span>
+      </div>
+
+      {/* Show Page / Hide Page toggle */}
+      <div className="flex rounded-full border border-secondary-fade bg-white p-1">
+        <button
+          type="button"
+          className="flex-1 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
+        >
+          Show Page
+        </button>
+        <button
+          type="button"
+          className="flex-1 rounded-full px-4 py-2 text-sm font-semibold text-secondary transition hover:text-secondary-darker"
+        >
+          Hide Page
+        </button>
+      </div>
+
+      {/* Section Forms */}
+      <div className="rounded-xl border border-secondary-fade bg-white p-4">
+        {section === "hero" && (
+          <HeroSectionForm
+            data={data}
+            setData={setData}
+            websiteId={websiteId}
+          />
+        )}
+        {section === "about" && (
+          <AboutSectionForm
+            data={data}
+            setData={setData}
+            websiteId={websiteId}
+          />
+        )}
+        {section === "features" && (
+          <FeaturesSectionForm data={data} setData={setData} />
+        )}
+        {section === "offers" && (
+          <ProductsSectionForm data={data} setData={setData} />
+        )}
+        {section === "contact" && (
+          <ContactSectionForm data={data} setData={setData} />
+        )}
+      </div>
+    </div>
   );
 }

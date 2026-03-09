@@ -81,6 +81,7 @@ export type WebsiteData = {
   metaPixelId?: string;
   legal?: { privacyPolicy?: string; terms?: string };
   footerText?: string;
+  gradient?: string;
 };
 
 export function getDefaultWebsiteData(type: WebsiteType): WebsiteData {

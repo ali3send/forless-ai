@@ -3,13 +3,14 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { Upload, Sparkles } from "lucide-react";
 
 import { WebsiteData } from "@/lib/types/websiteTypes";
 import { StateUpdater } from "@/lib/types/state";
-// import { useProjectStore } from "@/store/project.store";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
 import { TextField } from "../../components/ui/TextField";
+
 export type HeroSectionFormProps = {
   websiteId: string;
   data: WebsiteData;
@@ -21,14 +22,11 @@ export function HeroSectionForm({
   data,
   setData,
 }: HeroSectionFormProps) {
-  // const projectId = useProjectStore((s) => s.projectId);
-
   const [uploading, setUploading] = useState(false);
   const [removing, setRemoving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
   async function onUpload(file: File) {
-    console.log("UPLOAD STARTED", file);
     if (!websiteId) {
       uiToast.error("Missing websiteId ID");
       return;
@@ -95,7 +93,15 @@ export function HeroSectionForm({
   const busy = uploading || removing;
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-4">
+      <TextField
+        label="Title"
+        placeholder="Home"
+        value={data.brandName}
+        onChange={(v) => setData((d) => ({ ...d, brandName: v }))}
+        limit="brandName"
+      />
+
       <TextField
         label="Brand name"
         placeholder="Enter Brand name"
@@ -141,58 +147,42 @@ export function HeroSectionForm({
         showLimit
       />
 
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <p className="text-xs text-secondary">Hero image</p>
-          {uploading && (
-            <span className="text-[11px] text-secondary">Uploading…</span>
-          )}
-          {removing && (
-            <span className="text-[11px] text-secondary">Removing…</span>
-          )}
-        </div>
+      {/* Hero image */}
+      <div className="space-y-3">
+        <p className="text-sm font-bold text-secondary-darker">Hero image</p>
 
         {data.hero.imageUrl ? (
-          <div className="rounded-lg border border-secondary-fade bg-secondary-soft p-2">
-            <Image
-              src={data.hero.imageUrl}
-              alt="hero"
-              className="h-40 w-full rounded-md object-cover"
-              width={400}
-              height={200}
-            />
-            <div className="mt-2 flex justify-end">
-              <button
-                type="button"
-                onClick={removeImage}
-                disabled={busy}
-                className={`text-[11px] underline underline-offset-2 ${
-                  busy
-                    ? "text-secondary cursor-not-allowed"
-                    : "text-primary hover:text-primary-hover"
-                }`}
-              >
-                Remove image
-              </button>
+          <div className="space-y-2">
+            <div className="overflow-hidden rounded-xl border border-secondary-fade">
+              <Image
+                src={data.hero.imageUrl}
+                alt="hero"
+                className="h-40 w-full object-cover"
+                width={400}
+                height={200}
+              />
             </div>
+            <button
+              type="button"
+              onClick={removeImage}
+              disabled={busy}
+              className="text-xs font-medium text-primary underline underline-offset-2 transition hover:text-primary-active disabled:opacity-50"
+            >
+              {removing ? "Removing..." : "Remove image"}
+            </button>
           </div>
         ) : (
-          <div className="block">
-            <label
-              htmlFor="image-upload"
-              className="
-      inline-flex cursor-pointer items-center gap-2
-      rounded-md border border-secondary-fade
-      bg-secondary-soft px-3 py-2
-      text-xs font-semibold text-secondary-dark
-      hover:border-primary hover:text-primary
-      disabled:opacity-60
-    "
-            >
+          <label className="flex cursor-pointer flex-col items-center gap-3 rounded-xl border-2 border-dashed border-primary/30 bg-primary/5 p-8 transition hover:border-primary/50">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-primary/30 bg-white">
+              <Upload size={18} className="text-primary" />
+            </div>
+            <p className="text-sm font-semibold text-secondary-darker">
               Choose image
-            </label>
+            </p>
+            <p className="text-xs text-secondary">
+              JPG / PNG / WEBP / SVG • up to 5MB
+            </p>
             <input
-              id="image-upload"
               type="file"
               accept="image/*"
               disabled={busy}
@@ -200,34 +190,51 @@ export function HeroSectionForm({
               onChange={async (e) => {
                 const file = e.target.files?.[0];
                 e.currentTarget.value = "";
-
                 if (!file) return;
-
                 await onUpload(file);
               }}
             />
-            <p className="mt-1 text-[11px] text-secondary">
-              JPG / PNG / WEBP / SVG • up to 5MB
-            </p>
-          </div>
+          </label>
         )}
 
-        {err && <p className="text-[11px] text-secondary">{err}</p>}
+        {uploading && (
+          <p className="text-xs text-secondary">Uploading…</p>
+        )}
+        {err && <p className="text-xs text-red-500">{err}</p>}
       </div>
 
-      <TextField
-        label="Hero image keyword"
-        placeholder="e.g., technology, solar panels, office"
-        value={data.hero.imageQuery}
-        onChange={(v) =>
-          setData((d) => ({
-            ...d,
-            hero: { ...d.hero, imageQuery: v },
-          }))
-        }
-        limit="heroImageQuery"
-        showLimit
-      />
+      {/* AI Hero Image */}
+      <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 space-y-2">
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-bold text-secondary-darker">
+            AI Hero Image
+          </p>
+          <span className="text-xs text-secondary">
+            {(data.hero.imageQuery ?? "").length}/40
+          </span>
+        </div>
+        <p className="text-xs text-secondary">
+          Automatically generated as you type
+        </p>
+
+        <div className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-white">
+          <Sparkles size={12} />
+          Auto Generate
+        </div>
+
+        <input
+          type="text"
+          value={data.hero.imageQuery}
+          onChange={(e) =>
+            setData((d) => ({
+              ...d,
+              hero: { ...d.hero, imageQuery: e.target.value },
+            }))
+          }
+          placeholder="Type a few words — we'll generate an image instantly"
+          className="w-full rounded-lg border border-secondary-fade bg-white px-3 py-2.5 text-sm text-secondary-darker outline-none transition placeholder:text-secondary/60 placeholder:italic focus:border-primary focus:ring-2 focus:ring-primary/20"
+        />
+      </div>
 
       <TextField
         label="Primary CTA"
@@ -246,7 +253,7 @@ export function HeroSectionForm({
       <TextField
         label="Primary CTA Link"
         placeholder="e.g., https://yourwebsite.com/signup or #contact"
-        value={data.hero.primaryCtaLink ?? "Order Now"}
+        value={data.hero.primaryCtaLink ?? ""}
         onChange={(v) =>
           setData((d) => ({
             ...d,
