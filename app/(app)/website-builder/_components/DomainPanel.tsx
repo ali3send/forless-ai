@@ -9,6 +9,7 @@ import { WebsiteData } from "@/lib/types/websiteTypes";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
 import { getOrCreateGuestId } from "@/lib/guest/guest";
+import { ConnectDomainModal } from "./ConnectDomainModal";
 
 function slugify(text: string) {
   return text
@@ -30,6 +31,8 @@ export default function DomainPanel({ websiteId, websiteData }: Props) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [domainMode, setDomainMode] = useState<"free" | "custom">("free");
+  const [customDomain, setCustomDomain] = useState("");
+  const [showConnectModal, setShowConnectModal] = useState(false);
 
   // Load publish state
   useEffect(() => {
@@ -141,10 +144,12 @@ export default function DomainPanel({ websiteId, websiteData }: Props) {
       </div>
 
       {/* Free Forless URL option */}
-      <button
-        type="button"
+      <div
+        role="button"
+        tabIndex={0}
         onClick={() => setDomainMode("free")}
-        className={`w-full rounded-xl border-2 p-4 text-left transition ${
+        onKeyDown={(e) => e.key === "Enter" && setDomainMode("free")}
+        className={`w-full cursor-pointer rounded-xl border-2 p-4 text-left transition ${
           domainMode === "free"
             ? "border-primary bg-primary/5"
             : "border-secondary-fade bg-white hover:border-secondary"
@@ -205,13 +210,15 @@ export default function DomainPanel({ websiteId, websiteData }: Props) {
             )}
           </div>
         )}
-      </button>
+      </div>
 
       {/* Custom domain option */}
-      <button
-        type="button"
+      <div
+        role="button"
+        tabIndex={0}
         onClick={() => setDomainMode("custom")}
-        className={`w-full rounded-xl border-2 p-4 text-left transition ${
+        onKeyDown={(e) => e.key === "Enter" && setDomainMode("custom")}
+        className={`w-full cursor-pointer rounded-xl border-2 p-4 text-left transition ${
           domainMode === "custom"
             ? "border-primary bg-primary/5"
             : "border-secondary-fade bg-white hover:border-secondary"
@@ -240,12 +247,37 @@ export default function DomainPanel({ websiteId, websiteData }: Props) {
         </div>
 
         {domainMode === "custom" && (
-          <div className="mt-4 rounded-lg border border-secondary-fade bg-gray-50 p-3 text-center">
-            <Globe size={20} className="mx-auto text-secondary" />
-            <p className="mt-2 text-xs text-secondary">Coming soon</p>
+          <div className="mt-4 space-y-3" onClick={(e) => e.stopPropagation()}>
+            <input
+              value={customDomain}
+              onChange={(e) => setCustomDomain(e.target.value)}
+              placeholder="example.com"
+              className="w-full rounded-lg border-2 border-secondary-fade bg-white px-3 py-2.5 text-sm text-secondary-darker outline-none transition placeholder:text-secondary focus:border-primary"
+            />
+            <button
+              type="button"
+              onClick={() => {
+                if (!customDomain.trim()) {
+                  uiToast.error("Please enter a domain");
+                  return;
+                }
+                setShowConnectModal(true);
+              }}
+              className="w-full rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-active"
+            >
+              Connect domain
+            </button>
           </div>
         )}
-      </button>
+      </div>
+
+      {/* Connect Domain Modal */}
+      {showConnectModal && (
+        <ConnectDomainModal
+          domain={customDomain.trim()}
+          onClose={() => setShowConnectModal(false)}
+        />
+      )}
 
       {/* Preview + Publish buttons */}
       <div className="flex gap-3">
