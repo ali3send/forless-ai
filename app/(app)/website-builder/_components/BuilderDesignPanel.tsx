@@ -1,8 +1,8 @@
 // app/(app)/website-builder/_components/BuilderDesignPanel.tsx
 "use client";
 
-import { useState } from "react";
-import { Check, ChevronDown, ChevronUp, RotateCcw } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Check, ChevronDown, ChevronUp, RotateCcw, Search } from "lucide-react";
 import {
   STYLE_PRESETS,
   GRADIENT_PRESETS,
@@ -35,6 +35,7 @@ export function BuilderDesignPanel() {
 
   const current = ensureBrand(brand);
   const [showCustomize, setShowCustomize] = useState(false);
+  const [fontSearch, setFontSearch] = useState("");
 
   // Derive current selections from store (no local staging)
   const currentPresetId =
@@ -278,8 +279,22 @@ export function BuilderDesignPanel() {
       {/* Font Style */}
       <div className="space-y-3">
         <h3 className="text-sm font-bold text-secondary-darker">Font Style</h3>
-        <div className="space-y-2">
-          {FONTS.map((f) => {
+        <div className="relative">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary" />
+          <input
+            type="text"
+            value={fontSearch}
+            onChange={(e) => setFontSearch(e.target.value)}
+            placeholder="Search fonts..."
+            className="w-full rounded-lg border border-secondary-fade py-2 pl-9 pr-3 text-xs text-secondary-darker outline-none focus:border-primary/50"
+          />
+        </div>
+        <div className="max-h-72 space-y-2 overflow-y-auto pr-1">
+          {FONTS.filter(
+            (f) =>
+              !fontSearch ||
+              f.label.toLowerCase().includes(fontSearch.toLowerCase())
+          ).map((f) => {
             const isSelected = currentFontId === f.id;
             return (
               <button
@@ -293,6 +308,7 @@ export function BuilderDesignPanel() {
                 }`}
               >
                 <div className="text-left">
+                  {f.google && <GoogleFontPreview fontLabel={f.label} />}
                   <p
                     className="text-sm font-semibold text-secondary-darker"
                     style={{ fontFamily: f.css }}
@@ -420,4 +436,22 @@ function NavbarColorPicker({
       )}
     </div>
   );
+}
+
+/* ─── Google Font Preview (lightweight) ─── */
+
+function GoogleFontPreview({ fontLabel }: { fontLabel: string }) {
+  useEffect(() => {
+    const family = fontLabel.replace(/ /g, "+");
+    const href = `https://fonts.googleapis.com/css2?family=${family}&text=${encodeURIComponent(fontLabel)}&display=swap`;
+    const existing = document.querySelector(`link[href="${href}"]`);
+    if (existing) return;
+
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = href;
+    document.head.appendChild(link);
+  }, [fontLabel]);
+
+  return null;
 }

@@ -22,6 +22,7 @@ export type BrandFont = {
   label: string;
   description: string;
   css: string;
+  google?: boolean;
 };
 
 export type StylePreset = {
@@ -192,6 +193,7 @@ export const GRADIENT_PRESETS: GradientPreset[] = [
 ];
 
 export const FONTS: BrandFont[] = [
+  // System fonts
   {
     id: "sans",
     label: "Sans",
@@ -210,4 +212,39 @@ export const FONTS: BrandFont[] = [
     description: "Tech and minimal",
     css: "SFMono-Regular, Menlo, Monaco, monospace",
   },
+  // Google Fonts — Sans-Serif
+  { id: "inter", label: "Inter", description: "Clean geometric sans-serif", css: "'Inter', sans-serif", google: true },
+  { id: "poppins", label: "Poppins", description: "Friendly rounded sans-serif", css: "'Poppins', sans-serif", google: true },
+  { id: "roboto", label: "Roboto", description: "Google's versatile typeface", css: "'Roboto', sans-serif", google: true },
+  { id: "open-sans", label: "Open Sans", description: "Neutral and readable", css: "'Open Sans', sans-serif", google: true },
+  { id: "lato", label: "Lato", description: "Warm and stable", css: "'Lato', sans-serif", google: true },
+  { id: "montserrat", label: "Montserrat", description: "Bold urban headlines", css: "'Montserrat', sans-serif", google: true },
+  { id: "nunito", label: "Nunito", description: "Soft rounded sans-serif", css: "'Nunito', sans-serif", google: true },
+  { id: "raleway", label: "Raleway", description: "Elegant thin to bold", css: "'Raleway', sans-serif", google: true },
+  { id: "work-sans", label: "Work Sans", description: "Optimized for screens", css: "'Work Sans', sans-serif", google: true },
+  { id: "dm-sans", label: "DM Sans", description: "Low-contrast geometric", css: "'DM Sans', sans-serif", google: true },
+  { id: "outfit", label: "Outfit", description: "Modern variable sans", css: "'Outfit', sans-serif", google: true },
+  { id: "space-grotesk", label: "Space Grotesk", description: "Proportional geometric", css: "'Space Grotesk', sans-serif", google: true },
+  { id: "manrope", label: "Manrope", description: "Semi-condensed modern", css: "'Manrope', sans-serif", google: true },
+  // Google Fonts — Serif
+  { id: "playfair-display", label: "Playfair Display", description: "High-contrast editorial", css: "'Playfair Display', serif", google: true },
+  { id: "merriweather", label: "Merriweather", description: "Pleasant on-screen reading", css: "'Merriweather', serif", google: true },
+  { id: "lora", label: "Lora", description: "Contemporary calligraphy", css: "'Lora', serif", google: true },
+  { id: "libre-baskerville", label: "Libre Baskerville", description: "Classic book typeface", css: "'Libre Baskerville', serif", google: true },
+  { id: "source-serif-4", label: "Source Serif 4", description: "Adobe's readable serif", css: "'Source Serif 4', serif", google: true },
+  { id: "crimson-text", label: "Crimson Text", description: "Old-style book text", css: "'Crimson Text', serif", google: true },
+  // Google Fonts — Display
+  { id: "oswald", label: "Oswald", description: "Condensed gothic headlines", css: "'Oswald', sans-serif", google: true },
+  { id: "bebas-neue", label: "Bebas Neue", description: "All-caps display font", css: "'Bebas Neue', sans-serif", google: true },
+  { id: "anton", label: "Anton", description: "Impact-style display", css: "'Anton', sans-serif", google: true },
+  // Google Fonts — Handwriting
+  { id: "pacifico", label: "Pacifico", description: "Retro brush script", css: "'Pacifico', cursive", google: true },
+  { id: "dancing-script", label: "Dancing Script", description: "Lively casual script", css: "'Dancing Script', cursive", google: true },
+  { id: "caveat", label: "Caveat", description: "Natural handwriting", css: "'Caveat', cursive", google: true },
+  { id: "permanent-marker", label: "Permanent Marker", description: "Bold marker style", css: "'Permanent Marker', cursive", google: true },
+  { id: "lobster", label: "Lobster", description: "Bold condensed script", css: "'Lobster', cursive", google: true },
+  // Google Fonts — Monospace
+  { id: "jetbrains-mono", label: "JetBrains Mono", description: "Developer-friendly mono", css: "'JetBrains Mono', monospace", google: true },
+  { id: "fira-code", label: "Fira Code", description: "Coding ligatures mono", css: "'Fira Code', monospace", google: true },
+  { id: "source-code-pro", label: "Source Code Pro", description: "Adobe's coding font", css: "'Source Code Pro', monospace", google: true },
 ];

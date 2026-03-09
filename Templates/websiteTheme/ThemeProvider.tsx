@@ -3,6 +3,8 @@
 import type { ReactNode } from "react";
 import { createTheme } from "./theme.utils";
 import type { WebsiteTheme } from "./theme.types";
+import { FONTS } from "@/app/(app)/brand/brandConfig";
+import { GoogleFontLoader } from "./GoogleFontLoader";
 
 type Props = {
   children: ReactNode;
@@ -30,8 +32,12 @@ export function ThemeProvider({ children, value }: Props) {
     fontFamily: fontFamily,
   };
 
+  const matchedFont = FONTS.find((f) => f.css === fontFamily);
+  const googleFontLabel = matchedFont?.google ? matchedFont.label : null;
+
   return (
     <div style={cssVars} className="min-h-full bg-(--color-bg) text-text">
+      {googleFontLabel && <GoogleFontLoader fontFamily={googleFontLabel} />}
       {children}
     </div>
   );
