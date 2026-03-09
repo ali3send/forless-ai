@@ -92,7 +92,7 @@ export function BuilderDesignPanel() {
       </div>
 
       {/* Background Gradients */}
-      <div className="space-y-3">
+      {/* <div className="space-y-3">
         <h3 className="text-sm font-bold text-secondary-darker">
           Background Gradients
         </h3>
@@ -127,7 +127,6 @@ export function BuilderDesignPanel() {
             );
           })}
 
-          {/* No gradient option */}
           <button
             type="button"
             onClick={() => applyGradient("none")}
@@ -151,7 +150,7 @@ export function BuilderDesignPanel() {
             <p className="text-[10px] text-secondary">Solid background</p>
           </button>
         </div>
-      </div>
+      </div> */}
 
       {/* Style Presets */}
       <div className="space-y-3">
