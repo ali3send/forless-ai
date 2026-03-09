@@ -56,13 +56,13 @@ export default function WebsiteBuilderPage() {
   return (
     <div className="h-screen overflow-hidden">
       <div className="flex h-full w-full">
-        {/* Sidebar */}
+        {/* Sidebar (icon nav ~80px + panel ~300px) */}
         <div
           className={clsx(
-            "h-full overflow-y-auto border-r border-secondary-fade transition-all duration-300",
+            "h-full overflow-hidden border-r border-secondary-fade transition-all duration-300",
             focus === "editor" && "w-full",
             focus === "preview" && "w-0",
-            focus === "split" && "w-[260px] sm:w-[300px] lg:w-[340px]"
+            focus === "split" && "w-[380px] lg:w-[420px]"
           )}
         >
           <BuilderSidebar

@@ -64,6 +64,23 @@ export type WebsiteData = {
     subheadline: string;
     buttonLabel: string;
   };
+
+  // Optional extended fields
+  socialLinks?: {
+    show: boolean;
+    links: { platform: string; url: string }[];
+  };
+  websiteName?: string;
+  faviconUrl?: string;
+  primaryLanguage?: string;
+  maintenanceMode?: boolean;
+  seoTitle?: string;
+  seoDescription?: string;
+  openGraphImageUrl?: string;
+  googleAnalyticsId?: string;
+  metaPixelId?: string;
+  legal?: { privacyPolicy?: string; terms?: string };
+  footerText?: string;
 };
 
 export function getDefaultWebsiteData(type: WebsiteType): WebsiteData {
