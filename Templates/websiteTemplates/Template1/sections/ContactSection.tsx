@@ -9,7 +9,7 @@ type Props = {
   websiteId: string;
 } & SectionColors;
 
-export function ContactSection({ contact, finalCta, websiteId, bgColor, headingColor, textColor, buttonBg, buttonText, cardBg }: Props) {
+export function ContactSection({ contact, finalCta, websiteId, bgColor, headingColor, textColor, accentColor, buttonBg, buttonText, cardBg, inputBg, inputText, inputPlaceholder }: Props) {
   const { submit, loading, success, error } = useContactForm(websiteId);
 
   return (
@@ -35,12 +35,12 @@ export function ContactSection({ contact, finalCta, websiteId, bgColor, headingC
             <h3 className="text-sm font-semibold" style={{ color: headingColor || "var(--color-text)" }}>Contact details</h3>
 
             <div className="space-y-3">
-              <ContactRow type="email" value={contact.email} />
+              <ContactRow type="email" value={contact.email} textColor={textColor} accentColor={accentColor} />
               {contact.whatsapp && (
-                <ContactRow type="whatsapp" value={contact.whatsapp} />
+                <ContactRow type="whatsapp" value={contact.whatsapp} textColor={textColor} accentColor={accentColor} />
               )}
               {contact.phone && (
-                <ContactRow type="phone" value={contact.phone} />
+                <ContactRow type="phone" value={contact.phone} textColor={textColor} accentColor={accentColor} />
               )}
             </div>
 
@@ -74,22 +74,35 @@ export function ContactSection({ contact, finalCta, websiteId, bgColor, headingC
                 label="Name"
                 name="name"
                 placeholder="Enter your name"
+                labelColor={headingColor}
+                inputBg={inputBg}
+                inputText={inputText}
+                inputPlaceholder={inputPlaceholder}
               />
               <TextInput
                 label="Email"
                 name="email"
                 type="email"
                 placeholder="you@example.com"
+                labelColor={headingColor}
+                inputBg={inputBg}
+                inputText={inputText}
+                inputPlaceholder={inputPlaceholder}
               />
             </div>
 
-            <label className="mt-3 block text-xs text-(--color-muted)">
+            <label className="mt-3 block text-xs" style={{ color: headingColor || "var(--color-muted)" }}>
               Message
+              {inputPlaceholder && (
+                <style>{`.contact-textarea::placeholder { color: ${inputPlaceholder} !important; }`}</style>
+              )}
               <textarea
                 name="message"
                 rows={4}
-                className="mt-1 w-full rounded-lg border px-3 py-2 text-xs outline-none bg-(--color-bg) text-text"
+                className="contact-textarea mt-1 w-full rounded-lg border px-3 py-2 text-xs outline-none"
                 style={{
+                  backgroundColor: inputBg || "var(--color-bg)",
+                  color: inputText || "var(--color-text)",
                   borderColor:
                     "color-mix(in srgb, var(--color-primary) 20%, transparent)",
                 }}

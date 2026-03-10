@@ -89,12 +89,20 @@ export function WebsiteTemplate2Modern({ data, brand, websiteId }: Props) {
         bgColor={data.contact.bgColor}
         headingColor={data.contact.headingColor}
         textColor={data.contact.textColor}
+        accentColor={data.contact.accentColor}
         buttonBg={data.contact.buttonBg}
         buttonText={data.contact.buttonText}
         cardBg={data.contact.cardBg}
+        inputBg={data.contact.inputBg}
+        inputText={data.contact.inputText}
+        inputPlaceholder={data.contact.inputPlaceholder}
       />
 
-      <Footer brandName={data.brandName} />
+      <Footer
+        brandName={data.brandName}
+        bgColor={data.footer?.bgColor}
+        textColor={data.footer?.textColor}
+      />
     </div>
   );
 }

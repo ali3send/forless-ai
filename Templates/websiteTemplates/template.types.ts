@@ -6,6 +6,15 @@ export type SectionColors = {
   buttonBg?: string;
   buttonText?: string;
   cardBg?: string;
+  inputBg?: string;
+  inputText?: string;
+  inputPlaceholder?: string;
+};
+
+export type FooterData = {
+  brandName: string;
+  bgColor?: string;
+  textColor?: string;
 };
 
 export type AboutData = {

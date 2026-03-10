@@ -276,6 +276,14 @@ export function BuilderDesignPanel() {
         }
       />
 
+      {/* Footer Colors */}
+      <FooterColorPicker
+        footer={data.footer}
+        onChange={(key, val) =>
+          patchData({ footer: { ...data.footer, [key]: val } })
+        }
+      />
+
       {/* Font Style */}
       <div className="space-y-3">
         <h3 className="text-sm font-bold text-secondary-darker">Font Style</h3>
@@ -394,6 +402,109 @@ function NavbarColorPicker({
       {open && (
         <div className="border-t border-secondary-fade px-3 py-3 space-y-2.5">
           {NAVBAR_FIELDS.map((field) => {
+            const value = colors[field.key];
+            return (
+              <div key={field.key}>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-[11px] font-medium text-secondary">
+                    {field.label}
+                  </label>
+                  {value && (
+                    <button
+                      type="button"
+                      onClick={() => onChange(field.key, undefined)}
+                      className="flex items-center gap-0.5 text-[10px] text-secondary hover:text-primary transition"
+                    >
+                      <RotateCcw size={9} />
+                      Reset
+                    </button>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={value || field.defaultPreview}
+                    onChange={(e) => onChange(field.key, e.target.value)}
+                    className="h-7 w-7 cursor-pointer rounded-md border border-secondary-fade"
+                  />
+                  <input
+                    type="text"
+                    value={value || ""}
+                    placeholder="Default"
+                    onChange={(e) =>
+                      onChange(field.key, e.target.value || undefined)
+                    }
+                    className="flex-1 rounded-md border border-secondary-fade px-2 py-1 text-[11px] text-secondary-darker outline-none focus:border-primary/50"
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ─── Footer Color Picker ─── */
+
+type FooterColors = {
+  bgColor?: string;
+  textColor?: string;
+};
+
+const FOOTER_FIELDS: { key: keyof FooterColors; label: string; defaultPreview: string }[] = [
+  { key: "bgColor", label: "Background", defaultPreview: "#ffffff" },
+  { key: "textColor", label: "Text", defaultPreview: "#666666" },
+];
+
+function FooterColorPicker({
+  footer,
+  onChange,
+}: {
+  footer?: FooterColors;
+  onChange: (key: keyof FooterColors, value: string | undefined) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const colors = footer ?? {};
+  const activeCount = FOOTER_FIELDS.filter((f) => colors[f.key]).length;
+
+  return (
+    <div className="rounded-xl border border-secondary-fade">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="flex w-full items-center justify-between px-3 py-2.5"
+      >
+        <div className="flex items-center gap-2">
+          <div className="flex gap-0.5">
+            {FOOTER_FIELDS.map((f) => (
+              <span
+                key={f.key}
+                className="h-3.5 w-3.5 rounded-full border border-secondary-fade"
+                style={{ backgroundColor: colors[f.key] || f.defaultPreview }}
+              />
+            ))}
+          </div>
+          <p className="text-xs font-semibold text-secondary-darker">
+            Footer Styles
+            {activeCount > 0 && (
+              <span className="ml-1 text-[10px] font-normal text-primary">
+                ({activeCount} custom)
+              </span>
+            )}
+          </p>
+        </div>
+        {open ? (
+          <ChevronUp size={14} className="text-secondary" />
+        ) : (
+          <ChevronDown size={14} className="text-secondary" />
+        )}
+      </button>
+
+      {open && (
+        <div className="border-t border-secondary-fade px-3 py-3 space-y-2.5">
+          {FOOTER_FIELDS.map((field) => {
             const value = colors[field.key];
             return (
               <div key={field.key}>

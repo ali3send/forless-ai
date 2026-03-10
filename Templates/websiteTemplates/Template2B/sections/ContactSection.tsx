@@ -11,7 +11,7 @@ type Props = {
   layout: LayoutKey;
 } & SectionColors;
 
-export function ContactSection({ contact, finalCta, websiteId, layout, bgColor, headingColor, textColor, buttonBg, buttonText, cardBg }: Props) {
+export function ContactSection({ contact, finalCta, websiteId, layout, bgColor, headingColor, textColor, accentColor, buttonBg, buttonText, cardBg, inputBg, inputText, inputPlaceholder }: Props) {
   const { submit, loading, success, error } = useContactForm(websiteId);
 
   if (layout === "immersive") {
@@ -37,15 +37,20 @@ export function ContactSection({ contact, finalCta, websiteId, layout, bgColor, 
               submit(e.currentTarget);
             }}
           >
-            <TextInput label="Name" name="name" placeholder="Enter your name" />
-            <TextInput label="Email" name="email" type="email" placeholder="you@example.com" />
-            <label className="block text-xs text-(--color-muted)">
+            <TextInput label="Name" name="name" placeholder="Enter your name" labelColor={headingColor} inputBg={inputBg} inputText={inputText} inputPlaceholder={inputPlaceholder} />
+            <TextInput label="Email" name="email" type="email" placeholder="you@example.com" labelColor={headingColor} inputBg={inputBg} inputText={inputText} inputPlaceholder={inputPlaceholder} />
+            <label className="block text-xs" style={{ color: headingColor || "var(--color-muted)" }}>
               Message
+              {inputPlaceholder && (
+                <style>{`.contact-textarea-imm::placeholder { color: ${inputPlaceholder} !important; }`}</style>
+              )}
               <textarea
                 name="message"
                 rows={4}
-                className="mt-1 w-full rounded-md border px-2 py-1.5 text-xs outline-none bg-(--color-bg) text-text"
+                className="contact-textarea-imm mt-1 w-full rounded-md border px-2 py-1.5 text-xs outline-none"
                 style={{
+                  backgroundColor: inputBg || "var(--color-bg)",
+                  color: inputText || "var(--color-text)",
                   borderColor: "color-mix(in srgb, var(--color-primary) 25%, transparent)",
                 }}
                 placeholder="Tell us a bit about what you need help with..."
@@ -67,9 +72,9 @@ export function ContactSection({ contact, finalCta, websiteId, layout, bgColor, 
           </form>
 
           <div className="mt-12 flex flex-wrap justify-center gap-6">
-            <ContactRow type="email" value={contact.email} />
-            {contact.whatsapp && <ContactRow type="whatsapp" value={contact.whatsapp} />}
-            {contact.phone && <ContactRow type="phone" value={contact.phone} />}
+            <ContactRow type="email" value={contact.email} textColor={textColor} accentColor={accentColor} />
+            {contact.whatsapp && <ContactRow type="whatsapp" value={contact.whatsapp} textColor={textColor} accentColor={accentColor} />}
+            {contact.phone && <ContactRow type="phone" value={contact.phone} textColor={textColor} accentColor={accentColor} />}
           </div>
         </div>
       </section>
@@ -118,9 +123,9 @@ export function ContactSection({ contact, finalCta, websiteId, layout, bgColor, 
           <div className="space-y-5 text-sm pt-1">
             <h3 className="text-sm font-semibold" style={{ color: headingColor || "var(--color-text)" }}>Contact details</h3>
             <div className="space-y-3">
-              <ContactRow type="email" value={contact.email} />
-              {contact.whatsapp && <ContactRow type="whatsapp" value={contact.whatsapp} />}
-              {contact.phone && <ContactRow type="phone" value={contact.phone} />}
+              <ContactRow type="email" value={contact.email} textColor={textColor} accentColor={accentColor} />
+              {contact.whatsapp && <ContactRow type="whatsapp" value={contact.whatsapp} textColor={textColor} accentColor={accentColor} />}
+              {contact.phone && <ContactRow type="phone" value={contact.phone} textColor={textColor} accentColor={accentColor} />}
             </div>
             <p className="pt-3 text-xs" style={{ color: textColor || "var(--color-muted)" }}>
               We usually reply within 24 hours on business days.
@@ -142,17 +147,22 @@ export function ContactSection({ contact, finalCta, websiteId, layout, bgColor, 
             <p className="mt-2 text-sm" style={{ color: textColor || "var(--color-muted)" }}>{finalCta.subheadline}</p>
 
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              <TextInput label="Name" name="name" placeholder="Enter your name" />
-              <TextInput label="Email" name="email" type="email" placeholder="you@example.com" />
+              <TextInput label="Name" name="name" placeholder="Enter your name" labelColor={headingColor} inputBg={inputBg} inputText={inputText} inputPlaceholder={inputPlaceholder} />
+              <TextInput label="Email" name="email" type="email" placeholder="you@example.com" labelColor={headingColor} inputBg={inputBg} inputText={inputText} inputPlaceholder={inputPlaceholder} />
             </div>
 
-            <label className="mt-3 block text-xs text-(--color-muted)">
+            <label className="mt-3 block text-xs" style={{ color: headingColor || "var(--color-muted)" }}>
               Message
+              {inputPlaceholder && (
+                <style>{`.contact-textarea::placeholder { color: ${inputPlaceholder} !important; }`}</style>
+              )}
               <textarea
                 name="message"
                 rows={4}
-                className="mt-1 w-full rounded-md border px-2 py-1.5 text-xs outline-none bg-(--color-bg) text-text"
+                className="contact-textarea mt-1 w-full rounded-md border px-2 py-1.5 text-xs outline-none"
                 style={{
+                  backgroundColor: inputBg || "var(--color-bg)",
+                  color: inputText || "var(--color-text)",
                   borderColor: "color-mix(in srgb, var(--color-primary) 25%, transparent)",
                 }}
                 placeholder="Tell us a bit about what you need help with..."

@@ -97,6 +97,9 @@ export type WebsiteData = {
     buttonBg?: string;
     buttonText?: string;
     cardBg?: string;
+    inputBg?: string;
+    inputText?: string;
+    inputPlaceholder?: string;
   };
 
   finalCta: {
@@ -110,6 +113,11 @@ export type WebsiteData = {
     textColor?: string;
     buttonBg?: string;
     buttonText?: string;
+  };
+
+  footer?: {
+    bgColor?: string;
+    textColor?: string;
   };
 
   // Optional extended fields

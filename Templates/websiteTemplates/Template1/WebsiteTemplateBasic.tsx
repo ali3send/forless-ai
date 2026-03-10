@@ -23,7 +23,7 @@ export function WebsiteTemplateBasic({ data, brand, websiteId }: Props) {
   const { bgColor: aboutBg, headingColor: aboutH, textColor: aboutT } = data.about;
   const { bgColor: featBg, headingColor: featH, textColor: featT, accentColor: featA, cardBg: featCB } = data.features;
   const { bgColor: offerBg, headingColor: offerH, textColor: offerT, accentColor: offerA, buttonBg: offerBB, buttonText: offerBT, cardBg: offerCB } = data.offers;
-  const { bgColor: contBg, headingColor: contH, textColor: contT, buttonBg: contBB, buttonText: contBT, cardBg: contCB } = data.contact;
+  const { bgColor: contBg, headingColor: contH, textColor: contT, accentColor: contA, buttonBg: contBB, buttonText: contBT, cardBg: contCB, inputBg: contIB, inputText: contIT, inputPlaceholder: contIP } = data.contact;
 
   return (
     <div className="min-h-screen bg-(--color-bg) text-text">
@@ -91,12 +91,20 @@ export function WebsiteTemplateBasic({ data, brand, websiteId }: Props) {
         bgColor={contBg}
         headingColor={contH}
         textColor={contT}
+        accentColor={contA}
         buttonBg={contBB}
         buttonText={contBT}
         cardBg={contCB}
+        inputBg={contIB}
+        inputText={contIT}
+        inputPlaceholder={contIP}
       />
 
-      <Footer brandName={data.brandName} />
+      <Footer
+        brandName={data.brandName}
+        bgColor={data.footer?.bgColor}
+        textColor={data.footer?.textColor}
+      />
     </div>
   );
 }

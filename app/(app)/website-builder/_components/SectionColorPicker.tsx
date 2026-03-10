@@ -11,6 +11,9 @@ export type SectionColorValues = {
   buttonBg?: string;
   buttonText?: string;
   cardBg?: string;
+  inputBg?: string;
+  inputText?: string;
+  inputPlaceholder?: string;
 };
 
 type Props = {
@@ -30,6 +33,9 @@ const COLOR_FIELDS: {
   { key: "buttonBg", label: "Button Background", defaultPreview: "#3b82f6" },
   { key: "buttonText", label: "Button Text", defaultPreview: "#ffffff" },
   { key: "cardBg", label: "Card Background", defaultPreview: "#f8f8f8" },
+  { key: "inputBg", label: "Input Background", defaultPreview: "#ffffff" },
+  { key: "inputText", label: "Input Text", defaultPreview: "#111111" },
+  { key: "inputPlaceholder", label: "Input Placeholder", defaultPreview: "#999999" },
 ];
 
 export function SectionColorPicker({ colors, onChange }: Props) {
