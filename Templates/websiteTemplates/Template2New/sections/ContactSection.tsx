@@ -30,9 +30,7 @@ export function ContactSection({
     <section
       id="contact"
       style={{
-        background:
-          bgColor ||
-          "color-mix(in srgb, var(--color-bg) 96%, black)",
+        background: bgColor || undefined,
         color: textColor || undefined,
       }}
     >
@@ -155,12 +153,12 @@ export function ContactSection({
             >
               Message
               {inputPlaceholder && (
-                <style>{`.t1-contact-textarea::placeholder { color: ${inputPlaceholder} !important; }`}</style>
+                <style>{`.t2-contact-textarea::placeholder { color: ${inputPlaceholder} !important; }`}</style>
               )}
               <textarea
                 name="message"
                 rows={4}
-                className="t1-contact-textarea mt-1 w-full rounded-lg border px-3 py-2 text-xs outline-none"
+                className="t2-contact-textarea mt-1 w-full rounded-lg border px-3 py-2 text-xs outline-none"
                 style={{
                   backgroundColor: inputBg || "var(--color-bg)",
                   color: inputText || "var(--color-text)",

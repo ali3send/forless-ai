@@ -17,9 +17,9 @@ type Props = {
   websiteId: string;
 };
 
-export function WebsiteTemplateBasic({ data, brand, websiteId }: Props) {
+export function WebsiteTemplate2Immersive({ data, brand, websiteId }: Props) {
   return (
-    <div className="min-h-screen bg-(--color-bg) text-text">
+    <div className="relative min-h-screen bg-(--color-bg) text-text">
       <Navbar
         brandName={data.brandName}
         primary={brand?.palette?.primary ?? "#10b981"}
@@ -29,20 +29,32 @@ export function WebsiteTemplateBasic({ data, brand, websiteId }: Props) {
         textColor={data.navbar?.textColor}
         buttonBg={data.navbar?.buttonBg}
         buttonText={data.navbar?.buttonText}
-        layout="basic"
+        layout="immersive"
       />
 
       <HeroSection
         brandName={data.brandName}
         tagline={data.tagline}
         hero={data.hero}
-        layout="basic"
+        layout="immersive"
         bgColor={data.hero.bgColor}
         headingColor={data.hero.headingColor}
         textColor={data.hero.textColor}
         accentColor={data.hero.accentColor}
         buttonBg={data.hero.buttonBg}
         buttonText={data.hero.buttonText}
+      />
+
+      <AboutSection
+        title={data.about.title}
+        body={data.about.body}
+        imageQuery={data.about.imageQuery}
+        imageUrl={data.about.imageUrl}
+        bgColor={data.about.bgColor}
+        headingColor={data.about.headingColor}
+        textColor={data.about.textColor}
+        buttonBg={data.about.buttonBg}
+        buttonText={data.about.buttonText}
       />
 
       <FeaturesSection
@@ -67,16 +79,6 @@ export function WebsiteTemplateBasic({ data, brand, websiteId }: Props) {
         buttonBg={data.offers.buttonBg}
         buttonText={data.offers.buttonText}
         cardBg={data.offers.cardBg}
-      />
-
-      <AboutSection
-        title={data.about.title}
-        body={data.about.body}
-        imageQuery={data.about.imageQuery}
-        imageUrl={data.about.imageUrl}
-        bgColor={data.about.bgColor}
-        headingColor={data.about.headingColor}
-        textColor={data.about.textColor}
       />
 
       <ContactSection

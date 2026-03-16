@@ -17,42 +17,55 @@ export function Navbar({
 }: Props) {
   const links = [
     { label: "Home", href: "#" },
-    { label: "Categories", href: "#features" },
+    { label: "Solutions", href: "#features" },
     { label: offersTitle, href: "#offers" },
-    { label: "About", href: "#about" },
-    { label: "Contact", href: "#contact" },
+    { label: "About Us", href: "#about" },
+    { label: "Contact Us", href: "#contact" },
   ];
 
   if (layout === "immersive") {
     return (
-      <header
-        className="z-30"
-        style={{ backgroundColor: bgColor || "var(--color-bg)" }}
-      >
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+      <header className="absolute top-0 left-0 right-0 z-30 px-6 pt-5">
+        <div
+          className="mx-auto flex max-w-6xl items-center justify-between rounded-full px-6 py-3 shadow-lg"
+          style={{
+            backgroundColor: bgColor || "rgba(255,255,255,0.95)",
+            backdropFilter: "blur(12px)",
+          }}
+        >
           <div className="flex items-center gap-2.5">
             {logoSvg && (
               <BrandLogo svg={logoSvg} primary={primary} secondary={primary} />
             )}
             <div
-              className="text-lg font-bold"
+              className="text-sm font-bold"
               style={{ color: textColor || "var(--color-text)" }}
             >
               {brandName}
             </div>
           </div>
 
-          <nav className="hidden gap-8 text-sm font-medium md:flex">
-            {links.map((link) => (
+          <nav className="hidden items-center gap-7 text-sm font-medium md:flex">
+            {links.map((link, i) => (
               <a
                 key={link.label}
                 href={link.href}
-                className="transition hover:opacity-80"
-                style={{ color: textColor || "var(--color-muted)" }}
+                className={`transition hover:opacity-80 ${i === 0 ? "underline underline-offset-4" : ""}`}
+                style={{ color: textColor || "var(--color-text)" }}
               >
                 {link.label}
               </a>
             ))}
+            <a
+              href="#contact"
+              className="rounded-full px-5 py-2 text-xs font-semibold transition hover:opacity-90"
+              style={{
+                backgroundColor: buttonBg || "var(--color-primary)",
+                color: buttonText || "#ffffff",
+              }}
+            >
+              Sign up
+            </a>
           </nav>
         </div>
       </header>
@@ -73,20 +86,20 @@ export function Navbar({
         }}
       >
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2.5 rounded-full border px-4 py-1.5" style={{ borderColor: "color-mix(in srgb, var(--color-primary) 20%, transparent)" }}>
             {logoSvg && (
               <BrandLogo svg={logoSvg} primary={primary} secondary={primary} />
             )}
             <div
-              className="text-lg font-bold"
+              className="text-sm font-bold"
               style={{ color: textColor || "var(--color-text)" }}
             >
               {brandName}
             </div>
           </div>
 
-          <nav className="hidden items-center gap-8 text-sm font-medium md:flex">
-            {links.slice(0, 4).map((link) => (
+          <nav className="hidden items-center gap-7 text-sm font-medium md:flex">
+            {links.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
@@ -104,7 +117,7 @@ export function Navbar({
                 color: buttonText || "var(--color-bg)",
               }}
             >
-              Contact
+              Sign up
             </a>
           </nav>
         </div>
@@ -128,14 +141,14 @@ export function Navbar({
             <BrandLogo svg={logoSvg} primary={primary} secondary={primary} />
           )}
           <div
-            className="text-lg font-bold"
+            className="text-sm font-bold"
             style={{ color: textColor || "var(--color-text)" }}
           >
             {brandName}
           </div>
         </div>
 
-        <nav className="hidden gap-8 text-sm font-medium md:flex">
+        <nav className="hidden items-center gap-7 text-sm font-medium md:flex">
           {links.map((link) => (
             <a
               key={link.label}
@@ -146,6 +159,16 @@ export function Navbar({
               {link.label}
             </a>
           ))}
+          <a
+            href="#contact"
+            className="rounded-full px-5 py-2 text-xs font-semibold transition hover:opacity-90"
+            style={{
+              backgroundColor: buttonBg || "var(--color-primary)",
+              color: buttonText || "var(--color-bg)",
+            }}
+          >
+            Sign up
+          </a>
         </nav>
       </div>
     </header>

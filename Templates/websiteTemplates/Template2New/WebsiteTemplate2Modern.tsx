@@ -17,7 +17,7 @@ type Props = {
   websiteId: string;
 };
 
-export function WebsiteTemplate2Immersive({ data, brand, websiteId }: Props) {
+export function WebsiteTemplate2Modern({ data, brand, websiteId }: Props) {
   return (
     <div className="min-h-screen bg-(--color-bg) text-text">
       <Navbar
@@ -29,13 +29,14 @@ export function WebsiteTemplate2Immersive({ data, brand, websiteId }: Props) {
         textColor={data.navbar?.textColor}
         buttonBg={data.navbar?.buttonBg}
         buttonText={data.navbar?.buttonText}
+        layout="modern"
       />
 
       <HeroSection
         brandName={data.brandName}
         tagline={data.tagline}
         hero={data.hero}
-        layout="immersive"
+        layout="modern"
         bgColor={data.hero.bgColor}
         headingColor={data.hero.headingColor}
         textColor={data.hero.textColor}
@@ -49,17 +50,17 @@ export function WebsiteTemplate2Immersive({ data, brand, websiteId }: Props) {
         body={data.about.body}
         imageQuery={data.about.imageQuery}
         imageUrl={data.about.imageUrl}
-        layout="immersive"
         bgColor={data.about.bgColor}
         headingColor={data.about.headingColor}
         textColor={data.about.textColor}
+        buttonBg={data.about.buttonBg}
+        buttonText={data.about.buttonText}
       />
 
       <FeaturesSection
         title={data.features.title}
         subtitle={data.features.subtitle}
         features={data.features.items}
-        layout="immersive"
         bgColor={data.features.bgColor}
         headingColor={data.features.headingColor}
         textColor={data.features.textColor}
@@ -71,7 +72,6 @@ export function WebsiteTemplate2Immersive({ data, brand, websiteId }: Props) {
         title={data.offers.title}
         subtitle={data.offers.subtitle}
         offers={data.offers.items}
-        layout="immersive"
         bgColor={data.offers.bgColor}
         headingColor={data.offers.headingColor}
         textColor={data.offers.textColor}
@@ -85,7 +85,6 @@ export function WebsiteTemplate2Immersive({ data, brand, websiteId }: Props) {
         contact={data.contact}
         finalCta={data.finalCta}
         websiteId={websiteId}
-        layout="immersive"
         bgColor={data.contact.bgColor}
         headingColor={data.contact.headingColor}
         textColor={data.contact.textColor}
@@ -100,6 +99,8 @@ export function WebsiteTemplate2Immersive({ data, brand, websiteId }: Props) {
 
       <Footer
         brandName={data.brandName}
+        tagline={data.tagline}
+        contact={data.contact}
         bgColor={data.footer?.bgColor}
         textColor={data.footer?.textColor}
       />

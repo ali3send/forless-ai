@@ -17,9 +17,9 @@ type Props = {
   websiteId: string;
 };
 
-export function WebsiteTemplate2Modern({ data, brand, websiteId }: Props) {
+export function WebsiteTemplate1Immersive({ data, brand, websiteId }: Props) {
   return (
-    <div className="min-h-screen bg-(--color-bg) text-text">
+    <div className="relative min-h-screen bg-(--color-bg) text-text">
       <Navbar
         brandName={data.brandName}
         primary={brand?.palette?.primary ?? "#10b981"}
@@ -29,13 +29,14 @@ export function WebsiteTemplate2Modern({ data, brand, websiteId }: Props) {
         textColor={data.navbar?.textColor}
         buttonBg={data.navbar?.buttonBg}
         buttonText={data.navbar?.buttonText}
+        layout="immersive"
       />
 
       <HeroSection
         brandName={data.brandName}
         tagline={data.tagline}
         hero={data.hero}
-        layout="modern"
+        layout="immersive"
         bgColor={data.hero.bgColor}
         headingColor={data.hero.headingColor}
         textColor={data.hero.textColor}
@@ -44,22 +45,10 @@ export function WebsiteTemplate2Modern({ data, brand, websiteId }: Props) {
         buttonText={data.hero.buttonText}
       />
 
-      <AboutSection
-        title={data.about.title}
-        body={data.about.body}
-        imageQuery={data.about.imageQuery}
-        imageUrl={data.about.imageUrl}
-        layout="modern"
-        bgColor={data.about.bgColor}
-        headingColor={data.about.headingColor}
-        textColor={data.about.textColor}
-      />
-
       <FeaturesSection
         title={data.features.title}
         subtitle={data.features.subtitle}
         features={data.features.items}
-        layout="modern"
         bgColor={data.features.bgColor}
         headingColor={data.features.headingColor}
         textColor={data.features.textColor}
@@ -71,7 +60,6 @@ export function WebsiteTemplate2Modern({ data, brand, websiteId }: Props) {
         title={data.offers.title}
         subtitle={data.offers.subtitle}
         offers={data.offers.items}
-        layout="modern"
         bgColor={data.offers.bgColor}
         headingColor={data.offers.headingColor}
         textColor={data.offers.textColor}
@@ -81,11 +69,20 @@ export function WebsiteTemplate2Modern({ data, brand, websiteId }: Props) {
         cardBg={data.offers.cardBg}
       />
 
+      <AboutSection
+        title={data.about.title}
+        body={data.about.body}
+        imageQuery={data.about.imageQuery}
+        imageUrl={data.about.imageUrl}
+        bgColor={data.about.bgColor}
+        headingColor={data.about.headingColor}
+        textColor={data.about.textColor}
+      />
+
       <ContactSection
         contact={data.contact}
         finalCta={data.finalCta}
         websiteId={websiteId}
-        layout="modern"
         bgColor={data.contact.bgColor}
         headingColor={data.contact.headingColor}
         textColor={data.contact.textColor}
@@ -100,6 +97,8 @@ export function WebsiteTemplate2Modern({ data, brand, websiteId }: Props) {
 
       <Footer
         brandName={data.brandName}
+        tagline={data.tagline}
+        contact={data.contact}
         bgColor={data.footer?.bgColor}
         textColor={data.footer?.textColor}
       />

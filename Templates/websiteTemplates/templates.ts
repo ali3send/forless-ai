@@ -1,10 +1,10 @@
 // templates.ts
 import { WebsiteTemplateBasic } from "./Template1/WebsiteTemplateBasic";
-import { WebsiteTemplateAlt } from "./Template2/WebsiteTemplateAlt";
-import { WebsiteTemplateImmersive } from "./Template3/WebsiteTemplateImmersive";
-import { WebsiteTemplate2Basic } from "./Template2B/WebsiteTemplate2Basic";
-import { WebsiteTemplate2Modern } from "./Template2B/WebsiteTemplate2Modern";
-import { WebsiteTemplate2Immersive } from "./Template2B/WebsiteTemplate2Immersive";
+import { WebsiteTemplate1Modern } from "./Template1/WebsiteTemplate1Modern";
+import { WebsiteTemplate1Immersive } from "./Template1/WebsiteTemplate1Immersive";
+import { WebsiteTemplate2Basic } from "./Template2New/WebsiteTemplate2Basic";
+import { WebsiteTemplate2Modern } from "./Template2New/WebsiteTemplate2Modern";
+import { WebsiteTemplate2Immersive } from "./Template2New/WebsiteTemplate2Immersive";
 
 export type LayoutKey = "basic" | "modern" | "immersive";
 
@@ -19,17 +19,17 @@ type TemplateEntry = {
 
 export const WEBSITE_TEMPLATES = {
   template1: {
-    name: "Classic",
-    description: "Clean side-by-side layout",
+    name: "Storefront",
+    description: "E-commerce style with featured collections and product grid",
     layouts: {
       basic: { component: WebsiteTemplateBasic },
-      modern: { component: WebsiteTemplateAlt },
-      immersive: { component: WebsiteTemplateImmersive },
+      modern: { component: WebsiteTemplate1Modern },
+      immersive: { component: WebsiteTemplate1Immersive },
     },
   },
   template2: {
-    name: "Bold",
-    description: "Centered, card-focused design",
+    name: "Corporate",
+    description: "Business style with pricing plans and solutions grid",
     layouts: {
       basic: { component: WebsiteTemplate2Basic },
       modern: { component: WebsiteTemplate2Modern },
@@ -40,7 +40,7 @@ export const WEBSITE_TEMPLATES = {
 
 export type TemplateKey = keyof typeof WEBSITE_TEMPLATES;
 
-// Backward compat: old "template2"/"template3" mapped to template1 layouts
+// Backward compat: old template values mapped to new ones
 const LEGACY_MAP: Record<string, { template: TemplateKey; layout: LayoutKey }> = {
   template3: { template: "template1", layout: "immersive" },
 };
@@ -63,7 +63,7 @@ export function resolveTemplate(
   const lay =
     layout && layout in tpl.layouts
       ? tpl.layouts[layout as LayoutKey]
-      : tpl.layouts.basic;
+      : tpl.layouts.immersive;
 
   return lay.component;
 }

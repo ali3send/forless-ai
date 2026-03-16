@@ -34,7 +34,7 @@ export default function TemplatesPanel() {
             <button
               key={key}
               type="button"
-              onClick={() => setData({ ...data, template: key })}
+              onClick={() => setData({ ...data, template: key, layout: "immersive" })}
               className={`flex w-full items-center justify-between rounded-xl border-2 p-4 text-left transition ${
                 isActive
                   ? "border-primary bg-primary/5"

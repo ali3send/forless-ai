@@ -17,7 +17,7 @@ type Props = {
   websiteId: string;
 };
 
-export function WebsiteTemplateBasic({ data, brand, websiteId }: Props) {
+export function WebsiteTemplate1Modern({ data, brand, websiteId }: Props) {
   return (
     <div className="min-h-screen bg-(--color-bg) text-text">
       <Navbar
@@ -29,14 +29,14 @@ export function WebsiteTemplateBasic({ data, brand, websiteId }: Props) {
         textColor={data.navbar?.textColor}
         buttonBg={data.navbar?.buttonBg}
         buttonText={data.navbar?.buttonText}
-        layout="basic"
+        layout="modern"
       />
 
       <HeroSection
         brandName={data.brandName}
         tagline={data.tagline}
         hero={data.hero}
-        layout="basic"
+        layout="modern"
         bgColor={data.hero.bgColor}
         headingColor={data.hero.headingColor}
         textColor={data.hero.textColor}

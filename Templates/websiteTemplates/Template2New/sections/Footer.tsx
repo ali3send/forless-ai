@@ -48,7 +48,8 @@ export function Footer({ brandName, tagline, contact, bgColor, textColor }: Prop
               {[
                 { label: "Home", href: "#" },
                 { label: "About", href: "#about" },
-                { label: "Products", href: "#offers" },
+                { label: "Solutions", href: "#features" },
+                { label: "Plans", href: "#offers" },
                 { label: "Contact", href: "#contact" },
               ].map((link) => (
                 <li key={link.label}>
