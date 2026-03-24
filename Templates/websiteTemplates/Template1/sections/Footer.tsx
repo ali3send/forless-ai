@@ -1,4 +1,39 @@
+import {
+  Instagram,
+  Facebook,
+  Youtube,
+  Linkedin,
+  Github,
+  MessageCircle,
+  Link2,
+} from "lucide-react";
 import { ContactData } from "../../template.types";
+
+const SOCIAL_ICONS: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
+  instagram: Instagram,
+  facebook: Facebook,
+  tiktok: Link2,
+  whatsapp: MessageCircle,
+  youtube: Youtube,
+  linkedin: Linkedin,
+  x: ({ size, className }: { size?: number; className?: string }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size || 24}
+      height={size || 24}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="M4 20 20 4M4 4l16 16" />
+    </svg>
+  ),
+  github: Github,
+};
 
 type Props = {
   brandName: string;
@@ -6,9 +41,13 @@ type Props = {
   contact?: ContactData;
   bgColor?: string;
   textColor?: string;
+  socialLinks?: {
+    show: boolean;
+    links: { platform: string; url: string }[];
+  };
 };
 
-export function Footer({ brandName, tagline, contact, bgColor, textColor }: Props) {
+export function Footer({ brandName, tagline, contact, bgColor, textColor, socialLinks }: Props) {
   const year = new Date().getFullYear();
   const mutedStyle = { color: textColor || "var(--color-muted)" };
 
@@ -33,6 +72,27 @@ export function Footer({ brandName, tagline, contact, bgColor, textColor }: Prop
               <p className="mt-2 text-xs leading-relaxed" style={mutedStyle}>
                 {tagline}
               </p>
+            )}
+            {socialLinks?.show && socialLinks.links.filter((l) => l.url).length > 0 && (
+              <div className="mt-3 flex gap-3">
+                {socialLinks.links
+                  .filter((l) => l.url && SOCIAL_ICONS[l.platform])
+                  .map((link) => {
+                    const Icon = SOCIAL_ICONS[link.platform];
+                    return (
+                      <a
+                        key={link.platform}
+                        href={link.url.match(/^https?:\/\//) ? link.url : `https://${link.url}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="transition hover:opacity-80"
+                        style={mutedStyle}
+                      >
+                        <Icon size={18} />
+                      </a>
+                    );
+                  })}
+              </div>
             )}
           </div>
 

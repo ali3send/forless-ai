@@ -101,6 +101,7 @@ export function WebsiteTemplate1Immersive({ data, brand, websiteId }: Props) {
         contact={data.contact}
         bgColor={data.footer?.bgColor}
         textColor={data.footer?.textColor}
+        socialLinks={data.socialLinks}
       />
     </div>
   );
