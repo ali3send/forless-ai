@@ -7,6 +7,7 @@ import { StateUpdater } from "@/lib/types/state";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
 import { TextField } from "../../components/ui/TextField";
+import { SectionColorPicker } from "./SectionColorPicker";
 
 export type AboutSectionFormProps = {
   data: WebsiteData;
@@ -201,6 +202,13 @@ export function AboutSectionForm({
         }
         limit="aboutImageQuery"
         showLimit
+      />
+
+      <SectionColorPicker
+        colors={data.about}
+        onChange={(key, val) =>
+          setData((d) => ({ ...d, about: { ...d.about, [key]: val } }))
+        }
       />
     </div>
   );

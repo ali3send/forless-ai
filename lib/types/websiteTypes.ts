@@ -2,7 +2,8 @@
 export type WebsiteType = "product" | "service" | "personal" | "business";
 
 export type WebsiteData = {
-  template: "template1" | "template2" | "template3";
+  template: "template1" | "template2";
+  layout?: "basic" | "modern" | "immersive";
   type: string;
   brandName: string;
   tagline: string;
@@ -17,6 +18,13 @@ export type WebsiteData = {
     imageUrl?: string;
     imagePath?: string;
     imageQuery: string;
+    bgColor?: string;
+    headingColor?: string;
+    textColor?: string;
+    accentColor?: string;
+    buttonBg?: string;
+    buttonText?: string;
+    cardBg?: string;
   };
 
   about: {
@@ -25,20 +33,45 @@ export type WebsiteData = {
     imageUrl?: string;
     imagePath?: string;
     imageQuery: string;
+    bgColor?: string;
+    headingColor?: string;
+    textColor?: string;
+    accentColor?: string;
+    buttonBg?: string;
+    buttonText?: string;
+    cardBg?: string;
   };
 
   features: {
     title: string;
-    items: { label: string; description: string }[];
+    subtitle?: string;
+    items: { label: string; description: string; imageUrl?: string; imageQuery?: string }[];
+    bgColor?: string;
+    headingColor?: string;
+    textColor?: string;
+    accentColor?: string;
+    buttonBg?: string;
+    buttonText?: string;
+    cardBg?: string;
   };
 
   offers: {
     title: string;
+    subtitle?: string;
     items: {
       name: string;
       description: string;
       priceLabel?: string;
+      imageUrl?: string;
+      imageQuery?: string;
     }[];
+    bgColor?: string;
+    headingColor?: string;
+    textColor?: string;
+    accentColor?: string;
+    buttonBg?: string;
+    buttonText?: string;
+    cardBg?: string;
   };
 
   testimonials?: {
@@ -57,6 +90,16 @@ export type WebsiteData = {
     email: string;
     phone?: string;
     whatsapp?: string;
+    bgColor?: string;
+    headingColor?: string;
+    textColor?: string;
+    accentColor?: string;
+    buttonBg?: string;
+    buttonText?: string;
+    cardBg?: string;
+    inputBg?: string;
+    inputText?: string;
+    inputPlaceholder?: string;
   };
 
   finalCta: {
@@ -64,6 +107,36 @@ export type WebsiteData = {
     subheadline: string;
     buttonLabel: string;
   };
+
+  navbar?: {
+    bgColor?: string;
+    textColor?: string;
+    buttonBg?: string;
+    buttonText?: string;
+  };
+
+  footer?: {
+    bgColor?: string;
+    textColor?: string;
+  };
+
+  // Optional extended fields
+  socialLinks?: {
+    show: boolean;
+    links: { platform: string; url: string }[];
+  };
+  websiteName?: string;
+  faviconUrl?: string;
+  primaryLanguage?: string;
+  maintenanceMode?: boolean;
+  seoTitle?: string;
+  seoDescription?: string;
+  openGraphImageUrl?: string;
+  googleAnalyticsId?: string;
+  metaPixelId?: string;
+  legal?: { privacyPolicy?: string; terms?: string };
+  footerText?: string;
+  gradient?: string;
 };
 
 export function getDefaultWebsiteData(type: WebsiteType): WebsiteData {

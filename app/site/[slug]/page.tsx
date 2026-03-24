@@ -3,10 +3,7 @@ import { unstable_cache } from "next/cache";
 
 import { createPublicSupabaseClient } from "@/lib/supabase/public";
 import { ThemeProvider } from "@/Templates/websiteTheme/ThemeProvider";
-import {
-  WEBSITE_TEMPLATES,
-  type TemplateKey,
-} from "@/Templates/websiteTemplates/templates";
+import { resolveTemplate } from "@/Templates/websiteTemplates/templates";
 import { WebsiteData } from "@/lib/types/websiteTypes";
 import { BrandDataNew } from "@/lib/types/brandTypes";
 
@@ -98,11 +95,7 @@ function renderSite(
   brand: BrandDataNew | null,
   websiteId: string
 ) {
-  const templateKey = (data.template ?? "template1") as TemplateKey;
-
-  const ActiveTemplate =
-    WEBSITE_TEMPLATES[templateKey]?.component ??
-    WEBSITE_TEMPLATES.template1.component;
+  const ActiveTemplate = resolveTemplate(data.template, data.layout);
 
   return (
     <ThemeProvider

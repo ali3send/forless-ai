@@ -2,15 +2,49 @@
 "use client";
 
 import { useState } from "react";
+import {
+  Globe,
+  UserSquare2,
+  SquarePlus,
+  Paintbrush,
+  LayoutGrid,
+  Share2,
+  Grid3X3,
+  Settings,
+} from "lucide-react";
 import type { BuilderSection } from "../builderSections";
 
 import { useWebsiteStore } from "@/store/website.store";
 
 import { BuilderContentPanel } from "./BuilderContentPanel";
 import { BuilderDesignPanel } from "./BuilderDesignPanel";
-import { PublishButton } from "./PublishButton";
-import TemplateSelector from "./TemplateSelector";
 import { BuilderBrandsPanel } from "./BuilderBrandPanel";
+import DomainPanel from "./DomainPanel";
+import SocialLinksPanel from "./SocialLinksPanel";
+import SettingsPanel from "./SettingsPanel";
+import LayoutPanel from "./LayoutPanel";
+import TemplatesPanel from "./TemplatesPanel";
+
+type SidebarTab =
+  | "domain"
+  | "brand"
+  | "pages"
+  | "design"
+  | "layout"
+  | "social"
+  | "templates"
+  | "settings";
+
+const TABS: { id: SidebarTab; label: string; icon: typeof Globe }[] = [
+  { id: "domain", label: "Domain", icon: Globe },
+  { id: "brand", label: "Brand", icon: UserSquare2 },
+  { id: "pages", label: "Pages", icon: SquarePlus },
+  { id: "design", label: "Design", icon: Paintbrush },
+  { id: "layout", label: "Layout", icon: LayoutGrid },
+  { id: "social", label: "Social\nLinks", icon: Share2 },
+  { id: "templates", label: "Templates", icon: Grid3X3 },
+  { id: "settings", label: "Settings", icon: Settings },
+];
 
 type Props = {
   builderSections: ReadonlyArray<{ id: BuilderSection; label: string }>;
@@ -30,100 +64,78 @@ type Props = {
 };
 
 export function BuilderSidebar(props: Props) {
-  const { saving, onSave } = props;
+  const { saving, onSave, websiteId } = props;
   const { data } = useWebsiteStore();
-
-  const [activePanel, setActivePanel] = useState<"content" | "design">(
-    "content"
-  );
-  const [activeMode, setActiveMode] = useState<"builder" | "brands">("builder");
+  const [activeTab, setActiveTab] = useState<SidebarTab>("domain");
 
   return (
-    <aside className="w-full space-y-4 rounded-2xl bg-secondary-fade p-4 shadow-sm lg:w-80 lg:min-w-80 lg:max-w-80">
-      <div className="flex gap-1 rounded-full border border-secondary-fade bg-secondary-soft p-1 text-[11px]">
-        <button
-          type="button"
-          onClick={() => setActiveMode("builder")}
-          className={`flex-1 rounded-full px-2 py-1 transition ${
-            activeMode === "builder"
-              ? "bg-primary text-white font-medium"
-              : "text-secondary hover:text-secondary-dark"
-          }`}
-        >
-          Website Builder
-        </button>
+    <div className="flex h-full">
+      {/* Icon nav bar */}
+      <nav className="flex w-20 shrink-0 flex-col items-center gap-1 border-r border-secondary-fade bg-white py-3 px-1">
+        {TABS.map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
 
-        <button
-          type="button"
-          onClick={() => setActiveMode("brands")}
-          className={`flex-1 rounded-full px-2 py-1 transition ${
-            activeMode === "brands"
-              ? "bg-primary text-white font-medium"
-              : "text-secondary hover:text-secondary-dark"
-          }`}
-        >
-          Brands
-        </button>
-      </div>
-      {activeMode === "builder" && (
-        <>
-          {/* Publish button */}
-          <PublishButton websiteId={props.websiteId} websiteData={data} />
-
-          <TemplateSelector />
-
-          {/* Panel switch */}
-          <div className="flex gap-1 rounded-full border border-secondary-fade bg-secondary-soft p-1 text-[11px]">
+          return (
             <button
+              key={tab.id}
               type="button"
-              onClick={() => setActivePanel("content")}
-              className={`flex-1 rounded-full px-2 py-1 transition ${
-                activePanel === "content"
-                  ? "bg-primary text-white font-medium"
-                  : "text-secondary hover:text-secondary-dark"
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex w-full flex-col items-center gap-1 rounded-xl px-1 py-2.5 transition ${
+                isActive
+                  ? "bg-primary text-white"
+                  : "text-secondary hover:bg-gray-100 hover:text-secondary-dark"
               }`}
             >
-              Content
+              <Icon size={20} />
+              <span className="text-[10px] font-medium leading-tight text-center whitespace-pre-line">
+                {tab.label}
+              </span>
             </button>
-            <button
-              type="button"
-              onClick={() => setActivePanel("design")}
-              className={`flex-1 rounded-full px-2 py-1 transition ${
-                activePanel === "design"
-                  ? "bg-primary text-white font-medium"
-                  : "text-secondary hover:text-secondary-dark"
-              }`}
-            >
-              Design
-            </button>
-          </div>
+          );
+        })}
+      </nav>
 
-          {/* Panels */}
-          {activePanel === "content" ? (
+      {/* Active panel */}
+      <div className="flex flex-1 flex-col overflow-hidden">
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {activeTab === "domain" && (
+            <DomainPanel websiteId={websiteId} websiteData={data} />
+          )}
+
+          {activeTab === "brand" && <BuilderBrandsPanel />}
+
+          {activeTab === "pages" && (
             <BuilderContentPanel
-              websiteId={props.websiteId}
+              websiteId={websiteId}
               onGenerate={props.onGenerate}
               onRestore={props.handleRestoreSection}
             />
-          ) : (
-            <BuilderDesignPanel />
           )}
 
-          {/* Save */}
-          <div className="mt-2 flex flex-col gap-2">
-            <button
-              type="button"
-              onClick={onSave}
-              disabled={saving}
-              className="w-full rounded-full border border-secondary-fade bg-secondary-soft px-3 py-1.5 text-xs font-semibold text-secondary-dark transition hover:border-primary hover:text-primary disabled:opacity-60"
-            >
-              {saving ? "Saving..." : "Save changes"}
-            </button>
-          </div>
-        </>
-      )}
+          {activeTab === "design" && <BuilderDesignPanel />}
 
-      {activeMode === "brands" && <BuilderBrandsPanel />}
-    </aside>
+          {activeTab === "layout" && <LayoutPanel />}
+
+          {activeTab === "social" && <SocialLinksPanel />}
+
+          {activeTab === "templates" && <TemplatesPanel />}
+
+          {activeTab === "settings" && <SettingsPanel websiteId={websiteId} />}
+        </div>
+
+        {/* Save button */}
+        <div className="border-t border-secondary-fade p-3">
+          <button
+            type="button"
+            onClick={onSave}
+            disabled={saving}
+            className="w-full rounded-full bg-primary px-4 py-2 text-xs font-semibold text-white transition hover:bg-primary-active disabled:opacity-60"
+          >
+            {saving ? "Saving..." : "Save changes"}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }

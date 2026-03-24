@@ -1,4 +1,5 @@
 "use client";
+import { Plus } from "lucide-react";
 import NewProjectModal from "./NewProjectModal";
 
 interface DashboardHeaderProps {
@@ -11,52 +12,17 @@ export default function DashboardHeader({
   onSearchChange,
 }: DashboardHeaderProps) {
   return (
-    <header className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-      <div>
-        <h1 className="text-xl font-semibold text-secondary-dark">
-          Your Projects
-        </h1>
-        <p className="text-xs text-secondary">
-          Describe once. Build brand, website, and marketing from one place.
-        </p>
-      </div>
+    <header className="flex flex-col items-center text-center">
+      <h1 className="text-3xl font-bold tracking-tight text-secondary-darker">
+        Your Projects
+      </h1>
+      <p className="mt-2 text-sm text-secondary">
+        All projects you worked on in one place
+      </p>
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <div className="hidden sm:block">
-          <SearchInput value={search} onChange={onSearchChange} />
-        </div>
-
+      <div className="mt-5">
         <NewProjectModal />
       </div>
     </header>
-  );
-}
-
-function SearchInput({
-  value,
-  onChange,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  return (
-    <input
-      type="text"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder="Search projects…"
-      className="
-        w-full sm:w-64
-        rounded-md
-         
-        bg-secondary-fade
-        placeholder:text-secondary
-        px-3 py-1.5
-        text-xs text-secondary-dark
-        outline-none
-        ring-primary/60
-        focus:ring-1
-      "
-    />
   );
 }

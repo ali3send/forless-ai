@@ -1,36 +1,70 @@
+"use client";
+
+import { useUnsplashImage } from "../../hooks/useUnsplashImage";
 import { FeaturesData } from "../../template.types";
 
-export function FeaturesSection({ title, features }: FeaturesData) {
+function CircleThumbnail({ label, imageUrl, imageQuery }: { label: string; imageUrl?: string; imageQuery?: string }) {
+  const unsplash = useUnsplashImage(imageQuery || label);
+  const src = imageUrl?.trim() ? imageUrl : unsplash;
+
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <div className="h-28 w-28 overflow-hidden rounded-full border-2 md:h-32 md:w-32" style={{ borderColor: "color-mix(in srgb, var(--color-primary) 20%, transparent)" }}>
+        {src ? (
+          <img src={src} alt={label} className="h-full w-full object-cover" />
+        ) : (
+          <div className="h-full w-full" style={{ backgroundColor: "color-mix(in srgb, var(--color-primary) 10%, var(--color-bg))" }} />
+        )}
+      </div>
+      <span className="text-sm font-medium">{label}</span>
+    </div>
+  );
+}
+
+export function FeaturesSection({
+  title,
+  subtitle,
+  features,
+  bgColor,
+  headingColor,
+  textColor,
+  accentColor,
+  cardBg,
+}: FeaturesData) {
   return (
     <section
-      className="border-t"
+      id="features"
       style={{
-        borderColor:
-          "color-mix(in srgb, var(--color-primary) 18%, transparent)",
+        background: bgColor || undefined,
+        color: textColor || undefined,
       }}
     >
-      <div className="mx-auto max-w-5xl px-4 py-12">
-        <h2 className="text-xl font-semibold text-text">{title}</h2>
-
-        <div className="mt-6 grid gap-6 md:grid-cols-3">
-          {features.map((feature, i) => (
-            <div
-              key={i}
-              className="rounded-2xl border p-4"
-              style={{
-                backgroundColor: "var(--color-surface)",
-                borderColor:
-                  "color-mix(in srgb, var(--color-primary) 22%, transparent)",
-              }}
+      <div className="mx-auto max-w-6xl px-6 py-16">
+        <div className="text-center">
+          <h2
+            className="text-2xl font-bold md:text-3xl"
+            style={{ color: headingColor || "var(--color-text)" }}
+          >
+            {title}
+          </h2>
+          {subtitle && (
+            <p
+              className="mt-2 text-sm"
+              style={{ color: textColor || "var(--color-muted)" }}
             >
-              <div className="text-sm font-medium text-text">
-                {feature.label}
-              </div>
+              {subtitle}
+            </p>
+          )}
+        </div>
 
-              <p className="mt-2 text-xs text-(--color-muted)">
-                {feature.description}
-              </p>
-            </div>
+        <div className="mt-12 flex flex-wrap justify-center gap-8 md:gap-12">
+          {features.map((feature, i) => (
+            <CircleThumbnail
+              key={i}
+              label={feature.label}
+              imageUrl={feature.imageUrl}
+              imageQuery={feature.imageQuery}
+            />
           ))}
         </div>
       </div>

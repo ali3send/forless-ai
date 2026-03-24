@@ -46,32 +46,33 @@ export default function ResetPasswordRequestPage() {
   };
 
   return (
-    <div className="min-h-[70vh] flex items-center justify-center">
-      <div className="w-full max-w-md rounded-2xl border border-secondary-fade bg-secondary-soft p-6 shadow-sm">
-        <div className="mb-5">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-2">
-            ForlessAI
-          </p>
-          <h1 className="text-2xl font-bold tracking-tight mb-1 text-secondary-dark">
-            Reset your password
+    <div className="min-h-[80vh] flex items-center justify-center px-4">
+      <div className="w-full max-w-[420px] rounded-2xl border border-secondary-fade bg-white p-8 shadow-xl shadow-black/8">
+        {/* Header */}
+        <div className="mb-6">
+          <span className="inline-block rounded-full bg-primary/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-primary">
+            Forless
+          </span>
+          <h1 className="mt-4 text-2xl font-bold tracking-tight text-secondary-darker">
+            Forgot password?
           </h1>
-          <p className="text-xs text-secondary">
-            Enter the email linked with your ForlessAI account. We&apos;ll send
-            you a secure link to create a new password.
+          <p className="mt-2 text-sm text-secondary">
+            Enter your email and we&apos;ll send you a reset link
           </p>
         </div>
 
-        <form onSubmit={handleResetRequest} className="space-y-4">
+        {/* Form */}
+        <form onSubmit={handleResetRequest} className="space-y-5">
           <div>
-            <label className="block text-xs font-medium text-secondary mb-1.5">
-              Email address
+            <label className="mb-1.5 block text-sm font-medium text-secondary-dark">
+              Email
             </label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="input-base w-full"
+              className="w-full rounded-lg border border-secondary-fade bg-secondary-fade/30 px-3.5 py-2.5 text-sm text-secondary-darker placeholder:text-secondary-light outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20"
               placeholder="you@example.com"
             />
           </div>
@@ -79,19 +80,20 @@ export default function ResetPasswordRequestPage() {
           <button
             type="submit"
             disabled={loading}
-            className="mt-1 w-full inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-hover disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-primary/25 transition-all hover:bg-primary-active hover:shadow-lg hover:shadow-primary/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:shadow-none"
           >
             {loading ? "Sending reset link..." : "Send reset link"}
           </button>
         </form>
 
-        <p className="mt-4 text-xs text-secondary">
-          Remembered it?{" "}
+        {/* Footer */}
+        <p className="mt-5 text-center text-sm text-secondary">
+          Remember your password?{" "}
           <a
             href="/auth/login"
-            className="text-primary hover:text-primary-hover underline underline-offset-2"
+            className="font-semibold text-primary hover:text-primary-active transition-colors"
           >
-            Go back to login
+            Back to login
           </a>
         </p>
       </div>

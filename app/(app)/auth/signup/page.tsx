@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
-import { TextField } from "../../components/ui/TextField";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -50,77 +49,97 @@ export default function SignupPage() {
       setLoading(false);
     }
   };
-  const inputClasses = "py-2";
 
   return (
-    <div className="min-h-[70vh] flex items-center justify-center">
-      <div className="w-full max-w-md rounded-2xl  bg-secondary-fade p-6 shadow-xl ">
-        <div className="mb-5">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-2">
-            ForlessAI
-          </p>
-          <h1 className="text-2xl text-secondary-dark font-bold tracking-tight mb-1">
+    <div className="min-h-[80vh] flex items-center justify-center px-4">
+      <div className="w-full max-w-[420px] rounded-2xl border border-secondary-fade bg-white p-8 shadow-xl shadow-black/8">
+        {/* Header */}
+        <div className="mb-6">
+          <span className="inline-block rounded-full bg-primary/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-primary">
+            Forless
+          </span>
+          <h1 className="mt-4 text-2xl font-bold tracking-tight text-secondary-darker">
             Create your account
           </h1>
-          <p className="text-xs text-secondary">
-            Sign up with email & password to access your ForlessAI dashboard.
+          <p className="mt-2 text-sm text-secondary">
+            Sign up to start building your website.
           </p>
         </div>
+
+        {/* Form */}
         <form onSubmit={handleSignup} className="space-y-4">
-          <TextField
-            label="Full Name"
-            placeholder="John Doe"
-            value={fullName}
-            onChange={setFullName}
-            limit="fullName"
-            className={inputClasses}
-          />
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-secondary-dark">
+              Full Name
+            </label>
+            <input
+              type="text"
+              placeholder="John Doe"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              className="w-full rounded-lg border border-secondary-fade bg-secondary-fade/30 px-3.5 py-2.5 text-sm text-secondary-darker placeholder:text-secondary-light outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20"
+              required
+            />
+          </div>
 
-          <TextField
-            label="Email"
-            type="email"
-            placeholder="you@example.com"
-            value={email}
-            onChange={setEmail}
-            limit="email"
-            className={inputClasses}
-          />
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-secondary-dark">
+              Email
+            </label>
+            <input
+              type="email"
+              placeholder="You@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full rounded-lg border border-secondary-fade bg-secondary-fade/30 px-3.5 py-2.5 text-sm text-secondary-darker placeholder:text-secondary-light outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20"
+              required
+            />
+          </div>
 
-          <TextField
-            label="Password"
-            type="password"
-            placeholder="Minimum 6 characters"
-            value={password}
-            onChange={setPassword}
-            limit="password"
-            className={inputClasses}
-          />
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-secondary-dark">
+              Password
+            </label>
+            <input
+              type="password"
+              placeholder="Minimum 6 characters"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full rounded-lg border border-secondary-fade bg-secondary-fade/30 px-3.5 py-2.5 text-sm text-secondary-darker placeholder:text-secondary-light outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20"
+              required
+            />
+          </div>
 
-          <TextField
-            label="Confirm Password"
-            type="password"
-            placeholder="Minimum 6 characters"
-            value={confirmPassword}
-            onChange={setConfirmPassword}
-            limit="password"
-            className={inputClasses}
-          />
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-secondary-dark">
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              placeholder="Repeat your password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="w-full rounded-lg border border-secondary-fade bg-secondary-fade/30 px-3.5 py-2.5 text-sm text-secondary-darker placeholder:text-secondary-light outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20"
+              required
+            />
+          </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="mt-1 w-full px-4 py-2  btn-fill disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-primary/25 transition-all hover:bg-primary-active hover:shadow-lg hover:shadow-primary/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:shadow-none"
           >
             {loading ? "Creating account..." : "Sign up"}
           </button>
         </form>
 
-        <p className="mt-4 text-xs text-secondary">
+        {/* Footer */}
+        <p className="mt-5 text-center text-sm text-secondary">
           Already have an account?{" "}
           <button
             type="button"
             onClick={() => router.push("/auth/login")}
-            className="text-primary hover:text-primary-hover underline underline-offset-2"
+            className="font-semibold text-primary hover:text-primary-active transition-colors"
           >
             Log in
           </button>

@@ -3,10 +3,10 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/providers";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, ArrowRight, Loader2 } from "lucide-react";
 import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 import { uiToast } from "@/lib/utils/uiToast";
-import { TextField } from "../../components/ui/TextField";
+
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
@@ -44,68 +44,81 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-[70vh] flex items-center justify-center">
-      <div className="w-full max-w-md rounded-2xl border border-secondary-fade bg-secondary-fade p-6 shadow-sm">
+    <div className="min-h-[80vh] flex items-center justify-center px-4">
+      <div className="w-full max-w-[420px] rounded-2xl border border-secondary-fade bg-white p-8 shadow-xl shadow-black/8">
         {/* Header */}
-        <div className="mb-5 text-secondary-active">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-2">
-            ForlessAI
-          </p>
-          <h1 className="text-2xl font-bold tracking-tight mb-1 ">
+        <div className="mb-6">
+          <span className="inline-block rounded-full bg-primary/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-primary">
+            Forless
+          </span>
+          <h1 className="mt-4 text-2xl font-bold tracking-tight text-secondary-darker">
             Welcome back
           </h1>
-          <p className="text-xs text-secondary">
-            Log in to continue building and managing your AI-generated websites.
+          <p className="mt-2 text-sm text-secondary">
+            Log in to continue building and managing your website.
           </p>
         </div>
 
         {/* Error */}
         {errorMsg && (
-          <div className="mb-3 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-700">
+          <div className="mb-4 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2.5 text-xs text-red-700">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              className="shrink-0"
+            >
+              <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5" />
+              <path d="M8 5v3M8 10.5v.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
             {errorMsg}
           </div>
         )}
 
         {/* Form */}
         <form onSubmit={handleLogin} className="space-y-4">
-          <TextField
-            label="Email"
-            type="email"
-            placeholder="you@example.com"
-            value={email}
-            onChange={setEmail}
-            limit="email"
-            className="w-full py-2"
-          />
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-secondary-dark">
+              Email
+            </label>
+            <input
+              type="email"
+              placeholder="You@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full rounded-lg border border-secondary-fade bg-secondary-fade/30 px-3.5 py-2.5 text-sm text-secondary-darker placeholder:text-secondary-light outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20"
+              required
+            />
+          </div>
 
           <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-xs font-medium text-secondary-active">
+            <div className="mb-1.5 flex items-center justify-between">
+              <label className="text-sm font-medium text-secondary-dark">
                 Password
-              </span>
+              </label>
               <button
                 type="button"
                 onClick={() => router.push("/reset-password")}
-                className="text-[11px] text-primary hover:text-primary-hover underline underline-offset-2"
+                className="text-xs font-medium text-primary hover:text-primary-active transition-colors"
               >
                 Forgot password?
               </button>
             </div>
 
             <div className="relative">
-              <TextField
+              <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Your password"
                 value={password}
-                onChange={setPassword}
-                limit="password"
-                className="w-full pr-10 py-2"
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full rounded-lg border border-secondary-fade bg-secondary-fade/30 px-3.5 py-2.5 pr-10 text-sm text-secondary-darker placeholder:text-secondary-light outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20"
+                required
               />
-
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute inset-y-0 right-2 flex items-center text-secondary hover:text-secondary-dark transition"
+                className="absolute inset-y-0 right-3 flex items-center text-secondary-light hover:text-secondary-dark transition-colors"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
@@ -120,19 +133,26 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="mt-1 w-full px-4 py-2  btn-fill disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-primary/25 transition-all hover:bg-primary-active hover:shadow-lg hover:shadow-primary/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:shadow-none"
           >
-            {loading ? "Logging in..." : "Log in"}
+            {loading ? (
+              <span className="inline-flex items-center gap-2">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Signing in...
+              </span>
+            ) : (
+              "Login"
+            )}
           </button>
         </form>
 
         {/* Footer */}
-        <p className="mt-4 text-xs text-secondary">
-          Dont have an account?{" "}
+        <p className="mt-5 text-center text-sm text-secondary">
+          Don&apos;t have an account?{" "}
           <button
             type="button"
             onClick={() => router.push("/auth/signup")}
-            className="text-primary hover:text-primary-hover underline underline-offset-2"
+            className="font-semibold text-primary hover:text-primary-active transition-colors"
           >
             Sign up
           </button>

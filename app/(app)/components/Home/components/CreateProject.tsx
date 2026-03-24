@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Sparkles, Loader2 } from "lucide-react";
 
 import { apiCreateAndGenerateProject } from "@/lib/api/project";
 
@@ -42,66 +43,49 @@ export default function CreateProjectHero() {
   }
 
   return (
-    <div className="mx-auto max-w-xl rounded-2xl border border-secondary-fade bg-linear-to-b from-secondary-soft to-white p-6 shadow-sm">
-      <h1 className="text-xl font-semibold text-secondary-dark">
-        Describe your idea
-      </h1>
-      <p className="mt-1 text-sm text-secondary">
-        Tell us what you want to build. We’ll handle the rest.
-      </p>
-
-      {/* Idea / Description */}
-      <div className="mt-5">
-        <label className="mb-2 block text-xs font-medium text-secondary-dark">
-          Website idea
-        </label>
-
+    <div>
+      <div className="relative rounded-2xl border border-secondary-fade bg-white p-1 shadow-xl shadow-black/5">
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="Example: A modern landing page for a fitness coach offering online programs and 1-on-1 coaching."
-          rows={5}
-          className="
-          w-full resize-none
-          rounded-xl
-          border border-secondary-fade
-          bg-white
-          px-4 py-3
-          text-sm
-          leading-relaxed
-          outline-none
-          transition
-          placeholder:text-secondary
-          focus:border-primary
-          focus:ring-2
-          focus:ring-primary/20
-        "
+          placeholder="I'm starting an online clothing store . . ."
+          rows={4}
+          className="w-full resize-none rounded-xl border-none bg-transparent px-5 py-4 text-sm leading-relaxed text-secondary-darker outline-none placeholder:text-secondary-light"
         />
 
-        <p className="mt-2 text-[11px] text-secondary">
-          Be as short or detailed as you like.
-        </p>
+        <div className="flex items-center justify-end px-3 pb-3">
+          <button
+            onClick={handleCreate}
+            disabled={loading}
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white shadow-md shadow-primary/25 transition-all hover:bg-primary-active hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Generating...
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-4 w-4" />
+                Generate
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
       {error && (
-        <p className="mt-3 text-xs font-medium text-red-600">{error}</p>
+        <p className="mt-3 text-center text-xs font-medium text-red-600">
+          {error}
+        </p>
       )}
 
-      <button
-        onClick={handleCreate}
-        disabled={loading}
-        className="
-        mt-6 w-full
-btn-fill
-        px-4 py-3
-    
-        transition
-       
-        disabled:opacity-60
-      "
-      >
-        {loading ? "Creating your website…" : "Generate Website"}
-      </button>
+      {/* Version badge */}
+      <div className="mt-4 flex justify-center">
+        <span className="inline-flex items-center gap-2 rounded-full border border-secondary-fade bg-white px-4 py-2 text-xs text-secondary">
+          Version 1 . New features every week No extra cost
+        </span>
+      </div>
     </div>
   );
 }

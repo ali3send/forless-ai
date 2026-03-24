@@ -2,6 +2,7 @@
 
 import { WebsiteData } from "@/lib/types/websiteTypes";
 import { TextField } from "../../components/ui/TextField";
+import { SectionColorPicker } from "./SectionColorPicker";
 
 type ContactSectionFormProps = {
   data: WebsiteData;
@@ -133,6 +134,13 @@ export function ContactSectionForm({ data, setData }: ContactSectionFormProps) {
           className="border-none ring-1 ring-secondary-light focus:ring-2 focus:ring-primary/50"
         />
       </div>
+
+      <SectionColorPicker
+        colors={data.contact}
+        onChange={(key, val) =>
+          setData((prev) => ({ ...prev, contact: { ...prev.contact, [key]: val } }))
+        }
+      />
     </div>
   );
 }

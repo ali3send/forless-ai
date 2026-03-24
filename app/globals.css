@@ -49,16 +49,15 @@
 }
 @layer components {
 .input-base {
-  @apply mt-1 w-full rounded-md
-         
-         bg-secondary-soft
-         px-2 py-1 text-xs
-         text-secondary-dark
+  @apply mt-1 w-full rounded-lg
+         border border-secondary-fade
+         bg-white
+         px-3 py-2.5 text-sm
+         text-secondary-darker
          placeholder:text-secondary
-         ring-1 ring-secondary
-         focus:outline-none
-         
-         focus:ring-2 focus:ring-primary/50
+         outline-none
+         focus:border-primary
+         focus:ring-2 focus:ring-primary/20
          transition-all;
 }
 

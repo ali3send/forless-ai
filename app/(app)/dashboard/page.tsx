@@ -41,7 +41,7 @@ export default async function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen ">
+    <div className="min-h-screen bg-gray-50">
       <DashboardContent projects={safeProjects} stats={stats} />
     </div>
   );
