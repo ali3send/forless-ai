@@ -102,6 +102,7 @@ export function WebsiteTemplateBasic({ data, brand, websiteId }: Props) {
         bgColor={data.footer?.bgColor}
         textColor={data.footer?.textColor}
         socialLinks={data.socialLinks}
+        footerText={data.footerText}
       />
     </div>
   );

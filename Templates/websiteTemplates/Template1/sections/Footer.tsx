@@ -45,9 +45,10 @@ type Props = {
     show: boolean;
     links: { platform: string; url: string }[];
   };
+  footerText?: string;
 };
 
-export function Footer({ brandName, tagline, contact, bgColor, textColor, socialLinks }: Props) {
+export function Footer({ brandName, tagline, contact, bgColor, textColor, socialLinks, footerText }: Props) {
   const year = new Date().getFullYear();
   const mutedStyle = { color: textColor || "var(--color-muted)" };
 
@@ -184,7 +185,7 @@ export function Footer({ brandName, tagline, contact, bgColor, textColor, social
             ...mutedStyle,
           }}
         >
-          © {year} {brandName}. All rights reserved.
+          {footerText || `© ${year} ${brandName}. All rights reserved.`}
         </div>
       </div>
     </footer>

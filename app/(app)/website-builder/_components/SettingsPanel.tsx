@@ -62,8 +62,8 @@ export default function SettingsPanel({ websiteId }: Props) {
         />
       </div>
 
-      {/* Primary language */}
-      <div className="space-y-1.5">
+      {/* Primary language — commented out for now */}
+      {/* <div className="space-y-1.5">
         <label className="text-sm font-medium text-secondary-darker">
           Primary Language
         </label>
@@ -78,10 +78,10 @@ export default function SettingsPanel({ websiteId }: Props) {
             </option>
           ))}
         </select>
-      </div>
+      </div> */}
 
-      {/* Maintenance mode */}
-      <div className="flex items-center justify-between rounded-xl border border-secondary-fade bg-white p-4">
+      {/* Maintenance mode — commented out for now */}
+      {/* <div className="flex items-center justify-between rounded-xl border border-secondary-fade bg-white p-4">
         <div>
           <p className="text-sm font-medium text-secondary-darker">
             Maintenance Mode
@@ -105,7 +105,7 @@ export default function SettingsPanel({ websiteId }: Props) {
             }`}
           />
         </button>
-      </div>
+      </div> */}
 
       {/* SEO */}
       <div className="space-y-4">
@@ -170,8 +170,8 @@ export default function SettingsPanel({ websiteId }: Props) {
         </div>
       </div>
 
-      {/* Legal */}
-      <div className="space-y-3">
+      {/* Legal — commented out for now */}
+      {/* <div className="space-y-3">
         <h3 className="text-sm font-bold text-secondary-darker">Legal</h3>
 
         <button
@@ -207,7 +207,7 @@ export default function SettingsPanel({ websiteId }: Props) {
             </p>
           </div>
         </button>
-      </div>
+      </div> */}
 
       {/* Footer text */}
       <div className="space-y-1.5">

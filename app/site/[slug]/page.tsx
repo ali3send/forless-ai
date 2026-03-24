@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
 import { unstable_cache } from "next/cache";
+import type { Metadata } from "next";
+import Script from "next/script";
 
 import { createPublicSupabaseClient } from "@/lib/supabase/public";
 import { ThemeProvider } from "@/Templates/websiteTheme/ThemeProvider";
@@ -111,6 +113,27 @@ function renderSite(
 }
 
 /* ──────────────────────────────────────────────
+   Dynamic metadata (SEO)
+────────────────────────────────────────────── */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const site = await getPublishedSite(slug);
+
+  if (!site) return {};
+
+  const { data } = site;
+
+  return {
+    title: data.seoTitle || data.websiteName || data.brandName,
+    description: data.seoDescription || data.tagline,
+  };
+}
+
+/* ──────────────────────────────────────────────
    Page
 ────────────────────────────────────────────── */
 export default async function SitePage({
@@ -128,5 +151,25 @@ export default async function SitePage({
     return notFound();
   }
 
-  return renderSite(site.data, site.brand, site.websiteId);
+  return (
+    <>
+      {site.data.googleAnalyticsId && (
+        <>
+          <Script
+            src={`https://www.googletagmanager.com/gtag/js?id=${site.data.googleAnalyticsId}`}
+            strategy="afterInteractive"
+          />
+          <Script id="ga-init" strategy="afterInteractive">
+            {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${site.data.googleAnalyticsId}');`}
+          </Script>
+        </>
+      )}
+      {site.data.metaPixelId && (
+        <Script id="meta-pixel" strategy="afterInteractive">
+          {`!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${site.data.metaPixelId}');fbq('track','PageView');`}
+        </Script>
+      )}
+      {renderSite(site.data, site.brand, site.websiteId)}
+    </>
+  );
 }
