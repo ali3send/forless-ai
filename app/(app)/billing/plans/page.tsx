@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 
 import BillingHeader from "./_components/BillingHeader";
+import FreePlanCard from "./_components/FreePlanCard";
 import PaidPlanCard from "./_components/PaidPlanCard";
 import type { CheckoutDetails } from "./_components/CheckoutDetailsModal";
 import type {
@@ -85,8 +86,7 @@ export default function BillingPlansPage() {
 
   const isPaidPlan =
     profile?.plan === "gowebsite" ||
-    profile?.plan === "creator" ||
-    profile?.plan === "pro";
+    profile?.plan === "creator";
 
   useEffect(() => {
     let alive = true;
@@ -248,6 +248,13 @@ export default function BillingPlansPage() {
 
         {/* Pricing cards */}
         <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
+          <FreePlanCard
+            currentPlan={currentPlan}
+            hydrated={hydrated}
+            loading={loading}
+            profile={profile}
+            onLogin={() => router.push("/auth/login")}
+          />
           {PLANS.map((p) => (
             <PaidPlanCard
               key={p.key}

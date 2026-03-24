@@ -17,7 +17,7 @@ const Schema = z.object({
 });
 
 function normalizePlan(plan: string | null): PlanKey {
-  if (plan === "gowebsite" || plan === "creator" || plan === "pro") return plan;
+  if (plan === "gowebsite" || plan === "creator") return plan;
   return "free";
 }
 

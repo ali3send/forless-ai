@@ -1,4 +1,4 @@
-export type Plan = "free" | "gowebsite" | "creator" | "pro";
+export type Plan = "free" | "gowebsite" | "creator";
 export type PaidPlan = Exclude<Plan, "free">;
 
 export type BillingInterval = "monthly" | "yearly";

@@ -20,21 +20,21 @@ export const PLANS: Array<{
   {
     key: "gowebsite",
     name: "GoWebsite",
-    tagline: "Perfect for getting started with your first website",
+    tagline: "Publish and go live with your website",
     features: [
-      "1 website",
+      "2 websites",
+      "Publish & go live",
       "AI website generator",
       "Free hosting & SSL",
       "Mobile responsive",
       "Custom domain support",
-      "SEO ready",
     ],
     pricing: {
       monthly: { label: "$0.99 / month", amount: 0.99 },
       yearly: {
-        label: "$0.99 / year",
-        amount: 0.99,
-        note: `save ${calculateYearlySavings(0.99, 0.99)}%`,
+        label: "$5.99 / year",
+        amount: 5.99,
+        note: `save ${calculateYearlySavings(0.99, 5.99)}%`,
       },
     },
   },
@@ -43,7 +43,7 @@ export const PLANS: Array<{
     name: "Creator",
     tagline: "For creators building multiple projects",
     features: [
-      "Up to 5 websites",
+      "3 websites",
       "Everything in GoWebsite",
       "Priority support",
       "Advanced analytics",
@@ -52,44 +52,21 @@ export const PLANS: Array<{
     ],
     highlight: true,
     pricing: {
-      monthly: { label: "$2.49 / month", amount: 2.49 },
+      monthly: { label: "$1.99 / month", amount: 1.99 },
       yearly: {
-        label: "$19 / year",
-        amount: 19,
-        note: `save ${calculateYearlySavings(2.49, 19)}%`,
-      },
-    },
-  },
-  {
-    key: "pro",
-    name: "Pro",
-    tagline: "For professionals and growing businesses",
-    features: [
-      "Unlimited websites",
-      "Everything in Creator",
-      "Priority support (24/7)",
-      "Custom code injection",
-      "Team collaboration",
-      "White-label options",
-    ],
-    pricing: {
-      monthly: { label: "$4.99 / month", amount: 4.99 },
-      yearly: {
-        label: "$39 / year",
-        amount: 39,
-        note: `save ${calculateYearlySavings(4.99, 39)}%`,
+        label: "$9.99 / year",
+        amount: 9.99,
+        note: `save ${calculateYearlySavings(1.99, 9.99)}%`,
       },
     },
   },
 ];
 
 export const FREE_FEATURES = [
-  "1 Brand Kit (logo, colors, fonts, slogan, tagline)",
+  "1 website (preview only)",
+  "No publish option",
+  "AI website generator",
+  "1 Brand Kit (logo, colors, fonts)",
   "AI name & slogan generation",
-  "Unlimited logo previews",
-  "1 Website Preview",
-  "3 Marketing Posts + 3 Emails + 3 Ads",
-  "10 free design templates (cards, banners, invoice)",
-  "Manual editing enabled",
-  "1 Campaign Folder",
+  "Basic website editor",
 ];

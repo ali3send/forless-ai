@@ -1,6 +1,5 @@
-// import type { PaidPlan } from "../_lib/types";
-
 import { PaidPlan } from "@/lib/billing/types/types";
+
 function calculateYearlySavings(monthly: number, yearly: number) {
   const fullYear = monthly * 12;
   const savePercent = Math.round(((fullYear - yearly) / fullYear) * 100);
@@ -21,13 +20,13 @@ export const PLANS: Array<{
   {
     key: "gowebsite",
     name: "GoWebsite",
-    tagline: "Publish your first site and go live.",
+    tagline: "Publish and go live with your website.",
     features: [
-      "Everything in Free",
-      "1 published website",
-      "Basic website editor",
-      "Connect your own domain",
-      "Hosting included",
+      "2 websites",
+      "Publish & go live",
+      "AI website generator",
+      "Free hosting & SSL",
+      "Custom domain support",
     ],
     pricing: {
       monthly: { label: "$0.99 / month" },
@@ -40,51 +39,30 @@ export const PLANS: Array<{
   {
     key: "creator",
     name: "Creator",
-    tagline: "Brand + templates + marketing kit for creators.",
+    tagline: "For creators building multiple projects.",
     features: [
+      "3 websites",
       "Everything in GoWebsite",
-      "Full brand kit",
-      "Logo generations",
-      "Templates",
-      "Marketing kit",
+      "Priority support",
+      "Custom fonts",
+      "Remove Forless branding",
     ],
     highlight: true,
     pricing: {
-      monthly: { label: "$2.49 / month" },
+      monthly: { label: "$1.99 / month" },
       yearly: {
-        label: "$19 / year",
-        note: `save ${calculateYearlySavings(2.49, 19)}%`,
-      },
-    },
-  },
-  {
-    key: "pro",
-    name: "Pro",
-    tagline: "Unlimited brands, templates, and marketing suite.",
-    features: [
-      "Up to 5 published websites",
-      "Unlimited brand kits",
-      "Full template library",
-      "Full marketing suites",
-      "Priority support",
-    ],
-    pricing: {
-      monthly: { label: "$4.99 / month" },
-      yearly: {
-        label: "$39 / year",
-        note: `save ${calculateYearlySavings(4.99, 39)}%`,
+        label: "$9.99 / year",
+        note: `save ${calculateYearlySavings(1.99, 9.99)}%`,
       },
     },
   },
 ];
 
 export const FREE_FEATURES = [
-  "1 Brand Kit (logo, colors, fonts, slogan, tagline)",
+  "1 website (preview only)",
+  "No publish option",
+  "AI website generator",
+  "1 Brand Kit (logo, colors, fonts)",
   "AI name & slogan generation",
-  "Unlimited logo previews",
-  "1 Website Preview",
-  "3 Marketing Posts + 3 Emails + 3 Ads",
-  "10 free design templates (cards, banners, invoice)",
-  "Manual editing enabled",
-  "1 Campaign Folder",
+  "Basic website editor",
 ];

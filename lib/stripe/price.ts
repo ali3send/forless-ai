@@ -2,7 +2,7 @@ import { serverEnv } from "./../config/env.server";
 // lib/stripe/price.ts
 
 //  plan names
-export type PaidPlan = "gowebsite" | "creator" | "pro";
+export type PaidPlan = "gowebsite" | "creator";
 export type Plan = "free" | PaidPlan;
 
 // Billing interval
@@ -20,10 +20,6 @@ export const STRIPE_PRICES: Record<
   creator: {
     monthly: serverEnv.STRIPE_PRICE_CREATOR!,
     yearly: serverEnv.STRIPE_PRICE_CREATOR_YEARLY!,
-  },
-  pro: {
-    monthly: serverEnv.STRIPE_PRICE_PRO!,
-    yearly: serverEnv.STRIPE_PRICE_PRO_YEARLY!,
   },
 };
 

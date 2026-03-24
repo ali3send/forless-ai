@@ -1,4 +1,4 @@
-export type PlanKey = "free" | "gowebsite" | "creator" | "pro";
+export type PlanKey = "free" | "gowebsite" | "creator";
 
 export const PLAN_LIMITS: Record<PlanKey, Record<string, number>> = {
   free: {
@@ -8,22 +8,15 @@ export const PLAN_LIMITS: Record<PlanKey, Record<string, number>> = {
     projects: 1,
   },
   gowebsite: {
-    website_generate: 1,
+    website_generate: 2,
     website_regen: 10,
-    websites_published: 1,
-    projects: 1,
+    websites_published: 2,
+    projects: 2,
   },
   creator: {
     website_generate: 3,
-    website_regen: 3,
-    websites_published: 1,
-    // projects: 10,
-    projects: 5,
-  },
-  pro: {
-    website_generate: 20,
     website_regen: 10,
-    websites_published: 5,
-    projects: 20,
+    websites_published: 3,
+    projects: 5,
   },
 };

@@ -2,13 +2,13 @@
 import type Stripe from "stripe";
 import { planFromPriceId } from "@/lib/stripe/price";
 
-export type CanonicalPaidPlan = "gowebsite" | "creator" | "pro";
+export type CanonicalPaidPlan = "gowebsite" | "creator";
 export type CanonicalPlan = "free" | CanonicalPaidPlan;
 
 export function normalizePlan(plan?: string | null): CanonicalPlan {
   if (!plan) return "free";
   if (plan === "go") return "gowebsite"; // legacy alias
-  if (plan === "gowebsite" || plan === "creator" || plan === "pro") return plan;
+  if (plan === "gowebsite" || plan === "creator") return plan;
   if (plan === "free") return "free";
   return "free";
 }

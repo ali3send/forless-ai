@@ -5,27 +5,27 @@ const FEATURES = [
   {
     title: "AI Website Generator",
     description: "Create a complete website instantly. No design. No setup.",
-    image: "/features/ai-generator.jpg",
+    image: "/essentials(5).png",
   },
   {
     title: "One-Click Publish",
     description: "Go live in seconds. Edit anytime.",
-    image: "/features/one-click.jpg",
+    image: "/essentials(1).png",
   },
   {
     title: "Custom Domain",
     description: "Use your own domain. Your brand, your name.",
-    image: "/features/custom-domain.jpg",
+    image: "/essentials(2).png",
   },
   {
     title: "Free Hosting & SSL",
     description: "Fast hosting with SSL included. Secure by default.",
-    image: "/features/hosting.jpg",
+    image: "/essentials(3).png",
   },
   {
     title: "Mobile & SEO Ready",
     description: "Looks perfect everywhere. Google-ready from day one.",
-    image: "/features/mobile-seo.jpg",
+    image: "/essentials(4).png",
   },
 ];
 

@@ -4,7 +4,53 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ArrowRight, Check, Sparkles } from "lucide-react";
 import type { BillingInterval } from "@/lib/billing/types/types";
-import { PLANS } from "@/lib/billing/data/plans";
+import { PLANS, FREE_FEATURES } from "@/lib/billing/data/plans";
+
+function FreePricingCard() {
+  const router = useRouter();
+
+  return (
+    <div className="relative rounded-2xl border border-secondary-fade bg-white p-6">
+      <h3 className="text-lg font-bold text-secondary-darker">Free</h3>
+      <p className="mt-1 text-sm text-secondary">
+        Get started and explore the platform
+      </p>
+
+      {/* Price */}
+      <div className="mt-12 flex items-baseline gap-1">
+        <span className="text-4xl font-bold text-secondary-darker">$0</span>
+        <span className="text-sm text-secondary">/ forever</span>
+      </div>
+
+      {/* Get Started button */}
+      <button
+        onClick={() => router.push("/auth/signup")}
+        className="mt-5 w-full rounded-full border border-secondary-fade px-4 py-2.5 text-sm font-semibold text-secondary-darker transition hover:bg-gray-50"
+      >
+        Get Started
+      </button>
+
+      {/* Divider */}
+      <hr className="my-5 border-secondary-fade" />
+
+      {/* Features */}
+      <p className="text-sm font-semibold text-secondary-darker">
+        What you will get
+      </p>
+      <ul className="mt-3 space-y-2.5">
+        {FREE_FEATURES.map((feature) => (
+          <li key={feature} className="flex items-center gap-2 text-sm">
+            <Check
+              size={16}
+              className="shrink-0 rounded-full bg-primary/10 p-0.5 text-primary"
+            />
+            <span className="text-secondary-dark">{feature}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 function PricingCard({
   plan,
@@ -137,6 +183,7 @@ export function HomePricingSection() {
 
       {/* Cards */}
       <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <FreePricingCard />
         {PLANS.map((plan) => (
           <PricingCard key={plan.key} plan={plan} />
         ))}

@@ -4,27 +4,27 @@ import Image from "next/image";
 const TEMPLATES = [
   {
     title: "Business",
-    image: "/templates/business.jpg",
+    image: "/templates1.png",
   },
   {
     title: "E-Commerce",
-    image: "/templates/ecommerce.jpg",
+    image: "/templates2.png",
   },
   {
     title: "Portfolio",
-    image: "/templates/portfolio.jpg",
+    image: "/templates3.png",
   },
   {
     title: "Blog",
-    image: "/templates/blog.jpg",
+    image: "/templates4.png",
   },
   {
     title: "Restaurant",
-    image: "/templates/restaurant.jpg",
+    image: "/templates5.png",
   },
   {
     title: "Health & Fitness",
-    image: "/templates/health.jpg",
+    image: "/templates6.png",
   },
 ];
 

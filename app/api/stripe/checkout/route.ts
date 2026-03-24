@@ -11,7 +11,7 @@ import { getErrorMessage } from "@/lib/utils/getErrorMessage";
 export const runtime = "nodejs";
 
 const Schema = z.object({
-  plan: z.enum(["gowebsite", "creator", "pro"]),
+  plan: z.enum(["gowebsite", "creator"]),
   interval: z.enum(["monthly", "yearly"]).default("monthly"),
   idempotencyKey: z.string().min(8).optional(),
   fullName: z.string().optional(),
@@ -21,7 +21,7 @@ const Schema = z.object({
   country: z.string().optional(),
 });
 
-type Plan = "gowebsite" | "creator" | "pro";
+type Plan = "gowebsite" | "creator";
 type Interval = "monthly" | "yearly";
 
 function resolvePriceId(plan: Plan, interval: Interval) {
