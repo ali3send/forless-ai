@@ -49,7 +49,11 @@ export function HeroSection({
         />
         <div
           className="relative mx-auto flex max-w-4xl flex-col items-center justify-end px-6 text-center"
-          style={{ minHeight: "90vh", paddingBottom: "10vh", paddingTop: "20vh" }}
+          style={{
+            minHeight: "90vh",
+            paddingBottom: "10vh",
+            paddingTop: "20vh",
+          }}
         >
           <h1
             className="text-4xl font-bold leading-tight md:text-6xl"
@@ -155,35 +159,37 @@ export function HeroSection({
           "linear-gradient(180deg, color-mix(in srgb, var(--color-primary) 8%, var(--color-bg)), var(--color-bg))",
       }}
     >
-      <div className="mx-auto flex max-w-4xl flex-col items-center px-6 py-20 text-center">
-        <p
-          className="text-xs font-semibold uppercase tracking-wider"
-          style={{ color: accentColor || "var(--color-primary)" }}
-        >
-          {tagline}
-        </p>
-        <h1
-          className="mt-4 text-3xl font-bold leading-tight md:text-5xl"
-          style={{ color: headingColor || "var(--color-text)" }}
-        >
-          {hero.headline}
-        </h1>
-        <p
-          className="mt-4 max-w-xl text-sm"
-          style={{ color: textColor || "var(--color-muted)" }}
-        >
-          {hero.subheadline}
-        </p>
-        <a
-          href={hero.primaryCtaLink ?? "#offers"}
-          className="mt-8 rounded-full px-8 py-3 text-sm font-semibold transition hover:opacity-90"
-          style={{
-            backgroundColor: buttonBg || "var(--color-primary)",
-            color: buttonText || "var(--color-bg)",
-          }}
-        >
-          {hero.primaryCta}
-        </a>
+      <div className="mx-auto flex max-w-4xl items-center px-6 py-20 text-center gap-4">
+        <div className="flex flex-col items-start">
+          <p
+            className="text-xs font-semibold uppercase tracking-wider"
+            style={{ color: accentColor || "var(--color-primary)" }}
+          >
+            {tagline}
+          </p>
+          <h1
+            className="mt-4 text-3xl font-bold leading-tight md:text-5xl text-left"
+            style={{ color: headingColor || "var(--color-text)" }}
+          >
+            {hero.headline}
+          </h1>
+          <p
+            className="mt-4 max-w-xl text-sm"
+            style={{ color: textColor || "var(--color-muted)" }}
+          >
+            {hero.subheadline}
+          </p>
+          <a
+            href={hero.primaryCtaLink ?? "#offers"}
+            className="mt-12 rounded-full px-8 py-3 text-sm font-semibold hover:opacity-90"
+            style={{
+              backgroundColor: buttonBg || "var(--color-primary)",
+              color: buttonText || "var(--color-bg)",
+            }}
+          >
+            {hero.primaryCta}
+          </a>
+        </div>
         {imageSrc && (
           <div className="mt-12 w-full overflow-hidden rounded-2xl">
             <img

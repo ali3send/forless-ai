@@ -169,9 +169,10 @@ export function HeroSection({
           "linear-gradient(180deg, color-mix(in srgb, var(--color-primary) 8%, var(--color-bg)), var(--color-bg))",
       }}
     >
-      <div className="mx-auto flex max-w-4xl flex-col items-center px-6 py-20 text-center">
+      <div className="mx-auto flex max-w-4xl items-center px-6 py-20 text-center gap-4">
+       <div className="flex flex-col items-start">
         <h1
-          className="text-3xl font-bold italic leading-tight md:text-5xl"
+          className="text-3xl font-bold leading-tight md:text-5xl text-left"
           style={{ color: headingColor || "var(--color-text)" }}
         >
           {hero.headline}
@@ -206,6 +207,7 @@ export function HeroSection({
               {hero.secondaryCta}
             </a>
           )}
+        </div>
         </div>
         {imageSrc && (
           <div className="mt-12 w-full overflow-hidden rounded-2xl">
